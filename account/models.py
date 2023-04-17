@@ -7,8 +7,8 @@ from django.contrib.auth.models import AbstractUser
 class CustomUser(AbstractUser):
     sex = models.CharField(max_length=255 , null=True) #male and female    
     phone = models.CharField(max_length=255 , null=True)
-    email = models.EmailField(max_length=255)
-    username = models.EmailField(max_length=255, unique=True)  
+    email = models.EmailField(max_length=255,unique=True)
+    username = models.CharField(max_length=255)  
     apply_role_type = models.IntegerField(null=True) 
     image = models.ImageField(upload_to='user/profile', null=True)
 
@@ -25,8 +25,8 @@ class CustomUser(AbstractUser):
     )
     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, blank=True, null=True)
 
-    # USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
 
     def getRoleName(self):
         if self.role==1:
