@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ca@q=g3ozx2n5kt5s2zw_w18ysi7rrd33!wf4o*$mls_^dgxm&'
+SECRET_KEY = 'django-insecure--a384x+06*6ikt*ecsefr(@2%=ut$x$jq89ym&9&u2=3n#!b)8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,12 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
     'account',
-    'management',
-    'report'
 ]
-
 AUTH_USER_MODEL = "account.CustomUser" 
 
 MIDDLEWARE = [
@@ -127,4 +123,3 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
