@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from .serializers import ClientCategorySerializer, SampleFormSerializer, CommoditySerializer, CommodityCategorySerializer
 from .models import ClientCategory, SampleForm, Commodity, CommodityCategory
 from rest_framework import viewsets
@@ -34,3 +34,6 @@ class CommodityCategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CommodityCategorySerializer
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
+
+def Home(request):
+    return redirect('api/')
