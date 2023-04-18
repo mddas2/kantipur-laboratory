@@ -6,6 +6,12 @@ from rest_framework import viewsets
 from rest_framework.authentication import BasicAuthentication,SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.contrib.auth import authenticate, login
+from django.views.decorators.csrf import csrf_exempt
+
 from .custompermission import MyPermission
 from account.models import CustomUser
 
@@ -43,15 +49,6 @@ class CommodityCategoryViewSet(viewsets.ModelViewSet):
 
 def Home(request):
     return redirect('api/')
-
-
-
-from rest_framework import status
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from django.contrib.auth import authenticate, login
-
-from django.views.decorators.csrf import csrf_exempt
 
 class LoginView(APIView):
     @csrf_exempt
