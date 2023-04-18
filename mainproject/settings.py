@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-z9jqz!rnkg1bew73i#s_#6(u+!tjr$kc)p&236oxy=!sz6c)d%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.1.179','127.0.0.1']
 
 
 # Application definition
@@ -40,10 +40,14 @@ INSTALLED_APPS = [
     'rest_framework',
     'account',
     'management',
+    'corsheaders',
 ]
 AUTH_USER_MODEL = "account.CustomUser" 
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -51,7 +55,21 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+  
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ORIGIN_WHITELIST = [
+    'http://192.168.1.150:4200',
+
+    # Add other allowed origins as needed
+]
+CSRF_TRUSTED_ORIGINS = ['http://192.168.1.150:4200']
+
 
 ROOT_URLCONF = 'mainproject.urls'
 

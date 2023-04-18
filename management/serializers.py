@@ -1,5 +1,23 @@
 from .models import ClientCategory, SampleForm, Commodity, CommodityCategory
 from rest_framework import serializers
+from account.models import CustomUser
+
+from django.contrib.auth.models import Group,Permission
+
+class CustomUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = '__all__'   
+        
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Permission
+        fields = '__all__'  
+
+class PermissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = '__all__'  
 
 
 class ClientCategorySerializer(serializers.ModelSerializer):
@@ -34,4 +52,7 @@ class CommodityCategorySerializer(serializers.ModelSerializer):
         model = CommodityCategory
         fields = '__all__'
 
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
    

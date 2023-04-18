@@ -1,12 +1,19 @@
 from django.shortcuts import render,redirect
-from .serializers import ClientCategorySerializer, SampleFormSerializer, CommoditySerializer, CommodityCategorySerializer
+from django.http import HttpResponse
+from .serializers import ClientCategorySerializer, SampleFormSerializer, CommoditySerializer, CommodityCategorySerializer,CustomUserSerializer,LoginSerializer
 from .models import ClientCategory, SampleForm, Commodity, CommodityCategory
 from rest_framework import viewsets
 from rest_framework.authentication import BasicAuthentication,SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 from .custompermission import MyPermission
+from account.models import CustomUser
 
+class CustomUserSerializerViewSet(viewsets.ModelViewSet):
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUserSerializer
+    # authentication_classes = [SessionAuthentication]
+    # permission_classes = [IsAuthenticated]
 
 class ClientCategoryViewSet(viewsets.ModelViewSet):
     queryset = ClientCategory.objects.all()
@@ -36,3 +43,29 @@ class CommodityCategoryViewSet(viewsets.ModelViewSet):
 
 def Home(request):
     return redirect('api/')
+
+
+
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.contrib.auth import authenticate, login
+
+from django.views.decorators.csrf import csrf_exempt
+
+class LoginView(APIView):
+    @csrf_exempt
+    def post(self, request, format=None):
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            password = serializer.validated_data['password']
+            user = authenticate(request, username=email, password=password)
+            if user is not None:
+                login(request, user)
+                return Response({'detail': 'Login successful'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+             
