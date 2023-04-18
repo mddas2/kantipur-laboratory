@@ -9,7 +9,7 @@ class ClientCategory(models.Model):
     user_renew_document = models.FileField()
     
     
-class SampleForm(models.Model):
+class SampleForm(models.Model):#ClientRequest
     name = models.CharField(max_length=255, null=True)
     condition = models.CharField(max_length=255)
     mfd = models.DateField()
