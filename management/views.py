@@ -14,7 +14,6 @@ class ClientCategoryViewSet(viewsets.ModelViewSet):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated,MyPermission]
     
-    
 class SampleFormViewSet(viewsets.ModelViewSet):
     queryset = SampleForm.objects.all()
     serializer_class = SampleFormSerializer

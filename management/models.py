@@ -41,9 +41,9 @@ class TestResult(models.Model):
     units = models.CharField(max_length=100)
     results = models.CharField(max_length=100)
     mandatory_standard = models.CharField(max_length=100)
-    remarks = models.TextField()
-    
+    remarks = models.TextField()    
 
 class CommodityCategory(models.Model):
     name = models.CharField(max_length=255)
+
     
