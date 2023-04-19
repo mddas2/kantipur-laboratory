@@ -1,31 +1,5 @@
 from .models import ClientCategory, SampleForm, Commodity, CommodityCategory
 from rest_framework import serializers
-from account.models import CustomUser
-from django.contrib.auth.hashers import make_password
-
-from django.contrib.auth.models import Group,Permission
-
-class CustomUserSerializer(serializers.ModelSerializer):
-    def validate_password(self,value):#field level validation
-        if len(value) < 8:
-            raise serializers.ValidationError('Password must be 8 digit')
-        return make_password(value)
-    
-    
-    class Meta:
-        model = CustomUser
-        fields = '__all__'   
-        
-class GroupSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Group
-        fields = '__all__'  
-
-class PermissionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Permission
-        fields = '__all__'  
-
 
 class ClientCategorySerializer(serializers.ModelSerializer):
     class Meta:

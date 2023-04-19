@@ -5,11 +5,9 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 class CustomUser(AbstractUser):
-    #sex = models.CharField(max_length=255 , null=True) #male and female    
     phone = models.CharField(max_length=15 , null=True)
     email = models.EmailField(max_length=255,unique=True)
     username = models.CharField(max_length=255)  
-    apply_role_type = models.IntegerField(null=True) 
     image = models.ImageField(upload_to='user/profile', null=True)
 
     SUPERADMIN = 1
