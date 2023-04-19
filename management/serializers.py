@@ -58,3 +58,5 @@ class CommodityCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = CommodityCategory
         fields = '__all__'
+
+   
