@@ -8,12 +8,12 @@ class CustomUserSerializer(serializers.ModelSerializer):
     def validate_image(self, value): 
         #image size should not exceed 5 mb
         max_size = 5 * 1024 * 1024  
-        if value.size > max_size:
+        if value != None and value.size > max_size:
             raise serializers.ValidationError('image size should not exceed 5 mb')
         return value
     
     def validate_username(self, value):
-        if len(value) < 5:
+        if len(value) < 3:
             raise serializers.ValidationError('username should not be this short')
         return value
         
