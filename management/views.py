@@ -83,6 +83,7 @@ class LoginView(APIView):
             user = authenticate(request, username=email, password=password)
             if user is not None:
                 login(request, user)
+                print(request)
                 return Response({'detail': 'Login successful'}, status=status.HTTP_200_OK)
             else:
                 return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
