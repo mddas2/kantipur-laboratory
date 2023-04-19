@@ -1,10 +1,7 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-<<<<<<< HEAD
 from .serializers import ClientCategorySerializer, SampleFormSerializer, CommoditySerializer, CommodityCategorySerializer,CustomUserSerializer
-=======
-from .serializers import ClientCategorySerializer, SampleFormSerializer, CommoditySerializer, CommodityCategorySerializer,CustomUserSerializer,LoginSerializer, GroupSerializer, PermissionSerializer
->>>>>>> 6aaeb406badf642582cfad26e6b6061cb8607339
+from .serializers import ClientCategorySerializer, SampleFormSerializer, CommoditySerializer, CommodityCategorySerializer,CustomUserSerializer, GroupSerializer, PermissionSerializer
 from .models import ClientCategory, SampleForm, Commodity, CommodityCategory
 from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication
@@ -13,6 +10,10 @@ from django.contrib.auth.models import Group, Permission
 
 from .custompermission import MyPermission
 from account.models import CustomUser
+
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.views import APIView
 
 class CustomUserSerializerViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()

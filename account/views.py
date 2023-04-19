@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth import authenticate, login
 from django.views.decorators.csrf import csrf_exempt
+from .serializers import LoginSerializer
 
 # Create your views here.
 class LoginView(APIView):
