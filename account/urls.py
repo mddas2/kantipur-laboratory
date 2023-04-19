@@ -1,12 +1,9 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
+from .views import LoginView
 
 
-router = DefaultRouter()
-router.register('users', views.CustomUserSerializer, basename="Users")
-
-
-urlpatterns = [
-    path('users/', include(router.urls)),
+urlpatterns = [    
+    path('auth/login/', LoginView.as_view())
 ]

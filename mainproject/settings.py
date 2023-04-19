@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'account',
     'management',
     'corsheaders',
+    'drf_yasg',
 ]
 AUTH_USER_MODEL = "account.CustomUser" 
 

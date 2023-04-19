@@ -5,18 +5,11 @@ from account.models import CustomUser
 from django.contrib.auth.models import Group,Permission
 
 class CustomUserSerializer(serializers.ModelSerializer):
-    def validate_image(self, value): 
-        #image size should not exceed 5 mb
-        max_size = 5 * 1024 * 1024  
-        if value != None and value.size > max_size:
-            raise serializers.ValidationError('image size should not exceed 5 mb')
+    def validate_password(self,value):#field level validation
+        if len(value) < 8:
+            raise serializers.ValidationError('Password must be 8 digit')
         return value
     
-    def validate_username(self, value):
-        if len(value) < 3:
-            raise serializers.ValidationError('username should not be this short')
-        return value
-        
     class Meta:
         model = CustomUser
         fields = '__all__'   
@@ -63,8 +56,3 @@ class CommodityCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = CommodityCategory
         fields = '__all__'
-
-class LoginSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    password = serializers.CharField()
-    
