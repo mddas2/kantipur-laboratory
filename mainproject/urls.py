@@ -29,6 +29,7 @@ schema_view = get_schema_view(
       terms_of_service="https://www.google.com/policies/terms/",
       contact=openapi.Contact(email="manojdas.py@gmail.com"),
       license=openapi.License(name="No License"),
+      **{'x-logo': {'url': 'your-logo-url'}},
    ),
    public=True,
    permission_classes=[permissions.AllowAny],

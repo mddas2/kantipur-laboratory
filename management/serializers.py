@@ -16,12 +16,12 @@ class CustomUserSerializer(serializers.ModelSerializer):
         
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Permission
+        model = Group
         fields = '__all__'  
 
 class PermissionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Group
+        model = Permission
         fields = '__all__'  
 
 

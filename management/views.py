@@ -1,10 +1,15 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
+<<<<<<< HEAD
 from .serializers import ClientCategorySerializer, SampleFormSerializer, CommoditySerializer, CommodityCategorySerializer,CustomUserSerializer
+=======
+from .serializers import ClientCategorySerializer, SampleFormSerializer, CommoditySerializer, CommodityCategorySerializer,CustomUserSerializer,LoginSerializer, GroupSerializer, PermissionSerializer
+>>>>>>> 6aaeb406badf642582cfad26e6b6061cb8607339
 from .models import ClientCategory, SampleForm, Commodity, CommodityCategory
 from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.models import Group, Permission
 
 from .custompermission import MyPermission
 from account.models import CustomUser
@@ -40,6 +45,28 @@ class CommodityCategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CommodityCategorySerializer
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
+    
+
+class GroupViewSet(viewsets.ModelViewSet):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    
+class PermissionViewSet(viewsets.ModelViewSet):
+    queryset = Permission.objects.all()
+    serializer_class = PermissionSerializer
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]    
+
+
+class PermissionAllDelete(APIView):
+    def get(self, request, format=None):
+        object = Permission.objects.all().delete()
+        serializer_class = PermissionSerializer
+        return Response({'detail': 'delete successful'}, status=status.HTTP_200_OK)
+
 
 def Home(request):
     return redirect('api/')
