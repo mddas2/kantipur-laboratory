@@ -22,5 +22,7 @@ urlpatterns = [
     path('token-verify/',TokenVerifyView.as_view(),name="token_verify"),
 
     path('permission-all-delete/', PermissionAllDelete.as_view()),
+
+    # path('user-has-groups/',)
     
 ]

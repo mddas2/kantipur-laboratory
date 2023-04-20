@@ -17,8 +17,8 @@ from rest_framework_simplejwt.tokens import AccessToken
 class CustomUserSerializerViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated]
 
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
