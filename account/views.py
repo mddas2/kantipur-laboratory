@@ -11,6 +11,8 @@ from rest_framework import viewsets
 from .serializers import CustomUserSerializer, GroupSerializer, PermissionSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import AccessToken
 
 class CustomUserSerializerViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
@@ -37,6 +39,7 @@ class PermissionAllDelete(APIView):
         object = Permission.objects.all().delete()
         serializer_class = PermissionSerializer
         return Response({'detail': 'delete successful'}, status=status.HTTP_200_OK)
+    
 # Create your views here.
 class LoginView(APIView):
     @csrf_exempt
@@ -49,8 +52,20 @@ class LoginView(APIView):
             if user is not None:
                 login(request, user)
                 print(request)
-                return Response({'detail': 'Login successful'}, status=status.HTTP_200_OK)
+                # token =  AccessToken.for_user(user)
+                refresh_token = RefreshToken.for_user(user)
+                acces_token = str(refresh_token.access_token)
+                refresh_token = str(refresh_token)
+                import json
+                user_obj = CustomUserSerializer(request.user)      
+
+                return Response({'message': 'Login successful','access':acces_token,'refresh':refresh_token,'user':user_obj.data}, status=status.HTTP_200_OK)
             else:
-                return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+                return Response({'message': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+# {
+#   "email": "admin@gmail.com",
+#   "password": "admin"
+# }
