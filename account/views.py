@@ -9,26 +9,26 @@ from django.contrib.auth.models import Group, Permission
 from account.models import CustomUser
 from rest_framework import viewsets
 from .serializers import CustomUserSerializer, GroupSerializer, PermissionSerializer
-from rest_framework.authentication import SessionAuthentication
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 class CustomUserSerializerViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
-    # authentication_classes = [SessionAuthentication]
-    # permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     
     
 class PermissionViewSet(viewsets.ModelViewSet):
     queryset = Permission.objects.all()
     serializer_class = PermissionSerializer
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]    
 
 
