@@ -2,16 +2,21 @@ from .models import ClientCategory, SampleForm, Commodity, CommodityCategory
 from rest_framework import serializers
 from account.models import CustomUser
 from django.contrib.auth.hashers import make_password
+from werkzeug.security import generate_password_hash
 
 from django.contrib.auth.models import Group,Permission
 
 class CustomUserSerializer(serializers.ModelSerializer):
+    
+    password = serializers.CharField(write_only=True) # exclude password from serialization
+    
     def validate_password(self,value):#field level validation
         if len(value) < 8:
             raise serializers.ValidationError('Password must be 8 digit')
-        return make_password(value)
-    
-    
+        # hashed_password = generate_password_hash(value)
+        # return hashed_password
+        return value
+        
     class Meta:
         model = CustomUser
         fields = '__all__'   
