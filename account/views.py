@@ -38,7 +38,7 @@ class PermissionAllDelete(APIView):
     def get(self, request, format=None):
         object = Permission.objects.all().delete()
         serializer_class = PermissionSerializer
-        return Response({'detail': 'delete successful'}, status=status.HTTP_200_OK)
+        return Response({'message': 'delete successful'}, status=status.HTTP_200_OK)
     
 # Create your views here.
 class LoginView(APIView):

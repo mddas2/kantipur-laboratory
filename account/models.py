@@ -8,7 +8,7 @@ class CustomUser(AbstractUser):
     phone = models.CharField(max_length=15 , null=True)
     email = models.EmailField(max_length=255,unique=True)
     username = models.CharField(max_length=255)  
-    image = models.ImageField(upload_to='user/profile', null=True)
+    image = models.ImageField(upload_to='media/user/profile', null=True)
 
     SUPERADMIN = 1
     SMU = 2
