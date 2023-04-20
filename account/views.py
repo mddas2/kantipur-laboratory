@@ -5,8 +5,38 @@ from rest_framework.response import Response
 from django.contrib.auth import authenticate, login
 from django.views.decorators.csrf import csrf_exempt
 from .serializers import LoginSerializer
-from werkzeug.security import generate_password_hash
+from django.contrib.auth.models import Group, Permission
+from account.models import CustomUser
+from rest_framework import viewsets
+from .serializers import CustomUserSerializer, GroupSerializer, PermissionSerializer
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
 
+class CustomUserSerializerViewSet(viewsets.ModelViewSet):
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUserSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+class GroupViewSet(viewsets.ModelViewSet):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    
+class PermissionViewSet(viewsets.ModelViewSet):
+    queryset = Permission.objects.all()
+    serializer_class = PermissionSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]    
+
+
+class PermissionAllDelete(APIView):
+    def get(self, request, format=None):
+        object = Permission.objects.all().delete()
+        serializer_class = PermissionSerializer
+        return Response({'detail': 'delete successful'}, status=status.HTTP_200_OK)
 # Create your views here.
 class LoginView(APIView):
     @csrf_exempt
