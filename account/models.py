@@ -1,4 +1,5 @@
 from django.db import models
+from management.models import ClientCategory
 
 # Create your models here.
 from django.db import models
@@ -9,6 +10,9 @@ class CustomUser(AbstractUser):
     email = models.EmailField(max_length=255,unique=True)
     username = models.CharField(max_length=255)  
     image = models.ImageField(upload_to='media/user/profile', null=True)
+    registration_document = models.ImageField(upload_to='media/user/registration', null=True)
+
+    client_category = models.ForeignKey(ClientCategory,related_name="user",on_delete=models.CASCADE,null=True)    
 
     SUPERADMIN = 1
     SMU = 2
