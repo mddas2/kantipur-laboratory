@@ -17,8 +17,8 @@ from rest_framework.views import APIView
 class ClientCategoryViewSet(viewsets.ModelViewSet):
     queryset = ClientCategory.objects.all()
     serializer_class = ClientCategorySerializer
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated,MyPermission]
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated,MyPermission]
     
 class SampleFormViewSet(viewsets.ModelViewSet):
     queryset = SampleForm.objects.all()
