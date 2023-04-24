@@ -17,8 +17,8 @@ from rest_framework.views import APIView
 class ClientCategoryViewSet(viewsets.ModelViewSet):
     queryset = ClientCategory.objects.all()
     serializer_class = ClientCategorySerializer
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated,MyPermission]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated,MyPermission]
     
 class SampleFormViewSet(viewsets.ModelViewSet):
     queryset = SampleForm.objects.all()
@@ -40,6 +40,13 @@ class CommodityCategoryViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
 def Home(request):
+    from account.models import CustomUser
+    from management.models import ClientCategory
+    clien_category = ClientCategory.objects.get(id='1')
+    user = CustomUser.objects.get(id='1')
+    user.client_category = clien_category
+    user.save()
+    return HttpResponse(user)
     return redirect('api/')
 
 

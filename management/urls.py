@@ -11,5 +11,6 @@ router.register('commodity-category', views.CommodityCategoryViewSet, basename="
 
 urlpatterns = [
     path('', include(router.urls)),
+    # path('md/',views.Home,name="Home")
 
 ]
