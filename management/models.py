@@ -2,10 +2,10 @@ from django.db import models
 
 class ClientCategory(models.Model):
     name = models.CharField(max_length=255)
-    address = models.CharField(max_length=255)
-    reg_no = models.CharField(max_length=255)
-    reg_document = models.ImageField(upload_to='media/client_category', null=True)
-    user_renew_document = models.ImageField(upload_to='media/client_category', null=True)
+    # address = models.CharField(max_length=255)
+    # reg_no = models.CharField(max_length=255)
+    # reg_document = models.ImageField(upload_to='media/client_category', null=True)
+    # user_renew_document = models.ImageField(upload_to='media/client_category', null=True)
     
     
 class SampleForm(models.Model):#ClientRequest
