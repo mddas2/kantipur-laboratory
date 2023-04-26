@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['192.168.1.179','127.0.0.1','192.168.1.154','192.168.1.108']
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -91,7 +92,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'mainproject.wsgi.application'
+ASGI_APPLICATION = 'mainproject.asgi.application'
 
 
 # Database
