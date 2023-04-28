@@ -5,7 +5,7 @@ from .models import ClientCategory, SampleForm, Commodity, CommodityCategory
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
-from .pagination import MyPageNumberPagination
+from .pagination import MyLimitOffsetPagination
 
 from .custompermission import MyPermission
 
@@ -15,14 +15,14 @@ class ClientCategoryViewSet(viewsets.ModelViewSet):
     serializer_class = ClientCategorySerializer
     # authentication_classes = [JWTAuthentication]
     # permission_classes = [IsAuthenticated,MyPermission]
-    pagination_class = MyPageNumberPagination
+    pagination_class = MyLimitOffsetPagination
     
 class SampleFormViewSet(viewsets.ModelViewSet):
     queryset = SampleForm.objects.all()
     serializer_class = SampleFormSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    pagination_class = MyPageNumberPagination
+    pagination_class = MyLimitOffsetPagination
     
     
 class CommodityViewSet(viewsets.ModelViewSet):
@@ -30,14 +30,14 @@ class CommodityViewSet(viewsets.ModelViewSet):
     serializer_class = CommoditySerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    pagination_class = MyPageNumberPagination
+    pagination_class = MyLimitOffsetPagination
     
 class CommodityCategoryViewSet(viewsets.ModelViewSet):
     queryset = CommodityCategory.objects.all()
     serializer_class = CommodityCategorySerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    pagination_class = MyPageNumberPagination
+    pagination_class = MyLimitOffsetPagination
 
 def Home(request):
     from account.models import CustomUser
