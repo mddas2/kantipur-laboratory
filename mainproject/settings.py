@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'websocket',
 ]
-
+ASGI_APPLICATION = 'mainproject.asgi.application'
 # CHANNEL_LAYERS = {
 #     "default": {
 #         "BACKEND": "channels_redis.core.RedisChannelLayer",
@@ -54,6 +54,12 @@ INSTALLED_APPS = [
 #         },
 #     },
 # }
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 AUTH_USER_MODEL = "account.CustomUser" 
 
@@ -102,7 +108,7 @@ TEMPLATES = [
     },
 ]
 
-ASGI_APPLICATION = 'mainproject.asgi.application'
+
 
 
 # Database

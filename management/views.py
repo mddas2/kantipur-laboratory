@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from .serializers import ClientCategorySerializer, SampleFormSerializer, CommoditySerializer, CommodityCategorySerializer
+from .serializers import ClientCategorySerializer, SampleFormSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer
 from .models import ClientCategory, SampleForm, Commodity, CommodityCategory
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -39,6 +39,13 @@ class CommodityCategoryViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     pagination_class = MyLimitOffsetPagination
 
+class TestResultViewSet(viewsets.ModelViewSet):
+    queryset = CommodityCategory.objects.all()
+    serializer_class = TestResultSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    pagination_class = MyLimitOffsetPagination
+    
 def Home(request):
     from account.models import CustomUser
     from management.models import ClientCategory

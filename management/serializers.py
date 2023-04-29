@@ -1,4 +1,4 @@
-from .models import ClientCategory, SampleForm, Commodity, CommodityCategory
+from .models import ClientCategory, SampleForm, Commodity, CommodityCategory , TestResult
 from rest_framework import serializers
 
 class ClientCategorySerializer(serializers.ModelSerializer):
@@ -31,6 +31,11 @@ class CommodityCategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CommodityCategory
+        fields = '__all__'
+
+class TestResultSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TestResult
         fields = '__all__'
 
    
