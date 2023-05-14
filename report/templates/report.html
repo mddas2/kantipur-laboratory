@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<head>
+    <title>html to pdf</title>
+</head>
+<body>
+<div id="div_print">
+    <h1><i>hello world राजविराज — सप्तरीको रुपनी</i> गाउँपालिकामा आइतबार बिहान एक युवकको हत्या भएको छ । रुपनी गाउँपालिका १ रायपुरस्थित राजाराम यादवको खेतमा शम्भुनाथ नगरपालिका २ खैरबनाका मो. लुकमानका छोरा २१ वर्षीय मो. तफेजुलको शव फेला परेको सप्तरीका प्रहरी प्रमुख एसपी नरेन्द्रकुमार कार्कीले जानकारी दिए। </h1>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        var element = document.getElementById('div_print');
+        html2pdf(element);
+    </script>
+</body>
+</html>

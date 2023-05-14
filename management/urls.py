@@ -1,16 +1,16 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from . import views
+from . import views,import_excel,sample_form_has_parameter
 
 router = DefaultRouter()
-router.register('client-category', views.ClientCategoryViewSet, basename="api/client_category")
+router.register('client-category', views.ClientCategoryViewSet, basename="apis/client_category")
 router.register('sample-form', views.SampleFormViewSet, basename="sample_form")
 router.register('commodity', views.CommodityViewSet, basename="commodity")
+router.register('test-result', views.TestResultViewSet, basename="test_result")
 router.register('commodity-category', views.CommodityCategoryViewSet, basename="commodity_category")
-
+router.register('sample-form-has-parameter-assign-users', sample_form_has_parameter.SampleFormHasParameterViewSet, basename="SampleFormHasParameterViewSet")
 
 urlpatterns = [
     path('', include(router.urls)),
-    # path('md/',views.Home,name="Home")
-
+    path('import-excel-bulk/',import_excel.ImportExcel,name="ImportExcel")
 ]

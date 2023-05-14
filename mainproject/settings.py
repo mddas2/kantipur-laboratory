@@ -25,7 +25,8 @@ SECRET_KEY = 'django-insecure-z9jqz!rnkg1bew73i#s_#6(u+!tjr$kc)p&236oxy=!sz6c)d%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['lims.kantipurinfotech.com','127.0.0.1','192.168.1.179']
+
+ALLOWED_HOSTS = ['limsserver.kantipurinfotech.com.np','127.0.0.1','192.168.1.179']
 
 # Application definition
 
@@ -40,12 +41,14 @@ INSTALLED_APPS = [
     'rest_framework',
     'account',
     'management',
+    'report',
     'corsheaders',
     'drf_yasg',
     'rest_framework_simplejwt',
     'websocket',
+    'django_filters',
 ]
-
+ASGI_APPLICATION = 'mainproject.asgi.application'
 # CHANNEL_LAYERS = {
 #     "default": {
 #         "BACKEND": "channels_redis.core.RedisChannelLayer",
@@ -54,6 +57,12 @@ INSTALLED_APPS = [
 #         },
 #     },
 # }
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 AUTH_USER_MODEL = "account.CustomUser" 
 
@@ -67,9 +76,12 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',  
+]
 
-  
+AUTHENTICATION_BACKENDS = [
+    'account.backend.EmailUserBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -89,7 +101,7 @@ ROOT_URLCONF = 'mainproject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -102,7 +114,7 @@ TEMPLATES = [
     },
 ]
 
-ASGI_APPLICATION = 'mainproject.asgi.application'
+
 
 
 # Database
@@ -115,8 +127,36 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'newlims',
+#         'USER': 'newlims',
+#         'PASSWORD':'AVNS_41KCiTCg-qKhtnP_VfR',
+#         'HOST':'kitdatabase-do-user-9161970-0.b.db.ondigitalocean.com',
+#         'PORT': '25060',
+#         'OPTIONS': {
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+#         }
+#     }
+# }
 
-# Password validation
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'kantggjb_lims',
+#         'USER': 'kantggjb_kantggjb',
+#         'PASSWORD':'0(r!?QcfaRz1',
+#         'HOST':'localhost',
+#         'PORT': '3306',
+#         'OPTIONS': {
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+#         }
+#     }
+# }
+
+
+# Password validations
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -147,7 +187,7 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
+# Static files (CSS, JavaScript, Image)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 from pathlib import Path
 import os
