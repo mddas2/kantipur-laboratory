@@ -4,6 +4,8 @@ deployment:
     - export DEPLOYPATH=/home/radijmdg/fms_demo/ #this is original
     - /bin/cp -r account $DEPLOYPATH
     - /bin/cp -r management $DEPLOYPATH
-    - /bin/cp -r mainproject  $DEPLOYPATH
+    - /bin/cp -r report $DEPLOYPATH
+    - /bin/cp -r static $DEPLOYPATH
+    # - /bin/cp -r mainproject  $DEPLOYPATH
   
   
