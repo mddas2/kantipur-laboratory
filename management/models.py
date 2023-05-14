@@ -83,6 +83,7 @@ class SampleFormHasParameter(models.Model):#sample form has parameter and parame
     Commodity = models.ForeignKey(Commodity,related_name="sample_has_parameter_analyst",on_delete=models.CASCADE,null=True)
 
     analyst_user = models.EmailField(max_length=100,null=True)
+    # supervisor_user = models.EmailField(max_length=100,null=True)
     supervisor_user = models.ManyToManyField(CustomUser, related_name="sample_has_parameters")
     
     parameter = models.ManyToManyField(TestResult, related_name="sample_has_parameters")
