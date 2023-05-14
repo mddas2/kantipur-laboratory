@@ -113,6 +113,12 @@ class SampleFormHasParameter(models.Model):#sample form has parameter and parame
 
     form_available = models.CharField(max_length=100,choices=ROLE_CHOICES, blank=True, null=True)
 
+    voucher_number = models.CharField(blank=True, null=True, max_length=155)
+    register_date = models.CharField(blank=True, null=True, max_length=155)
+    ammount = models.IntegerField(blank=True, null=True)
+    payment_receipt = models.FileField(upload_to='uploads/receipt',null=True)
+    
+
     # class Meta:
     #     constraints = [
     #         UniqueConstraint(fields=['sample_form', 'parameter'], name='unique_parameter_per_sample_form'),
