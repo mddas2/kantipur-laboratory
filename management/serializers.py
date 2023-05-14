@@ -1,4 +1,4 @@
-from .models import ClientCategory, SampleForm, Commodity, CommodityCategory , TestResult ,SampleFormHasParameter
+from .models import ClientCategory, SampleForm, Commodity, CommodityCategory , TestResult ,SampleFormHasParameter,Payment
 from rest_framework import serializers
 
 class SampleFormHasParameterSerializer(serializers.ModelSerializer):
@@ -31,6 +31,11 @@ class ClientCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ClientCategory
         fields = '__all__'        
+
+class PaymentSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = Payment
+            fields = '__all__' 
 
 class SampleFormSerializer(serializers.ModelSerializer):
     class Meta:

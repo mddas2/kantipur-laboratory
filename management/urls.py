@@ -9,6 +9,7 @@ router.register('commodity', views.CommodityViewSet, basename="commodity")
 router.register('test-result', views.TestResultViewSet, basename="test_result")
 router.register('commodity-category', views.CommodityCategoryViewSet, basename="commodity_category")
 router.register('sample-form-has-parameter-assign-users', sample_form_has_parameter.SampleFormHasParameterViewSet, basename="SampleFormHasParameterViewSet")
+router.register('sample-form-has-payment', views.PaymentViewSet, basename="PaymentViewSet")
 
 urlpatterns = [
     path('', include(router.urls)),

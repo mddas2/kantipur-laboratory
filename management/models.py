@@ -120,10 +120,10 @@ class SampleFormHasParameter(models.Model):#sample form has parameter and parame
     #         UniqueConstraint(fields=['sample_form', 'supervisor_user'], name='unique_supervisoruser_per_sample_form')
     #     ]
 
-    class Payment(models.Model):
-        sample_form = models.OneToOneField(SampleForm,related_name='payment' , on_delete=models.DO_NOTHING)
-        owner_email = models.EmailField(max_length=100,null=True)
-        voucher_number = models.CharField(blank=True, null=True, max_length=155)
-        register_date = models.CharField(blank=True, null=True, max_length=155)
-        ammount = models.IntegerField(blank=True, null=True)
-        payment_receipt = models.FileField(upload_to='uploads/receipt',null=True)
+class Payment(models.Model):
+    sample_form = models.OneToOneField(SampleForm,related_name='payment' , on_delete=models.DO_NOTHING)
+    owner_email = models.EmailField(max_length=100,null=True)
+    voucher_number = models.CharField(blank=True, null=True, max_length=155)
+    register_date = models.CharField(blank=True, null=True, max_length=155)
+    ammount = models.IntegerField(blank=True, null=True)
+    payment_receipt = models.FileField(upload_to='uploads/receipt',null=True)
