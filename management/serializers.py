@@ -37,16 +37,16 @@ class PaymentSerializer(serializers.ModelSerializer):
             model = Payment
             fields = '__all__' 
 
-class SampleFormSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SampleForm
-        fields = '__all__'
-
 class TestResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = TestResult
         fields = '__all__'
 
+class SampleFormSerializer(serializers.ModelSerializer):
+    parameters = TestResultSerializer(many=True,read_only=True)
+    class Meta:
+        model = SampleForm
+        fields = '__all__'
 
 class CommoditySerializer(serializers.ModelSerializer):
     test_result = TestResultSerializer(many=True,read_only=True)
