@@ -2,7 +2,11 @@ import os
 from django.conf import settings
 from django.http import HttpResponse
 from rest_framework import views
-import npttf2utf
+try:
+    import npttf2utf
+except:
+    print("Please install npttf2utf")
+    
 from django.conf import settings
 
 file_path = os.path.join(settings.STATIC_ROOT, "preeti_unicode_map/map.json")
