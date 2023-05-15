@@ -9,15 +9,17 @@ from .pagination import MyLimitOffsetPagination
 from rest_framework.response import Response
 from .custompermission import MyPermission
 from rest_framework import status
-from rest_framework.filters import OrderingFilter
+from rest_framework.filters import OrderingFilter,SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
 class SampleFormHasParameterViewSet(viewsets.ModelViewSet):
     queryset = SampleFormHasParameter.objects.all()
     serializer_class = SampleFormHasParameterSerializer
-    filter_backends = [DjangoFilterBackend,OrderingFilter]
-    filterset_fields = ['id']
+    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    search_fields = ['status','sample_form']
+    filterset_fields = ['status','form_available','analyst_user','sample_form','Commodity']
     ordering_fields = ['id']
+    
     # authentication_classes = [JWTAuthentication]
     # permission_classes = [IsAuthenticated]
     pagination_class = MyLimitOffsetPagination
