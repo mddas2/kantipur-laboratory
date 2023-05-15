@@ -79,6 +79,30 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     # authentication_classes = [JWTAuthentication]
     # permission_classes = [IsAuthenticated]
     pagination_class = MyLimitOffsetPagination
+
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, *args, **kwargs)
+        
+        # Add extra response data for list action
+        extra_data = {
+            "extra_field": "Extra value for list",
+            "another_field": "Another value for list"
+        }
+
+        # response.data.update(extra_data)
+        return response
+
+    def retrieve(self, request, *args, **kwargs):
+        response = super().retrieve(request, *args, **kwargs)
+        
+        # Add extra response data for retrieve action
+        extra_data = {
+            "extra_field": "Extra value for retrieve",
+            "another_field": "Another value for retrieve"
+        }
+        # response.data.update(extra_data)
+        return response
+    
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
