@@ -49,7 +49,7 @@ class SampleForm(models.Model):#ClientRequest
     language = models.CharField(max_length=10)
     note = models.TextField()
     commodity_id = models.IntegerField(null=True)
-     
+    supervisor_user = models.ManyToManyField(CustomUser, related_name="sample_has_parameters")
     parameters = models.ManyToManyField(TestResult, related_name="sample_form")
 
     status_choices = (
@@ -84,7 +84,6 @@ class SampleFormHasParameter(models.Model):#sample form has parameter and parame
 
     analyst_user = models.EmailField(max_length=100,null=True)
     # supervisor_user = models.EmailField(max_length=100,null=True)
-    supervisor_user = models.ManyToManyField(CustomUser, related_name="sample_has_parameters")
     
     parameter = models.ManyToManyField(TestResult, related_name="sample_has_parameters")
     
