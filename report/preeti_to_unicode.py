@@ -11,7 +11,7 @@ class PreetiToUniCode(views.APIView):
     def get(self, request):        
         print(file_path)
         mapper = npttf2utf.FontMapper(file_path)
-        unicode = mapper.map_to_unicode(';"gf}nf] sfkL pBf]u', from_font="c", unescape_html_input=False, escape_html_output=False)
+        unicode = mapper.map_to_unicode(';"gf}nf] sfkL pBf]u', from_font="Preeti", unescape_html_input=False, escape_html_output=False)
         # बकमानजवप            
         return HttpResponse(unicode)
 
