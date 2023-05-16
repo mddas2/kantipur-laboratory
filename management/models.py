@@ -80,7 +80,7 @@ class SampleForm(models.Model):#ClientRequest
     
 class SampleFormHasParameter(models.Model):#sample form has parameter and parameter for each parameter each analyst
     sample_form = models.ForeignKey(SampleForm,related_name="sample_has_parameter_analyst",on_delete=models.CASCADE,null=True)
-    Commodity = models.ForeignKey(Commodity,related_name="sample_has_parameter_analyst",on_delete=models.CASCADE,null=True)
+    commodity = models.ForeignKey(Commodity,related_name="sample_has_parameter_analyst",on_delete=models.CASCADE,null=True)
 
     analyst_user = models.EmailField(max_length=100,null=True)
     # supervisor_user = models.EmailField(max_length=100,null=True)
