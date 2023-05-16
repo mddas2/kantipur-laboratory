@@ -133,3 +133,14 @@ class Payment(models.Model):
     payment_receipt = models.FileField(upload_to='uploads/receipt',null=True)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
+
+
+class SampleFormParameterFormulaCalculate(models.Model):
+    sample = models.ForeignKey(SampleForm,related_name="result",on_delete=models.CASCADE,null=True)
+    commodity = models.OneToOneField(Commodity,on_delete=models.CASCADE,null=True)
+    parameter = models.OneToOneField(TestResult, on_delete=models.CASCADE,null=True)
+    result =  models.CharField(max_length=200,null=True)
+    remark = models.CharField(max_length=200,null=True)
+    created_date = models.DateTimeField(default=timezone.now)
+    updated_date = models.DateTimeField(default=timezone.now)
+
