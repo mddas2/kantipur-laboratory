@@ -15,6 +15,7 @@ router.register('sample-form-has-calculate-resuslt',formula_algorithm.SampleForm
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('formula-api/', formula_algorithm.FormulaApiCalculate.as_view(), name='custom_endpoint'),
+    path('get-formula-fields/', formula_algorithm.FormulaApiGetFields.as_view(), name='custom_endpoint'),
+    path('formula-calculate/', formula_algorithm.FormulaApiCalculate.as_view(), name='custom_endpoint'),
     path('import-excel-bulk/',import_excel.ImportExcel,name="ImportExcel")
 ]

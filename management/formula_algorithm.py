@@ -31,6 +31,17 @@ class Formula:
         pass
 
 class FormulaApiCalculate(APIView):
+ 
+    def post(self, request, format=None):
+
+        # Create the response data
+        response_data = {
+            'message': "formulla calculated !!!",            
+        }
+
+        return Response(response_data)
+
+class FormulaApiGetFields(APIView):
     def get(self, request, format=None):
         response_data = {
             'number_of_field': 3,
