@@ -43,38 +43,9 @@ class TestResultSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# class SampleFormReadSerializer(serializers.ModelSerializer):
-#     parameters = TestResultSerializer(many=True, read_only=True)
-
-#     class Meta:
-#         model = SampleForm
-#         fields = '__all__'
-
-#     def to_representation(self, instance):
-#         representation = super().to_representation(instance)
-
-#         sample_form_id = representation.get('id')
-
-#         # Add extra response data for parameters field
-#         parameters_data = representation.get('parameters', [])
-      
-#         for parameter_data in parameters_data:
-#             parameter_id = parameter_data.get('id')
-#             print(parameter_id)
-
-#             # Check if the parameter exists in SampleFormHasParameter model
-#             exists = SampleFormHasParameter.objects.filter(parameter=parameter_id, sample_form = sample_form_id).exists()
-#             print(exists)
-#             parameter_data['exist'] = exists
-
-#         representation['parameters'] = parameters_data
-#         return representation
-
-
-
-
-class SampleFormSerializer(serializers.ModelSerializer):
+class SampleFormReadSerializer(serializers.ModelSerializer):
     parameters = TestResultSerializer(many=True, read_only=True)
+
     class Meta:
         model = SampleForm
         fields = '__all__'
@@ -99,6 +70,13 @@ class SampleFormSerializer(serializers.ModelSerializer):
         representation['parameters'] = parameters_data
         return representation
 
+
+
+
+class SampleFormWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SampleForm
+        fields = '__all__'
 
 
 class CommoditySerializer(serializers.ModelSerializer):

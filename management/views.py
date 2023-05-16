@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from .serializers import ClientCategorySerializer, SampleFormSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer
+from .serializers import ClientCategorySerializer, SampleFormWriteSerializer,SampleFormReadSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer
 from .models import ClientCategory, SampleForm, Commodity, CommodityCategory,TestResult, Payment
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -71,7 +71,7 @@ class ClientCategoryViewSet(viewsets.ModelViewSet):
     
 class SampleFormViewSet(viewsets.ModelViewSet):
     queryset = SampleForm.objects.all()
-    serializer_class = SampleFormSerializer
+    serializer_class = SampleFormReadSerializer
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     search_fields = ['name','owner_user','status','form_available','supervisor_user']
     ordering_fields = ['name','id']
@@ -80,6 +80,11 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     # permission_classes = [IsAuthenticated]
     pagination_class = MyLimitOffsetPagination
 
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return SampleFormWriteSerializer
+        return super().get_serializer_class()
+    
     def list(self, request, *args, **kwargs):
         response = super().list(request, *args, **kwargs)
         
