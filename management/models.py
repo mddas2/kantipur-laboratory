@@ -136,10 +136,11 @@ class Payment(models.Model):
 
 
 class SampleFormParameterFormulaCalculate(models.Model):
-    sample = models.ForeignKey(SampleForm,related_name="result",on_delete=models.CASCADE,null=True)
+    sample_form = models.ForeignKey(SampleForm,related_name="result",on_delete=models.CASCADE,null=True)
     commodity = models.OneToOneField(Commodity,on_delete=models.CASCADE,null=True)
     parameter = models.OneToOneField(TestResult, on_delete=models.CASCADE,null=True)
-    result =  models.CharField(max_length=200,null=True)
+    user_input_result =  models.CharField(max_length=200,null=True)
+    auto_calculate_result = models.CharField(max_length=200,null=True)
     remark = models.CharField(max_length=200,null=True)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)

@@ -12,7 +12,9 @@ router.register('sample-form-has-parameter-assign-users', sample_form_has_parame
 router.register('sample-form-has-payment', views.PaymentViewSet, basename="PaymentViewSet")
 router.register('sample-form-has-calculate-resuslt',formula_algorithm.SampleFormParameterFormulaCalculateViewSet,basename="SampleFormParameterFormulaCalculateViewSet")
 
+
 urlpatterns = [
     path('', include(router.urls)),
+    path('formula-api/', formula_algorithm.FormulaApiCalculate.as_view(), name='custom_endpoint'),
     path('import-excel-bulk/',import_excel.ImportExcel,name="ImportExcel")
 ]

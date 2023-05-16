@@ -5,3 +5,9 @@ class SampleFormParameterFormulaCalculateReadSerializer(serializers.ModelSeriali
     class Meta:
         model = SampleFormParameterFormulaCalculate
         fields = '__all__'
+
+class FormulaApiCalculateSerializer(serializers.Serializer):
+    commodity_id = serializers.IntegerField()#serializers.CharField()
+    parameter_id = serializers.IntegerField()
+    sample_form_id = serializers.IntegerField()
+ 
