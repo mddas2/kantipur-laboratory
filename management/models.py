@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import UniqueConstraint
 from account.models import CustomUser
+from django.utils import timezone
 
 class ClientCategory(models.Model):
     name = models.CharField(max_length=255,unique=True)
@@ -77,6 +78,8 @@ class SampleForm(models.Model):#ClientRequest
     )
 
     form_available = models.CharField(max_length=100,choices=ROLE_CHOICES, blank=True, null=True)
+    created_date = models.DateTimeField(default=timezone.now)
+    updated_date = models.DateTimeField(default=timezone.now)
     
 class SampleFormHasParameter(models.Model):#sample form has parameter and parameter for each parameter each analyst
     sample_form = models.ForeignKey(SampleForm,related_name="sample_has_parameter_analyst",on_delete=models.CASCADE,null=True)
@@ -110,7 +113,9 @@ class SampleFormHasParameter(models.Model):#sample form has parameter and parame
         (USER, 'user'),
     )
 
-    form_available = models.CharField(max_length=100,choices=ROLE_CHOICES, blank=True, null=True)    
+    form_available = models.CharField(max_length=100,choices=ROLE_CHOICES, blank=True, null=True)
+    created_date = models.DateTimeField(default=timezone.now)
+    updated_date = models.DateTimeField(default=timezone.now)
 
     # class Meta:
     #     constraints = [
@@ -126,3 +131,5 @@ class Payment(models.Model):
     register_date = models.CharField(blank=True, null=True, max_length=155)
     ammount = models.IntegerField(blank=True, null=True)
     payment_receipt = models.FileField(upload_to='uploads/receipt',null=True)
+    created_date = models.DateTimeField(default=timezone.now)
+    updated_date = models.DateTimeField(default=timezone.now)
