@@ -45,6 +45,7 @@ class TestResultSerializer(serializers.ModelSerializer):
 
 class SampleFormReadSerializer(serializers.ModelSerializer):
     parameters = TestResultSerializer(many=True, read_only=True)
+    payment = PaymentSerializer(read_only=True)
 
     class Meta:
         model = SampleForm
