@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from .formula_serializers import SampleFormParameterFormulaCalculateReadSerializer,FormulaApiCalculateSerializer
+from .formula_serializers import SampleFormParameterFormulaCalculateReadSerializer,FormulaApiCalculateSerializer,FormulaApiGetFields
 from .models import SampleFormParameterFormulaCalculate
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -17,15 +17,46 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 class Formula:
-    def __init__(self,formula,parameter_id):
-        self.formula = formula
+    def __init__(self,commodity_id,parameter_id,sample_form_id):
+        self.commodity_id = commodity_id
         self.parameter_id = parameter_id
+        self.sample_form_id  = sample_form_id
+
+    def FullValidiate(formula_variable_fields_value):
+        return True
+    
+    def HalfValidiate():
+        return True
+    
+    def isParameterRelatedToCommodityAndSampleForm():
+        return True
 
     def GetNumberOfFields():
-        pass
+        return 
 
     def getProperFieldsResponse():
-        pass
+        response = {    
+            'fields':[
+                {
+                'name':"l",
+                'label':'Length',
+                'value':'',
+
+            },
+            {
+                'name':"b",
+                'label':'Breadth',
+                'value':'',
+
+            },
+             {
+                'name':"h",
+                'label':'Height',
+                'value':'',
+            }
+          ]
+        }
+        return response
 
     def calculate():
         pass
@@ -34,10 +65,27 @@ class FormulaApiCalculate(APIView):
  
     def post(self, request, format=None):
 
-        # Create the response data
-        response_data = {
-            'message': "formulla calculated !!!",            
-        }
+        serializer = FormulaApiCalculateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # Get validated data
+        commodity_id = serializer.validated_data['commodity_id']
+        parameter_id = serializer.validated_data['parameter_id']
+        sample_form_id = serializer.validated_data['sample_form_id']
+        formula_variable_fields_value = serializer.validated_data['formula_variable_fields_value']
+
+        formula_obj = Formula(commodity_id,parameter_id,sample_form_id)
+        if formula_obj.FullValidiate(formula_variable_fields_value) == True:
+            result = formula_obj.calculate(formula_variable_fields_value)
+            formula_obj.Save(result)
+            response_data = {
+                'message': "formula calculate !!!",            
+            }
+        else:
+            # Create the response data
+            response_data = {
+                'message': "some things went wrong",            
+            }
 
         return Response(response_data)
 
@@ -71,7 +119,7 @@ class FormulaApiGetFields(APIView):
     
     def post(self, request, format=None):
         # Deserialize the request data
-        serializer = FormulaApiCalculateSerializer(data=request.data)
+        serializer = FormulaApiGetFields(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         # Get validated data
@@ -79,34 +127,15 @@ class FormulaApiGetFields(APIView):
         parameter_id = serializer.validated_data['parameter_id']
         sample_form_id = serializer.validated_data['sample_form_id']
 
-        # Example calculation: Multiply the number by 10
-        result = int(commodity_id) * 10
-
-        # Create the response data
-        response_data = {
-            'number_of_field': 3,
-            'fields':[
-                {
-                'name':"l",
-                'label':'Length',
-                'value':'',
-
-            },
-            {
-                'name':"b",
-                'label':'Breadth',
-                'value':'',
-
-            },
-             {
-                'name':"h",
-                'label':'Height',
-                'value':'',
-
-             }
-         ]
-
-        }
+        formula_obj = Formula(commodity_id,parameter_id,sample_form_id)
+        if formula_obj.HalfValidiate()==True:
+            response = formula_obj.getProperFieldsResponse()
+            response_data = response
+        else:
+            response_data = {
+                'message':"Some thing went wrong"
+            }
+    
 
         return Response(response_data)
 
