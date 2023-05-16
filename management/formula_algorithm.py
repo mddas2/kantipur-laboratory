@@ -58,7 +58,10 @@ class Formula:
         }
         return response
 
-    def calculate():
+    def calculate(formula_variable_fields_value):
+        pass
+    
+    def Save(result):
         pass
 
 class FormulaApiCalculate(APIView):
@@ -120,21 +123,23 @@ class FormulaApiGetFields(APIView):
     def post(self, request, format=None):
         # Deserialize the request data
         serializer = FormulaApiGetFields(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        if serializer.is_valid():
 
-        # Get validated data
-        commodity_id = serializer.validated_data['commodity_id']
-        parameter_id = serializer.validated_data['parameter_id']
-        sample_form_id = serializer.validated_data['sample_form_id']
+            # Get validated data
+            commodity_id = serializer.validated_data['commodity_id']
+            parameter_id = serializer.validated_data['parameter_id']
+            sample_form_id = serializer.validated_data['sample_form_id']
 
-        formula_obj = Formula(commodity_id,parameter_id,sample_form_id)
-        if formula_obj.HalfValidiate()==True:
-            response = formula_obj.getProperFieldsResponse()
-            response_data = response
+            formula_obj = Formula(commodity_id,parameter_id,sample_form_id)
+            if formula_obj.HalfValidiate()==True:
+                response = formula_obj.getProperFieldsResponse()
+                response_data = response
+            else:
+                response_data = {
+                    'message':"Some thing went wrong"
+                }
         else:
-            response_data = {
-                'message':"Some thing went wrong"
-            }
+            return Response(serializer.errors, status=400)
     
 
         return Response(response_data)
