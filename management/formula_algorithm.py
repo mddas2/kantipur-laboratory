@@ -11,6 +11,7 @@ from .custompermission import MyPermission
 from rest_framework import status
 from rest_framework.filters import OrderingFilter,SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
+import re
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -41,37 +42,31 @@ class Formula:
             test_obj = TestResult.objects.get(id=self.parameter_id)
             return test_obj
         return False
+    
+    def getFormulaVariable(self,formula):
+        return re.findall(r'[A-Za-z]+', formula)
+    
+    def MakeProperResponse(self,variables,notations):
+        return [{"name": var, "label": var, "value": ""} for var in variables]
 
     def getProperFieldsResponse(self):
         query_obj = self.GetQueryObject()
         if query_obj != False:
             #do some things.
+            notations  = []
             formula =  query_obj.formula
-            print(formula)            
+            # print(formula)
+            variables = self.getFormulaVariable(formula)
+            response = self.MakeProperResponse(variables,notations)
+            # print(response)
         else:
+            response = {
+                    "error":"data not match",
+                    'status':status.HTTP_404_NOT_FOUND                    
+                }
+            # return Response(response, status=status.HTTP_404_NOT_FOUND)
             print("parameter or commidity id not related to sample form id.")
 
-        response = {    
-            'fields':[
-                {
-                'name':"l",
-                'label':'Length',
-                'value':'',
-
-            },
-            {
-                'name':"b",
-                'label':'Breadth',
-                'value':'',
-
-            },
-             {
-                'name':"h",
-                'label':'Height',
-                'value':'',
-            }
-          ]
-        }
         return response
 
     def calculate(self,formula_variable_fields_value):
