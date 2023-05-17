@@ -101,6 +101,8 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
         # print(obj.parameter)
         for parameter in parameter_data:
             formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(commodity_id=obj.commodity_id,parameter_id = parameter['id'],sample_form_id=obj.sample_form_id).first()
+            # print(obj.commodity_id)
+            # print(parameter['id'])
             parameter['result'] = formula_calculate.result if formula_calculate else "10"
         return parameter_data
     
