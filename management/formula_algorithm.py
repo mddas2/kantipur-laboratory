@@ -75,10 +75,10 @@ class Formula:
         return response
 
     def calculate(self,formula_variable_fields_value):
-        pass
+        return 4*5    
     
     def Save(self,result):
-        pass
+        
 
 class FormulaApiCalculate(APIView):
  
@@ -92,6 +92,8 @@ class FormulaApiCalculate(APIView):
         parameter_id = serializer.validated_data['parameter_id']
         sample_form_id = serializer.validated_data['sample_form_id']
         formula_variable_fields_value = serializer.validated_data['formula_variable_fields_value']
+
+        print(formula_variable_fields_value)
 
         formula_obj = Formula(commodity_id,parameter_id,sample_form_id)
         if formula_obj.FullValidiate(formula_variable_fields_value) == True:
