@@ -90,26 +90,24 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
 
 
     def get_parameter(self, obj):
-        print("hello")
         parameter_data = TestResultSerializer(obj.parameter, many=True).data
-        print("asdasd")
 
-        # Filter SampleFormParameterFormulaCalculate by commodity_id, parameter, and sample_form_id
-        formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(
-            commodity_id=obj.commodity_id,
-            parameter=obj.parameter,
-            sample_form_id=obj.sample_form_id
-        ).first()
+        # Extract the parameter identifiers from obj.parameter
+        # parameter_ids = [parameter['id'] for parameter in parameter_data]
+        # print(parameter_ids)
 
-
+        # Filter SampleFormParameterFormulaCalculate by commodity_id, parameter_ids, and sample_form_id
+     
+        # print(obj.parameter)
         for parameter in parameter_data:
-            print(parameter)
-            parameter['result'] = "manoj"
+            formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(commodity_id=obj.commodity_id,parameter_id = parameter['id'],sample_form_id=obj.sample_form_id).first()
 
+            parameter['result'] = formula_calculate.result if formula_calculate else None
         return parameter_data
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)
+        # print(instance.parameter.first().id)
         representation['parameter'] = self.get_parameter(instance)
         return representation
 
