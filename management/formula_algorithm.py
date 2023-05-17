@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from .formula_serializers import SampleFormParameterFormulaCalculateReadSerializer,FormulaApiCalculateSerializer,FormulaApiGetFieldSerializer
-from .models import SampleFormParameterFormulaCalculate
+from .models import SampleFormParameterFormulaCalculate,Commodity,TestResult,SampleForm
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -22,19 +22,35 @@ class Formula:
         self.parameter_id = parameter_id
         self.sample_form_id  = sample_form_id
 
-    def FullValidiate(formula_variable_fields_value):
+    def FullValidiate(self,formula_variable_fields_value):
         return True
     
-    def HalfValidiate():
+    def HalfValidiate(self):
         return True
     
-    def isParameterRelatedToCommodityAndSampleForm():
+    def isParameterRelatedToCommodityAndSampleForm(self):
         return True
 
-    def GetNumberOfFields():
+    def GetNumberOfFields(self):
         return 
+    
+    def GetQueryObject(self):
+        sample_form_obj = SampleForm.objects.get(id=self.sample_form_id)
+        commodity_id = sample_form_obj.commodity_id # if commodity is related to sample form commodity id
+        if commodity_id == self.sample_form_id and sample_form_obj.parameters.filter(id=self.parameter_id).exists():
+            test_obj = TestResult.objects.get(id=self.parameter_id)
+            return test_obj
+        return False
 
-    def getProperFieldsResponse():
+    def getProperFieldsResponse(self):
+        query_obj = self.GetQueryObject()
+        if query_obj != False:
+            #do some things.
+            formula =  query_obj.formula
+            print(formula)            
+        else:
+            print("parameter or commidity id not related to sample form id.")
+
         response = {    
             'fields':[
                 {
@@ -58,10 +74,10 @@ class Formula:
         }
         return response
 
-    def calculate(formula_variable_fields_value):
+    def calculate(self,formula_variable_fields_value):
         pass
     
-    def Save(result):
+    def Save(self,result):
         pass
 
 class FormulaApiCalculate(APIView):
@@ -123,7 +139,6 @@ class FormulaApiGetFields(APIView):
     def post(self, request, format=None):
         # Deserialize the request data
         serializer = FormulaApiGetFieldSerializer(data=request.data)
-        print(serializer)
         if serializer.is_valid():
             # Get validated data
             commodity_id = serializer.validated_data['commodity_id']

@@ -24,9 +24,10 @@ class FormulaApiGetFieldSerializer(serializers.Serializer):
 
         # Perform your validation logic
         if commodity_id and parameter_id and sample_form_id:
+            pass
             # Example validation condition
-            if commodity_id == 1 and parameter_id == 2 and sample_form_id == 3:
-                raise serializers.ValidationError("Invalid combination of commodity, parameter, and sample form.")
+            # if commodity_id == 1 and parameter_id == 2 and sample_form_id == 3:
+            #     raise serializers.ValidationError("Invalid combination of commodity, parameter, and sample form.")
 
         # Return the validated data
         return data
