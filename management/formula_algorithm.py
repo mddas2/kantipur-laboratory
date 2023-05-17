@@ -39,7 +39,7 @@ class Formula:
         # and sample_form_obj.parameters.filter(id=self.parameter_id).exists()
         sample_form_obj = SampleForm.objects.get(id=self.sample_form_id)
         commodity_id = sample_form_obj.commodity_id # if commodity is related to sample form commodity id
-        if commodity_id == self.sample_form_id:
+        if str(commodity_id) == self.sample_form_id:
             test_obj = TestResult.objects.get(id=self.parameter_id)
             return test_obj
         return False
