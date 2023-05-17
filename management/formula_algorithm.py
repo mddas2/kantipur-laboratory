@@ -77,8 +77,14 @@ class Formula:
     def calculate(self,formula_variable_fields_value):
         return 4*5    
     
-    def Save(self,result):
-        
+    def Save(self,result,input_fields_value):
+        data = {
+            'result' : result,
+            'input_fields_value' : input_fields_value,
+
+        }
+        obj_result,create = SampleFormParameterFormulaCalculate.objects.update_or_create(sample_form_id = self.sample_form_id, parameter_id = self.parameter_id, commodity_id = self.commodity_id,defaults=data)
+        return obj_result,create
 
 class FormulaApiCalculate(APIView):
  
@@ -98,10 +104,18 @@ class FormulaApiCalculate(APIView):
         formula_obj = Formula(commodity_id,parameter_id,sample_form_id)
         if formula_obj.FullValidiate(formula_variable_fields_value) == True:
             result = formula_obj.calculate(formula_variable_fields_value)
-            formula_obj.Save(result)
-            response_data = {
-                'message': "formula calculate !!!",            
-            }
+            object_result,is_create = formula_obj.Save(result,formula_variable_fields_value)
+            if is_create:
+                response_data = {
+                    'message': "formula calculate !!!",   
+                    'status':status.HTTP_200_OK  
+                }
+            else:
+                response_data = {
+                    'message': "formula can not calculate error",   
+                    'status':status.HTTP_404_NOT_FOUND    
+                }
+
         else:
             # Create the response data
             response_data = {
