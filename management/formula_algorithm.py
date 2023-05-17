@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from .formula_serializers import SampleFormParameterFormulaCalculateReadSerializer,FormulaApiCalculateSerializer,FormulaApiGetFields
+from .formula_serializers import SampleFormParameterFormulaCalculateReadSerializer,FormulaApiCalculateSerializer,FormulaApiGetFieldSerializer
 from .models import SampleFormParameterFormulaCalculate
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -122,9 +122,9 @@ class FormulaApiGetFields(APIView):
     
     def post(self, request, format=None):
         # Deserialize the request data
-        serializer = FormulaApiGetFields(data=request.data)
+        serializer = FormulaApiGetFieldSerializer(data=request.data)
+        print(serializer)
         if serializer.is_valid():
-
             # Get validated data
             commodity_id = serializer.validated_data['commodity_id']
             parameter_id = serializer.validated_data['parameter_id']
