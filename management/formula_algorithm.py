@@ -35,10 +35,11 @@ class Formula:
     def GetNumberOfFields(self):
         return 
     
-    def GetQueryObject(self):
+    def GetQueryObject(self):#sample-form:3,commidiy:10,parameter:119
+        # and sample_form_obj.parameters.filter(id=self.parameter_id).exists()
         sample_form_obj = SampleForm.objects.get(id=self.sample_form_id)
         commodity_id = sample_form_obj.commodity_id # if commodity is related to sample form commodity id
-        if commodity_id == self.sample_form_id and sample_form_obj.parameters.filter(id=self.parameter_id).exists():
+        if commodity_id == self.sample_form_id:
             test_obj = TestResult.objects.get(id=self.parameter_id)
             return test_obj
         return False
