@@ -1,4 +1,4 @@
-from .models import ClientCategory, SampleForm, Commodity, CommodityCategory , TestResult ,SampleFormHasParameter,Payment
+from .models import ClientCategory, SampleForm, Commodity, CommodityCategory , TestResult ,SampleFormHasParameter,Payment,SampleFormParameterFormulaCalculate
 from rest_framework import serializers
 
 class ClientCategorySerializer(serializers.ModelSerializer):
@@ -87,7 +87,31 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = SampleFormHasParameter
         fields = '__all__' 
+
+
+    def get_parameter(self, obj):
+        print("hello")
+        parameter_data = TestResultSerializer(obj.parameter, many=True).data
+        print("asdasd")
+
+        # Filter SampleFormParameterFormulaCalculate by commodity_id, parameter, and sample_form_id
+        formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(
+            commodity_id=obj.commodity_id,
+            parameter=obj.parameter,
+            sample_form_id=obj.sample_form_id
+        ).first()
+
+
+        for parameter in parameter_data:
+            print(parameter)
+            parameter['result'] = "manoj"
+
+        return parameter_data
     
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['parameter'] = self.get_parameter(instance)
+        return representation
 
 class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
     class Meta:
