@@ -48,7 +48,10 @@ class Formula:
         return re.findall(r'[A-Za-z]+', formula)
     
     def MakeProperResponse(self,variables,notations):
-        return [{"name": var, "label": var, "value": ""} for var in variables]
+        field =  [{"name": var, "label": var, "value": ""} for var in variables]
+        return {
+            'fields' : field
+        }
 
     def getProperFieldsResponse(self):
         query_obj = self.GetQueryObject()
@@ -59,6 +62,7 @@ class Formula:
             # print(formula)
             variables = self.getFormulaVariable(formula)
             response = self.MakeProperResponse(variables,notations)
+            return response
             # print(response)
         else:
             response = {
