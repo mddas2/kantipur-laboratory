@@ -100,7 +100,7 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
      
         # print(obj.parameter)
         for parameter in parameter_data:
-            formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(sample_form=obj.sample_form_id).first()
+            formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(parameter = parameter['id'],sample_form=obj.sample_form_id).first()
             # formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(commodity=obj.commodity_id,parameter = parameter['id'],sample_form=obj.sample_form_id).first()
             # print(obj.commodity_id)
             # print(parameter['id'])
