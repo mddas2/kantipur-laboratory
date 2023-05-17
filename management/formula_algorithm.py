@@ -94,9 +94,9 @@ class FormulaApiCalculate(APIView):
         serializer.is_valid(raise_exception=True)
 
         # Get validated data
-        commodity_id = serializer.validated_data['commodity_id']
-        parameter_id = serializer.validated_data['parameter_id']
-        sample_form_id = serializer.validated_data['sample_form_id']
+        commodity_id = serializer.validated_data['commodity']
+        parameter_id = serializer.validated_data['parameter']
+        sample_form_id = serializer.validated_data['sample_form']
         formula_variable_fields_value = serializer.validated_data['formula_variable_fields_value']
 
         print(formula_variable_fields_value)

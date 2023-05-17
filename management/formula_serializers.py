@@ -7,9 +7,9 @@ class SampleFormParameterFormulaCalculateReadSerializer(serializers.ModelSeriali
         fields = '__all__'
 
 class FormulaApiCalculateSerializer(serializers.Serializer):
-    commodity_id = serializers.IntegerField()#serializers.CharField()
-    parameter_id = serializers.IntegerField()
-    sample_form_id = serializers.IntegerField()
+    commodity = serializers.IntegerField()#serializers.CharField()
+    parameter = serializers.IntegerField()
+    sample_form = serializers.IntegerField()
     formula_variable_fields_value = serializers.CharField()
 
 class FormulaApiGetFieldSerializer(serializers.Serializer):
