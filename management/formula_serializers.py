@@ -10,7 +10,7 @@ class FormulaApiCalculateSerializer(serializers.Serializer):
     commodity = serializers.IntegerField()#serializers.CharField()
     parameter = serializers.IntegerField()
     sample_form = serializers.IntegerField()
-    # formula_variable_fields_value = serializers.CharField()
+    formula_variable_fields_value = serializers.CharField()
 
 class FormulaApiGetFieldSerializer(serializers.Serializer):
     commodity_id = serializers.IntegerField()
