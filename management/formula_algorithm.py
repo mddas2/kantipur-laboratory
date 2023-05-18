@@ -104,7 +104,7 @@ class FormulaApiCalculate(APIView):
         if formula_obj.FullValidiate(formula_variable_fields_value) == True:
             result = formula_obj.calculate(formula_variable_fields_value)
             object_result,is_create = formula_obj.Save(result,formula_variable_fields_value)
-            if is_create:
+            if object_result:
                 response_data = {
                     'message': "formula calculate !!!",   
                     'status':status.HTTP_200_OK  ,
