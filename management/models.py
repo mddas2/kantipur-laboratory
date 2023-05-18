@@ -141,7 +141,7 @@ class SampleFormParameterFormulaCalculate(models.Model):
     result =  models.IntegerField(null=True)
     # input_fields_value = models.CharField(max_length=2000,null=True)
     # auto_calculate_result = models.CharField(max_length=200,null=True)
-    # remark = models.CharField(max_length=200,null=True)
+    remark = models.CharField(max_length=200,null=True)
     # created_date = models.DateTimeField(default=timezone.now)
     # updated_date = models.DateTimeField(default=timezone.now)
 
