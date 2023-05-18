@@ -75,7 +75,12 @@ class Formula:
         return response
 
     def calculate(self,formula_variable_fields_value):
-        return 4*5    
+        import json
+        query_obj = self.GetQueryObject()
+        formula = query_obj.formula
+        json_values = json.loads(formula_variable_fields_value)
+        result = eval(formula,json_values) 
+        return result    
     
     def Save(self,result,input_fields_value):
         data = {

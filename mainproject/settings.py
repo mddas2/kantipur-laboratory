@@ -120,12 +120,12 @@ TEMPLATES = [
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db2.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db2.sqlite3',
+#     }
+# }
 
 # DATABASES = {
 #     'default': {
@@ -141,19 +141,19 @@ DATABASES = {
 #     }
 # }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'kantggjb_lims',
-#         'USER': 'kantggjb_kantggjb',
-#         'PASSWORD':'0(r!?QcfaRz1',
-#         'HOST':'localhost',
-#         'PORT': '3306',
-#         'OPTIONS': {
-#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
-#         }
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'lims',
+        'USER': 'root',
+        'PASSWORD':'',
+        'HOST':'localhost',
+        'PORT': '3306',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+        }
+    }
+}
 
 
 # Password validations
