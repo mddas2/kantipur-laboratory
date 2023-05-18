@@ -107,7 +107,8 @@ class FormulaApiCalculate(APIView):
             if is_create:
                 response_data = {
                     'message': "formula calculate !!!",   
-                    'status':status.HTTP_200_OK  
+                    'status':status.HTTP_200_OK  ,
+                    'result':object_result,
                 }
             else:
                 response_data = {
