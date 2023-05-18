@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import UniqueConstraint
-from account.models import CustomUser
+# from account.models import CustomUser
 from django.utils import timezone
 
 class ClientCategory(models.Model):
@@ -50,7 +50,7 @@ class SampleForm(models.Model):#ClientRequest
     language = models.CharField(max_length=10)
     note = models.TextField()
     commodity_id = models.IntegerField(null=True)
-    supervisor_user = models.ManyToManyField(CustomUser, related_name="sample_has_parameters",default=None)
+    # supervisor_user = models.ManyToManyField(CustomUser, related_name="sample_has_parameters",default=None)
     parameters = models.ManyToManyField(TestResult, related_name="sample_form")
 
     status_choices = (
@@ -136,7 +136,7 @@ class Payment(models.Model):
 
 class SampleFormParameterFormulaCalculate(models.Model):
     sample_form = models.ForeignKey(SampleForm,related_name="result",on_delete=models.CASCADE,null=True)
-    # commodity = models.ForeignKey(Commodity,on_delete=models.CASCADE,null=True)
+    commodity = models.ForeignKey(Commodity,on_delete=models.CASCADE,null=True)
     # parameter = models.OneToOneField(TestResult, on_delete=models.CASCADE,null=True)
     # result =  models.IntegerField(null=True)
     # input_fields_value = models.CharField(max_length=2000,null=True)
