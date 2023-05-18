@@ -9,7 +9,7 @@ def-env activate-virtualenv [] {
     }
 
     let is_windows = ((sys).host.name | str downcase) == 'windows'
-    let virtual_env = 'C:\Users\md\Desktop\kantipur\virtualenv'
+    let virtual_env = 'C:\Users\md\Desktop\gitlab\lims\lims-backend\virtualenv'
     let bin = 'Scripts'
     let path_sep = ';'
     let path_name = if $is_windows {
@@ -89,4 +89,4 @@ def-env activate-virtualenv [] {
 activate-virtualenv
 
 alias pydoc = python -m pydoc
-alias deactivate = source 'C:\Users\md\Desktop\kantipur\virtualenv\Scripts\deactivate.nu'
+alias deactivate = source 'C:\Users\md\Desktop\gitlab\lims\lims-backend\virtualenv\Scripts\deactivate.nu'

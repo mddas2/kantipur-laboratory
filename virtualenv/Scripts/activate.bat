@@ -1,6 +1,6 @@
 @echo off
 
-set "VIRTUAL_ENV=C:\Users\md\Desktop\kantipur\virtualenv"
+set "VIRTUAL_ENV=C:\Users\md\Desktop\gitlab\lims\lims-backend\virtualenv"
 
 if defined _OLD_VIRTUAL_PROMPT (
     set "PROMPT=%_OLD_VIRTUAL_PROMPT%"
