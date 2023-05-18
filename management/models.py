@@ -135,6 +135,7 @@ class Payment(models.Model):
     updated_date = models.DateTimeField(default=timezone.now)
 
 class SampleFormParameterFormulaCalculate(models.Model):
+    pass
     # sample_form = models.ForeignKey(SampleForm,related_name="result",on_delete=models.CASCADE,null=True)
     # commodity = models.ForeignKey(Commodity,on_delete=models.CASCADE,null=True)
     # parameter = models.OneToOneField(TestResult, on_delete=models.CASCADE,null=True)
