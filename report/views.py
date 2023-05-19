@@ -12,23 +12,23 @@ from django.shortcuts import render
 class ReportDownload(views.APIView):
     def get(self, request,report_name,report_type,report_lang):
         if report_name == "admin-list":
-            data =ReportAdminList(report_type,report_lang)
+            response =ReportAdminList(report_type,report_lang)
+            return data
+            # return data
         elif report_name == "users-list":
-            data = ReportUserList(report_type,report_lang)
+            response = ReportUserList(report_type,report_lang)
         elif report_name == "user-with-sample-form":
-            data = ReportUserSampleForm(report_type,report_lang)
+            response = ReportUserSampleForm(report_type,report_lang)
         elif report_name == "sample-form":
-            data = ReportSampleForm(report_type,report_lang)
+            response = ReportSampleForm(report_type,report_lang)
         elif report_name == "commodity":
-            data = ReportCommodity(report_type,report_lang)
+            response = ReportCommodity(report_type,report_lang)
         elif report_name == "parameter":
-            data = ReportParameter(report_type,report_lang)
+            response = ReportParameter(report_type,report_lang)
         else:
             data = {
                 'error':"not match"
             }
             data = json.dumps(data)
-        return HttpResponse(data)
-        return HttpResponse(report_name+":"+report_type+":"+report_lang)
-        return render(request, 'report.html')
-       
+            return HttpResponse(data)
+            
