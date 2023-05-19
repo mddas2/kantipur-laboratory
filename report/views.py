@@ -13,18 +13,23 @@ class ReportDownload(views.APIView):
     def get(self, request,report_name,report_type,report_lang):
         if report_name == "admin-list":
             response =ReportAdminList(report_type,report_lang)
-            return data
+            return response
             # return data
         elif report_name == "users-list":
             response = ReportUserList(report_type,report_lang)
+            return response
         elif report_name == "user-with-sample-form":
             response = ReportUserSampleForm(report_type,report_lang)
+            return response
         elif report_name == "sample-form":
             response = ReportSampleForm(report_type,report_lang)
+            return response
         elif report_name == "commodity":
             response = ReportCommodity(report_type,report_lang)
+            return response
         elif report_name == "parameter":
             response = ReportParameter(report_type,report_lang)
+            return response
         else:
             data = {
                 'error':"not match"
