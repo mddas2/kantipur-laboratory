@@ -1,6 +1,7 @@
 import json
 from account.models import CustomUser
-from . serializers import CustomUserSerializer
+from management.models import SampleForm,Commodity,SampleFormHasParameter
+from . serializers import CustomUserSerializer,SampleFormOnlySerializer,CommodityOnlySerializer
 from django.http import HttpResponse
 import pandas as pd
 def ReportAdminList(report_type,report_lang):
@@ -36,8 +37,8 @@ def ReportUserList(report_type,report_lang):
     return response
 
 def ReportUserSampleForm(report_type,report_lang):
-    query = CustomUser.objects.all()
-    serializer_data = CustomUserSerializer(query, many=True)
+    query = SampleForm.objects.all()
+    serializer_data = SampleFormOnlySerializer(query, many=True)
     serialized_data = serializer_data.data
     df = pd.DataFrame.from_records(serialized_data)
 
@@ -52,8 +53,8 @@ def ReportUserSampleForm(report_type,report_lang):
     return response
 
 def ReportSampleForm(report_type,report_lang):
-    query = CustomUser.objects.all()
-    serializer_data = CustomUserSerializer(query, many=True)
+    query = SampleForm.objects.all()
+    serializer_data = SampleFormOnlySerializer(query, many=True)
     serialized_data = serializer_data.data
     df = pd.DataFrame.from_records(serialized_data)
 
@@ -68,8 +69,8 @@ def ReportSampleForm(report_type,report_lang):
     return response
 
 def ReportCommodity(report_type,report_lang):
-    query = CustomUser.objects.all()
-    serializer_data = CustomUserSerializer(query, many=True)
+    query = Commodity.objects.all()
+    serializer_data = CommodityOnlySerializer(query, many=True)
     serialized_data = serializer_data.data
     df = pd.DataFrame.from_records(serialized_data)
 

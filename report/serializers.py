@@ -18,7 +18,7 @@ class TestResultSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class SampleFormReadSerializer(serializers.ModelSerializer):
+class SampleFormManySerializer(serializers.ModelSerializer):
     parameters = TestResultSerializer(many=True, read_only=True)
     payment = PaymentSerializer(read_only=True)
 
@@ -43,18 +43,18 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
         representation['parameters'] = parameters_data
         return representation
 
-class SampleFormWriteSerializer(serializers.ModelSerializer):
+class SampleFormOnlySerializer(serializers.ModelSerializer):
     class Meta:
         model = SampleForm
         fields = '__all__'
 
-class CommoditySerializer(serializers.ModelSerializer):
+class CommodityManySerializer(serializers.ModelSerializer):
     test_result = TestResultSerializer(many=True,read_only=True)
     class Meta:
         model = Commodity
         fields = '__all__'
 
-class CommodityWriteSerializer(serializers.ModelSerializer):
+class CommodityOnlySerializer(serializers.ModelSerializer):
     class Meta:
         model = Commodity
         fields = '__all__'
@@ -72,14 +72,14 @@ class CommodityCategorySerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('name test should not be there error')
         return data
     
-    commodity = CommoditySerializer(many=True,read_only=True)
+    commodity = CommodityOnlySerializer(many=True,read_only=True)
     class Meta:
         model = CommodityCategory
         fields = '__all__'
 
 class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
-    sample_form = SampleFormWriteSerializer(read_only=True)
-    commodity = CommodityWriteSerializer(read_only=True)
+    sample_form = SampleFormOnlySerializer(read_only=True)
+    commodity = CommodityOnlySerializer(read_only=True)
     parameter = TestResultSerializer(many=True,read_only=True)
     class Meta:
         model = SampleFormHasParameter
@@ -114,26 +114,6 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = SampleFormHasParameter
         fields = '__all__' 
-    
-    def validate(self, attrs):
-        sample_form = attrs.get('sample_form')
-        analyst_user = attrs.get('analyst_user')
-        parameter = attrs.get('parameter')
-
-        action = self.context['view'].action
-
-        print("vlidation...")
-        print(analyst_user)
-        # Check uniqueness of analyst_user for the sample_form
-        # if SampleFormHasParameter.objects.filter(sample_form=sample_form, analyst_user=analyst_user).exists():
-        #     raise serializers.ValidationError('A SampleFormHasParameter with the same sample_form and analyst_user already exists.')
-
-        # # Check uniqueness of parameter for the sample_form
-        # for param in parameter:
-        #     if SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param).exists():
-        #         raise serializers.ValidationError('A SampleFormHasParameter with the same sample_form and parameter already exists.')
-
-        return attrs
 
 class CustomUserSerializer(serializers.ModelSerializer):
     # client_category = ClientCategorySerializer(read_only=True)
