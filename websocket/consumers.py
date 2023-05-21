@@ -13,6 +13,12 @@ class MySyncConsumer(SyncConsumer):
         print("websocket Received...",event) 
         print("message is ", event['text'])
     
+    def websocket_send(self,message):
+        self.send({
+            'type': 'websocket.send',
+            'text': message
+        })
+    
     def websocket_disconnect(self,event): #this handler is called when either connection to the client is lost , either from client closing the connection , the server closing the connection or connection lost.
         print("websocket disconnecte...",event)
         raise StopConsumer()
