@@ -4,6 +4,7 @@ from management.models import SampleForm,Commodity,SampleFormHasParameter
 from . serializers import CustomUserSerializer,SampleFormOnlySerializer,CommodityOnlySerializer
 from django.http import HttpResponse
 import pandas as pd
+# https://limsserver.kantipurinfotech.com.np/api/report/get-report/report_name/report_type/report_lang/
 def ReportAdminList(report_type,report_lang):
     query = CustomUser.objects.all()
     serializer_data = CustomUserSerializer(query, many=True)
@@ -85,8 +86,8 @@ def ReportCommodity(report_type,report_lang):
     return response
 
 def ReportParameter(report_type,report_lang):
-    query = CustomUser.objects.all()
-    serializer_data = CustomUserSerializer(query, many=True)
+    query = Commodity.objects.all()
+    serializer_data = CommodityOnlySerializer(query, many=True)
     serialized_data = serializer_data.data
     df = pd.DataFrame.from_records(serialized_data)
 

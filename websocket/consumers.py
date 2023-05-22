@@ -28,9 +28,14 @@ class MySyncConsumer(SyncConsumer):
 from channels.consumer import AsyncConsumer
 
 class MyAyncConsumer(AsyncConsumer):
+    def __init__(self, scope):
+        super().__init__(scope)
+        self.email = None
     
     async def websocket_connect(self,event): #this handler is called when client initially opens a connection and is about to finish handshake.
         print("websocket connected",event)
+        self.email = self.scope['url_route']['kwargs'].get('email')  # Retrieve email from URL route parameters
+        print(f"WebSocket connected for email: {self.email}")
         await self.send({
             'type' : 'websocket.accept'
         })
