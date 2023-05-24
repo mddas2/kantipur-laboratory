@@ -26,7 +26,7 @@ class EmailCheckView(generics.GenericAPIView):
                 "reset-password",
                 kwargs={"encoded_pk":encoded_pk, "token":token}
             )
-            reset_url = f"http://127.0.0.1:8000{reset_url}"
+            reset_url = f"https://lims-home.netify.app/password-reset/{reset_url}"
             email = user.email
             
             sendMail(email, reset_url)
