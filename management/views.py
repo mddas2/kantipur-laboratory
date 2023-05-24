@@ -159,10 +159,10 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     
 class CommodityViewSet(viewsets.ModelViewSet):
     queryset = Commodity.objects.all()
-    serializer_class = CommoditySerializer
-    # filter_backends = [SearchFilter]
-    # search_fields = ['name']
-    filter_backends = [DjangoFilterBackend]
+    serializer_class = CommoditySerializer   
+    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    ordering_fields = ['name','id']
+    search_fields = ['name']
     filterset_fields = ['name','category_id']
     # authentication_classes = [JWTAuthentication]
     # permission_classes = [IsAuthenticated]
