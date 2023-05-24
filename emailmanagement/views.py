@@ -22,11 +22,11 @@ class EmailCheckView(generics.GenericAPIView):
             encoded_pk = urlsafe_base64_encode(force_bytes(user.pk))
             token = PasswordResetTokenGenerator().make_token(user)
             
-            reset_url = reverse(
-                "reset-password",
-                kwargs={"encoded_pk":encoded_pk, "token":token}
-            )
-            reset_url = f"https://lims-home.netify.app/password-reset/{reset_url}"
+            # reset_url = reverse(
+            #     "reset-password",
+            #     kwargs={"encoded_pk":encoded_pk, "token":token}
+            # )
+            reset_url = f"https://lims-home.netify.app/password-reset?pk={encoded_pk}&token={token}"
             email = user.email
             
             sendMail(email, reset_url)
