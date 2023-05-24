@@ -15,8 +15,10 @@ def NavigationPreSave(sender, instance, **kwargs):
 def ClientCategoryPreSave(sender, instance, **kwargs):
     from channels.layers import get_channel_layer
     from asgiref.sync import async_to_sync
+
     notification_message = "A client Category has created"
-    print(notification_message)
+    path = "/dashboard/settings"
+    
 
     # Send the notification message to the user's channel
     channel_layer = get_channel_layer()
