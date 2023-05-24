@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'websocket',
     'django_filters',
+    'emailmanagement',
 ]
 ASGI_APPLICATION = 'mainproject.asgi.application'
 # CHANNEL_LAYERS = {

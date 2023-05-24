@@ -42,6 +42,7 @@ urlpatterns = [
     path('api/report/', include('report.urls')), 
     path('api/account/', include('account.urls')),
     path('api/', include('management.urls')), 
+    path('email-management/', include('emailmanagement.urls')), 
     
     
     # path('swagger(?P<format>\.json|\.yaml)', schema_view.without_ui(cache_timeout=0), name='schema-json'),
