@@ -101,7 +101,7 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
             # formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(commodity=obj.commodity_id,parameter = parameter['id'],sample_form=obj.sample_form_id).first()
             # print(obj.commodity_id)
             # print(parameter['id'])
-            parameter['result'] = formula_calculate.result if formula_calculate else "10"
+            parameter['result'] = formula_calculate.result if formula_calculate else "-"
         return parameter_data
     
     def to_representation(self, instance):
@@ -121,6 +121,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
         parameter = attrs.get('parameter')
 
         action = self.context['view'].action
+        print(action)
 
         print("vlidation...")
         print(analyst_user)
@@ -129,9 +130,21 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
         #     raise serializers.ValidationError('A SampleFormHasParameter with the same sample_form and analyst_user already exists.')
 
         # # Check uniqueness of parameter for the sample_form
-        for param in parameter:
-            # print(param)
-            if SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param).exists():
-                raise serializers.ValidationError('A SampleFormHasParameter with the same sample_form and parameter already exists.')
+        if action == "create":
+            for param in parameter:
+                # print(param)
+                if SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param).exists():
+                    # obj = SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param)
+                    raise serializers.ValidationError('A SampleFormHasParameter with the same sample_form and parameter already exists.')
+        elif action == 'update' or action == 'partial_update':
+            instance_id = self.instance.id 
+            sample_form_has_parameter_obj = SampleFormHasParameter.objects.get(id)
+            for param in parameter:
+                # print(param)
+                if param in sample_form_has_parameter_obj: #if try to update same parameter as previous stored then dod nothing
+                    pass
+                elif SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param).exists(): #if try to update and not same as previous parameter then check already exist parameter.if exist then raise error
+                    raise serializers.ValidationError('A SampleFormHasParameter with the same sample_form and parameter already exists.')
+                   
 
         return attrs
