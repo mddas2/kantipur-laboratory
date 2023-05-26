@@ -129,8 +129,9 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
         #     raise serializers.ValidationError('A SampleFormHasParameter with the same sample_form and analyst_user already exists.')
 
         # # Check uniqueness of parameter for the sample_form
-        # for param in parameter:
-        #     if SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param).exists():
-        #         raise serializers.ValidationError('A SampleFormHasParameter with the same sample_form and parameter already exists.')
+        for param in parameter:
+            # print(param)
+            if SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param).exists():
+                raise serializers.ValidationError('A SampleFormHasParameter with the same sample_form and parameter already exists.')
 
         return attrs
