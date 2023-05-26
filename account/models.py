@@ -24,6 +24,7 @@ class CustomUser(AbstractUser):
     SUPERVISOR = 3
     ANALYST = 4
     USER = 5
+    VERIFIER = 6
 
     ROLE_CHOICES = (
         (SUPERADMIN, 'SUPERADMIN'),
@@ -31,6 +32,7 @@ class CustomUser(AbstractUser):
         (SUPERVISOR, 'SUPERVISOR'),
         (ANALYST, 'ANALYST'),
         (USER, 'USER'),
+        (VERIFIER, 'VERIFIER'),
     )
     
     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, blank=True, null=True)
