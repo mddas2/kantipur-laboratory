@@ -5,7 +5,12 @@ from account.models import CustomUser
 from django.contrib.auth.hashers import make_password
 
 class CustomUserSerializer(serializers.ModelSerializer):
- 
+    # client_category = ClientCategorySerializer(read_only=True)
+    
+    def validate_password(self,value):#field level validation
+        if len(value) < 2:
+            raise serializers.ValidationError('Password must be 8 digit')
+        return make_password(value)   
     
     class Meta:
         model = CustomUser
@@ -40,9 +45,3 @@ class GroupNamesSerializer(serializers.Serializer):
 class PermissionGroupSerializer(serializers.Serializer):
     permission_id = serializers.IntegerField()
     groups = serializers.DictField(child=serializers.BooleanField())
-
-
-
- 
-
-
