@@ -12,7 +12,6 @@ router.register('sample-form-has-parameter-assign-users', sample_form_has_parame
 router.register('sample-form-has-payment', views.PaymentViewSet, basename="PaymentViewSet")
 router.register('sample-form-has-calculate-result',formula_algorithm.SampleFormParameterFormulaCalculateViewSet,basename="SampleFormParameterFormulaCalculateViewSet")
 
-
 urlpatterns = [
     path('', include(router.urls)),
     path('get-formula-fields/', formula_algorithm.FormulaApiGetFields.as_view(), name='custom_endpoint'),

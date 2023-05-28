@@ -60,7 +60,6 @@ class SampleForm(models.Model):#ClientRequest
         ('processing', 'processing'),
         ('completed', 'completed'),
         ('reject', 'reject'),
-        
     )
     status = models.CharField(choices=status_choices, blank=True, null=True, max_length=155)
 
