@@ -125,17 +125,15 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
 
         print("vlidation...")
         print(analyst_user)
-        # Check uniqueness of analyst_user for the sample_form
-        # if SampleFormHasParameter.objects.filter(sample_form=sample_form, analyst_user=analyst_user).exists():
-        #     raise serializers.ValidationError('A SampleFormHasParameter with the same sample_form and analyst_user already exists.')
-
-        # # Check uniqueness of parameter for the sample_form
+    
+        print("SAdd")
         if action == "create":
             for param in parameter:
                 # print(param)
                 if SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param).exists():
                     # obj = SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param)
-                    raise serializers.ValidationError('A SampleFormHasParameter with the same sample_form and parameter already exists.')
+                    print("creating")
+                    raise serializers.ValidationError('A SampleFormHasParameter with the same sample_form and parameter already exists(create)')
         elif action == 'update' or action == 'partial_update':
             instance_id = self.instance.id 
             print(str(instance_id)+" instanse id")
@@ -146,7 +144,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                     print("trying to update with same parameter")
                     pass
                 elif SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param).exists(): #if try to update and not same as previous parameter then check already exist parameter.if exist then raise error
-                    raise serializers.ValidationError('A SampleFormHasParameter with the same sample_form and parameter already exists.')
+                    raise serializers.ValidationError('A SampleFormHasParameter with the same sample_form and parameter already exists(update)')
                    
 
         return attrs
