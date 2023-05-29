@@ -51,7 +51,7 @@ class SampleForm(models.Model):#ClientRequest
     note = models.TextField()
     commodity_id = models.IntegerField(null=True)
     # supervisor_user = models.ManyToManyField(CustomUser, related_name="sample_has_parameters",default=None)
-    supervisor_user = models.OneToOneField(CustomUser, related_name="sample_has_parameters",default=None,on_delete=models.SET_NULL,null=True)
+    supervisor_user = models.ForeignKey(CustomUser, related_name="sample_has_parameters",default=None,on_delete=models.SET_NULL,null=True)
     parameters = models.ManyToManyField(TestResult, related_name="sample_form")
 
     status_choices = (
