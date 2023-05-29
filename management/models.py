@@ -49,7 +49,7 @@ class SampleForm(models.Model):#ClientRequest
     
     language = models.CharField(max_length=10)
     note = models.TextField()
-    commodity_id = models.ForeignKey(Commodity,related_name="sample_form",on_delete=models.CASCADE,default=None)
+    commodity = models.ForeignKey(Commodity,related_name="sample_form",on_delete=models.CASCADE,default=None)
     supervisor_user = models.ForeignKey(CustomUser, related_name="sample_has_parameters",default=None,on_delete=models.SET_NULL,null=True)
     parameters = models.ManyToManyField(TestResult, related_name="sample_form")
 
