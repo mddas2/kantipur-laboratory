@@ -18,7 +18,7 @@ from .report_download import ReportAdminList,ReportParameter,ReportCommodity,Rep
 #report_name:['admin-list','users-list','user-with-sample-form','sample-form','commodity','parameter']
 class SampleFormHasAnalystAPIView(views.APIView):
     def get(self, request, format=None):
-        queryset = SampleForm.objects.all()
+        queryset = SampleForm.objects.filter(supervisor_user = request.user.id)
         serializer = SampleFormHasAnalystSerializer(queryset, many=True)
         return Response(serializer.data)
 
