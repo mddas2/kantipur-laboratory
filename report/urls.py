@@ -6,6 +6,7 @@ from rest_framework.routers import DefaultRouter
 
 urlpatterns = [   
     path('sample-form-has-assigned-analyst/', views.SampleFormHasAnalystAPIView.as_view()),
+    path('sample-form-has-parameter-has-assigned-analyst/<int:sample_form_id>/', views.ParameterHasAssignedAnalyst.as_view()),
 
     path('get-report/<str:report_name>/<str:report_type>/<str:report_lang>/', views.ReportDownload.as_view()),
     path('preeti-to-unicode', preeti_to_unicode.PreetiToUniCode.as_view()),

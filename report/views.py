@@ -7,6 +7,7 @@ from management.models import SampleForm
 from rest_framework import viewsets,status
 from rest_framework.response import Response
 from . sample_form_serializers import SampleFormHasAnalystSerializer
+from . parameter_has_assigned_analyst import SampleFormHasParameterAnalystSerializer
 from django.shortcuts import render
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -27,6 +28,18 @@ class SampleFormHasAnalystAPIView(views.APIView):
 
     # def post(self, request, format=None):
     #     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+#parameter has assigned user
+class ParameterHasAssignedAnalyst(views.APIView):
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated]
+    def get(self, request, sample_form_id, format=None):
+        print(sample_form_id)
+        print(request.user)
+        queryset = SampleForm.objects.all()
+        serializer = SampleFormHasParameterAnalystSerializer(queryset, many=True)
+        return Response(serializer.data)
+
 
 class ReportDownload(views.APIView):
     authentication_classes = [JWTAuthentication]

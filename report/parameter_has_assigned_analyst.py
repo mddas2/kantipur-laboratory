@@ -1,6 +1,5 @@
-from management.models import SampleForm, Commodity,SampleFormHasParameter
+from management.models import SampleForm, Commodity,SampleFormHasParameter,TestResult
 from rest_framework import serializers
-
 
 from management.models import SampleForm, Commodity,SampleFormHasParameter
 from account.models import CustomUser
@@ -22,9 +21,14 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
         model = SampleFormHasParameter
         fields = ['analyst_user','created_date'] 
 
-class SampleFormHasAnalystSerializer(serializers.ModelSerializer):
-    sample_has_parameter_analyst = SampleFormHasParameterReadSerializer(many=True,read_only=True)
+class ParameterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TestResult
+        fields = ['name']
+
+class SampleFormHasParameterAnalystSerializer(serializers.ModelSerializer):
     commodity = CommoditySerializer(read_only = True)
+    parameters = ParameterSerializer(read_only = True, many = True)
     class Meta:
         model = SampleForm
-        fields = ['id','name','sample_has_parameter_analyst','commodity','status','created_date']
+        fields = ['id','name','parameters','commodity','status','created_date']
