@@ -88,12 +88,9 @@ class SampleFormHasParameter(models.Model):#sample form has parameter and parame
        
     parameter = models.ManyToManyField(TestResult, related_name="sample_has_parameters")
     
-    status_choices = (
-        ('pending', 'pending'),
-        ('approved','approved'),
+    status_choices = (        
         ('processing', 'processing'),
         ('completed', 'completed'),
-        ('reject', 'reject'),
     )
     status = models.CharField(choices=status_choices, blank=True, null=True, max_length=155)
 

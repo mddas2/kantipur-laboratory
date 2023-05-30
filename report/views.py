@@ -6,8 +6,9 @@ import json
 from management.models import SampleForm
 from rest_framework import viewsets,status
 from rest_framework.response import Response
-from . sample_form_serializers import SampleFormHasAnalystSerializer,CompletedSampleFormHasAnalystSerializer
+from . sample_form_serializers import SampleFormHasAnalystSerializer
 from . parameter_has_assigned_analyst import SampleFormHasParameterAnalystSerializer
+from . verifier_has_completed_sample_form import CompletedSampleFormHasVerifierSerializer
 from django.shortcuts import render
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -31,7 +32,7 @@ class CompletedSampleFormHasVerifierAPIView(views.APIView):
     # permission_classes = [IsAuthenticated]
     def get(self, request, format=None):
         queryset = SampleForm.objects.all()
-        serializer = CompletedSampleFormHasAnalystSerializer(queryset, many=True)
+        serializer = CompletedSampleFormHasVerifierSerializer(queryset, many=True)
         return Response(serializer.data)
 
     # def post(self, request, format=None):
