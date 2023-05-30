@@ -78,6 +78,8 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
 
 
 class RoleViewSet(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]  
     
     def get(self,request,format=None):
         my_tuple = CustomUser.ROLE_CHOICES
@@ -152,10 +154,12 @@ class PermissionViewSet(viewsets.ModelViewSet):
     search_fields = ['name','code_name','is_verified']
     ordering_fields = ['id','name']
 
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated]    
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]    
 
 class PermissionAllDelete(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]  
     def get(self, request, format=None):
         object = Permission.objects.all().delete()
         return Response({'message': 'delete successful'}, status=status.HTTP_200_OK)
