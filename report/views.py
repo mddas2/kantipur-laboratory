@@ -25,6 +25,14 @@ class SampleFormHasAnalystAPIView(views.APIView):
         queryset = SampleForm.objects.filter(supervisor_user = request.user)
         serializer = SampleFormHasAnalystSerializer(queryset, many=True)
         return Response(serializer.data)
+    
+class CompletedSampleFormHasVerifierAPIView(views.APIView):
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated]
+    def get(self, request, format=None):
+        queryset = SampleForm.objects.all()
+        serializer = SampleFormHasAnalystSerializer(queryset, many=True)
+        return Response(serializer.data)
 
     # def post(self, request, format=None):
     #     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)

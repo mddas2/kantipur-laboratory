@@ -8,6 +8,8 @@ urlpatterns = [
     path('sample-form-has-assigned-analyst/', views.SampleFormHasAnalystAPIView.as_view()),
     path('sample-form-has-parameter-has-assigned-analyst/<int:sample_form_id>/', views.ParameterHasAssignedAnalyst.as_view()),
 
+    path('completed-sample-form-has-assigned-verifier/', views.CompletedSampleFormHasVerifierAPIView.as_view()),
+
     path('get-report/<str:report_name>/<str:report_type>/<str:report_lang>/', views.ReportDownload.as_view()),
     path('preeti-to-unicode', preeti_to_unicode.PreetiToUniCode.as_view()),
     path('unicode-to-preeti', preeti_to_unicode.UnicodeToPreeti.as_view()),
