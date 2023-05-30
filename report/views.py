@@ -20,7 +20,8 @@ class SampleFormHasAnalystAPIView(views.APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request, format=None):
-        queryset = SampleForm.objects.all()
+        print(request.user.role)
+        queryset = SampleForm.objects.filter(supervisor_user = request.user)
         serializer = SampleFormHasAnalystSerializer(queryset, many=True)
         return Response(serializer.data)
 
