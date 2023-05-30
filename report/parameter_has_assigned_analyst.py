@@ -24,7 +24,7 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
 class ParameterSerializer(serializers.ModelSerializer):
     class Meta:
         model = TestResult
-        fields = ['name']
+        fields = ['id','name']
 
 class SampleFormHasParameterAnalystSerializer(serializers.ModelSerializer):
     commodity = CommoditySerializer(read_only = True)
@@ -32,3 +32,29 @@ class SampleFormHasParameterAnalystSerializer(serializers.ModelSerializer):
     class Meta:
         model = SampleForm
         fields = ['id','name','parameters','commodity','status','created_date']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        sample_form_id = representation.get('id')
+
+        # Add extra response data for parameters field
+        parameters_data = representation.get('parameters', [])
+      
+        for parameter_data in parameters_data:
+            parameter_id = parameter_data.get('id')
+            # Check if the parameter exists in SampleFormHasParameter model
+            # print(parameter_id)
+            sample_form_has_assigned_analyst_obj = SampleFormHasParameter.objects.filter(parameter=parameter_id, sample_form = sample_form_id)
+            exists = sample_form_has_assigned_analyst_obj.exists()
+            if exists:
+                analyst_obj = sample_form_has_assigned_analyst_obj.first().analyst_user
+                first_name = analyst_obj.first_name
+                last_name = analyst_obj.last_name
+                parameter_data['first_name'] = first_name
+                parameter_data['last_name'] = last_name
+
+            parameter_data['exist'] = exists
+
+        representation['parameters'] = parameters_data
+        return representation
