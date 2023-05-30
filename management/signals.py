@@ -10,16 +10,21 @@ from account.models import CustomUser
 @receiver(pre_save, sender=SampleFormParameterFormulaCalculate)
 def SampleFormParameterFormulaCalculatePreSave(sender, instance, **kwargs):
     sample_form_obj = instance.sample_form    
+    parameter_obj = instance.parameter
+    sample_form_has_parameter = SampleFormHasParameter.objects.filter(sample_form_id = sample_form_obj.id,parameter = parameter_obj.id)
+    check_parameter = sample_form_has_parameter.parameter
+    for param in check_parameter:
+        print(param)
     
 
 @receiver(pre_save, sender=SampleFormHasParameter)
 def SampleFormHasParameterPreSave(sender, instance, **kwargs):
-    instance.status = "processing"
-    sample_form_obj = instance.sample_form
-    sample_form_obj.status = "processing"
-    sample_form_obj.save()
-    # if not instance.pk:
-    #     instance.status = "processing"
+    if not instance.pk:
+        instance.status = "processing"
+        sample_form_obj = instance.sample_form
+        sample_form_obj.status = "processing"
+        sample_form_obj.save()
+    
   
 @receiver(pre_save, sender=ClientCategory)
 def ClientCategoryPreSave(sender, instance, **kwargs):
