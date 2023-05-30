@@ -28,3 +28,11 @@ class SampleFormHasAnalystSerializer(serializers.ModelSerializer):
     class Meta:
         model = SampleForm
         fields = ['id','name','sample_has_parameter_analyst','commodity','status','created_date']
+
+
+class CompletedSampleFormHasAnalystSerializer(serializers.ModelSerializer):
+    sample_has_parameter_analyst = SampleFormHasParameterReadSerializer(many=True,read_only=True)
+    commodity = CommoditySerializer(read_only = True)
+    class Meta:
+        model = SampleForm
+        fields = ['id','name','sample_has_parameter_analyst','commodity','status','created_date']
