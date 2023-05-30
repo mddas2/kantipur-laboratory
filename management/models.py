@@ -137,6 +137,7 @@ class SampleFormParameterFormulaCalculate(models.Model):
     commodity = models.ForeignKey(Commodity,on_delete=models.CASCADE,null=True)
     parameter = models.OneToOneField(TestResult, on_delete=models.CASCADE,null=True)
     result =  models.IntegerField(null=True)
+    is_verified = models.BooleanField(default=False)
     input_fields_value = models.CharField(max_length=2000,null=True)
     auto_calculate_result = models.CharField(max_length=200,null=True)
     remark = models.CharField(max_length=200,null=True)

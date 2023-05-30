@@ -16,5 +16,6 @@ urlpatterns = [
     path('', include(router.urls)),
     path('get-formula-fields/', formula_algorithm.FormulaApiGetFields.as_view(), name='custom_endpoint'),
     path('formula-calculate/', formula_algorithm.FormulaApiCalculate.as_view(), name='custom_endpoint'),
+    path('get-parameter-to-verified/<int:sample_form_id>/', formula_algorithm.FormulaGetToVerifier.as_view(), name='formula-calculte-verifier'),
     path('import-excel-bulk/',import_excel.ImportExcel,name="ImportExcel")
 ]
