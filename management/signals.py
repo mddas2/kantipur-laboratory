@@ -5,6 +5,14 @@ from django.dispatch import receiver
 from management.models import SampleFormHasParameter,SampleForm,ClientCategory
 from websocket import frontend_setting
 from account.models import CustomUser
+
+
+@receiver(pre_save, sender=SampleFormHasParameter)
+def ClientCategoryPreSave(sender, instance, **kwargs):
+    instance.status = "processing"
+    # if not instance.pk:
+    #     instance.status = "processing"
+        
     
 @receiver(pre_save, sender=ClientCategory)
 def ClientCategoryPreSave(sender, instance, **kwargs):
