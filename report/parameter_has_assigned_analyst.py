@@ -52,8 +52,10 @@ class SampleFormHasParameterAnalystSerializer(serializers.ModelSerializer):
                 first_name = analyst_obj.first_name
                 last_name = analyst_obj.last_name
                 status = sample_form_has_assigned_analyst_obj.first().status
+                created_date = sample_form_has_assigned_analyst_obj.first().created_date
                 parameter_data['first_name'] = first_name
                 parameter_data['last_name'] = last_name
+                parameter_data['assigned_date'] = created_date
                 parameter_data['status'] = status
 
             parameter_data['exist'] = exists
