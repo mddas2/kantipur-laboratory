@@ -10,6 +10,9 @@ from account.models import CustomUser
 @receiver(pre_save, sender=SampleFormHasParameter)
 def ClientCategoryPreSave(sender, instance, **kwargs):
     instance.status = "processing"
+    sample_form_obj = instance.sample_form
+    sample_form_obj.status = "processing"
+    sample_form_obj.save()
     # if not instance.pk:
     #     instance.status = "processing"
         
