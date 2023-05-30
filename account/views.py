@@ -84,17 +84,18 @@ class RoleViewSet(APIView):
         serializer = RoleSerializer(data=my_tuple,many=True)
         serializer.is_valid()
         serialized_data = serializer.data
+        authentication_classes = [JWTAuthentication]
+        permission_classes = [IsAuthenticated]
         return Response({"roles": serialized_data},status=status.HTTP_200_OK)
-        # authentication_classes = [JWTAuthentication]
-        # permission_classes = [IsAuthenticated]
+     
 
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
     filter_backends = [SearchFilter]
     search_fields = ['name']
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated]    
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]    
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)

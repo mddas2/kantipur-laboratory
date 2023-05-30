@@ -18,8 +18,8 @@ class ClientCategoryViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter,OrderingFilter]
     search_fields = ['name']
     ordering_fields = ['name','id']
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated,MyPermission]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated,MyPermission]
     pagination_class = MyLimitOffsetPagination
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -76,8 +76,8 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     search_fields = ['name','owner_user','status','form_available','supervisor_user']
     ordering_fields = ['name','id']
     filterset_fields = ['name','owner_user','status','form_available','commodity_id','supervisor_user']
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     pagination_class = MyLimitOffsetPagination
 
     def get_serializer_class(self):
@@ -164,8 +164,8 @@ class CommodityViewSet(viewsets.ModelViewSet):
     ordering_fields = ['name','id']
     search_fields = ['name']
     filterset_fields = ['name','category_id']
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     pagination_class = MyLimitOffsetPagination
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -223,8 +223,8 @@ class CommodityCategoryViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['name','id']
     # search_fields = ['name']
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     pagination_class = MyLimitOffsetPagination
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -279,9 +279,9 @@ class TestResultViewSet(viewsets.ModelViewSet):
     serializer_class = TestResultSerializer
     filter_backends = [SearchFilter]
     search_fields = ['name']
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated]
-    # pagination_class = MyLimitOffsetPagination
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    pagination_class = MyLimitOffsetPagination
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -335,9 +335,9 @@ class PaymentViewSet(viewsets.ModelViewSet):
     serializer_class = PaymentSerializer
     filter_backends = [SearchFilter]
     search_fields = ['name']
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated]
-    # pagination_class = MyLimitOffsetPagination
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    pagination_class = MyLimitOffsetPagination
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
