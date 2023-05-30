@@ -17,6 +17,8 @@ from .report_download import ReportAdminList,ReportParameter,ReportCommodity,Rep
 #report_type:['pdf','excel','csv']
 #report_name:['admin-list','users-list','user-with-sample-form','sample-form','commodity','parameter']
 class SampleFormHasAnalystAPIView(views.APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, format=None):
         queryset = SampleForm.objects.all()
         serializer = SampleFormHasAnalystSerializer(queryset, many=True)
@@ -26,6 +28,8 @@ class SampleFormHasAnalystAPIView(views.APIView):
     #     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 class ReportDownload(views.APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request,report_name,report_type,report_lang):
         if report_name == "admin-list":
             response =ReportAdminList(report_type,report_lang)
