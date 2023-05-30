@@ -1,21 +1,39 @@
 # signals.py
 
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save,post_save
 from django.dispatch import receiver
 from management.models import SampleFormHasParameter,SampleForm,ClientCategory,SampleFormParameterFormulaCalculate
 from websocket import frontend_setting
 from account.models import CustomUser
 
 
-@receiver(pre_save, sender=SampleFormParameterFormulaCalculate)
-def SampleFormParameterFormulaCalculatePreSave(sender, instance, **kwargs):
+@receiver(post_save, sender=SampleFormParameterFormulaCalculate)
+def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwargs):
+    
     sample_form_obj = instance.sample_form    
     parameter_obj = instance.parameter
     sample_form_has_parameter = SampleFormHasParameter.objects.filter(sample_form_id = sample_form_obj.id,parameter = parameter_obj.id)
-    check_parameter = sample_form_has_parameter.parameter
-    for param in check_parameter:
-        print(param)
+    # check_parameter = sample_form_has_parameter.first().parameter.all()
+
+    # print(check_parameter)
+    status = "processing"
     
+    parameters = sample_form_obj.parameters.all()    
+    for param in parameters:
+        formula_calculate_object = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id = sample_form_obj.id,parameter = param.id)
+        if formula_calculate_object.exists():
+            status = "completed"
+        else:
+            status = "processing"
+            break
+    
+    if status == "completed":
+        sample_form_obj.status = status
+        sample_form_obj.save() 
+    else:
+        sample_form_obj.status = status
+        sample_form_obj.save() 
+
 
 @receiver(pre_save, sender=SampleFormHasParameter)
 def SampleFormHasParameterPreSave(sender, instance, **kwargs):

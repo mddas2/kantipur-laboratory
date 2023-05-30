@@ -132,7 +132,7 @@ class Payment(models.Model):
 class SampleFormParameterFormulaCalculate(models.Model):
     sample_form = models.ForeignKey(SampleForm,related_name="result",on_delete=models.CASCADE,null=True)
     commodity = models.ForeignKey(Commodity,on_delete=models.CASCADE,null=True)
-    parameter = models.OneToOneField(TestResult, on_delete=models.CASCADE,null=True)
+    parameter = models.ForeignKey(TestResult, on_delete=models.CASCADE,null=True)
     result =  models.IntegerField(null=True)
     is_verified = models.BooleanField(default=False)
     input_fields_value = models.CharField(max_length=2000,null=True)

@@ -77,8 +77,8 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     ordering_fields = ['name','id']
     filterset_fields = ['name','owner_user','status','form_available','commodity_id','supervisor_user']
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-    pagination_class = MyLimitOffsetPagination
+    # permission_classes = [IsAuthenticated]
+    # pagination_class = MyLimitOffsetPagination
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
