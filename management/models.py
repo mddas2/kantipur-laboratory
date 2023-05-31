@@ -46,7 +46,7 @@ class SampleForm(models.Model):#ClientRequest
     purpose = models.CharField(max_length=255)
     report_date = models.DateField()
     amendments = models.CharField(max_length=255)
-    
+    is_commodity_select = models.BooleanField(default=False) #if parameter not select then auto select parameter.this insure that commodity select or parameter.
     language = models.CharField(max_length=10)
     note = models.TextField()
     commodity = models.ForeignKey(Commodity,related_name="sample_form",on_delete=models.CASCADE,default=None)

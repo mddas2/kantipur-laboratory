@@ -34,6 +34,10 @@ def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwarg
         sample_form_obj.status = status
         sample_form_obj.save() 
 
+@receiver(pre_save, sender=SampleForm)
+def SampleForm(sender, instance, **kwargs):
+    parameter = instance.parameters.all()
+    print(parameter)
 
 @receiver(pre_save, sender=SampleFormHasParameter)
 def SampleFormHasParameterPreSave(sender, instance, **kwargs):
