@@ -2,7 +2,7 @@
 
 from django.db.models.signals import pre_save,post_save
 from django.dispatch import receiver
-from management.models import SampleFormHasParameter,SampleForm,ClientCategory,SampleFormParameterFormulaCalculate
+from management.models import SampleFormHasParameter,ClientCategory,SampleFormParameterFormulaCalculate,SampleForm
 from websocket import frontend_setting
 from account.models import CustomUser
 
@@ -27,7 +27,7 @@ def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwarg
             status = "processing"
             break
 
-    sample_form = SampleForm.objects.get(id = sample_form_obj.id)
+    sample_form = SampleForm.objects.get(id=1)
     if status == "completed":        
         sample_form.status = status
         sample_form.save() 
