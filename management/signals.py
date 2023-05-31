@@ -30,9 +30,13 @@ def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwarg
     if status == "completed":
         sample_form_obj.status = status
         sample_form_obj.save() 
+        instance.status = status
+        instance.save()
     else:
         sample_form_obj.status = status
-        sample_form_obj.save() 
+        sample_form_obj.save()
+        instance.status = status
+        instance.save()  
 
 @receiver(pre_save, sender=SampleForm)
 def SampleForm(sender, instance, **kwargs):
