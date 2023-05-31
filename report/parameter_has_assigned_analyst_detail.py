@@ -57,6 +57,7 @@ class DetailSampleFormHasParameterAnalystSerializer(serializers.ModelSerializer)
                 parameter_data['last_name'] = last_name
                 parameter_data['assigned_date'] = created_date
                 parameter_data['status'] = status
+                parameter_data['result'] = 10
 
             parameter_data['exist'] = exists
 
