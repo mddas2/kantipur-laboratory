@@ -24,7 +24,7 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
 class ParameterSerializer(serializers.ModelSerializer):
     class Meta:
         model = TestResult
-        fields = ['id','name']
+        fields = '__all__'
 
 class DetailSampleFormHasParameterAnalystSerializer(serializers.ModelSerializer):
     commodity = CommoditySerializer(read_only = True)
