@@ -1,7 +1,7 @@
 from management.models import SampleForm, Commodity,SampleFormHasParameter,TestResult
 from rest_framework import serializers
 
-from management.models import SampleForm, Commodity,SampleFormHasParameter
+from management.models import SampleForm, Commodity,SampleFormHasParameter,SampleFormParameterFormulaCalculate
 from account.models import CustomUser
 from rest_framework import serializers
 
@@ -56,6 +56,14 @@ class SampleFormHasParameterAnalystSerializer(serializers.ModelSerializer):
                 parameter_data['first_name'] = first_name
                 parameter_data['last_name'] = last_name
                 parameter_data['assigned_date'] = created_date
+
+                formula_obj_result = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id=sample_form_id,parameter_id = parameter_id)
+                if formula_obj_result.count()>0:
+                    parameter_data['status'] = "completed"
+                    parameter_data['result'] = formula_obj_result.first().result
+                else:
+                    parameter_data['status'] = "processing"
+                    parameter_data['result'] = '-'
                 parameter_data['status'] = status
 
             parameter_data['exist'] = exists
