@@ -49,8 +49,8 @@ class ParameterHasAssignedAnalyst(views.APIView):
         return Response(serializer.data)
 
 class DetailParameterHasAssignedAnalyst(views.APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated]
     def get(self, request, sample_form_id, format=None):
         queryset = SampleForm.objects.filter(id=sample_form_id).first()
         serializer = DetailSampleFormHasParameterAnalystSerializer(queryset,many = False)
