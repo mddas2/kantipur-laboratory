@@ -65,7 +65,6 @@ class DetailSampleFormHasParameterAnalystSerializer(serializers.ModelSerializer)
                     parameter_data['status'] = "processing"
                     parameter_data['result'] = '-'
 
-                parameter_data['result'] = 10
 
             parameter_data['exist'] = exists
 
