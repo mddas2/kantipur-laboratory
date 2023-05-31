@@ -29,7 +29,7 @@ def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwarg
 
     from management.models import SampleForm
     SampleForm.objects.filter(id=sample_form_obj.id).update(status=status)
-    SampleFormParameterFormulaCalculate.objects.filter(id=instance.id).update(status=status)
+
 
 # @receiver(pre_save, sender=SampleForm)
 # def SampleForm(sender, instance, **kwargs):
