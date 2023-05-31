@@ -6,7 +6,9 @@ from rest_framework.routers import DefaultRouter
 
 urlpatterns = [   
     path('sample-form-has-assigned-analyst/', views.SampleFormHasAnalystAPIView.as_view()),
-    path('sample-form-has-parameter-has-assigned-analyst/<int:sample_form_id>/', views.ParameterHasAssignedAnalyst.as_view()),
+
+    path('sample-form-has-parameter-has-assigned-analyst/<int:sample_form_id>/', views.ParameterHasAssignedAnalyst.as_view()), #both are same
+    path('detail-sample-form-has-parameter-has-assigned-analyst/<int:sample_form_id>/', views.DetailParameterHasAssignedAnalyst.as_view()), #both are same
 
     path('completed-sample-form-has-assigned-verifier/', views.CompletedSampleFormHasVerifierAPIView.as_view()),
 

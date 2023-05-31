@@ -51,7 +51,7 @@ class SampleForm(models.Model):#ClientRequest
     note = models.TextField()
     commodity = models.ForeignKey(Commodity,related_name="sample_form",on_delete=models.CASCADE,default=None)
     supervisor_user = models.ForeignKey(CustomUser, related_name="sample_has_parameters",default=None,on_delete=models.SET_NULL,null=True)
-    parameters = models.ManyToManyField(TestResult, related_name="sample_form")
+    parameters = models.ManyToManyField(TestResult, related_name="sample_form",blank=True)
 
     status_choices = (
         ('pending', 'pending'),
