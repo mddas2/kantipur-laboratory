@@ -18,8 +18,8 @@ class ClientCategoryViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter,OrderingFilter]
     search_fields = ['name']
     ordering_fields = ['name','id']
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated,MyPermission]
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated,MyPermission]
     pagination_class = MyLimitOffsetPagination
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

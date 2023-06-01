@@ -141,3 +141,10 @@ class SampleFormParameterFormulaCalculate(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
 
+class SampleFormVerifier(models.Model):
+    sample_form = models.ForeignKey(SampleForm,related_name="verifier",on_delete=models.CASCADE,null=True)
+    is_verified = models.BooleanField(default=False)
+    is_sent = models.BooleanField(default=False)
+
+
+
