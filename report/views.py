@@ -56,10 +56,9 @@ class DetailParameterHasAssignedAnalyst(views.APIView):
         serializer = DetailSampleFormHasParameterAnalystSerializer(queryset,many = False)
         return Response(serializer.data)
 
-
 class ReportDownload(views.APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated]
     def get(self, request,report_name,report_type,report_lang):
         if report_name == "admin-list":
             response =ReportAdminList(report_type,report_lang)
