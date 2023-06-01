@@ -11,6 +11,8 @@ from .custompermission import MyPermission
 from rest_framework import status
 from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from . import roles
+from rest_framework.exceptions import PermissionDenied
 
 class ClientCategoryViewSet(viewsets.ModelViewSet):
     queryset = ClientCategory.objects.all()
@@ -70,7 +72,7 @@ class ClientCategoryViewSet(viewsets.ModelViewSet):
         return Response(response_data)
     
 class SampleFormViewSet(viewsets.ModelViewSet):
-    queryset = SampleForm.objects.all()
+    # queryset = SampleForm.objects.all()
     serializer_class = SampleFormReadSerializer
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     search_fields = ['name','owner_user','status','form_available','supervisor_user']
@@ -80,6 +82,20 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     # permission_classes = [IsAuthenticated]
     # pagination_class = MyLimitOffsetPagination
 
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.role == roles.USER:
+            return SampleForm.objects.filter(owner_user = user.email)
+        elif user.role == roles.SUPERVISOR:
+            # Admin can see SampleForm instances with form_available='admin'
+            return SampleForm.objects.filter(supervisor_user = user)
+        elif user.role == roles.SMU:
+            # Regular user can see SampleForm instances with form_available='user'
+            return SampleForm.objects.all()
+        else:
+            raise PermissionDenied("You do not have permission to access this resource.")
+        
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
             return SampleFormWriteSerializer

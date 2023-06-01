@@ -11,9 +11,11 @@ from .custompermission import MyPermission
 from rest_framework import status
 from rest_framework.filters import OrderingFilter,SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from . import roles
+from rest_framework.exceptions import PermissionDenied
 
 class SampleFormHasParameterViewSet(viewsets.ModelViewSet):
-    queryset = SampleFormHasParameter.objects.all()
+    # queryset = SampleFormHasParameter.objects.all()
     serializer_class = SampleFormHasParameterReadSerializer
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     search_fields = ['status','sample_form']
@@ -23,6 +25,14 @@ class SampleFormHasParameterViewSet(viewsets.ModelViewSet):
     # authentication_classes = [JWTAuthentication]
     # permission_classes = [IsAuthenticated]
     pagination_class = MyLimitOffsetPagination
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.role == roles.ANALYST:
+            return SampleFormHasParameter.objects.filter(analyst_user = user)       
+        else:
+             raise PermissionDenied("You do not have permission to access this resource.")
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
