@@ -78,8 +78,17 @@ class Formula:
         import json
         query_obj = self.GetQueryObject()
         formula = query_obj.formula
+
+        if '{' or '[' in formula:
+            formula = formula.replace('[', '(').replace(']', ')')
+            formula = formula.replace('{', '(').replace('}', ')')
+        
+        print(formula)
+
         json_values = json.loads(formula_variable_fields_value)
+
         result = eval(formula,json_values) 
+        print(result)
         return result    
     
     def Save(self,result,input_fields_value):
