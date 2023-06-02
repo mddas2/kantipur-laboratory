@@ -16,6 +16,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from management.pagination import MyLimitOffsetPagination
+from django.db.models import Q
 from .report_download import ReportAdminList,ReportParameter,ReportCommodity,ReportUserSampleForm,ReportUserList,ReportSampleForm
 #report_type:['pdf','excel','csv']
 #report_name:['admin-list','users-list','user-with-sample-form','sample-form','commodity','parameter']
@@ -32,7 +33,8 @@ class CompletedSampleFormHasVerifierAPIView(views.APIView):
     # authentication_classes = [JWTAuthentication]
     # permission_classes = [IsAuthenticated]
     def get(self, request, format=None):
-        queryset = SampleForm.objects.all()
+        queryset = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=False))
+
         serializer = CompletedSampleFormHasVerifierSerializer(queryset, many=True)
         return Response(serializer.data)
 
