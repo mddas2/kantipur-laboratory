@@ -95,18 +95,25 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
         # Filter SampleFormParameterFormulaCalculate by commodity_id, parameter_ids, and sample_form_id
      
         # print(obj.parameter)
+        is_tested = True
         for parameter in parameter_data:
             formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(parameter = parameter['id'],sample_form=obj.sample_form_id).first()
             # formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(commodity=obj.commodity_id,parameter = parameter['id'],sample_form=obj.sample_form_id).first()
             # print(obj.commodity_id)
             # print(parameter['id'])
             parameter['result'] = formula_calculate.result if formula_calculate else "-"
-        return parameter_data
+            if not formula_calculate.result:
+                is_tested = False
+            
+        return parameter_data,is_tested
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         # print(instance.parameter.first().id)
-        representation['parameter'] = self.get_parameter(instance)
+        parameter,is_tested = self.get_parameter(instance)
+        representation['parameter'] = parameter
+        representation['is_tested'] = is_tested
+
         return representation
 
 class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
