@@ -58,28 +58,58 @@ class DetailParameterHasAssignedAnalyst(views.APIView):
         serializer = DetailSampleFormHasParameterAnalystSerializer(queryset,many = False)
         return Response(serializer.data)
 
+# class ReportDownload(views.APIView):
+#     # authentication_classes = [JWTAuthentication]
+#     # permission_classes = [IsAuthenticated]
+#     def get(self, request,report_name,report_type,report_lang):
+#         if report_name == "admin-list":
+#             response =ReportAdminList(report_type,report_lang)
+#             return response
+#             # return data
+#         elif report_name == "users-list":
+#             response = ReportUserList(report_type,report_lang)
+#             return response
+#         elif report_name == "user-with-sample-form":
+#             response = ReportUserSampleForm(report_type,report_lang)
+#             return response
+#         elif report_name == "sample-form":
+#             response = ReportSampleForm(report_type,report_lang)
+#             return response
+#         elif report_name == "commodity":
+#             response = ReportCommodity(report_type,report_lang)
+#             return response
+#         elif report_name == "parameter":
+#             response = ReportParameter(report_type,report_lang)
+#             return response
+#         else:
+#             data = {
+#                 'error':"not match"
+#             }
+#             data = json.dumps(data)
+#             return HttpResponse(data)
+        
 class ReportDownload(views.APIView):
     # authentication_classes = [JWTAuthentication]
     # permission_classes = [IsAuthenticated]
-    def get(self, request,report_name,report_type,report_lang):
+    def get(self, request,report_name,report_type,report_lang,id=None):
         if report_name == "admin-list":
-            response =ReportAdminList(report_type,report_lang)
+            response =ReportAdminList(report_type,report_lang,id)
             return response
             # return data
         elif report_name == "users-list":
-            response = ReportUserList(report_type,report_lang)
+            response = ReportUserList(report_type,report_lang,id)
             return response
         elif report_name == "user-with-sample-form":
-            response = ReportUserSampleForm(report_type,report_lang)
+            response = ReportUserSampleForm(report_type,report_lang,id)
             return response
         elif report_name == "sample-form":
-            response = ReportSampleForm(report_type,report_lang)
+            response = ReportSampleForm(report_type,report_lang,id)
             return response
         elif report_name == "commodity":
-            response = ReportCommodity(report_type,report_lang)
+            response = ReportCommodity(report_type,report_lang,id)
             return response
         elif report_name == "parameter":
-            response = ReportParameter(report_type,report_lang)
+            response = ReportParameter(report_type,report_lang,id)
             return response
         else:
             data = {
@@ -87,4 +117,5 @@ class ReportDownload(views.APIView):
             }
             data = json.dumps(data)
             return HttpResponse(data)
+            
             
