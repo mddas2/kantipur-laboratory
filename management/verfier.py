@@ -19,9 +19,15 @@ class SampleFormHasVerifierViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter,OrderingFilter]
     search_fields = ['name']
     ordering_fields = ['name','id']
+
+    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    ordering_fields = ['id']
+    search_fields = ['sample_form_id']
+    filterset_fields = ['sample_form_id']
     # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated,MyPermission]
+    # permission_classes = [IsAuthenticated]
     pagination_class = MyLimitOffsetPagination
+   
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)

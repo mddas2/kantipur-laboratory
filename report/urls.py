@@ -1,4 +1,6 @@
 from . import views,preeti_to_unicode,preeti_to_pdf,html_form_views
+from report.admin_folders import supervisor
+
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
     
@@ -11,6 +13,7 @@ urlpatterns = [
     path('detail-sample-form-has-parameter-has-assigned-analyst/<int:sample_form_id>/', views.DetailParameterHasAssignedAnalyst.as_view()), #both are same
 
     path('completed-sample-form-has-assigned-verifier/', views.CompletedSampleFormHasVerifierAPIView.as_view()),
+    # path('completed-sample-form-has-assigned-verifier-check-exists/<int:sample_form_id>/', supervisor.getStatusOfVerifierSampleForm.as_view()),
 
     path('get-report/<str:report_name>/<str:report_type>/<str:report_lang>/', views.ReportDownload.as_view()),
     path('preeti-to-unicode', preeti_to_unicode.PreetiToUniCode.as_view()),

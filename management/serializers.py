@@ -102,7 +102,8 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
             # print(obj.commodity_id)
             # print(parameter['id'])
             parameter['result'] = formula_calculate.result if formula_calculate else "-"
-            if not formula_calculate.result:
+            
+            if formula_calculate == None:
                 is_tested = False
             
         return parameter_data,is_tested
