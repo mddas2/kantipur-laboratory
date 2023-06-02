@@ -72,18 +72,19 @@ class ClientCategoryViewSet(viewsets.ModelViewSet):
         return Response(response_data)
     
 class SampleFormViewSet(viewsets.ModelViewSet):
-    # queryset = SampleForm.objects.all()
+    queryset = SampleForm.objects.all()
     serializer_class = SampleFormReadSerializer
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     search_fields = ['name','owner_user','status','form_available','supervisor_user']
     ordering_fields = ['name','id']
     filterset_fields = ['name','owner_user','status','form_available','commodity_id','supervisor_user']
     authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     # pagination_class = MyLimitOffsetPagination
 
     def get_queryset(self):
         user = self.request.user
+        print(user)
 
         if user.role == roles.USER:
             return SampleForm.objects.filter(owner_user = user.email)

@@ -16,6 +16,8 @@ class CustomUser(AbstractUser):
     department_address = models.CharField(max_length=255,null=True) 
     registration_number = models.CharField(max_length=255,null=True) 
 
+    is_active = models.BooleanField(default=True)
+
     is_verified = models.IntegerField(choices=[(0, 'Not verified'), (1, 'Verified')], default=0)
     client_category = models.ForeignKey("management.ClientCategory",related_name="user",on_delete=models.CASCADE,null=True)    
 
@@ -51,3 +53,7 @@ class CustomUser(AbstractUser):
             return 'ANALYST'
         else:
             return 'None'
+        
+    def save(self, *args, **kwargs):
+        self.is_active = True  # Ensure is_active is always True
+        super().save(*args, **kwargs)
