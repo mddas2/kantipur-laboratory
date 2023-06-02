@@ -18,7 +18,7 @@ class SampleFormHasParameterViewSet(viewsets.ModelViewSet):
     queryset = SampleFormHasParameter.objects.all()
     serializer_class = SampleFormHasParameterReadSerializer
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['status','sample_form']
+    # search_fields = ['status','sample_form']
     filterset_fields = ['status','form_available','analyst_user','sample_form','commodity']
     ordering_fields = ['id']
     

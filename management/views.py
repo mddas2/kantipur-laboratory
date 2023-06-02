@@ -94,8 +94,12 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         elif user.role == roles.SMU:
             # Regular user can see SampleForm instances with form_available='user'
             return SampleForm.objects.all()
+        elif user.role == roles.SUPERADMIN:
+            # Regular user can see SampleForm instances with form_available='user'
+            return SampleForm.objects.all()
         else:
             raise PermissionDenied("You do not have permission to access this resource.")
+        
         
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
