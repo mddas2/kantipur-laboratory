@@ -20,6 +20,7 @@ from django.db.models import Q
 from .report_download import ReportAdminList,ReportParameter,ReportCommodity,ReportUserSampleForm,ReportUserList,ReportSampleForm
 #report_type:['pdf','excel','csv']
 #report_name:['admin-list','users-list','user-with-sample-form','sample-form','commodity','parameter']
+#['sample-request','user-request','client-category','commodity-with-parameter','commodity-category','commodity','parameter']
 class SampleFormHasAnalystAPIView(views.APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -92,22 +93,37 @@ class ReportDownload(views.APIView):
     # authentication_classes = [JWTAuthentication]
     # permission_classes = [IsAuthenticated]
     def get(self, request,report_name,report_type,report_lang,id=None):
-        if report_name == "admin-list":
+        if report_name == "users-list":
             response =ReportAdminList(report_type,report_lang,id)
             return response
             # return data
         elif report_name == "users-list":
             response = ReportUserList(report_type,report_lang,id)
             return response
-        elif report_name == "user-with-sample-form":
+        
+        elif report_name == "users-request":
+            response = ReportUserList(report_type,report_lang,id)
+            return response
+        
+        elif report_name == "sample-request":
             response = ReportUserSampleForm(report_type,report_lang,id)
             return response
-        elif report_name == "sample-form":
+        
+        elif report_name == "client-category":
             response = ReportSampleForm(report_type,report_lang,id)
             return response
-        elif report_name == "commodity":
+        
+        elif report_name == "commodity-with-parameter":
             response = ReportCommodity(report_type,report_lang,id)
             return response
+        elif report_name == "commodity-category":
+            response = ReportParameter(report_type,report_lang,id)
+            return response
+        
+        elif report_name == "commodity":
+            response = ReportParameter(report_type,report_lang,id)
+            return response
+        
         elif report_name == "parameter":
             response = ReportParameter(report_type,report_lang,id)
             return response
