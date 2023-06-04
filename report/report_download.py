@@ -193,3 +193,4 @@ def ReportParameter(report_type,report_lang,id=None):
     elif report_type == "pdf":
         # print("pdf")
         return HttpResponse("<html><body> this is report admin list pdf download </body></html>")
+

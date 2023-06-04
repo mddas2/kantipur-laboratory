@@ -104,4 +104,21 @@ class ReportDownload(views.APIView):
             data = json.dumps(data)
             return HttpResponse(data)
             
-            
+def FinalReportPdf(request):
+    from django.template.loader import get_template
+    from xhtml2pdf import pisa
+    template = get_template('final_report.html')
+    context = {'data': 'Hello, World!'}  # Example context data
+
+    # Render the template with the context
+    html = template.render(context)
+
+    # Create a PDF object
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="output.pdf"'
+
+    # Generate the PDF from the HTML content
+    pisa.CreatePDF(html, dest=response)
+
+    return response
+    return HttpResponse("pdf")
