@@ -17,7 +17,7 @@ from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from management.pagination import MyLimitOffsetPagination
 from django.db.models import Q
-from .report_download import ReportAdminList,ReportParameter,ReportCommodity,ReportUserSampleForm,ReportUserList,ReportSampleForm
+from .report_download import ReportAdminList,ReportParameter,ReportCommodity,ReportUserSampleForm,ReportUserList,ReportSampleForm,ReportUserRequest,ReportComodityCategory
 #report_type:['pdf','excel','csv']
 #report_name:['admin-list','users-list','user-with-sample-form','sample-form','commodity','parameter']
 #['sample-request','user-request','client-category','commodity-with-parameter','commodity-category','commodity','parameter']
@@ -58,43 +58,13 @@ class DetailParameterHasAssignedAnalyst(views.APIView):
         queryset = SampleForm.objects.filter(id=sample_form_id).first()
         serializer = DetailSampleFormHasParameterAnalystSerializer(queryset,many = False)
         return Response(serializer.data)
-
-# class ReportDownload(views.APIView):
-#     # authentication_classes = [JWTAuthentication]
-#     # permission_classes = [IsAuthenticated]
-#     def get(self, request,report_name,report_type,report_lang):
-#         if report_name == "admin-list":
-#             response =ReportAdminList(report_type,report_lang)
-#             return response
-#             # return data
-#         elif report_name == "users-list":
-#             response = ReportUserList(report_type,report_lang)
-#             return response
-#         elif report_name == "user-with-sample-form":
-#             response = ReportUserSampleForm(report_type,report_lang)
-#             return response
-#         elif report_name == "sample-form":
-#             response = ReportSampleForm(report_type,report_lang)
-#             return response
-#         elif report_name == "commodity":
-#             response = ReportCommodity(report_type,report_lang)
-#             return response
-#         elif report_name == "parameter":
-#             response = ReportParameter(report_type,report_lang)
-#             return response
-#         else:
-#             data = {
-#                 'error':"not match"
-#             }
-#             data = json.dumps(data)
-#             return HttpResponse(data)
         
 class ReportDownload(views.APIView):
     # authentication_classes = [JWTAuthentication]
     # permission_classes = [IsAuthenticated]
     def get(self, request,report_name,report_type,report_lang,id=None):
         if report_name == "users-list":
-            response =ReportAdminList(report_type,report_lang,id)
+            response = ReportUserList(report_type,report_lang,id)
             return response
             # return data
         elif report_name == "users-list":
@@ -102,7 +72,7 @@ class ReportDownload(views.APIView):
             return response
         
         elif report_name == "users-request":
-            response = ReportUserList(report_type,report_lang,id)
+            response = ReportUserRequest(report_type,report_lang,id)
             return response
         
         elif report_name == "sample-request":
@@ -117,11 +87,11 @@ class ReportDownload(views.APIView):
             response = ReportCommodity(report_type,report_lang,id)
             return response
         elif report_name == "commodity-category":
-            response = ReportParameter(report_type,report_lang,id)
+            response = ReportComodityCategory(report_type,report_lang,id)
             return response
         
         elif report_name == "commodity":
-            response = ReportParameter(report_type,report_lang,id)
+            response = ReportCommodity(report_type,report_lang,id)
             return response
         
         elif report_name == "parameter":
