@@ -80,7 +80,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     filterset_fields = ['name','owner_user','status','form_available','commodity_id','supervisor_user']
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    # pagination_class = MyLimitOffsetPagination
+    pagination_class = MyLimitOffsetPagination
 
     def get_queryset(self):
         user = self.request.user
