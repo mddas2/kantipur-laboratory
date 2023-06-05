@@ -196,13 +196,17 @@ def ReportParameter(report_type,report_lang,id=None):
 
 
 def FinalReport(report_type,report_lang,id=None):
-    query = SampleForm.objects.all()
-    serializer_data = SampleFormOnlySerializer(query, many=True)
-    serialized_data = serializer_data.data
-    df = pd.DataFrame.from_records(serialized_data)
+    from rest_framework.response import Response
+    if id == None:
+        return Response({'error':"please provide http://127.0.0.1:8000/api/report/get-report/final-report/pdf/eng/id/","statu":400})
+    
+    query = SampleForm.objects.get(id = id)
 
     # Create a response object with the appropriate content type
     if report_type == "excel":
+        serializer_data = SampleFormOnlySerializer(query, many=True)
+        serialized_data = serializer_data.data
+        df = pd.DataFrame.from_records(serialized_data)
         # Create a response object with the appropriate content type
         response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
         response['Content-Disposition'] = 'attachment; filename="data.xlsx"'
@@ -215,8 +219,32 @@ def FinalReport(report_type,report_lang,id=None):
     elif report_type == "pdf":
         from django.template.loader import get_template
         from xhtml2pdf import pisa
+
+
+        # Load the HTML template
         template = get_template('final_report.html')
-        context = {'data': 'Hello, World!'}  # Example context data
+
+        # Define the context data
+        sample_form_name = query.name
+        owner_name = CustomUser.objects.get(email = query.owner_user).first_name
+        sample_registration_date = query.created_date
+        sample_code = query.id
+        analysis_starting_date = query.created_date
+        analysis_completion_date = query.created_date
+
+        parameters = query.sample_has_parameter_analyst.all()
+
+        # print(parameters)
+
+        context = {
+           'sample_form_name' : sample_form_name,
+           'owner_name' : owner_name,
+           'sample_registration_date':sample_registration_date,
+           'sample_code':sample_code,
+           "analysis_starting_date":analysis_starting_date,
+           "analysis_completion_date":analysis_completion_date,
+           'parameters':parameters
+        }
 
         # Render the template with the context
         html = template.render(context)
