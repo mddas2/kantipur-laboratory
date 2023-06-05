@@ -10,6 +10,6 @@ class FinalSampleFormHasVerifiedAPIView(views.APIView):
     def get(self, request, format=None):
         # queryset = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=False))
 
-        queryset = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=False))
+        queryset = SampleForm.objects.all()
         serializer = CompletedSampleFormHasVerifierSerializer(queryset, many=True)
         return Response(serializer.data)
