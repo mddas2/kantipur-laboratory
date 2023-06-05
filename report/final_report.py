@@ -5,10 +5,12 @@ from rest_framework.response import Response
 from django.db.models import Q
 from management import roles
 from rest_framework.exceptions import PermissionDenied
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 class FinalSampleFormHasVerifiedAPIView(views.APIView):
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get_queryset(self):
         user = self.request.user
         print(user)
