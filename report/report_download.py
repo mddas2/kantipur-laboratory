@@ -232,7 +232,7 @@ def FinalReport(report_type,report_lang,id=None):
         analysis_starting_date = query.created_date
         analysis_completion_date = query.created_date
 
-        parameters = query.sample_has_parameter_analyst.all()
+        parameters = query.result.all()
 
         # print(parameters)
 
