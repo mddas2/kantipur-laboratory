@@ -47,7 +47,7 @@ def ReportUserList(report_type,report_lang,id=None):
         return HttpResponse("<html><body> this is report user  list pdf download </body></html>")
 
 def ReportUserRequest(report_type,report_lang,id=None):
-    query = CustomUser.objects.all()
+    query = CustomUser.objects.filter(is_verified = False)
     serializer_data = CustomUserSerializer(query, many=True)
     serialized_data = serializer_data.data
     df = pd.DataFrame.from_records(serialized_data)

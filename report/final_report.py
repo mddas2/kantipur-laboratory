@@ -16,17 +16,18 @@ class FinalSampleFormHasVerifiedAPIView(views.APIView):
         print(user)
 
         if user.role == roles.USER:
-            return SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=False) & Q(owner_user=user.email))
+            return SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True) & Q(owner_user=user.email))
             return SampleForm.objects.filter(owner_user = user.email)
         elif user.role == roles.SUPERVISOR:
+            print("supervisor")
             # Admin can see SampleForm instances with form_available='admin'
-            return SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=False) & Q(supervisor_user=user))
-            return SampleForm.objects.filter(supervisor_user = user)
+            return SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True) & Q(supervisor_user=user))
+            return SampleForm.objects.all()
         elif user.role == roles.SMU:
-            return SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=False))
+            return SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True))
             return SampleForm.objects.all()
         elif user.role == roles.SUPERADMIN:
-            return SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=False))
+            return SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True))
             # Regular user can see SampleForm instances with form_available='user'
             return SampleForm.objects.all()
         else:
@@ -35,7 +36,7 @@ class FinalSampleFormHasVerifiedAPIView(views.APIView):
     def get(self, request, format=None):
 
         queryset = self.get_queryset()
-
+        # print(queryset)
         # queryset = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=False))
 
         # queryset = SampleForm.objects.all()

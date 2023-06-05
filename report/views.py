@@ -72,7 +72,7 @@ class ReportDownload(views.APIView):
             response = ReportUserList(report_type,report_lang,id)
             return response
         
-        elif report_name == "users-request":
+        elif report_name == "user-request":
             response = ReportUserRequest(report_type,report_lang,id)
             return response
         
