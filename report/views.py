@@ -17,7 +17,7 @@ from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from management.pagination import MyLimitOffsetPagination
 from django.db.models import Q
-from .report_download import ReportAdminList,ReportParameter,ReportCommodity,ReportUserSampleForm,ReportUserList,ReportSampleForm,ReportUserRequest,ReportComodityCategory
+from .report_download import ReportAdminList,ReportParameter,ReportCommodity,ReportUserSampleForm,ReportUserList,ReportSampleForm,ReportUserRequest,ReportComodityCategory,FinalReport
 #report_type:['pdf','excel','csv']
 #report_name:['admin-list','users-list','user-with-sample-form','sample-form','commodity','parameter']
 #['sample-request','user-request','client-category','commodity-with-parameter','commodity-category','commodity','parameter']
@@ -97,6 +97,10 @@ class ReportDownload(views.APIView):
         
         elif report_name == "parameter":
             response = ReportParameter(report_type,report_lang,id)
+            return response
+                
+        if report_name == "final-report":
+            response = FinalReport(report_type,report_lang,id)
             return response
         else:
             data = {

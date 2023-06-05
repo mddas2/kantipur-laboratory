@@ -194,3 +194,38 @@ def ReportParameter(report_type,report_lang,id=None):
         # print("pdf")
         return HttpResponse("<html><body> this is report admin list pdf download </body></html>")
 
+
+def FinalReport(report_type,report_lang,id=None):
+    query = SampleForm.objects.all()
+    serializer_data = SampleFormOnlySerializer(query, many=True)
+    serialized_data = serializer_data.data
+    df = pd.DataFrame.from_records(serialized_data)
+
+    # Create a response object with the appropriate content type
+    if report_type == "excel":
+        # Create a response object with the appropriate content type
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="data.xlsx"'
+
+        # Write the DataFrame to an Excel file and save it to the response
+        with pd.ExcelWriter(response, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False)
+        return response
+
+    elif report_type == "pdf":
+        from django.template.loader import get_template
+        from xhtml2pdf import pisa
+        template = get_template('final_report.html')
+        context = {'data': 'Hello, World!'}  # Example context data
+
+        # Render the template with the context
+        html = template.render(context)
+
+        # Create a PDF object
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="output.pdf"'
+
+        # Generate the PDF from the HTML content
+        pisa.CreatePDF(html, dest=response)
+
+        return response
