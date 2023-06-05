@@ -43,6 +43,7 @@ class CompletedSampleFormHasVerifierAPIView(views.APIView):
     #     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 #parameter has assigned user
+
 class ParameterHasAssignedAnalyst(views.APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]

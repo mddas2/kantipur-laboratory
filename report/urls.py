@@ -1,4 +1,5 @@
-from . import views,preeti_to_unicode,preeti_to_pdf,html_form_views
+from . import views,preeti_to_unicode,preeti_to_pdf
+from . import final_report
 from report.admin_folders import supervisor
 
 from django.urls import path, include
@@ -15,6 +16,9 @@ urlpatterns = [
     path('completed-sample-form-has-assigned-verifier/', views.CompletedSampleFormHasVerifierAPIView.as_view()),
     # path('completed-sample-form-has-assigned-verifier-check-exists/<int:sample_form_id>/', supervisor.getStatusOfVerifierSampleForm.as_view()),
 
+    path('final-report-sample-form/', final_report.FinalSampleFormHasVerifiedAPIView.as_view()),
+    # path('completed-sample-form-has-assigned-verifier-check-exists/<int:sample_form_id>/', supervisor.getStatusOfVerifierSampleForm.as_view()),
+
     path('get-report/<str:report_name>/<str:report_type>/<str:report_lang>/', views.ReportDownload.as_view()),
     path('get-single-report/<str:report_name>/<str:report_type>/<str:report_lang>/<int:id>/', views.ReportDownload.as_view()),
 
@@ -22,5 +26,5 @@ urlpatterns = [
     path('unicode-to-preeti', preeti_to_unicode.UnicodeToPreeti.as_view()),
     path('preeti-to-pdf', preeti_to_pdf.PreetiToPdf,name="Preeti-to-pdf"),
     path('final-report', views.FinalReportPdf,name="FinalReport"),
-    path('form', html_form_views.index_form,name="index_form"),
+ 
 ]
