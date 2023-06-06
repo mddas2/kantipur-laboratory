@@ -190,5 +190,10 @@ class LoginView(APIView):
 
         # If the user is not authenticated, return an error message
         else:
-            return Response({'error': 'Invalid username/email or password'}, status=status.HTTP_401_UNAUTHORIZED)
+            from django.db.models import Q
+            user_obj = CustomUser.objects.filter(Q(username=username_or_email) & Q(email=username_or_email))
+            if user_obj.exists():
+                return Response({'error': 'Invalid password'}, status=status.HTTP_401_UNAUTHORIZED)
+            else:
+                return Response({'error': 'Invalid username/email'}, status=status.HTTP_401_UNAUTHORIZED)
         
