@@ -22,7 +22,7 @@ def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwarg
     for param in parameters:
         formula_calculate_object = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id = sample_form_obj.id,parameter = param.id)
         if formula_calculate_object.exists():
-            status = "completed"
+            status = "not_verified"
         else:
             status = "processing"
             break
@@ -53,9 +53,11 @@ def SampleFormHasParameterPreSave(sender, instance, **kwargs):
 
 @receiver(pre_save, sender=SampleFormVerifier)
 def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
-    if not instance.pk:
-        
-        sample_form_obj = instance.sample_form
-        # sample_form_obj.status = "Not Verified"
+    sample_form_obj = instance.sample_form
+    if not instance.pk:  
         sample_form_obj.form_available = "verifier"
         sample_form_obj.save()
+    else:        
+        if instance.is_verified == True:
+            sample_form_obj.status = "Not Verified"
+            sample_form_obj.save()

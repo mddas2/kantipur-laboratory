@@ -57,9 +57,9 @@ class SampleForm(models.Model):#ClientRequest
         ('pending', 'pending'),
         ('approved','approved'),
         ('processing', 'processing'),
+        ('not_verified', 'not_verified'),
         ('completed', 'completed'),
-        ('verified', 'verified'),
-        ('reject', 'reject'),
+        ('rejected', 'rejected'),
     )
     status = models.CharField(choices=status_choices, blank=True, null=True, max_length=155)
 
