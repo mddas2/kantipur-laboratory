@@ -30,6 +30,10 @@ class FinalSampleFormHasVerifiedAPIView(views.APIView):
             return SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True))
             # Regular user can see SampleForm instances with form_available='user'
             return SampleForm.objects.all()
+        elif user.role == roles.VERIFIER:
+            return SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True))
+            # Regular user can see SampleForm instances with form_available='user'
+            return SampleForm.objects.all()
         else:
             raise PermissionDenied("You do not have permission to access this resource.")
         
