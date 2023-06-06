@@ -54,6 +54,8 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
                 parameters = TestResult.objects.filter(commodity=commodity)
                 data['parameters'] = parameters
             return data
+        else:
+            return data
 
 
     class Meta:

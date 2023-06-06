@@ -58,8 +58,9 @@ def SampleFormHasParameterPreSave(sender, instance, **kwargs):
 #         sample_form_obj.form_available = "verifier"
 #         sample_form_obj.save()
 #     else:        
+#         print("update")
 #         if instance.is_verified == True:
-#             sample_form_obj.status = "Not Verified"
+#             sample_form_obj.status = "not_verified"
 #             sample_form_obj.save()
 
 
