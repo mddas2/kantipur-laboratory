@@ -47,7 +47,7 @@ def SampleFormHasParameterPreSave(sender, instance,created, **kwargs):
     if created:
         sample_form_obj = instance.sample_form    
         # sample_form_parameter = sample_form_obj.parameters
-        sample_form_has_parameter = SampleFormHasParameter.objects.filter(sample_form_id = sample_form_obj.id,parameter = parameter_obj.id)
+        # sample_form_has_parameter = SampleFormHasParameter.objects.filter(sample_form_id = sample_form_obj.id,parameter = parameter_obj.id)
         # check_parameter = sample_form_has_parameter.first().parameter.all()
 
         # print(check_parameter)
@@ -66,6 +66,8 @@ def SampleFormHasParameterPreSave(sender, instance,created, **kwargs):
 
 
         instance.status = "processing"
+        instance.save()
+        
         sample_form_obj.status = status
         sample_form_obj.form_available = "supervisor"
         sample_form_obj.save()
