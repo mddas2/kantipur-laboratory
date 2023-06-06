@@ -51,15 +51,15 @@ def SampleFormHasParameterPreSave(sender, instance, **kwargs):
         sample_form_obj.form_available = "supervisor"
         sample_form_obj.save()
 
-@receiver(pre_save, sender=SampleFormVerifier)
-def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
-    sample_form_obj = instance.sample_form
-    if not instance.pk:  
-        sample_form_obj.form_available = "verifier"
-        sample_form_obj.save()
-    else:        
-        if instance.is_verified == True:
-            sample_form_obj.status = "Not Verified"
-            sample_form_obj.save()
+# @receiver(pre_save, sender=SampleFormVerifier)
+# def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
+#     sample_form_obj = instance.sample_form
+#     if not instance.pk:  
+#         sample_form_obj.form_available = "verifier"
+#         sample_form_obj.save()
+#     else:        
+#         if instance.is_verified == True:
+#             sample_form_obj.status = "Not Verified"
+#             sample_form_obj.save()
 
 
