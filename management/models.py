@@ -143,7 +143,7 @@ class SampleFormParameterFormulaCalculate(models.Model):
     updated_date = models.DateTimeField(default=timezone.now)
 
 class SampleFormVerifier(models.Model):
-    sample_form = models.OneToOneField(SampleForm,related_name="verifier",on_delete=models.CASCADE,null=True)
+    sample_form = models.OneToOneField(SampleForm,related_name="verifier",on_delete=models.CASCADE)
     is_verified = models.BooleanField(default=False)
     is_sent = models.BooleanField(default=False)
 
