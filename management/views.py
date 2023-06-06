@@ -72,7 +72,7 @@ class ClientCategoryViewSet(viewsets.ModelViewSet):
         return Response(response_data)
     
 class SampleFormViewSet(viewsets.ModelViewSet):
-    queryset = SampleForm.objects.all()
+    # queryset = SampleForm.objects.all()
     serializer_class = SampleFormReadSerializer
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     search_fields = ['name','owner_user','status','form_available','supervisor_user']
