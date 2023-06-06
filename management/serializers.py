@@ -140,6 +140,9 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
     
         print("SAdd")
         if action == "create":
+            if SampleFormHasParameter.objects.filter(sample_form=sample_form, analyst_user=analyst_user).exists():
+                raise serializers.ValidationError('A SampleFormHasParameter with the same sample_form and analyst already exists(create)')
+            
             for param in parameter:
                 # print(param)
                 if SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param).exists():
@@ -149,7 +152,13 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
         elif action == 'update' or action == 'partial_update':            
             instance_id = self.instance.id 
             print(str(instance_id)+" instanse id")
-            sample_form_has_parameter_obj = SampleFormHasParameter.objects.get(id=instance_id)            
+            sample_form_has_parameter_obj = SampleFormHasParameter.objects.get(id=instance_id)  
+
+            if SampleFormHasParameter.objects.filter(sample_form=sample_form, analyst_user=analyst_user).exists() and sample_form_has_parameter_obj.sample_form == sample_form:
+                print("trying to update with same parameter")
+
+            else:
+                raise serializers.ValidationError('A SampleFormHasParameter with the same sample_form and analyst already exists(update)')
             
             for param in parameter:
                 # print(param)
