@@ -87,7 +87,8 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         user = self.request.user
         print(user)
 
-        if user.role == roles.USER:            
+        if user.role == roles.USER:
+            
             return SampleForm.objects.filter(owner_user = user.email)
         elif user.role == roles.SUPERVISOR:
             # Admin can see SampleForm instances with form_available='admin'

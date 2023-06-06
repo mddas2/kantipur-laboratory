@@ -78,8 +78,8 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
 
 
 class RoleViewSet(APIView):
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated]  
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]  
     
     def get(self,request,format=None):
         my_tuple = CustomUser.ROLE_CHOICES

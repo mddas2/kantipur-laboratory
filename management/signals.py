@@ -5,6 +5,7 @@ from django.dispatch import receiver
 from management.models import SampleFormHasParameter,SampleForm,ClientCategory,SampleFormParameterFormulaCalculate,SampleFormVerifier
 from websocket import frontend_setting
 from account.models import CustomUser
+from django.db import transaction
 
 
 @receiver(post_save, sender=SampleFormParameterFormulaCalculate)
@@ -43,8 +44,8 @@ def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwarg
 
 
 @receiver(post_save, sender=SampleFormHasParameter)
-def SampleFormHasParameterPreSave(sender, instance,created, **kwargs):
-    if created:
+def SampleFormHasParameterPreSave(sender, instance, created , **kwargs):
+    if 4==4:
         sample_form_obj = instance.sample_form    
         # sample_form_parameter = sample_form_obj.parameters
         # sample_form_has_parameter = SampleFormHasParameter.objects.filter(sample_form_id = sample_form_obj.id,parameter = parameter_obj.id)
@@ -53,24 +54,33 @@ def SampleFormHasParameterPreSave(sender, instance,created, **kwargs):
         # print(check_parameter)
         status = "pendidng"
         
-        parameters = sample_form_obj.parameters.all()    
+        parameters = sample_form_obj.parameters.all()   
+        print("\n") 
+        print(SampleFormHasParameter.objects.first().parameter.all().count())
+        print("\n")
         for param in parameters:
-            sample_form_has_parameter_object = SampleFormHasParameter.objects.filter(sample_form_id = sample_form_obj.id,parameter = param.id)
+            print(sample_form_obj)
+            sample_form_has_parameter_object = SampleFormHasParameter.objects.filter(sample_form = sample_form_obj,parameter = param.id)
+            print(sample_form_has_parameter_object)
             if sample_form_has_parameter_object.exists():
+                print(param)
+                print("exist")
                 status = "processing"
             else:
+                print(param)
+                print("not exeist")
                 status = "pending"
                 break
-
+        print(status)
         # from management.models import SampleForm
 
 
         instance.status = "processing"
-        instance.save()
-        
+        # instance.save()
+
         sample_form_obj.status = status
         sample_form_obj.form_available = "supervisor"
-        sample_form_obj.save()
+        # sample_form_obj.save()
 
 
 
