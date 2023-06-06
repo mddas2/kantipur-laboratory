@@ -8,7 +8,7 @@ from django.contrib.auth.models import AbstractUser
 class CustomUser(AbstractUser):
     phone = models.CharField(max_length=15 , null=True)
     email = models.EmailField(max_length=255,unique=True)
-    username = models.CharField(max_length=255)  
+    username = models.CharField(max_length=255,unique=True)  
 
     renew_document = models.ImageField(upload_to='media/user/renew_doument', null=True)
     registration_document = models.ImageField(upload_to='media/user/registration', null=True)
