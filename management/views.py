@@ -92,7 +92,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
             return SampleForm.objects.filter(owner_user = user.email)
         elif user.role == roles.SUPERVISOR:
             # Admin can see SampleForm instances with form_available='admin'
-            return SampleForm.objects.filter(supervisor_user=user,form_available = 'supervisor')
+            return SampleForm.objects.filter(supervisor_user=user)
             return SampleForm.objects.filter(supervisor_user = user)
         elif user.role == roles.SMU:
             # Regular user can see SampleForm instances with form_available='user'
