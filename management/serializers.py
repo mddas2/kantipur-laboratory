@@ -43,15 +43,19 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
         return representation
 
 class SampleFormWriteSerializer(serializers.ModelSerializer):
-    # def validate(self, data):
-    #     parameters = data.get('parameters')
-           
-    #     #id = data.get('id')
-    #     if len(parameters) == 0:
-    #         commodity = data.get('commodity')   
-    #         parameters = TestResult.objects.filter(commodity=commodity)
-    #         data['parameters'] = parameters
-    #     return data
+    def validate(self, data):
+        action = self.context['view'].action
+        if action == "create":
+            parameters = data.get('parameters')
+            
+            #id = data.get('id')
+            if len(parameters) == 0:
+                commodity = data.get('commodity')   
+                parameters = TestResult.objects.filter(commodity=commodity)
+                data['parameters'] = parameters
+            return data
+
+
     class Meta:
         model = SampleForm
         fields = '__all__'
