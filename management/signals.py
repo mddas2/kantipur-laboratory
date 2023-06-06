@@ -43,7 +43,7 @@ def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwarg
 
 
 @receiver(post_save, sender=SampleFormHasParameter)
-def SampleFormHasParameterPreSave(sender, instance,created **kwargs):
+def SampleFormHasParameterPreSave(sender, instance,created, **kwargs):
     if created:
         sample_form_obj = instance.sample_form    
         # sample_form_parameter = sample_form_obj.parameters
