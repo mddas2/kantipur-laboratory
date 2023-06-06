@@ -13,6 +13,7 @@ from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from . import roles
 from rest_framework.exceptions import PermissionDenied
+from django.db.models import Q
 
 class ClientCategoryViewSet(viewsets.ModelViewSet):
     queryset = ClientCategory.objects.all()
@@ -87,15 +88,19 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         print(user)
 
         if user.role == roles.USER:
+            
             return SampleForm.objects.filter(owner_user = user.email)
         elif user.role == roles.SUPERVISOR:
             # Admin can see SampleForm instances with form_available='admin'
+            return SampleForm.objects.filter(supervisor_user=user,form_available = 'supervisor')
             return SampleForm.objects.filter(supervisor_user = user)
         elif user.role == roles.SMU:
             # Regular user can see SampleForm instances with form_available='user'
+            return SampleForm.objects.filter(form_available = 'smu')
             return SampleForm.objects.all()
         elif user.role == roles.SUPERADMIN:
             # Regular user can see SampleForm instances with form_available='user'
+            return SampleForm.objects.filter(form_available = 'smu')
             return SampleForm.objects.all()
         else:
             raise PermissionDenied("You do not have permission to access this resource.")

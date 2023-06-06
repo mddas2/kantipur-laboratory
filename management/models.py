@@ -68,6 +68,7 @@ class SampleForm(models.Model):#ClientRequest
     SUPERVISOR = "supervisor"
     ANALYST = "analyst"
     USER = "user"
+    VERIFIER = "verifier"
 
     ROLE_CHOICES = (
         (SUPERADMIN, 'superadmin'),
@@ -75,6 +76,7 @@ class SampleForm(models.Model):#ClientRequest
         (SUPERVISOR, 'supervisor'),
         (ANALYST, 'analyst'),
         (USER, 'user'),
+        (VERIFIER,'verifier'),
     )
 
     form_available = models.CharField(max_length=100,choices=ROLE_CHOICES, blank=True, null=True)

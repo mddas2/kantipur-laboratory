@@ -2,7 +2,7 @@
 
 from django.db.models.signals import pre_save,post_save
 from django.dispatch import receiver
-from management.models import SampleFormHasParameter,SampleForm,ClientCategory,SampleFormParameterFormulaCalculate
+from management.models import SampleFormHasParameter,SampleForm,ClientCategory,SampleFormParameterFormulaCalculate,SampleFormVerifier
 from websocket import frontend_setting
 from account.models import CustomUser
 
@@ -28,7 +28,7 @@ def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwarg
             break
 
     from management.models import SampleForm
-    SampleForm.objects.filter(id=sample_form_obj.id).update(status=status)
+    SampleForm.objects.filter(id=sample_form_obj.id).update(status=status,form_available="analyst")
     # sample_form_has_parameter.update(status=status)
 
 
@@ -48,5 +48,14 @@ def SampleFormHasParameterPreSave(sender, instance, **kwargs):
         instance.status = "processing"
         sample_form_obj = instance.sample_form
         sample_form_obj.status = "processing"
+        sample_form_obj.form_available = "supervisor"
         sample_form_obj.save()
-    
+
+@receiver(pre_save, sender=SampleFormVerifier)
+def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
+    if not instance.pk:
+        
+        sample_form_obj = instance.sample_form
+        # sample_form_obj.status = "Not Verified"
+        sample_form_obj.form_available = "verifier"
+        sample_form_obj.save()
