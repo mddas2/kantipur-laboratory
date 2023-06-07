@@ -65,7 +65,8 @@ def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
             break
     print(status)
 
-    sample_form_has_parameters = SampleFormHasParameter.objects.filter(id=instance.id).update(status="processing")
+    print(instance.id)
+    instance.status = "processing"
     sample_form_obj.status = status
     
     if status == "processing":
