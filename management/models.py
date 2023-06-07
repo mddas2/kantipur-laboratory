@@ -148,6 +148,12 @@ class SampleFormParameterFormulaCalculate(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
 
+    status_choices = (        
+        ('completed', 'completed'),
+    )
+    status = models.CharField(choices=status_choices, default="completed", max_length=155)
+
+
 class SampleFormVerifier(models.Model):
     sample_form = models.OneToOneField(SampleForm,related_name="verifier",on_delete=models.CASCADE,default=None)
     is_verified = models.BooleanField(default=False)
