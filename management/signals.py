@@ -43,8 +43,6 @@ def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwarg
 #         print("parameter is not null ")
 
 
-
-
 @receiver(pre_save, sender=SampleFormHasParameter)
 def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
 
@@ -75,7 +73,9 @@ def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
     if status == "processing":
         pass
         sample_form_obj.form_available = "analyst"    
-    sample_form_obj.save()
+
+    if sample_form_obj.status == "pending":
+        sample_form_obj.save()
 
       
 
