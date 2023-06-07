@@ -14,9 +14,19 @@ def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwarg
     sample_form_obj = instance.sample_form    
     parameter_obj = instance.parameter
     sample_form_has_parameter = SampleFormHasParameter.objects.filter(sample_form_id = sample_form_obj.id,parameter = parameter_obj.id)
-    # check_parameter = sample_form_has_parameter.first().parameter.all()
+    check_parameter = sample_form_has_parameter.first().parameter.all()
+    print(check_parameter)
 
-    # print(check_parameter)
+    sample_form_has_parameter_status = "processing"
+    for ana_param in check_parameter:
+        formula_calculate_object = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id = sample_form_obj.id,parameter = ana_param.id)
+        if formula_calculate_object.exists():
+            sample_form_has_parameter_status = "completed"
+        else:
+            sample_form_has_parameter_status = "processing"
+            break
+    print(sample_form_has_parameter_status)
+
     status = "processing"
     
     parameters = sample_form_obj.parameters.all()    
@@ -32,6 +42,8 @@ def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwarg
     SampleForm.objects.filter(id=sample_form_obj.id).update(status=status,form_available="analyst") 
     if status == "not_verified":
         sample_form_has_parameter.update(status="completed")
+    sample_form_has_parameter.update(status=sample_form_has_parameter_status)
+    
     
 
 
