@@ -87,9 +87,8 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         user = self.request.user
         print(user)
 
-        if user.role == roles.USER:
-            
-            return SampleForm.objects.filter(owner_user = user.email)
+        if user.role == roles.USER:         
+            return SampleForm.objects.filter(Q(owner_user = user.email) & ~Q(status="completed") )
         elif user.role == roles.SUPERVISOR:
             # Admin can see SampleForm instances with form_available='admin'
             return SampleForm.objects.filter(supervisor_user=user,status="pending")
