@@ -26,7 +26,8 @@ class SampleFormHasAnalystAPIView(views.APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request, format=None):
         print(request.user.role)
-        queryset = SampleForm.objects.filter(supervisor_user = request.user)
+        # supervisor_user = request.user 
+        queryset = SampleForm.objects.filter(Q(supervisor_user = request.user) & ~Q(status="completed") )
         serializer = SampleFormHasAnalystSerializer(queryset, many=True)
         return Response(serializer.data)
     
