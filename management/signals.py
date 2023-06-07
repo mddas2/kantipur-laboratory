@@ -59,7 +59,6 @@ def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
         sample_form_has_parameter_object = SampleFormHasParameter.objects.filter(sample_form = sample_form_obj,parameter = param.id)
         if sample_form_has_parameter_object.exists():
             status = "processing"
-        
         else:
             status = "pending"
             break

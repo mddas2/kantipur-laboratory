@@ -53,6 +53,8 @@ class SampleForm(models.Model):#ClientRequest
     supervisor_user = models.ForeignKey(CustomUser, related_name="sample_has_parameters",default=None,on_delete=models.SET_NULL,null=True)
     parameters = models.ManyToManyField(TestResult, related_name="sample_form",blank=True)
 
+    is_analyst_test = models.BooleanField(default=False) #if in paramater_has_analyst send to supervisor then this.from all param then True
+
     status_choices = (
         ('pending', 'pending'),
         ('approved','approved'),
