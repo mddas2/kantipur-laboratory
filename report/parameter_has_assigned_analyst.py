@@ -51,7 +51,7 @@ class SampleFormHasParameterAnalystSerializer(serializers.ModelSerializer):
                 analyst_obj = sample_form_has_assigned_analyst_obj.first().analyst_user
                 first_name = analyst_obj.first_name
                 last_name = analyst_obj.last_name
-                status = sample_form_has_assigned_analyst_obj.first().status
+                # status = sample_form_has_assigned_analyst_obj.first().status
                 created_date = sample_form_has_assigned_analyst_obj.first().created_date
                 parameter_data['first_name'] = first_name
                 parameter_data['last_name'] = last_name
@@ -64,7 +64,7 @@ class SampleFormHasParameterAnalystSerializer(serializers.ModelSerializer):
                 else:
                     parameter_data['status'] = "processing"
                     parameter_data['result'] = '-'
-                parameter_data['status'] = status
+                # parameter_data['status'] = "completed"
 
             parameter_data['exist'] = exists
 
