@@ -65,7 +65,11 @@ def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
     print(status)
 
     print(instance.id)
-    instance.status = "processing"
+    if instance.status == "completed":
+        instance.status = "completed"
+    else:
+        instance.status = "processing"
+        
     sample_form_obj.status = status
     
     if status == "processing":
