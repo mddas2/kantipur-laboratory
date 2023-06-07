@@ -103,19 +103,11 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
     def get_parameter(self, obj):
         parameter_data = TestResultSerializer(obj.parameter, many=True).data
 
-        # Extract the parameter identifiers from obj.parameter
-        # parameter_ids = [parameter['id'] for parameter in parameter_data]
-        # print(parameter_ids)
-
-        # Filter SampleFormParameterFormulaCalculate by commodity_id, parameter_ids, and sample_form_id
-     
-        # print(obj.parameter)
+        
         is_tested = True
         for parameter in parameter_data:
             formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(parameter = parameter['id'],sample_form=obj.sample_form_id).first()
-            # formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(commodity=obj.commodity_id,parameter = parameter['id'],sample_form=obj.sample_form_id).first()
-            # print(obj.commodity_id)
-            # print(parameter['id'])
+        
             parameter['result'] = formula_calculate.result if formula_calculate else "-"
             
             if formula_calculate == None:
