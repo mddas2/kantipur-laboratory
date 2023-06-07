@@ -70,7 +70,7 @@ def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
     
     if status == "processing":
         pass
-        # sample_form_obj.form_available = "analyst"    
+        sample_form_obj.form_available = "analyst"    
     sample_form_obj.save()
 
       
