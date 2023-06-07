@@ -90,6 +90,8 @@ class SampleFormHasParameter(models.Model):#sample form has parameter and parame
     analyst_user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,default=None)
        
     parameter = models.ManyToManyField(TestResult, related_name="sample_has_parameters")
+
+    is_supervisor_sent = models.BooleanField(default=False)
     
     status_choices = (        
         ('processing', 'processing'),

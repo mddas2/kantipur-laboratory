@@ -103,24 +103,19 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
     def get_parameter(self, obj):
         parameter_data = TestResultSerializer(obj.parameter, many=True).data
 
-        
-        is_tested = True
         for parameter in parameter_data:
             formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(parameter = parameter['id'],sample_form=obj.sample_form_id).first()
         
-            parameter['result'] = formula_calculate.result if formula_calculate else "-"
+            parameter['result'] = formula_calculate.result if formula_calculate else "-"           
+       
             
-            if formula_calculate == None:
-                is_tested = False
-            
-        return parameter_data,is_tested
+        return parameter_data
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         # print(instance.parameter.first().id)
-        parameter,is_tested = self.get_parameter(instance)
+        parameter = self.get_parameter(instance)
         representation['parameter'] = parameter
-        representation['is_tested'] = is_tested
 
         return representation
 
@@ -137,7 +132,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
         action = self.context['view'].action
     
 
-        if len(attrs) == 1 and action == 'partial_update' and 'status' in attrs:
+        if len(attrs) == 2 and action == 'partial_update' and 'is_supervisor_sent' and 'status' in attrs:
             return attrs
         elif action == 'partial_update':
             raise serializers.ValidationError('Partial updates not allowed....')
