@@ -43,49 +43,36 @@ def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwarg
 #         print("parameter is not null ")
 
 
-@receiver(post_save, sender=SampleFormHasParameter)
-def SampleFormHasParameterPreSave(sender, instance, created , **kwargs):
-    if 4==4:
-        sample_form_obj = instance.sample_form    
-        # sample_form_parameter = sample_form_obj.parameters
-        # sample_form_has_parameter = SampleFormHasParameter.objects.filter(sample_form_id = sample_form_obj.id,parameter = parameter_obj.id)
-        # check_parameter = sample_form_has_parameter.first().parameter.all()
 
-        # print(check_parameter)
-        status = "pendidng"
+
+@receiver(pre_save, sender=SampleFormHasParameter)
+def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
+
+    sample_form_obj = instance.sample_form    
+
+    status = "pendidng"
+    
+    parameters = sample_form_obj.parameters.all()
+
+    for param in parameters:
+    
+        sample_form_has_parameter_object = SampleFormHasParameter.objects.filter(sample_form = sample_form_obj,parameter = param.id)
+        if sample_form_has_parameter_object.exists():
+            status = "processing"
         
-        parameters = sample_form_obj.parameters.all()   
-        print("\n") 
-        print(SampleFormHasParameter.objects.first().parameter.all().count())
-        print("\n")
-        for param in parameters:
-            print(sample_form_obj)
-            sample_form_has_parameter_object = SampleFormHasParameter.objects.filter(sample_form = sample_form_obj,parameter = param.id)
-            print(sample_form_has_parameter_object)
-            if sample_form_has_parameter_object.exists():
-                print(param)
-                print("exist")
-                status = "processing"
-            else:
-                print(param)
-                print("not exeist")
-                status = "pending"
-                break
-        print(status)
-        # from management.models import SampleForm
+        else:
+            status = "pending"
+            break
+    print(status)
 
+    # instance.status = "processing"
+    # instance.save()
+    SampleFormHasParameter.objects.filter(id=instance.id).update(status="processing")
+    sample_form_obj.status = status
+    sample_form_obj.form_available = "supervisor"
+    sample_form_obj.save()
 
-        instance.status = "processing"
-        # instance.save()
-
-        sample_form_obj.status = status
-        sample_form_obj.form_available = "supervisor"
-        # sample_form_obj.save()
-
-
-
-
-        
+      
 
 @receiver(pre_save, sender=SampleFormVerifier)
 def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
