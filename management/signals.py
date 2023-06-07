@@ -29,9 +29,8 @@ def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwarg
             break
 
     from management.models import SampleForm
-    SampleForm.objects.filter(id=sample_form_obj.id).update(status=status,form_available="analyst")
-    if status == "not_verified":
-        sample_form_has_parameter.update(status="completed")
+    SampleForm.objects.filter(id=sample_form_obj.id).update(status=status,form_available="analyst")  
+    sample_form_has_parameter.update(status="completed")
 
 
 # @receiver(pre_save, sender=SampleForm)
