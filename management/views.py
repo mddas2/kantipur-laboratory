@@ -33,7 +33,7 @@ class ClientCategoryViewSet(viewsets.ModelViewSet):
 
         # Create a custom response
         response_data = {
-            "message": "created successfully",
+            "message": "client category created successfully",
             "data": serializer.data
         }
 
@@ -51,7 +51,7 @@ class ClientCategoryViewSet(viewsets.ModelViewSet):
 
         # Create a custom response
         response_data = {
-            "message": "updated successfully",
+            "message": "client category updated successfully",
             "data": serializer.data
         }
 
@@ -66,7 +66,7 @@ class ClientCategoryViewSet(viewsets.ModelViewSet):
 
         # Create a custom response
         response_data = {
-            "message": "deleted successfully"
+            "message": "client category deleted successfully"
         }
 
         # Return the custom response
@@ -76,7 +76,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     # queryset = SampleForm.objects.all()
     serializer_class = SampleFormReadSerializer
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['name','owner_user','status','form_available','supervisor_user']
+    search_fields = ['name','owner_user','status','form_available','supervisor_user','commodity__name']
     ordering_fields = ['name','id']
     filterset_fields = ['name','owner_user','status','form_available','commodity_id','supervisor_user']
     authentication_classes = [JWTAuthentication]
@@ -143,7 +143,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
 
         # Create a custom response
         response_data = {
-            "message": "created successfully",
+            "message": "Sample submitted successfully",
             "data": serializer.data
         }
 
@@ -161,7 +161,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
 
         # Create a custom response
         response_data = {
-            "message": "updated successfully",
+            "message": "Sample updated successfully",
             "data": serializer.data
         }
 
@@ -176,7 +176,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
 
         # Create a custom response
         response_data = {
-            "message": "deleted successfully"
+            "message": "Sample deleted successfully"
         }
 
         # Return the custom response
@@ -202,7 +202,7 @@ class CommodityViewSet(viewsets.ModelViewSet):
 
         # Create a custom response
         response_data = {
-            "message": "created successfully",
+            "message": "commodity created successfully",
             "data": serializer.data
         }
 
@@ -220,7 +220,7 @@ class CommodityViewSet(viewsets.ModelViewSet):
 
         # Create a custom response
         response_data = {
-            "message": "updated successfully",
+            "message": "commodity updated successfully",
             "data": serializer.data
         }
 
@@ -235,7 +235,7 @@ class CommodityViewSet(viewsets.ModelViewSet):
 
         # Create a custom response
         response_data = {
-            "message": "deleted successfully"
+            "message": "commodity deleted successfully"
         }
 
         # Return the custom response
@@ -261,7 +261,7 @@ class CommodityCategoryViewSet(viewsets.ModelViewSet):
 
         # Create a custom response
         response_data = {
-            "message": "created successfully",
+            "message": "commodity category created successfully",
             "data": serializer.data
         }
 
@@ -279,7 +279,7 @@ class CommodityCategoryViewSet(viewsets.ModelViewSet):
 
         # Create a custom response
         response_data = {
-            "message": "updated successfully",
+            "message": "commodity category updated successfully",
             "data": serializer.data
         }
 
@@ -294,7 +294,7 @@ class CommodityCategoryViewSet(viewsets.ModelViewSet):
 
         # Create a custom response
         response_data = {
-            "message": "deleted successfully"
+            "message": "commodity category deleted successfully"
         }
 
         # Return the custom response
@@ -317,7 +317,7 @@ class TestResultViewSet(viewsets.ModelViewSet):
 
         # Create a custom response
         response_data = {
-            "message": "created successfully",
+            "message": "parameter created successfully",
             "data": serializer.data
         }
 
@@ -335,7 +335,7 @@ class TestResultViewSet(viewsets.ModelViewSet):
 
         # Create a custom response
         response_data = {
-            "message": "updated successfully",
+            "message": "parameter updated successfully",
             "data": serializer.data
         }
 
@@ -350,7 +350,7 @@ class TestResultViewSet(viewsets.ModelViewSet):
 
         # Create a custom response
         response_data = {
-            "message": "deleted successfully"
+            "message": "parameter deleted successfully"
         }
 
         # Return the custom response
@@ -373,7 +373,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
 
         # Create a custom response
         response_data = {
-            "message": "created successfully",
+            "message": "payment successfully",
             "data": serializer.data
         }
 
@@ -391,7 +391,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
 
         # Create a custom response
         response_data = {
-            "message": "updated successfully",
+            "message": "payment updated successfully",
             "data": serializer.data
         }
 
@@ -406,7 +406,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
 
         # Create a custom response
         response_data = {
-            "message": "deleted successfully"
+            "message": "payment deleted successfully"
         }
 
         # Return the custom response
