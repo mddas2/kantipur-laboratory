@@ -107,7 +107,7 @@ class GroupViewSet(viewsets.ModelViewSet):
 
         # Create a custom response
         response_data = {
-            "message": "created successfully",
+            "message": "Group created successfully",
             "data": serializer.data
         }
 
@@ -125,7 +125,7 @@ class GroupViewSet(viewsets.ModelViewSet):
 
         # Create a custom response
         response_data = {
-            "message": "updated successfully",
+            "message": "Group updated successfully",
             "data": serializer.data
         }
 
@@ -140,7 +140,7 @@ class GroupViewSet(viewsets.ModelViewSet):
 
         # Create a custom response
         response_data = {
-            "message": "deleted successfully"
+            "message": "Group deleted successfully"
         }
 
         # Return the custom response
@@ -162,7 +162,7 @@ class PermissionAllDelete(APIView):
     permission_classes = [IsAuthenticated]  
     def get(self, request, format=None):
         object = Permission.objects.all().delete()
-        return Response({'message': 'delete successful'}, status=status.HTTP_200_OK)
+        return Response({'message': 'All permission delete successful'}, status=status.HTTP_200_OK)
     
 # Create your views here.
 class LoginView(APIView):
