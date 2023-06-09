@@ -13,38 +13,35 @@ class CustomUserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Password must be 8 digit')
         return make_password(value) 
       
-    def validate_role(self,value):#field level validation
-        user = self.context['request'].user
-        if not user.is_authenticated:
-            if value!=roles.USER:
-                raise serializers.ValidationError("You can only set USER as role") 
-        elif user.role==roles.SUPERADMIN:
-            return value
-        elif user.is_authenticated and value!=roles.USER:
-                raise serializers.ValidationError("You can only set USER as role") 
-        return value
+    # def validate_role(self,value):#field level validation
+    #     user = self.context['request'].user
+    #     if not user.is_authenticated:
+    #         if value!=roles.USER:
+    #             raise serializers.ValidationError("You can only set USER as role") 
+    #     elif user.role==roles.SUPERADMIN:
+    #         return value
+    #     elif user.is_authenticated and value!=roles.USER:
+    #             raise serializers.ValidationError("You can only set USER as role") 
+    #     return value
 
-    def validate_is_superuser(self,value):
-        if value == True:
-            raise serializers.ValidationError("You can not set USER as superadmin") 
-        else:
-            return False
+    # def validate_is_superuser(self,value):
+    #     if value == True:
+    #         raise serializers.ValidationError("You can not set USER as superadmin") 
+    #     else:
+    #         return False
     
-    def validate(self, attrs):
+    # def validate(self, attrs):
         
-        action = self.context['view'].action
+    #     action = self.context['view'].action
         
-        if action == 'partial_update' or action == 'update':
-            password = attrs.get('password')
-            if password is not None:
-                instance = self.instance
-                if not instance.check_password(password):
-                    raise serializers.ValidationError("Password does not match")
-        return attrs
+    #     if action == 'partial_update' or action == 'update':
+    #         password = attrs.get('password')
+    #         if password is not None:
+    #             instance = self.instance
+    #             if not instance.check_password(password):
+    #                 raise serializers.ValidationError("Password does not match")
+    #     return attrs
 
-
-
-        
     
     class Meta:
         model = CustomUser
