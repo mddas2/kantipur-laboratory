@@ -31,7 +31,7 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action == 'list':
-            return []   
+           
             # Only allow authenticated users to list users
             return [IsAuthenticated()]
         else:
