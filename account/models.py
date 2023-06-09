@@ -19,7 +19,10 @@ class CustomUser(AbstractUser):
     is_active = models.BooleanField(default=True)
 
     is_verified = models.IntegerField(choices=[(0, 'Not verified'), (1, 'Verified')], default=0)
-    client_category = models.ForeignKey("management.ClientCategory",related_name="user",on_delete=models.CASCADE,null=True)    
+    client_category = models.ForeignKey("management.ClientCategory",related_name="user",on_delete=models.CASCADE,null=True)  
+
+    created_by = models.IntegerField(max_length=10,null=True)
+    remarks = models.CharField(max_length=200,null=True)
 
     SUPERADMIN = 1
     SMU = 2

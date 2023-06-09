@@ -26,6 +26,15 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
     filterset_fields = ['email','username','is_verified','role','client_category_id']
     # authentication_classes = [JWTAuthentication]
     # permission_classes = [IsAuthenticated]
+
+    def get_permissions(self):
+        if self.action == 'list':
+            # Only allow authenticated users to list users
+            return []
+            return [IsAuthenticated()]
+        else:
+            # For other actions, no authentication is required
+            return []
     
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
