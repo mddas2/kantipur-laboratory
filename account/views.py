@@ -51,6 +51,7 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
             # Regular user can see SampleForm instances with form_available='user'
             return CustomUser.objects.all()           
         else:
+            return CustomUser.objects.filter(email=user.email)
             raise PermissionDenied("You do not have permission to access this resource.")
     
     def create(self, request, *args, **kwargs):
