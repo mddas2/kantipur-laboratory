@@ -31,14 +31,15 @@ class CustomUserSerializer(serializers.ModelSerializer):
             return False
     
     def validate(self, attrs):
-        password = attrs.get('password')
+        
         action = self.context['view'].action
-
+        
         if action == 'partial_update' or action == 'update':
-            instance = self.instance
-            if not instance.check_password(password):
-                raise serializers.ValidationError("Password does not match")
-
+            password = attrs.get('password')
+            if password is not None:
+                instance = self.instance
+                if not instance.check_password(password):
+                    raise serializers.ValidationError("Password does not match")
         return attrs
 
 
