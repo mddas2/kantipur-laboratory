@@ -3,6 +3,7 @@ from management.serializers import ClientCategorySerializer
 from django.contrib.auth.models import Group,Permission
 from account.models import CustomUser
 from django.contrib.auth.hashers import make_password
+from management import roles
 
 class CustomUserSerializer(serializers.ModelSerializer):
     # client_category = ClientCategorySerializer(read_only=True)
@@ -10,7 +11,14 @@ class CustomUserSerializer(serializers.ModelSerializer):
     def validate_password(self,value):#field level validation
         if len(value) < 2:
             raise serializers.ValidationError('Password must be 8 digit')
-        return make_password(value)   
+        return make_password(value) 
+      
+    def validate_role(self,value):#field level validation
+        user = self.context['request'].user
+        if user.role==roles.SUPERADMIN:
+            return value
+        elif value!=roles.USER:
+            raise serializers.ValidationError("You can only set USER") 
     
     class Meta:
         model = CustomUser

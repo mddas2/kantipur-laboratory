@@ -16,6 +16,8 @@ from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework.filters import SearchFilter
 from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from management import roles
+from rest_framework.exceptions import PermissionDenied
 
 class CustomUserSerializerViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
@@ -24,17 +26,31 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
     search_fields = ['email','username','is_verified']
     ordering_fields = ['username','id']
     filterset_fields = ['email','username','is_verified','role','client_category_id']
-    # authentication_classes = [JWTAuthentication]
+    authentication_classes = [JWTAuthentication]
     # permission_classes = [IsAuthenticated]
 
     def get_permissions(self):
         if self.action == 'list':
+            return []   
             # Only allow authenticated users to list users
-            return []
             return [IsAuthenticated()]
         else:
             # For other actions, no authentication is required
             return []
+    
+    def get_queryset(self):
+        user = self.request.user
+           
+        if user.role == roles.SMU:
+            # Regular user can see SampleForm instances with form_available='user'
+            return CustomUser.objects.filter(roles = roles.USER)
+            
+        elif user.role == roles.SUPERADMIN:
+            # Regular user can see SampleForm instances with form_available='user'
+            return CustomUser.objects.all()
+           
+        else:
+            raise PermissionDenied("You do not have permission to access this resource.")
     
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
