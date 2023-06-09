@@ -56,11 +56,12 @@ class SampleForm(models.Model):#ClientRequest
     is_analyst_test = models.BooleanField(default=False) #if in paramater_has_analyst send to supervisor then this.from all param then True
 
     status_choices = (
-        ('pending', 'pending'),
-        ('approved','approved'),
-        ('processing', 'processing'),
-        ('not_verified', 'not_verified'),
-        ('completed', 'completed'),
+        ('pending', 'pending'),#initial
+        ('processing', 'processing'), #smu-assign-supervisor (smu:pending-not_assign,display:processing)
+        ('not_assigned', 'not_assigned'),#supervisor-assign-analyst (supervisor:not_assign-processing,display:processing)
+        ('not_verified', 'not_verified'),#analyst-to-supervisor(supervisor:processing-not_verified,display:not_verified)
+        ('completed', 'completed'),#supervisor-assign-verifier (supervisor:not_verified-verified,display:processing) action:recheck,reject
+        ('recheck', 'recheck'),
         ('rejected', 'rejected'),
     )
     status = models.CharField(choices=status_choices, blank=True, null=True, max_length=155)
