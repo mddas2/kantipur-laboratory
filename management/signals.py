@@ -73,7 +73,7 @@ def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
         else:
             status = "not_assigned"
             break
-    # print(status)
+    print(status)
 
     # print(instance.id)
     if instance.status == "completed":
