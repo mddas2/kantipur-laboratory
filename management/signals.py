@@ -73,51 +73,21 @@ def sample_form_has_parameter_m2m_changed(sender, instance, action, reverse, mod
             status = "not_assigned"
             break
    
-    print(status)
-
+    print(status," look ")
+    print(sample_form_obj.status," obj  status")
         
     sample_form_obj.status = status   
-
-    if sample_form_obj.status == "not_assigned":
-        sample_form_obj.save()
+    sample_form_obj.save()
+  
 
 @receiver(pre_save, sender=SampleFormHasParameter)
 def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
 
-    sample_form_obj = instance.sample_form    
-
-    status = "pendidng"
-    
-    parameters = sample_form_obj.parameters.all()
-
-    for param in parameters:
-    
-        sample_form_has_parameter_object = SampleFormHasParameter.objects.filter(sample_form = sample_form_obj,parameter = param.id)
-        if sample_form_has_parameter_object.exists():
-            status = "processing"
-        else:
-            status = "not_assigned"
-            break
-    print(status)
-    # print(instance.parameter.all())
-
-    # print(instance.id)
     if instance.status == "completed":
         instance.status = "completed"
     else:
         instance.status = "processing"
-        
-    sample_form_obj.status = status
-    
-    if status == "processing":
-        pass
-        sample_form_obj.form_available = "analyst"    
-
-    if sample_form_obj.status == "not_assigned":
-        sample_form_obj.save()
-
-      
-
+   
 @receiver(pre_save, sender=SampleFormVerifier)
 def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
     sample_form_obj = instance.sample_form
