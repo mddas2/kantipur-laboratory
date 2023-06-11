@@ -25,7 +25,6 @@ def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwarg
         else:
             sample_form_has_parameter_status = "processing"
             break
-    print(sample_form_has_parameter_status)
 
     status = "processing"
     
@@ -72,11 +71,11 @@ def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
         if sample_form_has_parameter_object.exists():
             status = "processing"
         else:
-            status = "pending"
+            status = "not_assigned"
             break
-    print(status)
+    # print(status)
 
-    print(instance.id)
+    # print(instance.id)
     if instance.status == "completed":
         instance.status = "completed"
     else:
@@ -88,7 +87,7 @@ def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
         pass
         sample_form_obj.form_available = "analyst"    
 
-    if sample_form_obj.status == "pending":
+    if sample_form_obj.status == "not_assigned":
         sample_form_obj.save()
 
       
