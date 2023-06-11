@@ -35,7 +35,7 @@ class CompletedSampleFormHasVerifierAPIView(views.APIView):
     # authentication_classes = [JWTAuthentication]
     # permission_classes = [IsAuthenticated]
     def get(self, request, format=None):
-        queryset = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=False))
+        queryset = SampleForm.objects.filter(Q(verifier__is_sent=False) & Q(verifier__is_verified=False))
 
         serializer = CompletedSampleFormHasVerifierSerializer(queryset, many=True)
         return Response(serializer.data)
