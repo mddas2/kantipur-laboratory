@@ -98,17 +98,11 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         if user.role == roles.USER:         
             return SampleForm.objects.filter(Q(owner_user = user.email) & ~Q(status="completed") )
         elif user.role == roles.SUPERVISOR:
-            # Admin can see SampleForm instances with form_available='admin'
-            return SampleForm.objects.filter(supervisor_user=user,status="pending")
-            return SampleForm.objects.filter(supervisor_user = user)
+            return SampleForm.objects.filter(supervisor_user=user,status="not_assigned")
         elif user.role == roles.SMU:
-            # Regular user can see SampleForm instances with form_available='user'
             return SampleForm.objects.filter(form_available = 'smu')
-            return SampleForm.objects.all()
         elif user.role == roles.SUPERADMIN:
-            # Regular user can see SampleForm instances with form_available='user'
             return SampleForm.objects.filter(form_available = 'smu')
-            return SampleForm.objects.all()
         else:
             raise PermissionDenied("You do not have permission to access this resource.")
         
