@@ -30,7 +30,7 @@ class SampleFormHasParameterViewSet(viewsets.ModelViewSet):
         user = self.request.user
         
         if user.role == roles.ANALYST:
-            return SampleFormHasParameter.objects.filter(analyst_user = user)       
+            return SampleFormHasParameter.objects.filter(analyst_user = user,status="processing")       
         else:
              raise PermissionDenied("You do not have permission to access this resource.")
 
