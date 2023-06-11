@@ -6,6 +6,7 @@ from management.models import SampleFormHasParameter,SampleForm,ClientCategory,S
 from websocket import frontend_setting
 from account.models import CustomUser
 from django.db import transaction
+from django.db.models.signals import m2m_changed
 
 
 @receiver(post_save, sender=SampleFormParameterFormulaCalculate)
@@ -56,6 +57,30 @@ def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwarg
 #         print("parameter is not null ")
 
 
+@receiver(m2m_changed, sender=SampleFormHasParameter.parameter.through)
+def sample_form_has_parameter_m2m_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
+    sample_form_obj = instance.sample_form    
+
+    status = "not_assigned"
+    
+    parameters = sample_form_obj.parameters.all()
+
+    for param in parameters:    
+        sample_form_has_parameter_object = SampleFormHasParameter.objects.filter(sample_form = sample_form_obj,parameter = param.id)
+        if sample_form_has_parameter_object.exists():
+            status = "processing"
+        else:
+            status = "not_assigned"
+            break
+   
+    print(status)
+
+        
+    sample_form_obj.status = status   
+
+    if sample_form_obj.status == "not_assigned":
+        sample_form_obj.save()
+
 @receiver(pre_save, sender=SampleFormHasParameter)
 def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
 
@@ -74,6 +99,7 @@ def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
             status = "not_assigned"
             break
     print(status)
+    # print(instance.parameter.all())
 
     # print(instance.id)
     if instance.status == "completed":
