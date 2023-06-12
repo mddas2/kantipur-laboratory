@@ -29,7 +29,7 @@ class SampleFormHasAnalystAPIView(views.APIView):
     def get(self, request, format=None):
         print(request.user.role)
         # supervisor_user = request.user 
-        queryset = SampleForm.objects.filter(Q(supervisor_user = request.user) & ~Q(status="completed") )
+        queryset = SampleForm.objects.filter(Q(supervisor_user = request.user) & ~Q(status="completed") & ~Q(status="not_assigned"))
         serializer = SampleFormHasAnalystSerializer(queryset, many=True)
         return Response(serializer.data)
     
