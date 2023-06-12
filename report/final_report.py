@@ -14,8 +14,7 @@ class FinalSampleFormHasVerifiedAPIView(views.APIView):
     permission_classes = [IsAuthenticated]
     def get_queryset(self):
         user = self.request.user
-        print(user)
-
+  
         if user.role == roles.USER:
             return SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True) & Q(owner_user=user.email))
         elif user.role == roles.SUPERVISOR:
@@ -25,7 +24,7 @@ class FinalSampleFormHasVerifiedAPIView(views.APIView):
         elif user.role == roles.SUPERADMIN:
             return SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True))
         elif user.role == roles.ANALYST:
-            return SampleForm.objects.filter(Q(sample_has_parameter_analyst__status='completed') & Q(sample_has_parameter_analyst__analyst_user=user))
+            return SampleForm.objects.filter(Q(sample_has_parameter_analyst__status='completed') & Q(sample_has_parameter_analyst__analyst_user=user) & Q(sample_has_parameter_analyst__is_supervisor_sent=True))
         elif user.role == roles.VERIFIER:
             return SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True))
         else:
