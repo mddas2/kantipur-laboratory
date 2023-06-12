@@ -9,24 +9,17 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-class FinalSampleFormHasVerifiedAPIView(views.APIView):
+class TrackSampleFormAPIView(views.APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     def get_queryset(self):
         user = self.request.user
   
-        if user.role == roles.USER:
-            return SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True) & Q(owner_user=user.email))
-        elif user.role == roles.SUPERVISOR:
-            return SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True) & Q(supervisor_user=user))
-        elif user.role == roles.SMU:
-            return SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True))
+        if user.role == roles.SMU:
+            return SampleForm.objects.all()
         elif user.role == roles.SUPERADMIN:
-            return SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True))
-        elif user.role == roles.ANALYST:
-            return SampleForm.objects.filter(Q(sample_has_parameter_analyst__status='completed') & Q(sample_has_parameter_analyst__analyst_user=user) & Q(sample_has_parameter_analyst__is_supervisor_sent=True))
-        elif user.role == roles.VERIFIER:
-            return SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True))
+            return SampleForm.objects.all()
+
         else:
             raise PermissionDenied("You do not have permission to access this resource.")
         

@@ -39,9 +39,13 @@ def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwarg
             break
 
     from management.models import SampleForm
-    SampleForm.objects.filter(id=sample_form_obj.id).update(status=status,form_available="analyst") 
+    SampleForm.objects.filter(id=sample_form_obj.id).update(status=status,form_available="analyst")
+
     if status == "not_verified":
         sample_form_has_parameter.update(status="completed")
+    else:
+        sample_form_has_parameter.update(status="processing")
+        
     sample_form_has_parameter.update(status=sample_form_has_parameter_status)
     
     
@@ -83,10 +87,8 @@ def sample_form_has_parameter_m2m_changed(sender, instance, action, reverse, mod
 @receiver(pre_save, sender=SampleFormHasParameter)
 def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
 
-    if instance.status == "completed":
-        instance.status = "completed"
-    else:
-        instance.status = "processing"
+    if not instance.pk:
+        instance.status = "pending"
    
 @receiver(pre_save, sender=SampleFormVerifier)
 def SampleFormHasVerifierPreSave(sender, instance, **kwargs):

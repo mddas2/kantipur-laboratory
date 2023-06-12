@@ -62,6 +62,26 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
         model = SampleForm
         fields = '__all__'
 
+class SampleFormReadAnalystSerializer(serializers.ModelSerializer):
+    def validate(self, data):
+        action = self.context['view'].action
+        if action == "create":
+            parameters = data.get('parameters')
+            
+            #id = data.get('id')
+            if len(parameters) == 0:
+                commodity = data.get('commodity')   
+                parameters = TestResult.objects.filter(commodity=commodity)
+                data['parameters'] = parameters
+            return data
+        else:
+            return data
+
+
+    class Meta:
+        model = SampleForm
+        fields = '__all__'
+
 class CommoditySerializer(serializers.ModelSerializer):
     test_result = TestResultSerializer(many=True,read_only=True)
     class Meta:
@@ -92,7 +112,7 @@ class CommodityCategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
-    sample_form = SampleFormWriteSerializer(read_only=True)
+    sample_form = SampleFormReadAnalystSerializer(read_only=True)
     commodity = CommodityWriteSerializer(read_only=True)
     parameter = TestResultSerializer(many=True,read_only=True)
     class Meta:
