@@ -1,5 +1,5 @@
 from . import views,preeti_to_unicode,preeti_to_pdf
-from . import final_report,final_report_analyst
+from . import final_report
 from report.admin_folders import supervisor
 
 from django.urls import path, include
