@@ -87,7 +87,6 @@ def sample_form_has_parameter_m2m_changed(sender, instance, action, reverse, mod
 def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
     if instance.is_supervisor_sent == True:
         sample_form_obj = instance.sample_form
-        print(sample_form_obj.id)
         sample_form_has_parameter_obj = SampleFormHasParameter.objects.filter(sample_form = sample_form_obj.id) 
         is_analyst_test = False
         for obj in sample_form_has_parameter_obj:

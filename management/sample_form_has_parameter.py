@@ -22,17 +22,17 @@ class SampleFormHasParameterViewSet(viewsets.ModelViewSet):
     filterset_fields = ['status','form_available','analyst_user','sample_form','commodity']
     ordering_fields = ['id']
     
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     pagination_class = MyLimitOffsetPagination
 
-    # def get_queryset(self):
-    #     user = self.request.user
+    def get_queryset(self):
+        user = self.request.user
         
-    #     if user.role == roles.ANALYST:
-    #         return SampleFormHasParameter.objects.filter(analyst_user = user,is_supervisor_sent=False)       
-    #     else:
-    #          raise PermissionDenied("You do not have permission to access this resource.")
+        if user.role == roles.ANALYST:
+            return SampleFormHasParameter.objects.filter(analyst_user = user,is_supervisor_sent=False)       
+        else:
+             raise PermissionDenied("You do not have permission to access this resource.")
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
