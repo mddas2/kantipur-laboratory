@@ -54,7 +54,10 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer(serializers.ModelSeria
             parameter_id = parameter_data.get('id')
             # Check if the parameter exists in SampleFormHasParameter model
             # print(parameter_id)
-            sample_form_has_assigned_analyst_obj = SampleFormHasParameter.objects.filter(parameter=parameter_id, sample_form = sample_form_id)
+            request = self.context.get('request')
+            user = request.user if request else None
+
+            sample_form_has_assigned_analyst_obj = SampleFormHasParameter.objects.filter(parameter=parameter_id, sample_form = sample_form_id,analyst_user=user)
             exists = sample_form_has_assigned_analyst_obj.exists()
             if exists:
                 analyst_obj = sample_form_has_assigned_analyst_obj.first().analyst_user
