@@ -8,6 +8,7 @@ from rest_framework import viewsets,status
 from rest_framework.response import Response
 from . sample_form_serializers import SampleFormHasAnalystSerializer
 from . parameter_has_assigned_analyst import SampleFormHasParameterAnalystSerializer
+from . analyst_final_report_serializer import DetailSampleFormHasParameterRoleAsAnalystSerializer
 from . parameter_has_assigned_analyst_detail import DetailSampleFormHasParameterAnalystSerializer
 from . verifier_has_completed_sample_form import CompletedSampleFormHasVerifierSerializer
 from django.shortcuts import render
@@ -17,6 +18,7 @@ from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from management.pagination import MyLimitOffsetPagination
 from django.db.models import Q
+from management import roles
 from .report_download import ReportAdminList,ReportParameter,ReportCommodity,ReportUserSampleForm,ReportUserList,ReportSampleForm,ReportUserRequest,ReportComodityCategory,FinalReport
 #report_type:['pdf','excel','csv']
 #report_name:['admin-list','users-list','user-with-sample-form','sample-form','commodity','parameter']
@@ -57,8 +59,12 @@ class DetailParameterHasAssignedAnalyst(views.APIView):
     # authentication_classes = [JWTAuthentication]
     # permission_classes = [IsAuthenticated]
     def get(self, request, sample_form_id, format=None):
-        queryset = SampleForm.objects.filter(id=sample_form_id).first()
-        serializer = DetailSampleFormHasParameterAnalystSerializer(queryset,many = False)
+        if self.request.user.role == roles.ANALYST:
+            queryset = SampleForm.objects.filter(id=sample_form_id).first()
+            serializer = DetailSampleFormHasParameterRoleAsAnalystSerializer(queryset,many = False)
+        else:
+            queryset = SampleForm.objects.filter(id=sample_form_id).first()
+            serializer = DetailSampleFormHasParameterAnalystSerializer(queryset,many = False)
         return Response(serializer.data)
         
 class ReportDownload(views.APIView):
