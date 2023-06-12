@@ -24,8 +24,8 @@ class SampleFormHasVerifierViewSet(viewsets.ModelViewSet):
     ordering_fields = ['id']
     search_fields = ['sample_form_id']
     filterset_fields = ['sample_form_id']
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     pagination_class = MyLimitOffsetPagination
    
     def create(self, request, *args, **kwargs):
