@@ -83,10 +83,11 @@ def sample_form_has_parameter_m2m_changed(sender, instance, action, reverse, mod
     sample_form_obj.status = status   
     sample_form_obj.save()
 
-@receiver(post_save, sender=SampleForm)
+@receiver(post_save, sender=SampleFormHasParameter)
 def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
     if instance.is_supervisor_sent == True:
         sample_form_obj = instance.sample_form
+        print(sample_form_obj.id)
         sample_form_has_parameter_obj = SampleFormHasParameter.objects.filter(sample_form = sample_form_obj.id) 
         is_analyst_test = False
         for obj in sample_form_has_parameter_obj:
@@ -96,7 +97,8 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
                 is_analyst_test = False
                 break
         print(is_analyst_test,"sd asd asad ") #if  sent to supervisor then set to is_analyst_test to 1 
-        sample_form_obj.update(sample_form_sent=is_analyst_test)
+        SampleForm.objects.filter(id=sample_form_obj.id).update(is_analyst_test = is_analyst_test)
+     
   
 
 @receiver(pre_save, sender=SampleFormHasParameter)
