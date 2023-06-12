@@ -24,7 +24,7 @@ class FinalSampleFormHasVerifiedAPIView(views.APIView):
         elif user.role == roles.SUPERADMIN:
             return SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True))
         elif user.role == roles.ANALYST:
-            return SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True) & Q(sample_has_parameter_analyst__analyst_user=user))
+            return SampleForm.objects.filter(Q(sample_has_parameter_analyst__status='completed') & Q(sample_has_parameter_analyst__analyst_user=user))
         elif user.role == roles.VERIFIER:
             return SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True))
         else:
