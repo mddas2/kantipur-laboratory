@@ -174,14 +174,14 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Partial updates not allowed....')
   
         if action == "create":
-            if SampleFormHasParameter.objects.filter(sample_form=sample_form, analyst_user=analyst_user).exists():
-                raise serializers.ValidationError('A SampleFormHasParameter with the same sample_form and analyst already exists(create)')
-            
             for param in parameter:
                 # print(param)
                 if SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param).exists():
-                    # obj = SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param)             
+                    # obj = SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param)     
+                    print("error")        
                     raise serializers.ValidationError('A SampleFormHasParameter with the same sample_form and parameter already exists(create)')
+            
+          
         elif action == 'update' or action == 'partial_update':            
             instance_id = self.instance.id 
            
@@ -201,3 +201,17 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                    
 
         return attrs
+    
+    def create(self, validated_data):
+        sample_form = validated_data['sample_form']
+        analyst_user = validated_data['analyst_user']
+        parameter = validated_data['parameter']
+
+        if SampleFormHasParameter.objects.filter(sample_form=sample_form, analyst_user=analyst_user).exists():
+            print("testing ok append parameter")
+            instance = SampleFormHasParameter.objects.get(sample_form=sample_form, analyst_user=analyst_user)
+            # Append the new parameters to the existing instance
+            instance.parameter.add(*parameter)
+            return instance
+        
+        return super().create(validated_data)
