@@ -20,7 +20,7 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
     analyst_user = CustomUserSerializer(read_only = True)
     class Meta:
         model = SampleFormHasParameter
-        fields = ['analyst_user','created_date'] 
+        fields = ['analyst_user','created_date','status'] 
 
 class SampleFormHasAnalystSerializer(serializers.ModelSerializer):
     sample_has_parameter_analyst = SampleFormHasParameterReadSerializer(many=True,read_only=True)
