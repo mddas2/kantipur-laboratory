@@ -29,7 +29,7 @@ class FinalSampleFormHasVerifiedAPIView(views.APIView):
             query = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True))
         else:
             raise PermissionDenied("You do not have permission to access this resource.")
-        return query.order_by("created_date")
+        return query.order_by("-created_date")
         
     def get(self, request, format=None):
 
