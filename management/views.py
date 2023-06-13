@@ -105,7 +105,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         else:
             raise PermissionDenied("You do not have permission to access this resource.")
         
-        return query.latest('created_date')
+        return query.order_by("-created_date")
         
         
     def get_serializer_class(self):
