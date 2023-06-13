@@ -4,6 +4,7 @@ from django.db import models
 # Create your models here.
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
 
 class CustomUser(AbstractUser):
     phone = models.CharField(max_length=15 , null=True)
@@ -26,6 +27,9 @@ class CustomUser(AbstractUser):
 
     created_by = models.IntegerField(null=True)
     remarks = models.CharField(max_length=200,null=True)
+
+    created_date = models.DateTimeField(default=timezone.now)
+    updated_date = models.DateTimeField(default=timezone.now)
 
     SUPERADMIN = 1
     SMU = 2

@@ -23,9 +23,17 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['email','username','is_verified']
+    search_fields = ['email','username','first_name','last_name','is_verified']
     ordering_fields = ['username','id']
-    filterset_fields = ['email','username','is_verified','role','client_category_id']
+    filterset_fields = {
+        'email': ['exact', 'icontains'],
+        'username': ['exact'],
+        'is_verified': ['exact'],
+        'role': ['exact'],
+        'client_category_id': ['exact'],
+        'created_date': ['date__gte', 'date__lte']  # Date filtering
+    }
+
     authentication_classes = [JWTAuthentication]
     # permission_classes = [IsAuthenticated]
 
