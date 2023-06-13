@@ -47,15 +47,8 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
 
         sample_form_id = representation.get('id')
 
-        # owner_user_email = representation.get('owner_user')
-
-        # owner_user_obj = CustomUser.objects.get(email=owner_user_email)
-
-        # Add extra response data for parameters field
         parameters_data = representation.get('parameters', [])
 
-
-      
         for parameter_data in parameters_data:
             parameter_id = parameter_data.get('id')
             # Check if the parameter exists in SampleFormHasParameter model
@@ -179,8 +172,6 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
             return attrs
         elif action == 'partial_update':
             raise serializers.ValidationError('Partial updates not allowed....')
-
-   
   
         if action == "create":
             if SampleFormHasParameter.objects.filter(sample_form=sample_form, analyst_user=analyst_user).exists():
@@ -189,8 +180,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
             for param in parameter:
                 # print(param)
                 if SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param).exists():
-                    # obj = SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param)
-             
+                    # obj = SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param)             
                     raise serializers.ValidationError('A SampleFormHasParameter with the same sample_form and parameter already exists(create)')
         elif action == 'update' or action == 'partial_update':            
             instance_id = self.instance.id 
