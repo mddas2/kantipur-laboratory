@@ -16,19 +16,20 @@ class FinalSampleFormHasVerifiedAPIView(views.APIView):
         user = self.request.user
   
         if user.role == roles.USER:
-            return SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True) & Q(owner_user=user.email))
+            query = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True) & Q(owner_user=user.email))
         elif user.role == roles.SUPERVISOR:
-            return SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True) & Q(supervisor_user=user))
+            query = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True) & Q(supervisor_user=user))
         elif user.role == roles.SMU:
-            return SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True))
+            query = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True))
         elif user.role == roles.SUPERADMIN:
-            return SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True))
+            query = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True))
         elif user.role == roles.ANALYST:
-            return SampleForm.objects.filter(Q(sample_has_parameter_analyst__status='completed') & Q(sample_has_parameter_analyst__analyst_user=user) & Q(sample_has_parameter_analyst__is_supervisor_sent=True))
+            query = SampleForm.objects.filter(Q(sample_has_parameter_analyst__status='completed') & Q(sample_has_parameter_analyst__analyst_user=user) & Q(sample_has_parameter_analyst__is_supervisor_sent=True))
         elif user.role == roles.VERIFIER:
-            return SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True))
+            query = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True))
         else:
             raise PermissionDenied("You do not have permission to access this resource.")
+        return query.latest('created_date')
         
     def get(self, request, format=None):
 
