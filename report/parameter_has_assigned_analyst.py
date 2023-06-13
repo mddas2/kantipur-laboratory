@@ -40,7 +40,7 @@ class SampleFormHasParameterAnalystSerializer(serializers.ModelSerializer):
 
         # Add extra response data for parameters field
         parameters_data = representation.get('parameters', [])
-      
+        stat = "processing"
         for parameter_data in parameters_data:
             parameter_id = parameter_data.get('id')
             # Check if the parameter exists in SampleFormHasParameter model
@@ -59,9 +59,11 @@ class SampleFormHasParameterAnalystSerializer(serializers.ModelSerializer):
 
                 formula_obj_result = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id=sample_form_id,parameter_id = parameter_id)
                 if formula_obj_result.count()>0:
+                    stat = "completed"
                     parameter_data['status'] = "completed"
                     parameter_data['result'] = formula_obj_result.first().result
                 else:
+                    stat = "processing"
                     parameter_data['status'] = "processing"
                     parameter_data['result'] = '-'
                 # parameter_data['status'] = "completed"
@@ -69,4 +71,5 @@ class SampleFormHasParameterAnalystSerializer(serializers.ModelSerializer):
             parameter_data['exist'] = exists
 
         representation['parameters'] = parameters_data
+        representation['status'] = stat
         return representation
