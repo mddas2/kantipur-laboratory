@@ -14,39 +14,11 @@ def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwarg
     
     sample_form_obj = instance.sample_form    
     parameter_obj = instance.parameter
-    sample_form_has_parameter = SampleFormHasParameter.objects.filter(sample_form_id = sample_form_obj.id,parameter = parameter_obj.id)
-    check_parameter = sample_form_has_parameter.first().parameter.all()
-    print(check_parameter)
 
-    sample_form_has_parameter_status = "processing"
-    for ana_param in check_parameter:
-        formula_calculate_object = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id = sample_form_obj.id,parameter = ana_param.id)
-        if formula_calculate_object.exists():
-            sample_form_has_parameter_status = "completed"
-        else:
-            sample_form_has_parameter_status = "processing"
-            break
-
-    status = "processing"
-    
-    parameters = sample_form_obj.parameters.all()    
-    for param in parameters:
-        formula_calculate_object = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id = sample_form_obj.id,parameter = param.id)
-        if formula_calculate_object.exists():
-            status = "not_verified"
-        else:
-            status = "processing"
-            break
-
-    from management.models import SampleForm
-    SampleForm.objects.filter(id=sample_form_obj.id).update(status=status,form_available="analyst")
-
-    if status == "not_verified":
-        sample_form_has_parameter.update(status="completed")
-    else:
+    sample_form_has_parameter = SampleFormHasParameter.objects.filter(sample_form_id = sample_form_obj.id,parameter = parameter_obj.id)   
+    if sample_form_has_parameter.first().status == "pending":
         sample_form_has_parameter.update(status="processing")
         
-    sample_form_has_parameter.update(status=sample_form_has_parameter_status)
     
     
 
@@ -91,6 +63,8 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
         is_analyst_test = False
         for obj in sample_form_has_parameter_obj:
             if obj.is_supervisor_sent == True:
+                sample_form_has_param = SampleFormHasParameter.objects.filter(id=instance.id)
+                sample_form_has_param.update(status = "completed")
                 is_analyst_test = True
             else:
                 is_analyst_test = False

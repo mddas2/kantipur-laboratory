@@ -99,11 +99,12 @@ class SampleFormHasParameter(models.Model):#sample form has parameter and parame
 
     is_supervisor_sent = models.BooleanField(default=False)
     
-    status_choices = (        
+    status_choices = (       
+        ('pending', 'pending'), 
         ('processing', 'processing'),
         ('completed', 'completed'),
     )
-    status = models.CharField(choices=status_choices, blank=True, null=True, max_length=155)
+    status = models.CharField(choices=status_choices,default="pending" , blank=True, null=True, max_length=155)
 
     SUPERADMIN = "superadmin"
     SMU = "smu"
@@ -152,10 +153,12 @@ class SampleFormParameterFormulaCalculate(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
 
-    status_choices = (        
+    status_choices = (
+        ('pending', 'pending'),       
         ('completed', 'completed'),
+        ('processing', 'processing'),
     )
-    status = models.CharField(choices=status_choices, default="completed", max_length=155)
+    status = models.CharField(choices=status_choices, default="processing", max_length=155)
 
 
 class SampleFormVerifier(models.Model):
