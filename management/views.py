@@ -93,18 +93,19 @@ class SampleFormViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        print(user)
 
         if user.role == roles.USER:         
-            return SampleForm.objects.filter(Q(owner_user = user.email) & ~Q(status="completed") )
+            query =  SampleForm.objects.filter(Q(owner_user = user.email) & ~Q(status="completed") )
         elif user.role == roles.SUPERVISOR:
-            return SampleForm.objects.filter(supervisor_user=user,status="not_assigned")
+            query =  SampleForm.objects.filter(supervisor_user=user,status="not_assigned")
         elif user.role == roles.SMU:
-            return SampleForm.objects.filter(form_available = 'smu')
+            query = SampleForm.objects.filter(form_available = 'smu')
         elif user.role == roles.SUPERADMIN:
-            return SampleForm.objects.filter(form_available = 'smu')
+            query = SampleForm.objects.filter(form_available = 'smu')
         else:
             raise PermissionDenied("You do not have permission to access this resource.")
+        
+        return query.latest('created_date')
         
         
     def get_serializer_class(self):
@@ -114,14 +115,6 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     
     def list(self, request, *args, **kwargs):
         response = super().list(request, *args, **kwargs)
-        
-        # Add extra response data for list action
-        extra_data = {
-            "extra_field": "Extra value for list",
-            "another_field": "Another value for list"
-        }
-
-        # response.data.update(extra_data)
     
         return response
 
