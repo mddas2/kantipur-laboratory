@@ -23,7 +23,7 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['email','username','is_verified']
+    search_fields = ['email','username','first_name','last_name','is_verified']
     ordering_fields = ['username','id']
     filterset_fields = {
         'email': ['exact', 'icontains'],
