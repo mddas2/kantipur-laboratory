@@ -47,9 +47,9 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
 
         sample_form_id = representation.get('id')
 
-        owner_user_email = representation.get('owner_user')
+        # owner_user_email = representation.get('owner_user')
 
-        owner_user_obj = CustomUser.objects.get(email=owner_user_email)
+        # owner_user_obj = CustomUser.objects.get(email=owner_user_email)
 
         # Add extra response data for parameters field
         parameters_data = representation.get('parameters', [])
