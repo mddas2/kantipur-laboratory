@@ -1,5 +1,11 @@
 from .models import ClientCategory, SampleForm, Commodity, CommodityCategory , TestResult ,SampleFormHasParameter,Payment,SampleFormParameterFormulaCalculate
 from rest_framework import serializers
+from account.models import CustomUser
+
+class ApprovedBySerializer(serializers.ModelSerializer):
+     class Meta:
+        model = CustomUser
+        fields = ['first_name','last_name'] 
 
 class ClientCategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,17 +27,34 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
     parameters = TestResultSerializer(many=True, read_only=True)
     payment = PaymentSerializer(read_only=True)
 
+    owner_user = serializers.SerializerMethodField()
+
     class Meta:
+        approved_by = ApprovedBySerializer(read_only = True)
         model = SampleForm
         fields = '__all__'
+
+    def get_owner_user(self, obj):
+        email = obj.owner_user
+        try:
+            user = CustomUser.objects.get(email=email)
+            return ApprovedBySerializer(user).data
+        except CustomUser.DoesNotExist:
+            return None
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
 
         sample_form_id = representation.get('id')
 
+        # owner_user_email = representation.get('owner_user')
+
+        # owner_user_obj = CustomUser.objects.get(email=owner_user_email)
+
         # Add extra response data for parameters field
         parameters_data = representation.get('parameters', [])
+
+
       
         for parameter_data in parameters_data:
             parameter_id = parameter_data.get('id')

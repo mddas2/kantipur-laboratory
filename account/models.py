@@ -19,6 +19,9 @@ class CustomUser(AbstractUser):
     is_active = models.BooleanField(default=True)
 
     is_verified = models.IntegerField(choices=[(0, 'Not verified'), (1, 'Verified')], default=0)
+    approved_by = models.ForeignKey("CustomUser",related_name="user_approved",null=True,on_delete=models.SET_NULL)
+    approved_date = models.DateField(null=True)
+
     client_category = models.ForeignKey("management.ClientCategory",related_name="user",on_delete=models.CASCADE,null=True)  
 
     created_by = models.IntegerField(null=True)

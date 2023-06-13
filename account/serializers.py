@@ -5,6 +5,12 @@ from account.models import CustomUser
 from django.contrib.auth.hashers import make_password
 from management import roles
 
+
+class ApprovedBySerializer(serializers.ModelSerializer):
+     class Meta:
+        model = CustomUser
+        fields = '__all__' 
+
 class CustomUserSerializer(serializers.ModelSerializer):
     # client_category = ClientCategorySerializer(read_only=True)
     
@@ -42,6 +48,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         return attrs
   
     class Meta:
+        approved_by = ApprovedBySerializer(read_only = True)
         model = CustomUser
         fields = '__all__' 
 
