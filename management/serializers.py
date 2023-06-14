@@ -5,7 +5,7 @@ from account.models import CustomUser
 class ApprovedBySerializer(serializers.ModelSerializer):
      class Meta:
         model = CustomUser
-        fields = ['first_name','last_name'] 
+        fields = ['first_name','last_name','email'] 
 
 class ClientCategorySerializer(serializers.ModelSerializer):
     class Meta:

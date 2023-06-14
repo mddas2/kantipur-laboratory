@@ -19,6 +19,7 @@ class FinalSampleFormHasVerifiedAPIView(views.APIView):
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     search_fields = ['name','owner_user','status','form_available','commodity__name']
     ordering_fields = ['name','id']
+    
     filterset_fields = {
         'name': ['exact', 'icontains'],
         'owner_user': ['exact'],
