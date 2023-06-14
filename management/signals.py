@@ -9,7 +9,6 @@ from django.db import transaction
 from django.db.models.signals import m2m_changed
 from datetime import date
 
-
 @receiver(post_save, sender=SampleFormParameterFormulaCalculate)
 def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwargs):
     
@@ -27,8 +26,9 @@ def handle_sampleform_presave(sender, instance, **kwargs):
     if instance.id:
         original_sample_form = SampleForm.objects.get(pk=instance.id).supervisor_user
     if instance.supervisor_user != original_sample_form:
+        print("smu approved date")
         instance.approved_date = date.today()    
-                
+             
 
 @receiver(m2m_changed, sender=SampleFormHasParameter.parameter.through)
 def sample_form_has_parameter_m2m_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
