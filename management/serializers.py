@@ -49,12 +49,16 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
 
         parameters_data = representation.get('parameters', [])
 
+        assigned = 0
         for parameter_data in parameters_data:
             parameter_id = parameter_data.get('id')
             # Check if the parameter exists in SampleFormHasParameter model
             exists = SampleFormHasParameter.objects.filter(parameter=parameter_id, sample_form = sample_form_id).exists()
             parameter_data['exist'] = exists
+            if exists == True:
+                assigned+=1
 
+        representation['total_assign'] = assigned
         representation['parameters'] = parameters_data
         return representation
 
