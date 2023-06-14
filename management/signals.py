@@ -61,6 +61,7 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
         sample_form_obj = instance.sample_form
         sample_form_has_parameter_obj = SampleFormHasParameter.objects.filter(sample_form = sample_form_obj.id) 
         is_analyst_test = False
+        sample_form_status = "processing"
         for obj in sample_form_has_parameter_obj:
             if obj.is_supervisor_sent == True:
                 sample_form_has_param = SampleFormHasParameter.objects.filter(id=instance.id)
@@ -68,13 +69,14 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
 
                 formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(sample_form = sample_form_obj.id)
                 formula_calculate.update(status="completed")
-                
+                sample_form_status = "not_verified"
                 is_analyst_test = True
             else:
                 is_analyst_test = False
+                sample_form_status = "processing"
                 break
         print(is_analyst_test,"sd asd asad ") #if  sent to supervisor then set to is_analyst_test to 1 
-        SampleForm.objects.filter(id=sample_form_obj.id).update(is_analyst_test = is_analyst_test)
+        SampleForm.objects.filter(id=sample_form_obj.id).update(is_analyst_test = is_analyst_test,status=sample_form_status)
      
   
 
