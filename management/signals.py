@@ -65,6 +65,10 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
             if obj.is_supervisor_sent == True:
                 sample_form_has_param = SampleFormHasParameter.objects.filter(id=instance.id)
                 sample_form_has_param.update(status = "completed")
+
+                formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(sample_form = sample_form_obj.id)
+                formula_calculate.update(status="completed")
+                
                 is_analyst_test = True
             else:
                 is_analyst_test = False
