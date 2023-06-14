@@ -7,6 +7,7 @@ from websocket import frontend_setting
 from account.models import CustomUser
 from django.db import transaction
 from django.db.models.signals import m2m_changed
+from datetime import date
 
 
 @receiver(post_save, sender=SampleFormParameterFormulaCalculate)
@@ -20,18 +21,14 @@ def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwarg
         sample_form_has_parameter.update(status="processing")
         
     
-    
-
-
-# @receiver(pre_save, sender=SampleForm)
-# def SampleForm(sender, instance, **kwargs):
-#     parameter = sender.parameters.all()
-#     print(parameter.count())
-#     if not parameter.count() >=1:
-#         print("parameter is null")
-#     else:
-#         print("parameter is not null ")
-
+@receiver(pre_save, sender=SampleForm)
+def handle_sampleform_presave(sender, instance, **kwargs):
+    original_sample_form = None
+    if instance.id:
+        original_sample_form = SampleForm.objects.get(pk=instance.id).supervisor_user
+    if instance.supervisor_user != original_sample_form:
+        instance.approved_date = date.today()    
+                
 
 @receiver(m2m_changed, sender=SampleFormHasParameter.parameter.through)
 def sample_form_has_parameter_m2m_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
@@ -94,9 +91,9 @@ def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
         sample_form_obj.status = "not_verified"
         sample_form_obj.save()
     else:        
-        print("update")
         if instance.is_verified == True:
             sample_form_obj.status = "completed"
+            sample_form_obj.completed_date = date.today()
             sample_form_obj.save()
 
 
