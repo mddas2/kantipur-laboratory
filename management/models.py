@@ -55,6 +55,7 @@ class SampleForm(models.Model):#ClientRequest
 
     approved_by = models.ForeignKey(CustomUser, related_name="sample_form_approve",on_delete=models.SET_NULL,null=True) #smu
     approved_date = models.DateField(null=True)
+    completed_date = models.DateField(null=True)
 
     is_analyst_test = models.BooleanField(default=False) #if in paramater_has_analyst send to supervisor then this.from all param then True
 
