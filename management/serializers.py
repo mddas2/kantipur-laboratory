@@ -139,20 +139,25 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
     def get_parameter(self, obj):
         parameter_data = TestResultSerializer(obj.parameter, many=True).data
 
+        analyst_status = "processing"
         for parameter in parameter_data:
             formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(parameter = parameter['id'],sample_form=obj.sample_form_id).first()
-        
-            parameter['result'] = formula_calculate.result if formula_calculate else "-"           
+            if formula_calculate:
+                parameter['result'] = formula_calculate.result
+                analyst_status = "completed"                
+            else:
+                parameter['result'] = "-"      
+                analyst_status = "processing"     
        
             
-        return parameter_data
+        return parameter_data,analyst_status
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         # print(instance.parameter.first().id)
-        parameter = self.get_parameter(instance)
+        parameter,analyst_status = self.get_parameter(instance)
         representation['parameter'] = parameter
-
+        representation['status'] = analyst_status
         return representation
 
 class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
