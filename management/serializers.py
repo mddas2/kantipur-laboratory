@@ -77,10 +77,11 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
             return data
         elif action == "partial_update" or action == "update":
             supervisor_user = data.get('supervisor_user')
-            form_available = data.get('supervisor_user')
+            form_available = data.get('form_available')
+       
             if supervisor_user is not None and form_available == "supervisor":
                 request = self.context.get('request')
-                data['approved_by'] = request.user.id
+                data['approved_by'] = request.user
             return data
         else:
             return data
