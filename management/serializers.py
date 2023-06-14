@@ -28,6 +28,7 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
     payment = PaymentSerializer(read_only=True)
 
     owner_user = serializers.SerializerMethodField()
+    approved_by = ApprovedBySerializer(read_only = True,many=False)
 
     class Meta:
         approved_by = ApprovedBySerializer(read_only = True)
