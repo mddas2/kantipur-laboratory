@@ -27,7 +27,8 @@ def handle_sampleform_presave(sender, instance, **kwargs):
         original_sample_form = SampleForm.objects.get(pk=instance.id).supervisor_user
     if instance.supervisor_user != original_sample_form:
         print("smu approved date")
-        instance.approved_date = date.today()    
+        instance.approved_date = date.today()
+            
              
 
 @receiver(m2m_changed, sender=SampleFormHasParameter.parameter.through)

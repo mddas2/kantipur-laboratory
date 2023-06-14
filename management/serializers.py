@@ -74,10 +74,16 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
                 parameters = TestResult.objects.filter(commodity=commodity)
                 data['parameters'] = parameters
             return data
+        elif action == "partial_update" or action == "update":
+            supervisor_user = data.get('supervisor_user')
+            form_available = data.get('supervisor_user')
+            if supervisor_user is not None and form_available == "supervisor":
+                request = self.context.get('request')
+                data['approved_by'] = request.user.id
+            return data
         else:
             return data
-
-
+        
     class Meta:
         model = SampleForm
         fields = '__all__'
