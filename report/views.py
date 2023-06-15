@@ -70,7 +70,7 @@ class DetailParameterHasAssignedAnalyst(views.APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request, sample_form_id, format=None):
-        if self.request.user.role == roles.ANALYST:
+        if self.request.user.role == "blockedd":#roles.ANALYST:
             queryset = SampleForm.objects.filter(id=sample_form_id).first()
             serializer = DetailSampleFormHasParameterRoleAsAnalystSerializer(queryset,many = False,context={'request': request})
         else:

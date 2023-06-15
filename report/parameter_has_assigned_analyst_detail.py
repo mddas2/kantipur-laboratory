@@ -8,7 +8,7 @@ from rest_framework import serializers
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['first_name','last_name','id'] 
+        fields = ['first_name','last_name','id','email'] 
 
 class CommoditySerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,9 +29,20 @@ class ParameterSerializer(serializers.ModelSerializer):
 class DetailSampleFormHasParameterAnalystSerializer(serializers.ModelSerializer):
     commodity = CommoditySerializer(read_only = True)
     parameters = ParameterSerializer(read_only = True, many = True)
+    owner_user = serializers.SerializerMethodField()
+    supervisor_user = CustomUserSerializer(read_only = True)
     class Meta:
         model = SampleForm
         fields = '__all__'
+    
+    def get_owner_user(self, obj):
+        email = obj.owner_user
+        try:
+            user = CustomUser.objects.get(email=email)
+            return CustomUserSerializer(user).data
+        except CustomUser.DoesNotExist:
+            return None
+
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
