@@ -19,23 +19,34 @@ from django_filters.rest_framework import DjangoFilterBackend
 from management.pagination import MyLimitOffsetPagination
 from django.db.models import Q
 from management import roles
+from rest_framework import generics
 from .report_download import ReportAdminList,ReportParameter,ReportCommodity,ReportUserSampleForm,ReportUserList,ReportSampleForm,ReportUserRequest,ReportComodityCategory,FinalReport
 #report_type:['pdf','excel','csv']
 #report_name:['admin-list','users-list','user-with-sample-form','sample-form','commodity','parameter']
 #['sample-request','user-request','client-category','commodity-with-parameter','commodity-category','commodity','parameter']
-class SampleFormHasAnalystAPIView(views.APIView):
+class SampleFormHasAnalystAPIView(generics.ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    def get(self, request, format=None):
-        print(request.user.role)
-        # supervisor_user = request.user 
+
+    def get_serializer_class(self): 
+        return SampleFormHasAnalystSerializer
+    
+    def get_queryset(self):
+        request = self.request
         queryset = SampleForm.objects.filter(Q(supervisor_user = request.user) & ~Q(status="completed") & ~Q(status="not_assigned") & ~Q(status="not_verified")).order_by("-created_date")
-        serializer = SampleFormHasAnalystSerializer(queryset, many=True)
-        return Response(serializer.data)
+        return queryset
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+        
+        # supervisor_user = request.user 
+        # queryset = SampleForm.objects.filter(Q(supervisor_user = request.user) & ~Q(status="completed") & ~Q(status="not_assigned") & ~Q(status="not_verified")).order_by("-created_date")
+        # serializer = SampleFormHasAnalystSerializer(queryset, many=True)
+        # return Response(serializer.data)
     
 class CompletedSampleFormHasVerifierAPIView(views.APIView):
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, format=None):
         queryset = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=False))
 

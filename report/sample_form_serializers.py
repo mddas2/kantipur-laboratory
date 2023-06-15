@@ -1,6 +1,6 @@
 from management.models import SampleForm, Commodity,SampleFormHasParameter
 from rest_framework import serializers
-
+from management import roles
 
 from management.models import SampleForm, Commodity,SampleFormHasParameter
 from account.models import CustomUser
@@ -28,3 +28,17 @@ class SampleFormHasAnalystSerializer(serializers.ModelSerializer):
     class Meta:
         model = SampleForm
         fields = ['id','name','sample_has_parameter_analyst','commodity','status','created_date']
+
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+    
+        request = self.context.get('request')
+      
+        if request.user.role == roles.SUPERVISOR:
+            is_analyst_test = representation.get('is_analyst_test')
+            if is_analyst_test == True:
+                stat = "completed"
+                representation['status'] = stat
+        return representation
+                
