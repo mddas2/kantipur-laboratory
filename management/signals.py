@@ -65,8 +65,11 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
                 sample_form_has_param = SampleFormHasParameter.objects.filter(id=instance.id)
                 sample_form_has_param.update(status = "completed")
 
-                formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(sample_form = sample_form_obj.id)
-                formula_calculate.update(status="completed")
+                sample_form_has_parameters_analyst_parameters = obj.parameter.all()
+                for pram in sample_form_has_parameters_analyst_parameters:
+                    formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(sample_form = sample_form_obj.id,parameter_id = pram.id)
+                    formula_calculate.update(status="completed")
+
                 sample_form_status = "not_verified"
                 is_analyst_test = True
             else:
