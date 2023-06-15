@@ -30,14 +30,14 @@ class SampleFormHasAnalystSerializer(serializers.ModelSerializer):
     commodity = CommoditySerializer(read_only = True)
     class Meta:
         model = SampleForm
-        fields = ['id','name','sample_has_parameter_analyst','commodity','status','created_date']
+        fields = ['id','name','sample_has_parameter_analyst','commodity','status','created_date','is_analyst_test']
 
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)
     
         request = self.context.get('request')
-      
+   
         if request.user.role == roles.SUPERVISOR:
             is_analyst_test = representation.get('is_analyst_test')
             if is_analyst_test == True:
