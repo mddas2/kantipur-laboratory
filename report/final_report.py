@@ -11,8 +11,11 @@ from rest_framework.permissions import IsAuthenticated
 
 from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import generics
 
-class FinalSampleFormHasVerifiedAPIView(views.APIView):
+class FinalSampleFormHasVerifiedAPIView(generics.ListAPIView):
+    # queryset = SampleForm.objects.all() 
+    # serializer_class = CompletedSampleFormHasAnalystSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
   
@@ -48,16 +51,13 @@ class FinalSampleFormHasVerifiedAPIView(views.APIView):
         else:
             raise PermissionDenied("You do not have permission to access this resource.")
         return query.order_by("-created_date")
-        
-    def get(self, request, format=None):
-
-        queryset = self.get_queryset()
-        # print(queryset)
-        # queryset = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=False))
-
-        # queryset = SampleForm.objects.all()
+    
+    def get_serializer_class(self):
+      
         if self.request.user.role == roles.ANALYST:
-            serializer = CompletedSampleFormHasAnalystSerializer(queryset, many=True)
+            serializer = CompletedSampleFormHasAnalystSerializer
         else:
-            serializer = CompletedSampleFormHasVerifierSerializer(queryset, many=True)
-        return Response(serializer.data)
+            serializer = CompletedSampleFormHasVerifierSerializer
+        
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)

@@ -13,17 +13,20 @@ class ParameterSerializer(serializers.ModelSerializer):
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
+        ref_name = 'CustomUser_finalreport'
         model = CustomUser
         fields = ['first_name','last_name','id'] 
 
 class CommoditySerializer(serializers.ModelSerializer):
     class Meta:
+        ref_name = 'Commodity_finalreport'
         model = Commodity
         fields = ['name']
 
 class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
     analyst_user = CustomUserSerializer(read_only = True)
     class Meta:
+        ref_name = 'SampleFormHasParameter_finalreport'
         model = SampleFormHasParameter
         fields = ['analyst_user','created_date'] 
 
