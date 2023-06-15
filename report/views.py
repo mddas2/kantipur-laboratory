@@ -33,7 +33,7 @@ class SampleFormHasAnalystAPIView(generics.ListAPIView):
     
     def get_queryset(self):
         request = self.request
-        queryset = SampleForm.objects.filter(Q(supervisor_user = request.user) & ~Q(status="completed") & ~Q(status="not_assigned") & ~Q(status="not_verified")).order_by("-created_date")
+        queryset = SampleForm.objects.filter(Q(supervisor_user = request.user) & ~Q(status="completed") & ~Q(status="not_assigned")).order_by("-created_date")
         return queryset
 
     def get(self, request, *args, **kwargs):
