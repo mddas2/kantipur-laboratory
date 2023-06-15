@@ -55,6 +55,10 @@ class SampleForm(models.Model):#ClientRequest
 
     approved_by = models.ForeignKey(CustomUser, related_name="sample_form_approve",on_delete=models.SET_NULL,null=True) #smu
     approved_date = models.DateField(null=True)
+    completed_date = models.DateField(null=True)
+
+    verified_by = models.ForeignKey(CustomUser, related_name="sample_form_verified_by",on_delete=models.SET_NULL,null=True) #verifier
+
 
     is_analyst_test = models.BooleanField(default=False) #if in paramater_has_analyst send to supervisor then this.from all param then True
 
@@ -99,11 +103,12 @@ class SampleFormHasParameter(models.Model):#sample form has parameter and parame
 
     is_supervisor_sent = models.BooleanField(default=False)
     
-    status_choices = (        
+    status_choices = (       
+        ('pending', 'pending'), 
         ('processing', 'processing'),
         ('completed', 'completed'),
     )
-    status = models.CharField(choices=status_choices, blank=True, null=True, max_length=155)
+    status = models.CharField(choices=status_choices,default="pending" , blank=True, null=True, max_length=155)
 
     SUPERADMIN = "superadmin"
     SMU = "smu"
@@ -152,10 +157,12 @@ class SampleFormParameterFormulaCalculate(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
 
-    status_choices = (        
+    status_choices = (
+        ('pending', 'pending'),       
         ('completed', 'completed'),
+        ('processing', 'processing'),
     )
-    status = models.CharField(choices=status_choices, default="completed", max_length=155)
+    status = models.CharField(choices=status_choices, default="processing", max_length=155)
 
 
 class SampleFormVerifier(models.Model):

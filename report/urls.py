@@ -1,5 +1,5 @@
 from . import views,preeti_to_unicode,preeti_to_pdf
-from . import final_report,track
+from . import final_report,track,status
 from report.admin_folders import supervisor
 
 from django.urls import path, include
@@ -18,6 +18,8 @@ urlpatterns = [
 
     path('final-report-sample-form/', final_report.FinalSampleFormHasVerifiedAPIView.as_view()),
     path('track-report-sample-form/', track.TrackSampleFormAPIView.as_view()),
+
+    path('status/', status.GetStatus.as_view()),
     # path('completed-sample-form-has-assigned-verifier-check-exists/<int:sample_form_id>/', supervisor.getStatusOfVerifierSampleForm.as_view()),
 
     path('get-report/<str:report_name>/<str:report_type>/<str:report_lang>/', views.ReportDownload.as_view()),

@@ -5,7 +5,7 @@ from account.models import CustomUser
 class ApprovedBySerializer(serializers.ModelSerializer):
      class Meta:
         model = CustomUser
-        fields = ['first_name','last_name'] 
+        fields = ['first_name','last_name','email','id'] 
 
 class ClientCategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -28,9 +28,13 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
     payment = PaymentSerializer(read_only=True)
 
     owner_user = serializers.SerializerMethodField()
+    approved_by = ApprovedBySerializer(read_only = True,many=False)
+    verified_by = ApprovedBySerializer(read_only = True,many=False)
 
     class Meta:
         approved_by = ApprovedBySerializer(read_only = True)
+        supervisor_user = ApprovedBySerializer(read_only = True)
+        verified_by = ApprovedBySerializer(read_only = True)
         model = SampleForm
         fields = '__all__'
 
@@ -49,12 +53,16 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
 
         parameters_data = representation.get('parameters', [])
 
+        assigned = 0
         for parameter_data in parameters_data:
             parameter_id = parameter_data.get('id')
             # Check if the parameter exists in SampleFormHasParameter model
             exists = SampleFormHasParameter.objects.filter(parameter=parameter_id, sample_form = sample_form_id).exists()
             parameter_data['exist'] = exists
+            if exists == True:
+                assigned+=1
 
+        representation['total_assign'] = assigned
         representation['parameters'] = parameters_data
         return representation
 
@@ -70,10 +78,17 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
                 parameters = TestResult.objects.filter(commodity=commodity)
                 data['parameters'] = parameters
             return data
+        elif action == "partial_update" or action == "update":
+            supervisor_user = data.get('supervisor_user')
+            form_available = data.get('form_available')
+       
+            if supervisor_user is not None and form_available == "supervisor":
+                request = self.context.get('request')
+                data['approved_by'] = request.user
+            return data
         else:
             return data
-
-
+        
     class Meta:
         model = SampleForm
         fields = '__all__'
@@ -139,20 +154,25 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
     def get_parameter(self, obj):
         parameter_data = TestResultSerializer(obj.parameter, many=True).data
 
+        analyst_status = "processing"
         for parameter in parameter_data:
             formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(parameter = parameter['id'],sample_form=obj.sample_form_id).first()
-        
-            parameter['result'] = formula_calculate.result if formula_calculate else "-"           
+            if formula_calculate:
+                parameter['result'] = formula_calculate.result
+                analyst_status = "completed"                
+            else:
+                parameter['result'] = "-"      
+                analyst_status = "processing"     
        
             
-        return parameter_data
+        return parameter_data,analyst_status
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         # print(instance.parameter.first().id)
-        parameter = self.get_parameter(instance)
+        parameter,analyst_status = self.get_parameter(instance)
         representation['parameter'] = parameter
-
+        representation['status'] = analyst_status
         return representation
 
 class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
