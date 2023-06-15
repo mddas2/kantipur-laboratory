@@ -57,6 +57,9 @@ class SampleForm(models.Model):#ClientRequest
     approved_date = models.DateField(null=True)
     completed_date = models.DateField(null=True)
 
+    verified_by = models.ForeignKey(CustomUser, related_name="sample_form_verified_by",on_delete=models.SET_NULL,null=True) #verifier
+
+
     is_analyst_test = models.BooleanField(default=False) #if in paramater_has_analyst send to supervisor then this.from all param then True
 
     status_choices = (

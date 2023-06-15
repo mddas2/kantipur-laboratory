@@ -5,7 +5,7 @@ from account.models import CustomUser
 class ApprovedBySerializer(serializers.ModelSerializer):
      class Meta:
         model = CustomUser
-        fields = ['first_name','last_name','email'] 
+        fields = ['first_name','last_name','email','id'] 
 
 class ClientCategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -32,6 +32,7 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
 
     class Meta:
         approved_by = ApprovedBySerializer(read_only = True)
+        supervisor_user = ApprovedBySerializer(read_only = True)
         model = SampleForm
         fields = '__all__'
 
