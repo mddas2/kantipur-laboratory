@@ -53,11 +53,11 @@ class FinalSampleFormHasVerifiedAPIView(generics.ListAPIView):
         return query.order_by("-created_date")
     
     def get_serializer_class(self):
-      
         if self.request.user.role == roles.ANALYST:
             serializer = CompletedSampleFormHasAnalystSerializer
         else:
             serializer = CompletedSampleFormHasVerifierSerializer
+        return serializer
         
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
