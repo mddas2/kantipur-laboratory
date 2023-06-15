@@ -31,6 +31,7 @@ class DetailSampleFormHasParameterAnalystSerializer(serializers.ModelSerializer)
     parameters = ParameterSerializer(read_only = True, many = True)
     owner_user = serializers.SerializerMethodField()
     supervisor_user = CustomUserSerializer(read_only = True)
+    verified_by = CustomUserSerializer(read_only = True)
     class Meta:
         model = SampleForm
         fields = '__all__'

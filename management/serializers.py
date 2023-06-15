@@ -29,6 +29,7 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
 
     owner_user = serializers.SerializerMethodField()
     approved_by = ApprovedBySerializer(read_only = True,many=False)
+    verified_by = ApprovedBySerializer(read_only = True,many=False)
 
     class Meta:
         approved_by = ApprovedBySerializer(read_only = True)
