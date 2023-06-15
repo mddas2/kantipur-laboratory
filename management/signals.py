@@ -26,6 +26,7 @@ def handle_sampleform_presave(sender, instance, **kwargs):
     if instance.id:
         original_sample_form = SampleForm.objects.get(pk=instance.id).supervisor_user
     if instance.supervisor_user != original_sample_form:
+        instance.status = "not_assigned"
         print("smu approved date")
         instance.approved_date = date.today()
             
