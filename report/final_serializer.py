@@ -4,6 +4,7 @@ from rest_framework import serializers
 from management.models import SampleForm, Commodity,SampleFormHasParameter
 from account.models import CustomUser
 from rest_framework import serializers
+from management import roles
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -31,3 +32,17 @@ class CompletedSampleFormHasVerifierSerializer(serializers.ModelSerializer):
     class Meta:
         model = SampleForm
         fields = ['id','name','supervisor_user','sample_has_parameter_analyst','commodity','status','created_date']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        request = self.context.get('request')
+
+        print(request.user)
+        if request.user.role == roles.SUPERVISOR:
+            status = representation.get('status')
+            if status == "completed":
+                stat = "verified"
+                representation['status'] = stat
+        return representation
+                
