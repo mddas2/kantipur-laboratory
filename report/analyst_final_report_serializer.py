@@ -77,11 +77,10 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer(serializers.ModelSeria
                 formula_obj_result = SampleFormParameterFormulaCalculate.objects.filter(
                     sample_form_id=sample_form_id, parameter_id=parameter_id
                 )
+                parameter_data['status'] = formula_obj_result.first().status
                 if formula_obj_result.count() > 0:
-                    parameter_data['status'] = "completed"
                     parameter_data['result'] = formula_obj_result.first().result
                 else:
-                    parameter_data['status'] = "processing"
                     parameter_data['result'] = '-'
 
                 parameter_data['exist'] = exists
