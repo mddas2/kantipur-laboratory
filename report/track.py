@@ -38,6 +38,7 @@ class TrackSampleFormAPIView(generics.ListAPIView):
             query = SampleForm.objects.all()
         else:
             raise PermissionDenied("You do not have permission to access this resource.")
+    
         return query.order_by("-created_date")
     
     def get_serializer_class(self):
