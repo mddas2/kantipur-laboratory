@@ -33,6 +33,7 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
     class Meta:
         approved_by = ApprovedBySerializer(read_only = True)
         supervisor_user = ApprovedBySerializer(read_only = True)
+        verified_by = ApprovedBySerializer(read_only = True)
         model = SampleForm
         fields = '__all__'
 
