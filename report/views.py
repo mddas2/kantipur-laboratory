@@ -75,7 +75,7 @@ class DetailParameterHasAssignedAnalyst(views.APIView):
             serializer = DetailSampleFormHasParameterRoleAsAnalystSerializer(queryset,many = False,context={'request': request})
         else:
             queryset = SampleForm.objects.filter(id=sample_form_id).first()
-            serializer = DetailSampleFormHasParameterAnalystSerializer(queryset,many = False)
+            serializer = DetailSampleFormHasParameterAnalystSerializer(queryset,many = False,context={'request': request})
         return Response(serializer.data)
         
 class ReportDownload(views.APIView):

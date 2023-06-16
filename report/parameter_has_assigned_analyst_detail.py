@@ -46,18 +46,29 @@ class DetailSampleFormHasParameterAnalystSerializer(serializers.ModelSerializer)
 
 
     def to_representation(self, instance):
+        request = self.context.get('request')
+        user = request.user
         representation = super().to_representation(instance)
 
         sample_form_id = representation.get('id')
 
         # Add extra response data for parameters field
         parameters_data = representation.get('parameters', [])
+
+        params_data_fixed = []
+        for param in parameters_data:
+            parameter_id = param.get('id')
+            obk = SampleFormHasParameter.objects.filter(parameter=parameter_id, sample_form = sample_form_id,analyst_user=user)
+            exists = obk.exists()
+            if exists:
+                params_data_fixed.append(param)    
+
+        parameters_data = params_data_fixed
       
         for parameter_data in parameters_data:
             parameter_id = parameter_data.get('id')
-            # Check if the parameter exists in SampleFormHasParameter model
-            # print(parameter_id)
-            sample_form_has_assigned_analyst_obj = SampleFormHasParameter.objects.filter(parameter=parameter_id, sample_form = sample_form_id)
+           
+            sample_form_has_assigned_analyst_obj = SampleFormHasParameter.objects.filter(parameter=parameter_id, sample_form = sample_form_id,analyst_user=user)
             exists = sample_form_has_assigned_analyst_obj.exists()
             if exists:
                 analyst_obj = sample_form_has_assigned_analyst_obj.first().analyst_user
@@ -76,7 +87,8 @@ class DetailSampleFormHasParameterAnalystSerializer(serializers.ModelSerializer)
                 else:
                     parameter_data['status'] = "processing"
                     parameter_data['result'] = '-'
-
+            else:
+                parameters_data.remove(parameter_data) 
 
             parameter_data['exist'] = exists
 
