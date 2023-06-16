@@ -38,23 +38,35 @@ class SampleFormHasAnalystAPIView(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
-        
-        # supervisor_user = request.user 
-        # queryset = SampleForm.objects.filter(Q(supervisor_user = request.user) & ~Q(status="completed") & ~Q(status="not_assigned") & ~Q(status="not_verified")).order_by("-created_date")
-        # serializer = SampleFormHasAnalystSerializer(queryset, many=True)
-        # return Response(serializer.data)
+
     
-class CompletedSampleFormHasVerifierAPIView(views.APIView):
+class CompletedSampleFormHasVerifierAPIView(generics.ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    def get(self, request, format=None):
-        queryset = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=False))
 
-        serializer = CompletedSampleFormHasVerifierSerializer(queryset, many=True)
-        return Response(serializer.data)
+    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    search_fields = ['id','name','owner_user','status','form_available','commodity__name']
+    ordering_fields = ['name','id']
+    filterset_fields = {
+        'name': ['exact', 'icontains'],
+        'owner_user': ['exact'],
+        'status': ['exact'],
+        'form_available': ['exact'],
+        'commodity_id': ['exact'],
+        'supervisor_user': ['exact'],
+        'created_date': ['date__gte', 'date__lte']  # Date filtering
+    }
 
-    # def post(self, request, format=None):
-    #     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    def get_serializer_class(self): 
+        return CompletedSampleFormHasVerifierSerializer
+    
+    def get_queryset(self):
+        request = self.request
+        queryset = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=False)).order_by("-created_date")
+        return queryset
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
 #parameter has assigned user
 
