@@ -45,7 +45,11 @@ class Formula:
         return False
     
     def getFormulaVariable(self,formula):
-        return re.findall(r'[A-Za-z]+', formula)
+        variables =  re.findall(r'[A-Za-z]+', formula)
+        variables = list(set(variables))
+        print(variables)
+        return variables
+
     
     def MakeProperResponse(self,variables,notations):
         field =  [{"name": var, "label": var, "value": ""} for var in variables]
@@ -59,11 +63,9 @@ class Formula:
             #do some things.
             notations  = []
             formula =  query_obj.formula
-            # print(formula)
             variables = self.getFormulaVariable(formula)
             response = self.MakeProperResponse(variables,notations)
             return response
-            # print(response)
         else:
             response = {
                     "error":"data not match",
@@ -83,7 +85,7 @@ class Formula:
             formula = formula.replace('[', '(').replace(']', ')')
             formula = formula.replace('{', '(').replace('}', ')')
         
-        print(formula)
+    
 
         json_values = json.loads(formula_variable_fields_value)
 
@@ -100,8 +102,7 @@ class Formula:
         except Exception as e:
             is_error_occured = True
             error = {'message': f'Error: {str(e)}', 'status': status.HTTP_400_BAD_REQUEST}
-        print(is_error_occured,error,result)
-        print("asd sasd sd ass ")
+    
         return is_error_occured,error,result    
     
     def Save(self,result,input_fields_value):
@@ -114,7 +115,6 @@ class Formula:
     
 class FormulaGetToVerifier(APIView):
     def get(self, request, sample_form_id, format=None):
-        print(sample_form_id)  # Print the value of sample_form_id
         queryset = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id=sample_form_id)
         serializer = SampleFormParameterFormulaCalculateReadSerializer(queryset, many=True)
         return Response(serializer.data)
@@ -131,7 +131,6 @@ class FormulaApiCalculate(APIView):
         sample_form_id = serializer.validated_data['sample_form']
         formula_variable_fields_value = serializer.validated_data['formula_variable_fields_value']
 
-        # print(formula_variable_fields_value)
 
         formula_obj = Formula(commodity_id,parameter_id,sample_form_id)
         if formula_obj.FullValidiate(formula_variable_fields_value) == True:
