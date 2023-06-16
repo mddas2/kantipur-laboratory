@@ -189,8 +189,12 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
         analyst_status = "processing"
         for parameter in parameter_data:
             formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(parameter = parameter['id'],sample_form=obj.sample_form_id)
-            if formula_calculate.exists():                
-                analyst_status = "completed"             
+            if formula_calculate.exists():
+                if formula_calculate.first().result != None:                
+                    analyst_status = "completed"   
+                else:
+                    analyst_status = "processing"
+                    break
             else:                
                 analyst_status = "processing" 
                 break     
