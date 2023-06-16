@@ -29,11 +29,11 @@ class CommoditySerializer(serializers.ModelSerializer):
         model = Commodity
         fields = '__all__'
 
-class CommoditySerializer(serializers.ModelSerializer):
-    class Meta:
-        ref_name = "Commodity_sample_form"
-        model = Commodity
-        fields = '__all__'
+# class CommoditySerializer(serializers.ModelSerializer):
+#     class Meta:
+#         ref_name = "Commodity_sample_form"
+#         model = Commodity
+#         fields = '__all__'
 
 
 class SampleFormReadSerializer(serializers.ModelSerializer):

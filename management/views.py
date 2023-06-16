@@ -185,8 +185,8 @@ class CommodityViewSet(viewsets.ModelViewSet):
     ordering_fields = ['name','id']
     search_fields = ['name']
     filterset_fields = ['name','category_id']
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated]
     pagination_class = MyLimitOffsetPagination
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
