@@ -32,7 +32,6 @@ class SampleFormHasAnalystAPIView(generics.ListAPIView):
     filterset_fields = {
         'name': ['exact', 'icontains'],
         'owner_user': ['exact'],
-        'status': ['exact'],
         'form_available': ['exact'],
         'commodity_id': ['exact'],
         'supervisor_user': ['exact'],
