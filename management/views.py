@@ -240,10 +240,9 @@ class CommodityCategoryViewSet(viewsets.ModelViewSet):
 
     queryset = CommodityCategory.objects.all()
     serializer_class = CommodityCategorySerializer
-    # filter_backends = [SearchFilter]
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     filterset_fields = ['name','id']
-    # search_fields = ['name']
+    search_fields = ['name']
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     pagination_class = MyLimitOffsetPagination
