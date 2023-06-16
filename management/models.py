@@ -45,10 +45,10 @@ class SampleForm(models.Model):#ClientRequest
     brand = models.CharField(max_length=255)
     purpose = models.CharField(max_length=255)
     report_date = models.DateField()
-    amendments = models.CharField(max_length=255,null=True)
+    amendments = models.CharField(max_length=255,null=True,blank=True)
     is_commodity_select = models.BooleanField(default=False) #if parameter not select then auto select parameter.this insure that commodity select or parameter.
     language = models.CharField(max_length=10)
-    note = models.TextField(null=True)
+    note = models.TextField(null=True,blank=True)
     commodity = models.ForeignKey(Commodity,related_name="sample_form",on_delete=models.CASCADE,default=None)
     supervisor_user = models.ForeignKey(CustomUser, related_name="sample_has_parameters",default=None,on_delete=models.SET_NULL,null=True)
     parameters = models.ManyToManyField(TestResult, related_name="sample_form",blank=True)
