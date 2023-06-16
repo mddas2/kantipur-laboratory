@@ -51,19 +51,20 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
         print(user)
         if not user.is_authenticated:
             # Return an empty queryset or a default response
-            return CustomUser.objects.none()
+            query = CustomUser.objects.none()
         elif user.role == roles.SMU:
             # Regular user can see SampleForm instances with form_available='user'
-            return CustomUser.objects.all()         
+            query = CustomUser.objects.all()         
         elif user.role == roles.SUPERADMIN:
             # Regular user can see SampleForm instances with form_available='user'
-            return CustomUser.objects.all()     
+            query = CustomUser.objects.all()     
         elif user.role == roles.SUPERVISOR:
             # Regular user can see SampleForm instances with form_available='user'
-            return CustomUser.objects.all()       
+            query = CustomUser.objects.all()       
         else:
-            return CustomUser.objects.filter(email=user.email)
+            query = CustomUser.objects.filter(email=user.email)
             raise PermissionDenied("You do not have permission to access this resource.")
+        return query.order_by("-created_date")
     
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
