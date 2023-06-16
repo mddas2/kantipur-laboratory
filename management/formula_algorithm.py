@@ -96,10 +96,12 @@ class Formula:
             result = round(result, 3)
         except ZeroDivisionError:
             is_error_occured = True
-            error = {'message': 'Division by zero','status':status.HTTP_404_NOT_FOUND    }
-        except:
+            error = {'message': 'Division by zero', 'status': status.HTTP_400_BAD_REQUEST}
+        except Exception as e:
             is_error_occured = True
-            error = {'message': 'Unknown Error ','status':status.HTTP_404_NOT_FOUND    }
+            error = {'message': f'Error: {str(e)}', 'status': status.HTTP_400_BAD_REQUEST}
+        print(is_error_occured,error,result)
+        print("asd sasd sd ass ")
         return is_error_occured,error,result    
     
     def Save(self,result,input_fields_value):
@@ -136,26 +138,28 @@ class FormulaApiCalculate(APIView):
             is_error_occured,error,result = formula_obj.calculate(formula_variable_fields_value)
             if is_error_occured:
                 response_data = error
+                response_status = error['status']
             else:
                 object_result,is_create = formula_obj.Save(result,formula_variable_fields_value)
                 if object_result:
                     response_data = {
-                        'message': "formula calculate !!!",   
-                        'status':status.HTTP_200_OK  ,
+                        'message': "formula calculate !!!"
                     }
+                    response_status = status.HTTP_200_OK
                 else:
                     response_data = {
                         'message': "formula can not calculate error",   
-                        'status':status.HTTP_404_NOT_FOUND    
                     }
+                    response_status = status.HTTP_404_NOT_FOUND
 
         else:
             # Create the response data
             response_data = {
                 'message': "some things went wrong",            
             }
+            status.HTTP_400_BAD_REQUEST
 
-        return Response(response_data)
+        return Response(response_data, status=response_status)
 
 class FormulaApiGetFields(APIView):
     def get(self, request, format=None):
