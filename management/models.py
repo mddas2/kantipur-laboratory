@@ -169,6 +169,9 @@ class SampleFormVerifier(models.Model):
     sample_form = models.OneToOneField(SampleForm,related_name="verifier",on_delete=models.CASCADE,default=None)
     is_verified = models.BooleanField(default=False)
     is_sent = models.BooleanField(default=False)
+    created_date = models.DateTimeField(default=timezone.now)
+    updated_date = models.DateTimeField(default=timezone.now)
+
 
 
 
