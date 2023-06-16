@@ -76,7 +76,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     queryset = SampleForm.objects.all()
     serializer_class = SampleFormReadSerializer
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['name','owner_user','status','form_available','commodity__name']
+    search_fields = ['id','name','owner_user','status','form_available','commodity__name']
     ordering_fields = ['name','id']
     filterset_fields = {
         'name': ['exact', 'icontains'],
