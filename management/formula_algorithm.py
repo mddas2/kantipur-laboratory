@@ -137,7 +137,10 @@ class FormulaApiCalculate(APIView):
         if formula_obj.FullValidiate(formula_variable_fields_value) == True:
             is_error_occured,error,result = formula_obj.calculate(formula_variable_fields_value)
             if is_error_occured:
-                response_data = error
+                res = {
+                    'message' : error['message']
+                }
+                response_data = res
                 response_status = error['status']
             else:
                 object_result,is_create = formula_obj.Save(result,formula_variable_fields_value)
