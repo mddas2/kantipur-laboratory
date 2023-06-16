@@ -63,7 +63,7 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
             query = CustomUser.objects.all()       
         else:
             query = CustomUser.objects.filter(email=user.email)
-            raise PermissionDenied("You do not have permission to access this resource.")
+            # raise PermissionDenied("You do not have permission to access this resource.")
         return query.order_by("-created_date")
     
     def create(self, request, *args, **kwargs):
