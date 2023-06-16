@@ -2,6 +2,7 @@ from .models import ClientCategory, SampleForm, Commodity, CommodityCategory , T
 from rest_framework import serializers
 from account.models import CustomUser
 
+
 class ApprovedBySerializer(serializers.ModelSerializer):
      class Meta:
         model = CustomUser
@@ -20,6 +21,12 @@ class PaymentSerializer(serializers.ModelSerializer):
 class TestResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = TestResult
+        fields = '__all__'
+
+class CommoditySerializer(serializers.ModelSerializer):
+    test_result = TestResultSerializer(many=True,read_only=True)
+    class Meta:
+        model = Commodity
         fields = '__all__'
 
 class CommoditySerializer(serializers.ModelSerializer):
@@ -102,6 +109,7 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class SampleFormReadAnalystSerializer(serializers.ModelSerializer):
+    commodity = CommoditySerializer(read_only=True,many=False)
     def validate(self, data):
         action = self.context['view'].action
         if action == "create":
@@ -121,11 +129,6 @@ class SampleFormReadAnalystSerializer(serializers.ModelSerializer):
         model = SampleForm
         fields = '__all__'
 
-class CommoditySerializer(serializers.ModelSerializer):
-    test_result = TestResultSerializer(many=True,read_only=True)
-    class Meta:
-        model = Commodity
-        fields = '__all__'
 
 class CommodityWriteSerializer(serializers.ModelSerializer):
     class Meta:
@@ -152,7 +155,7 @@ class CommodityCategorySerializer(serializers.ModelSerializer):
 
 class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
     sample_form = SampleFormReadAnalystSerializer(read_only=True)
-    commodity = CommodityWriteSerializer(read_only=True)
+    commodity = CommodityWriteSerializer(read_only=True,many=True)
     parameter = TestResultSerializer(many=True,read_only=True)
     class Meta:
         model = SampleFormHasParameter
