@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from . sample_form_serializers import SampleFormHasAnalystSerializer
 from . parameter_has_assigned_analyst import SampleFormHasParameterAnalystSerializer
 from . analyst_final_report_serializer import DetailSampleFormHasParameterRoleAsAnalystSerializer
-from . parameter_has_assigned_analyst_detail import DetailSampleFormHasParameterAnalystSerializer
+from . parameter_has_assigned_analyst_detail import DetailSampleFormHasParameterAnalystSerializer,DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp
 from . verifier_has_completed_sample_form import CompletedSampleFormHasVerifierSerializer
 from django.shortcuts import render
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -82,12 +82,13 @@ class DetailParameterHasAssignedAnalyst(views.APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request, sample_form_id, format=None):
-        if self.request.user.role == "blockedd":#roles.ANALYST:
-            queryset = SampleForm.objects.filter(id=sample_form_id).first()
-            serializer = DetailSampleFormHasParameterRoleAsAnalystSerializer(queryset,many = False,context={'request': request})
-        else:
+        if self.request.user.role == roles.ANALYST:
             queryset = SampleForm.objects.filter(id=sample_form_id).first()
             serializer = DetailSampleFormHasParameterAnalystSerializer(queryset,many = False,context={'request': request})
+        else:
+            print("smu detail")
+            queryset = SampleForm.objects.filter(id=sample_form_id).first()
+            serializer = DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(queryset,many = False,context={'request': request})
         return Response(serializer.data)
         
 class ReportDownload(views.APIView):
