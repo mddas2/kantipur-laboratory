@@ -182,7 +182,8 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
             if formula_calculate:
                 parameter['result'] = formula_calculate.result
                 analyst_status = "completed"
-                count_status = count_status + 1             
+                count_status = count_status + 1   
+                break          
             else:
                 parameter['result'] = "-"      
                 analyst_status = "processing"     
