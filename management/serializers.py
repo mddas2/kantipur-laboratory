@@ -110,6 +110,8 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
 
 class SampleFormReadAnalystSerializer(serializers.ModelSerializer):
     commodity = CommoditySerializer(read_only=True,many=False)
+    owner_user = serializers.SerializerMethodField()
+    supervisor_user = ApprovedBySerializer(read_only = True)
     def validate(self, data):
         action = self.context['view'].action
         if action == "create":
@@ -123,9 +125,17 @@ class SampleFormReadAnalystSerializer(serializers.ModelSerializer):
             return data
         else:
             return data
-
+        
+    def get_owner_user(self, obj):
+        email = obj.owner_user
+        try:
+            user = CustomUser.objects.get(email=email)
+            return ApprovedBySerializer(user).data
+        except CustomUser.DoesNotExist:
+            return None
 
     class Meta:
+        
         model = SampleForm
         fields = '__all__'
 
