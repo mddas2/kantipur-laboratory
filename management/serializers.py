@@ -22,6 +22,12 @@ class TestResultSerializer(serializers.ModelSerializer):
         model = TestResult
         fields = '__all__'
 
+class CommoditySerializer(serializers.ModelSerializer):
+    class Meta:
+        ref_name = "Commodity_sample_form"
+        model = Commodity
+        fields = '__all__'
+
 
 class SampleFormReadSerializer(serializers.ModelSerializer):
     parameters = TestResultSerializer(many=True, read_only=True)
@@ -31,6 +37,8 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
     approved_by = ApprovedBySerializer(read_only = True,many=False)
     verified_by = ApprovedBySerializer(read_only = True,many=False)
 
+    commodity = CommoditySerializer(read_only = True,many=False)
+    
     class Meta:
         approved_by = ApprovedBySerializer(read_only = True)
         supervisor_user = ApprovedBySerializer(read_only = True)
