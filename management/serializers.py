@@ -154,15 +154,20 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
     def get_parameter(self, obj):
         parameter_data = TestResultSerializer(obj.parameter, many=True).data
 
-        analyst_status = "processing"
+        analyst_status = "pending"
+        count_status = 0
         for parameter in parameter_data:
             formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(parameter = parameter['id'],sample_form=obj.sample_form_id).first()
             if formula_calculate:
                 parameter['result'] = formula_calculate.result
-                analyst_status = "completed"                
+                analyst_status = "completed"
+                count_status = count_status + 1             
             else:
                 parameter['result'] = "-"      
                 analyst_status = "processing"     
+
+        if count_status == 0:
+            analyst_status = "pending"
        
             
         return parameter_data,analyst_status
@@ -172,6 +177,7 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
         # print(instance.parameter.first().id)
         parameter,analyst_status = self.get_parameter(instance)
         representation['parameter'] = parameter
+
         representation['status'] = analyst_status
         return representation
 
