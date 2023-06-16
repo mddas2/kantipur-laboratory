@@ -180,8 +180,7 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
         for parameter in parameter_data:
             formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(parameter = parameter['id'],sample_form=obj.sample_form_id).first()
             if formula_calculate:
-                parameter['result'] = formula_calculate.result
-               
+                parameter['result'] = formula_calculate.result               
                 count_status = count_status + 1   
             else:
                 parameter['result'] = "-"      
