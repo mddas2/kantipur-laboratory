@@ -87,9 +87,20 @@ class Formula:
 
         json_values = json.loads(formula_variable_fields_value)
 
-        result = eval(formula,json_values) 
-        print(result)
-        return result    
+        error = {}
+        error = 0
+        result = 0
+        is_error_occured = False
+        try:
+            result = eval(formula, json_values)
+            result = round(result, 3)
+        except ZeroDivisionError:
+            is_error_occured = True
+            error = {'message': 'Division by zero','status':status.HTTP_404_NOT_FOUND    }
+        except:
+            is_error_occured = True
+            error = {'message': 'Unknown Error ','status':status.HTTP_404_NOT_FOUND    }
+        return is_error_occured,error,result    
     
     def Save(self,result,input_fields_value):
         data = {
@@ -122,18 +133,21 @@ class FormulaApiCalculate(APIView):
 
         formula_obj = Formula(commodity_id,parameter_id,sample_form_id)
         if formula_obj.FullValidiate(formula_variable_fields_value) == True:
-            result = formula_obj.calculate(formula_variable_fields_value)
-            object_result,is_create = formula_obj.Save(result,formula_variable_fields_value)
-            if object_result:
-                response_data = {
-                    'message': "formula calculate !!!",   
-                    'status':status.HTTP_200_OK  ,
-                }
+            is_error_occured,error,result = formula_obj.calculate(formula_variable_fields_value)
+            if is_error_occured:
+                response_data = error
             else:
-                response_data = {
-                    'message': "formula can not calculate error",   
-                    'status':status.HTTP_404_NOT_FOUND    
-                }
+                object_result,is_create = formula_obj.Save(result,formula_variable_fields_value)
+                if object_result:
+                    response_data = {
+                        'message': "formula calculate !!!",   
+                        'status':status.HTTP_200_OK  ,
+                    }
+                else:
+                    response_data = {
+                        'message': "formula can not calculate error",   
+                        'status':status.HTTP_404_NOT_FOUND    
+                    }
 
         else:
             # Create the response data
