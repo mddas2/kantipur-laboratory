@@ -25,6 +25,20 @@ from .report_download import ReportAdminList,ReportParameter,ReportCommodity,Rep
 #report_name:['admin-list','users-list','user-with-sample-form','sample-form','commodity','parameter']
 #['sample-request','user-request','client-category','commodity-with-parameter','commodity-category','commodity','parameter']
 class SampleFormHasAnalystAPIView(generics.ListAPIView):
+    
+    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    search_fields = ['id','name','owner_user','status','form_available','commodity__name']
+    ordering_fields = ['name','id']
+    filterset_fields = {
+        'name': ['exact', 'icontains'],
+        'owner_user': ['exact'],
+        'status': ['exact'],
+        'form_available': ['exact'],
+        'commodity_id': ['exact'],
+        'supervisor_user': ['exact'],
+        'created_date': ['date__gte', 'date__lte']  # Date filtering
+    }
+    
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
