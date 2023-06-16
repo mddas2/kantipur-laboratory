@@ -38,7 +38,6 @@ class SampleFormHasAnalystAPIView(generics.ListAPIView):
         'supervisor_user': ['exact'],
         'created_date': ['date__gte', 'date__lte']  # Date filtering
     }
-    
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
