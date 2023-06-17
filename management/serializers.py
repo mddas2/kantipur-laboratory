@@ -2,6 +2,7 @@ from .models import ClientCategory, SampleForm, Commodity, CommodityCategory , T
 from rest_framework import serializers
 from account.models import CustomUser
 
+
 class ApprovedBySerializer(serializers.ModelSerializer):
      class Meta:
         model = CustomUser
@@ -22,6 +23,18 @@ class TestResultSerializer(serializers.ModelSerializer):
         model = TestResult
         fields = '__all__'
 
+class CommoditySerializer(serializers.ModelSerializer):
+    test_result = TestResultSerializer(many=True,read_only=True)
+    class Meta:
+        model = Commodity
+        fields = '__all__'
+
+# class CommoditySerializer(serializers.ModelSerializer):
+#     class Meta:
+#         ref_name = "Commodity_sample_form"
+#         model = Commodity
+#         fields = '__all__'
+
 
 class SampleFormReadSerializer(serializers.ModelSerializer):
     parameters = TestResultSerializer(many=True, read_only=True)
@@ -31,6 +44,8 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
     approved_by = ApprovedBySerializer(read_only = True,many=False)
     verified_by = ApprovedBySerializer(read_only = True,many=False)
 
+    commodity = CommoditySerializer(read_only = True,many=False)
+    
     class Meta:
         approved_by = ApprovedBySerializer(read_only = True)
         supervisor_user = ApprovedBySerializer(read_only = True)
@@ -94,6 +109,9 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class SampleFormReadAnalystSerializer(serializers.ModelSerializer):
+    commodity = CommoditySerializer(read_only=True,many=False)
+    owner_user = serializers.SerializerMethodField()
+    supervisor_user = ApprovedBySerializer(read_only = True)
     def validate(self, data):
         action = self.context['view'].action
         if action == "create":
@@ -107,17 +125,20 @@ class SampleFormReadAnalystSerializer(serializers.ModelSerializer):
             return data
         else:
             return data
-
+        
+    def get_owner_user(self, obj):
+        email = obj.owner_user
+        try:
+            user = CustomUser.objects.get(email=email)
+            return ApprovedBySerializer(user).data
+        except CustomUser.DoesNotExist:
+            return None
 
     class Meta:
+        
         model = SampleForm
         fields = '__all__'
 
-class CommoditySerializer(serializers.ModelSerializer):
-    test_result = TestResultSerializer(many=True,read_only=True)
-    class Meta:
-        model = Commodity
-        fields = '__all__'
 
 class CommodityWriteSerializer(serializers.ModelSerializer):
     class Meta:
@@ -144,7 +165,7 @@ class CommodityCategorySerializer(serializers.ModelSerializer):
 
 class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
     sample_form = SampleFormReadAnalystSerializer(read_only=True)
-    commodity = CommodityWriteSerializer(read_only=True)
+    commodity = CommodityWriteSerializer(read_only=True,many=True)
     parameter = TestResultSerializer(many=True,read_only=True)
     class Meta:
         model = SampleFormHasParameter
@@ -154,15 +175,32 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
     def get_parameter(self, obj):
         parameter_data = TestResultSerializer(obj.parameter, many=True).data
 
-        analyst_status = "processing"
+  
+        count_status = 0
         for parameter in parameter_data:
             formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(parameter = parameter['id'],sample_form=obj.sample_form_id).first()
             if formula_calculate:
-                parameter['result'] = formula_calculate.result
-                analyst_status = "completed"                
+                parameter['result'] = formula_calculate.result               
+                count_status = count_status + 1   
             else:
                 parameter['result'] = "-"      
-                analyst_status = "processing"     
+         
+        analyst_status = "processing"
+        for parameter in parameter_data:
+            formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(parameter = parameter['id'],sample_form=obj.sample_form_id)
+            if formula_calculate.exists():
+                if formula_calculate.first().result != None:                
+                    analyst_status = "completed"   
+                else:
+                    analyst_status = "processing"
+                    break
+            else:                
+                analyst_status = "processing" 
+                break     
+                
+
+        if count_status == 0:
+            analyst_status = "pending"
        
             
         return parameter_data,analyst_status
@@ -172,6 +210,7 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
         # print(instance.parameter.first().id)
         parameter,analyst_status = self.get_parameter(instance)
         representation['parameter'] = parameter
+
         representation['status'] = analyst_status
         return representation
 

@@ -76,7 +76,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     queryset = SampleForm.objects.all()
     serializer_class = SampleFormReadSerializer
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['name','owner_user','status','form_available','commodity__name']
+    search_fields = ['id','name','owner_user','status','form_available','commodity__name']
     ordering_fields = ['name','id']
     filterset_fields = {
         'name': ['exact', 'icontains'],
@@ -185,8 +185,8 @@ class CommodityViewSet(viewsets.ModelViewSet):
     ordering_fields = ['name','id']
     search_fields = ['name']
     filterset_fields = ['name','category_id']
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated]
     pagination_class = MyLimitOffsetPagination
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -240,10 +240,9 @@ class CommodityCategoryViewSet(viewsets.ModelViewSet):
 
     queryset = CommodityCategory.objects.all()
     serializer_class = CommodityCategorySerializer
-    # filter_backends = [SearchFilter]
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     filterset_fields = ['name','id']
-    # search_fields = ['name']
+    search_fields = ['name']
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     pagination_class = MyLimitOffsetPagination

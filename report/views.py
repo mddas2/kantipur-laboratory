@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from . sample_form_serializers import SampleFormHasAnalystSerializer
 from . parameter_has_assigned_analyst import SampleFormHasParameterAnalystSerializer
 from . analyst_final_report_serializer import DetailSampleFormHasParameterRoleAsAnalystSerializer
-from . parameter_has_assigned_analyst_detail import DetailSampleFormHasParameterAnalystSerializer
+from . parameter_has_assigned_analyst_detail import DetailSampleFormHasParameterAnalystSerializer,DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp
 from . verifier_has_completed_sample_form import CompletedSampleFormHasVerifierSerializer
 from django.shortcuts import render
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -25,6 +25,18 @@ from .report_download import ReportAdminList,ReportParameter,ReportCommodity,Rep
 #report_name:['admin-list','users-list','user-with-sample-form','sample-form','commodity','parameter']
 #['sample-request','user-request','client-category','commodity-with-parameter','commodity-category','commodity','parameter']
 class SampleFormHasAnalystAPIView(generics.ListAPIView):
+    
+    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    search_fields = ['id','name','owner_user','status','form_available','commodity__name']
+    ordering_fields = ['name','id']
+    filterset_fields = {
+        'name': ['exact', 'icontains'],
+        'owner_user': ['exact'],
+        'form_available': ['exact'],
+        'commodity_id': ['exact'],
+        'supervisor_user': ['exact'],
+        'created_date': ['date__gte', 'date__lte']  # Date filtering
+    }
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -38,23 +50,35 @@ class SampleFormHasAnalystAPIView(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
-        
-        # supervisor_user = request.user 
-        # queryset = SampleForm.objects.filter(Q(supervisor_user = request.user) & ~Q(status="completed") & ~Q(status="not_assigned") & ~Q(status="not_verified")).order_by("-created_date")
-        # serializer = SampleFormHasAnalystSerializer(queryset, many=True)
-        # return Response(serializer.data)
+
     
-class CompletedSampleFormHasVerifierAPIView(views.APIView):
+class CompletedSampleFormHasVerifierAPIView(generics.ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    def get(self, request, format=None):
-        queryset = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=False))
 
-        serializer = CompletedSampleFormHasVerifierSerializer(queryset, many=True)
-        return Response(serializer.data)
+    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    search_fields = ['id','name','owner_user','status','form_available','commodity__name']
+    ordering_fields = ['name','id']
+    filterset_fields = {
+        'name': ['exact', 'icontains'],
+        'owner_user': ['exact'],
+        'status': ['exact'],
+        'form_available': ['exact'],
+        'commodity_id': ['exact'],
+        'supervisor_user': ['exact'],
+        'created_date': ['date__gte', 'date__lte']  # Date filtering
+    }
 
-    # def post(self, request, format=None):
-    #     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    def get_serializer_class(self): 
+        return CompletedSampleFormHasVerifierSerializer
+    
+    def get_queryset(self):
+        request = self.request
+        queryset = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=False)).order_by("-created_date")
+        return queryset
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
 #parameter has assigned user
 
@@ -70,12 +94,13 @@ class DetailParameterHasAssignedAnalyst(views.APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request, sample_form_id, format=None):
-        if self.request.user.role == "blockedd":#roles.ANALYST:
+        if self.request.user.role == roles.ANALYST:
             queryset = SampleForm.objects.filter(id=sample_form_id).first()
-            serializer = DetailSampleFormHasParameterRoleAsAnalystSerializer(queryset,many = False,context={'request': request})
+            serializer = DetailSampleFormHasParameterAnalystSerializer(queryset,many = False,context={'request': request})
         else:
+            print("smu detail")
             queryset = SampleForm.objects.filter(id=sample_form_id).first()
-            serializer = DetailSampleFormHasParameterAnalystSerializer(queryset,many = False)
+            serializer = DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(queryset,many = False,context={'request': request})
         return Response(serializer.data)
         
 class ReportDownload(views.APIView):
