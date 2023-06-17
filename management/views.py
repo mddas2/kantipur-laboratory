@@ -7,7 +7,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .pagination import MyLimitOffsetPagination
 from rest_framework.response import Response
-from .custompermission import MyPermission
+from .custompermission import ClientCategoryPermission
 from rest_framework import status
 from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
@@ -21,8 +21,7 @@ class ClientCategoryViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter,OrderingFilter]
     search_fields = ['name']
     ordering_fields = ['name','id']
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated,MyPermission]
+    permission_classes = [ClientCategoryPermission]
     pagination_class = MyLimitOffsetPagination
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
