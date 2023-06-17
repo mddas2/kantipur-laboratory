@@ -66,6 +66,5 @@ class CustomUser(AbstractUser):
             return 'None'
         
     def save(self, *args, **kwargs):
-        if self.pk is None:
-            self.is_active = True  # Ensure is_active is always True for new instances
-        return super().save(*args, **kwargs)
+        self.is_active = True  # Ensure is_active is always True
+        super().save(*args, **kwargs)
