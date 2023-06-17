@@ -226,7 +226,7 @@ def FinalReport(report_type,report_lang,id=None):
 
         # Define the context data
         sample_form_name = query.name
-        owner_name = CustomUser.objects.get(email = query.owner_user).first_name
+        owner_name = CustomUser.objects.filter(email = query.owner_user).first().first_name
         sample_registration_date = query.created_date
         sample_code = query.id
         analysis_starting_date = query.created_date
