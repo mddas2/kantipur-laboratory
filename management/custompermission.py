@@ -32,7 +32,7 @@ class CommodityViewSetPermission(BasePermission):
         elif method_name == 'partial_update':
             return True
         elif method_name == 'destroy':
-            return False
+            return True
         else:
             return False
         

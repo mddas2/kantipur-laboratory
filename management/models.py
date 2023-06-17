@@ -56,6 +56,8 @@ class SampleForm(models.Model):#ClientRequest
     approved_by = models.ForeignKey(CustomUser, related_name="sample_form_approve",on_delete=models.SET_NULL,null=True) #smu
     approved_date = models.DateField(null=True)
     completed_date = models.DateField(null=True)
+    
+    remarks = models.CharField(max_length=10,null=True)
 
     verified_by = models.ForeignKey(CustomUser, related_name="sample_form_verified_by",on_delete=models.SET_NULL,null=True) #verifier
 
