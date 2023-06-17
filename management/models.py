@@ -140,7 +140,7 @@ class Payment(models.Model):
     owner_email = models.EmailField(max_length=100,null=True)
     voucher_number = models.CharField(blank=True, null=True, max_length=155)
     register_date = models.CharField(blank=True, null=True, max_length=155)
-    ammount = models.IntegerField(blank=True, null=True)
+    amount = models.IntegerField(blank=True, null=True)
     payment_receipt = models.FileField(upload_to='uploads/receipt',null=True)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
