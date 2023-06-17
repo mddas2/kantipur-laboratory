@@ -7,7 +7,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .pagination import MyLimitOffsetPagination
 from rest_framework.response import Response
-from .custompermission import MyPermission
+from .custompermission import SampleFormHasParameterPermission
 from rest_framework import status
 from rest_framework.filters import OrderingFilter,SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
@@ -36,7 +36,7 @@ class SampleFormHasParameterViewSet(viewsets.ModelViewSet):
     ordering_fields = ['id']
     
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,SampleFormHasParameterPermission]
     pagination_class = MyLimitOffsetPagination
 
     def get_queryset(self):

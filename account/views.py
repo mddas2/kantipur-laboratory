@@ -18,12 +18,14 @@ from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from management import roles
 from rest_framework.exceptions import PermissionDenied
+from .custompermission import Account
 
 class CustomUserSerializerViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
+    # permission_classes = [Account]
     serializer_class = CustomUserSerializer
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['email','username','first_name','last_name','is_verified']
+    search_fields = ['id','email','username','first_name','last_name','is_verified']
     ordering_fields = ['username','id']
     filterset_fields = {
         'email': ['exact', 'icontains'],
@@ -54,15 +56,15 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
             query = CustomUser.objects.none()
         elif user.role == roles.SMU:
             # Regular user can see SampleForm instances with form_available='user'
-            query = CustomUser.objects.all()         
+            query = CustomUser.objects.filter(is_active = True)        
         elif user.role == roles.SUPERADMIN:
             # Regular user can see SampleForm instances with form_available='user'
-            query = CustomUser.objects.all()     
+            query = CustomUser.objects.filter(is_active = True)           
         elif user.role == roles.SUPERVISOR:
             # Regular user can see SampleForm instances with form_available='user'
-            query = CustomUser.objects.all()       
+            query = CustomUser.objects.filter(is_active = True)            
         else:
-            query = CustomUser.objects.filter(email=user.email)
+            query = CustomUser.objects.filter(email=user.email,is_active = True)
             # raise PermissionDenied("You do not have permission to access this resource.")
         return query.order_by("-created_date")
     
@@ -100,19 +102,29 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
         # Return the custom response
         return Response(response_data)
     
+    
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
 
-        # Perform the default delete logic
-        self.perform_destroy(instance)
-
-        # Create a custom response
-        response_data = {
-            "message": "User Account  deleted successfully"
-        }
+        if instance.is_active:
+            # If the user is active, mark them as inactive
+           
+            instance.is_active = False
+            instance.delete= "delete"
+            instance.save()
+            # Create a custom response
+            response_data = {
+                "message": "User Account marked as inactive"
+            }
+        else:
+            # If the user is already inactive, return a custom error response
+            response_data = {
+                "message": "User Account is already inactive"
+            }
 
         # Return the custom response
         return Response(response_data)
+
 
 
 
@@ -217,6 +229,8 @@ class LoginView(APIView):
 
         # If the user is authenticated, log them in and generate tokens
         if user is not None:
+            if user.is_active == False:
+                return Response({'error': 'Your Account is inactive'}, status=status.HTTP_401_UNAUTHORIZED)
             login(request, user)
             refresh = RefreshToken.for_user(user)
             user_obj = CustomUserSerializer(request.user) 

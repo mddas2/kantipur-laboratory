@@ -64,7 +64,17 @@ class CustomUser(AbstractUser):
             return 'ANALYST'
         else:
             return 'None'
-        
+
     def save(self, *args, **kwargs):
-        self.is_active = True  # Ensure is_active is always True
-        super().save(*args, **kwargs)
+        if self.pk is None:
+            # New instance, set is_active to False by default
+            self.is_active = True
+        else:
+            if self.delete == "delete":
+               pass
+            else:
+                # print("when update it's default pass True as is_actives")
+                # is_active is not being updated, set a default value if it hasn't been set already
+                self.is_active = True
+
+        return super().save(*args, **kwargs)

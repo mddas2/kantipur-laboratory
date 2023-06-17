@@ -7,7 +7,9 @@ from websocket import frontend_setting
 from account.models import CustomUser
 from django.db import transaction
 from django.db.models.signals import m2m_changed
-from datetime import date
+# from datetime import datetime
+from django.utils import timezone
+
 
 @receiver(post_save, sender=SampleFormParameterFormulaCalculate)
 def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwargs):
@@ -28,13 +30,17 @@ def handle_sampleform_presave(sender, instance, **kwargs):
     if instance.supervisor_user != original_sample_form:
         instance.status = "not_assigned"
         print("smu approved date")
-        instance.approved_date = date.today()
+        instance.approved_date = timezone.now()
             
              
 
 @receiver(m2m_changed, sender=SampleFormHasParameter.parameter.through)
 def sample_form_has_parameter_m2m_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
     sample_form_obj = instance.sample_form    
+
+    instance.is_supervisor_sent = False #blunder error fixed
+    instance.status="processing"
+    instance.save()
 
     status = "not_assigned"
     
@@ -60,6 +66,17 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
         sample_form_obj = instance.sample_form
         sample_form_has_parameter_obj = SampleFormHasParameter.objects.filter(sample_form = sample_form_obj.id) 
         is_analyst_test = False
+
+        well = 0
+        for parame in sample_form_obj.parameters.all():
+            sample_form_has_parame_obj =  SampleFormHasParameter.objects.filter(sample_form = sample_form_obj.id,parameter=parame)
+            if sample_form_has_parame_obj.exists():
+                well = 1
+            else:
+                well = 0
+                break
+        
+        
         sample_form_status = "processing"
         for obj in sample_form_has_parameter_obj:
             if obj.is_supervisor_sent == True:
@@ -77,14 +94,15 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
                 is_analyst_test = False
                 sample_form_status = "processing"
                 break
-        print(is_analyst_test,"sd asd asad ") #if  sent to supervisor then set to is_analyst_test to 1 
-        SampleForm.objects.filter(id=sample_form_obj.id).update(is_analyst_test = is_analyst_test,status=sample_form_status)
-     
+        if well == 1:
+            SampleForm.objects.filter(id=sample_form_obj.id).update(is_analyst_test = is_analyst_test,status=sample_form_status)
+        else:
+            print("all parameter has not assigned...")
+        
   
 
 @receiver(pre_save, sender=SampleFormHasParameter)
 def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
-
     if not instance.pk:
         instance.status = "pending"
    
@@ -98,7 +116,7 @@ def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
     else:        
         if instance.is_verified == True:
             sample_form_obj.status = "completed"
-            sample_form_obj.completed_date = date.today()
+            sample_form_obj.completed_date = timezone.now()
             sample_form_obj.save()
 
 
