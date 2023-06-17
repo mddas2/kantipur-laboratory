@@ -225,6 +225,8 @@ class LoginView(APIView):
 
         # If the user is authenticated, log them in and generate tokens
         if user is not None:
+            if user.is_active == False:
+                return Response({'error': 'Your Account is inactive'}, status=status.HTTP_401_UNAUTHORIZED)
             login(request, user)
             refresh = RefreshToken.for_user(user)
             user_obj = CustomUserSerializer(request.user) 
