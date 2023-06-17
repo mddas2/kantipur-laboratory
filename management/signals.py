@@ -7,8 +7,7 @@ from websocket import frontend_setting
 from account.models import CustomUser
 from django.db import transaction
 from django.db.models.signals import m2m_changed
-from datetime import date
-from django.utils import timezone
+from datetime import datetime
 
 @receiver(post_save, sender=SampleFormParameterFormulaCalculate)
 def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwargs):
@@ -29,7 +28,7 @@ def handle_sampleform_presave(sender, instance, **kwargs):
     if instance.supervisor_user != original_sample_form:
         instance.status = "not_assigned"
         print("smu approved date")
-        instance.approved_date = timezone.now()
+        instance.approved_date = datetime.now()
             
              
 
@@ -65,7 +64,7 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
         sample_form_obj = instance.sample_form
         sample_form_has_parameter_obj = SampleFormHasParameter.objects.filter(sample_form = sample_form_obj.id) 
         is_analyst_test = False
-        
+
         well = 0
         for parame in sample_form_obj.parameters.all():
             sample_form_has_parame_obj =  SampleFormHasParameter.objects.filter(sample_form = sample_form_obj.id,parameter=parame)
@@ -115,7 +114,7 @@ def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
     else:        
         if instance.is_verified == True:
             sample_form_obj.status = "completed"
-            sample_form_obj.completed_date = timezone.now()
+            sample_form_obj.completed_date = datetime.now()
             sample_form_obj.save()
 
 
