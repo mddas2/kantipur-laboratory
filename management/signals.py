@@ -37,9 +37,9 @@ def handle_sampleform_presave(sender, instance, **kwargs):
 def sample_form_has_parameter_m2m_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
     sample_form_obj = instance.sample_form    
 
-    # instance.is_supervisor_sent = False #blunder error fixed
-    # instance.status="processing"
-    # instance.save()
+    instance.is_supervisor_sent = False #blunder error fixed
+    instance.status="processing"
+    instance.save()
 
     status = "not_assigned"
     
