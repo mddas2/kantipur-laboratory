@@ -101,26 +101,26 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
         return Response(response_data)
     
     
-    
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
 
         if instance.is_active:
-            # If the user is active, perform the delete operation
-            instance.is_active = 0
+            # If the user is active, mark them as inactive
+            instance.is_active = False
             instance.save()
             # Create a custom response
             response_data = {
-                "message": "User Account Inactive successfully"
+                "message": "User Account marked as inactive"
             }
         else:
-            # If the user is inactive, return a custom error response
+            # If the user is already inactive, return a custom error response
             response_data = {
-                "message": "Inactive users cannot be deleted"
+                "message": "User Account is already inactive"
             }
 
         # Return the custom response
         return Response(response_data)
+
 
 
 
