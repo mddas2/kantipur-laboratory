@@ -45,4 +45,20 @@ class CompletedSampleFormHasVerifierSerializer(serializers.ModelSerializer):
                 stat = "verified"
                 representation['status'] = stat
         return representation
-                
+
+class AssignedSampleForSmuSuperAdminSerializer(serializers.ModelSerializer):
+    sample_has_parameter_analyst = SampleFormHasParameterReadSerializer(many=True,read_only=True)
+    commodity = CommoditySerializer(read_only = True)
+    supervisor_user = CustomUserSerializer(read_only=True)
+    class Meta:
+        name = "AssignedSampleForSmuSuperAdminSerializer"
+        model = SampleForm
+        fields = ['id','name','supervisor_user','sample_has_parameter_analyst','commodity','status','created_date']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        request = self.context.get('request')
+
+        representation['status'] = "processings"
+        return representation

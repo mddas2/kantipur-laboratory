@@ -1,7 +1,7 @@
 from rest_framework import views
 from management.models import SampleForm
-from . final_serializer import CompletedSampleFormHasVerifierSerializer
-from . analyst_final_report_serializer import CompletedSampleFormHasAnalystSerializer
+from . final_serializer import AssignedSampleForSmuSuperAdminSerializer
+
 from rest_framework.response import Response
 from django.db.models import Q
 from management import roles
@@ -45,10 +45,8 @@ class FinalSampleFormHasVerifiedAPIView(generics.ListAPIView):
         return query.order_by("-created_date")
     
     def get_serializer_class(self):
-        if self.request.user.role == roles.ANALYST:
-            serializer = CompletedSampleFormHasAnalystSerializer
-        else:
-            serializer = CompletedSampleFormHasVerifierSerializer
+        if self.request.user.role == roles.SMU or self.request.user.role == roles.SUPERADMIN:
+            serializer = AssignedSampleForSmuSuperAdminSerializer
         return serializer
         
     def get(self, request, *args, **kwargs):
