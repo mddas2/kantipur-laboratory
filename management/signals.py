@@ -37,6 +37,10 @@ def handle_sampleform_presave(sender, instance, **kwargs):
 def sample_form_has_parameter_m2m_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
     sample_form_obj = instance.sample_form    
 
+    # instance.is_supervisor_sent = False #blunder error fixed
+    # instance.status="processing"
+    # instance.save()
+
     status = "not_assigned"
     
     parameters = sample_form_obj.parameters.all()
@@ -97,7 +101,6 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
 
 @receiver(pre_save, sender=SampleFormHasParameter)
 def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
-
     if not instance.pk:
         instance.status = "pending"
    
