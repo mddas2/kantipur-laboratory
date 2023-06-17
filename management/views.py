@@ -7,7 +7,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .pagination import MyLimitOffsetPagination
 from rest_framework.response import Response
-from .custompermission import ClientCategoryPermission
+from .custompermission import ClientCategoryPermission,SampleFormViewSetPermission,CommodityViewSetPermission,CommodityCategoryViewSetPermission,TestResultViewSetPermission,PaymentViewSetPermission
 from rest_framework import status
 from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
@@ -87,7 +87,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         'created_date': ['date__gte', 'date__lte']  # Date filtering
     }
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,SampleFormViewSetPermission]
     pagination_class = MyLimitOffsetPagination
 
     def get_queryset(self):
@@ -185,7 +185,7 @@ class CommodityViewSet(viewsets.ModelViewSet):
     search_fields = ['name']
     filterset_fields = ['name','category_id']
     # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [CommodityViewSetPermission]
     pagination_class = MyLimitOffsetPagination
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -243,7 +243,7 @@ class CommodityCategoryViewSet(viewsets.ModelViewSet):
     filterset_fields = ['name','id']
     search_fields = ['name']
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,CommodityCategoryViewSetPermission]
     pagination_class = MyLimitOffsetPagination
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -299,7 +299,7 @@ class TestResultViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter]
     search_fields = ['name']
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,TestResultViewSetPermission]
     pagination_class = MyLimitOffsetPagination
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -355,7 +355,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter]
     search_fields = ['name']
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,PaymentViewSetPermission]
     pagination_class = MyLimitOffsetPagination
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

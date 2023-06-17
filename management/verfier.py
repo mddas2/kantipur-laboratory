@@ -11,6 +11,7 @@ from rest_framework import status
 from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import SampleFormVerifier
+from .custompermission import SampleFormHasVerifierViewSetPermission
 
 class SampleFormHasVerifierViewSet(viewsets.ModelViewSet):
     queryset = SampleFormVerifier.objects.all()
@@ -24,7 +25,7 @@ class SampleFormHasVerifierViewSet(viewsets.ModelViewSet):
     search_fields = ['sample_form_id']
     filterset_fields = ['sample_form_id']
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,SampleFormHasVerifierViewSetPermission]
     pagination_class = MyLimitOffsetPagination
    
     def create(self, request, *args, **kwargs):

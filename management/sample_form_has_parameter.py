@@ -36,7 +36,7 @@ class SampleFormHasParameterViewSet(viewsets.ModelViewSet):
     ordering_fields = ['id']
     
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,SampleFormHasParameterPermission]
     pagination_class = MyLimitOffsetPagination
 
     def get_queryset(self):
