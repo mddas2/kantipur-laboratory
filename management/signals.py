@@ -29,7 +29,7 @@ def handle_sampleform_presave(sender, instance, **kwargs):
     if instance.supervisor_user != original_sample_form:
         instance.status = "not_assigned"
         print("smu approved date")
-        instance.approved_date = timezone.now().date()
+        instance.approved_date = timezone.now()
             
              
 
@@ -99,7 +99,7 @@ def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
     else:        
         if instance.is_verified == True:
             sample_form_obj.status = "completed"
-            sample_form_obj.completed_date = timezone.now().date()
+            sample_form_obj.completed_date = timezone.now()
             sample_form_obj.save()
 
 
