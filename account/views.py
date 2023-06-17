@@ -108,7 +108,9 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
 
         if instance.is_active:
             # If the user is active, mark them as inactive
+           
             instance.is_active = False
+            instance.delete= "delete"
             instance.save()
             # Create a custom response
             response_data = {
