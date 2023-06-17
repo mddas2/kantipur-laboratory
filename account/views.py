@@ -18,9 +18,11 @@ from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from management import roles
 from rest_framework.exceptions import PermissionDenied
+from .custompermission import Account
 
 class CustomUserSerializerViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
+    # permission_classes = [Account]
     serializer_class = CustomUserSerializer
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     search_fields = ['email','username','first_name','last_name','is_verified']
