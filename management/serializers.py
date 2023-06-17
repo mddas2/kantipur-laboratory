@@ -1,7 +1,7 @@
 from .models import ClientCategory, SampleForm, Commodity, CommodityCategory , TestResult ,SampleFormHasParameter,Payment,SampleFormParameterFormulaCalculate
 from rest_framework import serializers
 from account.models import CustomUser
-
+from . import roles
 
 class ApprovedBySerializer(serializers.ModelSerializer):
      class Meta:
@@ -80,6 +80,14 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
 
         representation['total_assign'] = assigned
         representation['parameters'] = parameters_data
+        
+        status = representation.get('status')
+        request = self.context.get('request')
+
+        if request.user.role == roles.USER:
+            if status != "pending" or status != "completed":
+                representation['status'] = "processing"
+
         return representation
 
 class SampleFormWriteSerializer(serializers.ModelSerializer):

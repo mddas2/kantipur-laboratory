@@ -8,6 +8,7 @@ from account.models import CustomUser
 from django.db import transaction
 from django.db.models.signals import m2m_changed
 from datetime import date
+from django.utils import timezone
 
 @receiver(post_save, sender=SampleFormParameterFormulaCalculate)
 def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwargs):
@@ -28,7 +29,7 @@ def handle_sampleform_presave(sender, instance, **kwargs):
     if instance.supervisor_user != original_sample_form:
         instance.status = "not_assigned"
         print("smu approved date")
-        instance.approved_date = date.today()
+        instance.approved_date = timezone.now().date()
             
              
 
@@ -98,7 +99,7 @@ def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
     else:        
         if instance.is_verified == True:
             sample_form_obj.status = "completed"
-            sample_form_obj.completed_date = date.today()
+            sample_form_obj.completed_date = timezone.now().date()
             sample_form_obj.save()
 
 
