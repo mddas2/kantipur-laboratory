@@ -48,6 +48,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         return attrs
   
     class Meta:
+        ref_name =  "account serializer"
         approved_by = ApprovedBySerializer(read_only = True)
         model = CustomUser
         fields = '__all__' 

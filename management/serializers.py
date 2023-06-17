@@ -26,6 +26,7 @@ class TestResultSerializer(serializers.ModelSerializer):
 class CommoditySerializer(serializers.ModelSerializer):
     test_result = TestResultSerializer(many=True,read_only=True)
     class Meta:
+        ref_name = "Commodity_management"
         model = Commodity
         fields = '__all__'
 

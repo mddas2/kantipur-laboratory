@@ -30,6 +30,7 @@ class CompletedSampleFormHasVerifierSerializer(serializers.ModelSerializer):
     commodity = CommoditySerializer(read_only = True)
     supervisor_user = CustomUserSerializer(read_only=True)
     class Meta:
+        name = "CompletedSampleFormHasVerifierSerializer_report_"
         model = SampleForm
         fields = ['id','name','supervisor_user','sample_has_parameter_analyst','commodity','status','created_date']
 
