@@ -54,8 +54,8 @@ class SampleForm(models.Model):#ClientRequest
     parameters = models.ManyToManyField(TestResult, related_name="sample_form",blank=True)
 
     approved_by = models.ForeignKey(CustomUser, related_name="sample_form_approve",on_delete=models.SET_NULL,null=True) #smu
-    approved_date = models.DateField(null=True)
-    completed_date = models.DateField(null=True)
+    approved_date = models.DateTimeField(null=True)
+    completed_date = models.DateTimeField(null=True)
     
     remarks = models.CharField(max_length=10,null=True)
 
