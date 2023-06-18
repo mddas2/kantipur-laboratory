@@ -60,5 +60,5 @@ class AssignedSampleForSmuSuperAdminSerializer(serializers.ModelSerializer):
 
         request = self.context.get('request')
 
-        representation['status'] = "processings"
+        representation['status'] = "processing"
         return representation
