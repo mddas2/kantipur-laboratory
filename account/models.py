@@ -5,6 +5,7 @@ from django.db import models
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
+from . import department_type
 
 class CustomUser(AbstractUser):
     phone = models.CharField(max_length=15 , null=True)
@@ -18,13 +19,15 @@ class CustomUser(AbstractUser):
     department_address = models.CharField(max_length=255,null=True) 
     registration_number = models.CharField(max_length=255,null=True) 
 
+    department_type = models.CharField(max_length=60, choices=department_type.department_code,default=None)#  
+
     is_active = models.BooleanField(default=True)
 
     is_verified = models.IntegerField(choices=[(0, 'Not verified'), (1, 'Verified')], default=0)
     approved_by = models.ForeignKey("CustomUser",related_name="user_approved",null=True,on_delete=models.SET_NULL)
     approved_date = models.DateField(null=True)
 
-    client_category = models.ForeignKey("management.ClientCategory",related_name="user",on_delete=models.CASCADE,null=True)  
+    client_category = models.ForeignKey("management.ClientCategory",related_name="user",on_delete=models.CASCADE,null=True) 
 
     created_by = models.IntegerField(null=True)
     remarks = models.CharField(max_length=200,null=True)

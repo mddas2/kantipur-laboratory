@@ -19,6 +19,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from management import roles
 from rest_framework.exceptions import PermissionDenied
 from .custompermission import Account
+from . import department_type
 
 class CustomUserSerializerViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
@@ -139,6 +140,14 @@ class RoleViewSet(APIView):
         serialized_data = serializer.data
         authentication_classes = [JWTAuthentication]
         permission_classes = [IsAuthenticated]
+        return Response({"roles": serialized_data},status=status.HTTP_200_OK)
+
+class DepartmentTypesViewSet(APIView):    
+    def get(self,request,format=None):
+        my_tuple = department_type.department_code
+        serializer = RoleSerializer(data=my_tuple,many=True)
+        serializer.is_valid()
+        serialized_data = serializer.data
         return Response({"roles": serialized_data},status=status.HTTP_200_OK)
      
 
