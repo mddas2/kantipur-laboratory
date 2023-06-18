@@ -106,13 +106,12 @@ class SampleForm(models.Model):#ClientRequest
     def save(self, *args, **kwargs):
         if not self.pk:
             # Generate and save the encoded IDs for all user roles
-            self.user_encode_id = encode_decode.generateEncodeIdforSampleForm(self.id,"user")
-            self.supervisor_encode_id = encode_decode.generateEncodeIdforSampleForm(self.id,"user")
-            self.analyst_encode_id = encode_decode.generateEncodeIdforSampleForm(self.id,"user")
-            self.verifier_encode_id = encode_decode.generateEncodeIdforSampleForm(self.id,"user")
-            # Call the save method again to save the encoded IDs
+            self.user_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "user")
+            self.supervisor_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "supervisor")
+            self.analyst_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "analyst")
+            self.verifier_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "verifier")
         super().save(*args, **kwargs)
-    
+
 class SampleFormHasParameter(models.Model):#sample form has parameter and parameter for each parameter each analyst
     sample_form = models.ForeignKey(SampleForm,related_name="sample_has_parameter_analyst",on_delete=models.CASCADE,null=True)
     commodity = models.ForeignKey(Commodity,related_name="sample_has_parameter_analyst",on_delete=models.CASCADE,null=True)
