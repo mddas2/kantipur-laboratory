@@ -45,7 +45,7 @@ class SampleForm(models.Model):#ClientRequest
     batch = models.IntegerField()
     brand = models.CharField(max_length=255)
     purpose = models.CharField(max_length=255)
-    requested_export = models.CharField(choices=(('r','request'),('e','export')), default=None, max_length=155)
+    requested_export = models.CharField(choices=(('r','request'),('e','export')), default=None, max_length=155,null=True)
     report_date = models.DateField()
     amendments = models.CharField(max_length=255,null=True,blank=True)
     is_commodity_select = models.BooleanField(default=False) #if parameter not select then auto select parameter.this insure that commodity select or parameter.
