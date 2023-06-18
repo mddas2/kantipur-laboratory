@@ -1,6 +1,6 @@
 department_code = [
-        ('m', 'Anugyapatra Qc Department'),
-        ('su', 'surveillance Food Inspectors'),
+        # ('m', 'Anugyapatra Qc Department'),
+        # ('su', 'surveillance Food Inspectors'),
         ('f', 'kathmandu'),
         ('fk', 'ktm'),
         ('fdh', 'dhulikhel'),

@@ -16,10 +16,10 @@ class CustomUser(AbstractUser):
     registration_document =models.FileField(upload_to='media/user/registration',null=True)
      
     department_name = models.CharField(max_length=255,null=True) 
-    department_address = models.CharField(max_length=255,null=True) 
+    department_address = models.CharField(max_length=60, choices=department_type.department_code,default=None)#  
     registration_number = models.CharField(max_length=255,null=True) 
 
-    department_type = models.CharField(max_length=60, choices=department_type.department_code,default=None)#  
+    # department_type = models.CharField(max_length=60, choices=department_type.department_code,default=None)#  
 
     is_active = models.BooleanField(default=True)
 
