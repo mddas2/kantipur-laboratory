@@ -44,6 +44,7 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
     owner_user = serializers.SerializerMethodField()
     approved_by = ApprovedBySerializer(read_only = True,many=False)
     verified_by = ApprovedBySerializer(read_only = True,many=False)
+    supervisor_user = ApprovedBySerializer(read_only = True)
 
     commodity = CommoditySerializer(read_only = True,many=False)
     
