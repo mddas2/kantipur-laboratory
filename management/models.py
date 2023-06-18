@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import UniqueConstraint
 from account.models import CustomUser
 from django.utils import timezone
+from . import encode_decode
 
 class ClientCategory(models.Model):
     name = models.CharField(max_length=255,unique=True)
@@ -57,6 +58,12 @@ class SampleForm(models.Model):#ClientRequest
     approved_by = models.ForeignKey(CustomUser, related_name="sample_form_approve",on_delete=models.SET_NULL,null=True) #smu
     approved_date = models.DateTimeField(null=True)
     completed_date = models.DateTimeField(null=True)
+
+    user_encode_id = models.CharField(max_length=255, blank=True, null=True)
+    supervisor_encode_id = models.CharField(max_length=255, blank=True, null=True)
+    analyst_encode_id = models.CharField(max_length=255, blank=True, null=True)
+    verifier_encode_id = models.CharField(max_length=255, blank=True, null=True)
+
     
     remarks = models.CharField(max_length=10,null=True)
 
@@ -95,6 +102,16 @@ class SampleForm(models.Model):#ClientRequest
     form_available = models.CharField(max_length=100,choices=ROLE_CHOICES, blank=True, null=True)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            # Generate and save the encoded IDs for all user roles
+            self.user_encode_id = encode_decode.generateEncodeIdforSampleForm(self.id,"user")
+            self.supervisor_encode_id = encode_decode.generateEncodeIdforSampleForm(self.id,"user")
+            self.analyst_encode_id = encode_decode.generateEncodeIdforSampleForm(self.id,"user")
+            self.verifier_encode_id = encode_decode.generateEncodeIdforSampleForm(self.id,"user")
+            # Call the save method again to save the encoded IDs
+        super().save(*args, **kwargs)
     
 class SampleFormHasParameter(models.Model):#sample form has parameter and parameter for each parameter each analyst
     sample_form = models.ForeignKey(SampleForm,related_name="sample_has_parameter_analyst",on_delete=models.CASCADE,null=True)
@@ -174,6 +191,7 @@ class SampleFormVerifier(models.Model):
     is_sent = models.BooleanField(default=False)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
+
 
 
 
