@@ -202,6 +202,14 @@ def FinalReport(report_type,report_lang,id=None):
     
     query = SampleForm.objects.get(id = id)
 
+    try:
+        if query.verifier.is_verified == False:
+            return Response({'error':"Sample Form have not verified","statu":400})
+    except:
+        return Response({'error':"Sample Form have not verified","statu":400})
+
+
+
     # Create a response object with the appropriate content type
     if report_type == "excel":
         serializer_data = SampleFormOnlySerializer(query, many=True)

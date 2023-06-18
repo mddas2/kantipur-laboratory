@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from . import views
 from .views import LoginView
 from rest_framework.routers import DefaultRouter
-from .views import PermissionAllDelete,RoleViewSet
+from .views import PermissionAllDelete,RoleViewSet,DepartmentTypesViewSet
 from .group_permission import PermissionHasGroupViewSet,CustomPermissionInsert
 
 from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView,TokenVerifyView
@@ -27,6 +27,7 @@ urlpatterns = [
 
     path('permission-all-delete/', PermissionAllDelete.as_view()),
     path('roles/',RoleViewSet.as_view()),
+    path('department-types/',DepartmentTypesViewSet.as_view()),
 
     path('add-customized-permission/',CustomPermissionInsert,name="CustomPermissionInsert")
 

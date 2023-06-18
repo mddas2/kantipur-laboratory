@@ -34,7 +34,7 @@ class CommoditySerializer(serializers.ModelSerializer):
 #     class Meta:
 #         ref_name = "Commodity_sample_form"
 #         model = Commodity
-#         fields = '__all__'
+#         fields = '__all__
 
 
 class SampleFormReadSerializer(serializers.ModelSerializer):
@@ -44,6 +44,7 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
     owner_user = serializers.SerializerMethodField()
     approved_by = ApprovedBySerializer(read_only = True,many=False)
     verified_by = ApprovedBySerializer(read_only = True,many=False)
+    supervisor_user = ApprovedBySerializer(read_only = True)
 
     commodity = CommoditySerializer(read_only = True,many=False)
     
@@ -85,8 +86,11 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
 
         if request.user.role == roles.USER:
-            if status != "pending" or status != "completed":
+            if status == "pending" or status == "processing" or status=="completed":
+                representation['status'] = status
+            else:
                 representation['status'] = "processing"
+
 
         return representation
 

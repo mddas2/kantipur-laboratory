@@ -32,7 +32,7 @@ class CompletedSampleFormHasVerifierSerializer(serializers.ModelSerializer):
     class Meta:
         name = "CompletedSampleFormHasVerifierSerializer_report_"
         model = SampleForm
-        fields = ['id','name','supervisor_user','sample_has_parameter_analyst','commodity','status','created_date']
+        fields = ['id','name','supervisor_user','sample_has_parameter_analyst','commodity','status','created_date','completed_date']
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -60,5 +60,5 @@ class AssignedSampleForSmuSuperAdminSerializer(serializers.ModelSerializer):
 
         request = self.context.get('request')
 
-        representation['status'] = "processings"
+        representation['status'] = "processing"
         return representation
