@@ -58,6 +58,12 @@ class RoleSerializer(serializers.Serializer):
     role_name = serializers.CharField()
     def to_representation(self, instance):
         return {'role_id': instance[0], 'role_name': instance[1]}
+    
+class departmentTypeSerializer(serializers.Serializer):
+    code = serializers.CharField()
+    name = serializers.CharField()
+    def to_representation(self, instance):
+        return {'code': instance[0], 'name': instance[1]}
 
    
         

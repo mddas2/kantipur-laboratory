@@ -8,7 +8,7 @@ from .serializers import LoginSerializer
 from django.contrib.auth.models import Group, Permission
 from account.models import CustomUser
 from rest_framework import viewsets
-from .serializers import CustomUserSerializer, GroupSerializer, PermissionSerializer,RoleSerializer
+from .serializers import CustomUserSerializer, GroupSerializer, PermissionSerializer,RoleSerializer,departmentTypeSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -145,10 +145,10 @@ class RoleViewSet(APIView):
 class DepartmentTypesViewSet(APIView):    
     def get(self,request,format=None):
         my_tuple = department_type.department_code
-        serializer = RoleSerializer(data=my_tuple,many=True)
+        serializer = departmentTypeSerializer(data=my_tuple,many=True)
         serializer.is_valid()
         serialized_data = serializer.data
-        return Response({"roles": serialized_data},status=status.HTTP_200_OK)
+        return Response({"department_types": serialized_data},status=status.HTTP_200_OK)
      
 
 class GroupViewSet(viewsets.ModelViewSet):
