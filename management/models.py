@@ -106,10 +106,10 @@ class SampleForm(models.Model):#ClientRequest
     def save(self, *args, **kwargs):
         if not self.pk:
             # Generate and save the encoded IDs for all user roles
-            self.user_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "user")
-            self.supervisor_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "supervisor")
-            self.analyst_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "analyst")
-            self.verifier_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "verifier")
+            self.user_encode_id = encode_decode.generateEncodeIdforSampleForm("3", "user")
+            self.supervisor_encode_id = encode_decode.generateEncodeIdforSampleForm("4", "supervisor")
+            self.analyst_encode_id = encode_decode.generateEncodeIdforSampleForm("43", "analyst")
+            self.verifier_encode_id = encode_decode.generateEncodeIdforSampleForm("34", "verifier")
         super().save(*args, **kwargs)
 
 class SampleFormHasParameter(models.Model):#sample form has parameter and parameter for each parameter each analyst
