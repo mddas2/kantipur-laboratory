@@ -86,8 +86,11 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
 
         if request.user.role == roles.USER:
-            if status != "pending" or status != "completed":
+            if status == "pending" or status == "processing" or status=="completed":
+                representation['status'] = status
+            else:
                 representation['status'] = "processing"
+
 
         return representation
 
