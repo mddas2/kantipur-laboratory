@@ -24,35 +24,24 @@ class SampleFormHasVerifierViewSet(viewsets.ModelViewSet):
 
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     ordering_fields = ['id']
-    search_fields = ['sample_form_id']
-    filterset_fields = ['sample_form_id']
+    search_fields = ['sample_form']
+    filterset_fields = ['sample_form']
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated,SampleFormHasVerifierViewSetPermission]
     pagination_class = MyLimitOffsetPagination
-
-    def get_object(self):
-        user = self.request.user
-
-        id = generateDecodeIdforSampleForm(self.kwargs['pk'],user) 
-
-        queryset = self.get_queryset()
-        obj = queryset.filter(id=id).first()
-        if not obj:
-            raise Http404("Object not found")
-
-        return obj
     
     def get_queryset(self):
         query = SampleFormVerifier.objects.all()
         encoded_sample_form_id = self.request.query_params.get('sample_form_id')
+        print(encoded_sample_form_id)
         if encoded_sample_form_id is not None:              
 
             # Perform the decoding to obtain the actual sample form ID
             decoded_sample_form_id = generateDecodeIdforSampleForm(encoded_sample_form_id,self.request.user)
-
+            print(decoded_sample_form_id)
             # Use the decoded sample form ID to filter the queryset
             query = SampleFormVerifier.objects.filter(sample_form_id=decoded_sample_form_id)
-
+        print(query)
         return query
    
     def create(self, request, *args, **kwargs):
