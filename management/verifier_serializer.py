@@ -33,6 +33,14 @@ class SampleFormWriteVerifierSerilizer(serializers.ModelSerializer):
         user = self.context['request'].user
         return generateAutoEncodeIdforSampleForm(obj.id,user)
     
+    def to_internal_value(self, data):
+        if 'sample_form' in data:
+            sample_form_id = data['sample_form'] 
+            decoded_sample_form_id = generateDecodeIdforSampleForm(sample_form_id,self.context['request'].user)#smart_text(urlsafe_base64_decode(data['sample_form']))
+            data['sample_form'] = decoded_sample_form_id
+            print(data['sample_form'])
+        return super().to_internal_value(data)
+    
     class Meta:
         model = SampleFormVerifier
         fields = '__all__'
