@@ -128,6 +128,7 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
         representation = super().to_representation(instance)
 
         sample_form_id = representation.get('id')
+        sample_form_id = generateDecodeIdforSampleForm(sample_form_id,self.context['request'].user)
 
         # Add extra response data for parameters field
         parameters_data = representation.get('parameters', [])

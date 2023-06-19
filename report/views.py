@@ -97,11 +97,11 @@ class DetailParameterHasAssignedAnalyst(views.APIView):
 
     def get(self, request, sample_form_id, format=None):
         sample_form_id = generateDecodeIdforSampleForm(sample_form_id,request.user)
+      
         if self.request.user.role == roles.ANALYST:
             queryset = SampleForm.objects.filter(id=sample_form_id).first()
             serializer = DetailSampleFormHasParameterAnalystSerializer(queryset,many = False,context={'request': request})
         else:
-            print("smu detail")
             queryset = SampleForm.objects.filter(id=sample_form_id).first()
             serializer = DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(queryset,many = False,context={'request': request})
         return Response(serializer.data)
