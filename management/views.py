@@ -15,7 +15,8 @@ from . import roles
 from rest_framework.exceptions import PermissionDenied
 from django.db.models import Q
 from django.http import Http404
-from hashids import Hashids
+from . encode_decode import generateDecodeIdforSampleForm
+
 
 class ClientCategoryViewSet(viewsets.ModelViewSet):
     queryset = ClientCategory.objects.all()
@@ -95,16 +96,8 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     def get_object(self):
         user = self.request.user
 
-        if user.role == roles.USER:
-            hashids = Hashids(salt="user")
-            encoded_id = self.kwargs['pk']
-            decoded_ids = hashids.decode(encoded_id)
-            if not decoded_ids:
-                raise Http404("Object not found")
-            id = decoded_ids[0]
-        else:
-            id = self.kwargs['pk']           
-            
+        id = generateDecodeIdforSampleForm(self.kwargs['pk'],user) 
+
         queryset = self.get_queryset()
         obj = queryset.filter(id=id).first()
         if not obj:

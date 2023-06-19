@@ -2,7 +2,7 @@ from .models import ClientCategory, SampleForm, Commodity, CommodityCategory , T
 from rest_framework import serializers
 from account.models import CustomUser
 from . import roles
-from hashids import Hashids
+from . encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
 
 class ApprovedBySerializer(serializers.ModelSerializer):
      class Meta:
@@ -44,12 +44,7 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
 
     def get_id(self, obj):
         user = self.context['request'].user
-        if user.role == roles.USER:
-            hashids = Hashids(salt="user")
-            encoded_id = hashids.encode(obj.id)
-            return encoded_id
-        else:
-            return obj.id
+        return generateAutoEncodeIdforSampleForm(obj.id,user)
 
     parameters = TestResultSerializer(many=True, read_only=True)
     payment = PaymentSerializer(read_only=True)
@@ -80,7 +75,7 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
 
         sample_form_id = representation.get('id')
-        sample_form_id = decode_id(sample_form_id,self.context['request'].user)
+        sample_form_id = generateDecodeIdforSampleForm(sample_form_id,self.context['request'].user)
         print(sample_form_id," asasad asd")
 
         parameters_data = representation.get('parameters', [])
@@ -202,7 +197,6 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
 
     def get_parameter(self, obj):
         parameter_data = TestResultSerializer(obj.parameter, many=True).data
-
   
         count_status = 0
         for parameter in parameter_data:
@@ -302,19 +296,3 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
             return instance
         
         return super().create(validated_data)
-
-def decode_id(encoded_id,user):
-    if user.role == roles.USER:
-        hashids = Hashids(salt="user")
-    elif user.role == roles.SUPERVISOR:
-        hashids = Hashids(salt="supervisor")
-    elif user.role == roles.ANALYST:
-        hashids = Hashids(salt="analyst")
-    elif user.role == roles.VERIFIER:
-        hashids = Hashids(salt="verifier")
-    else:
-        return encoded_id
-    decoded_ids = hashids.decode(encoded_id)
-    if decoded_ids:
-        return decoded_ids[0]  # Extract the first decoded ID
-    return None
