@@ -4,6 +4,7 @@ from rest_framework import serializers
 from management.models import SampleForm, Commodity,SampleFormHasParameter
 from account.models import CustomUser
 from rest_framework import serializers
+from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -102,6 +103,14 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
     owner_user = serializers.SerializerMethodField()
     supervisor_user = CustomUserSerializer(read_only = True)
     verified_by = CustomUserSerializer(read_only = True)
+    
+    
+    id = serializers.SerializerMethodField()
+
+    def get_id(self, obj):
+        user = self.context['request'].user
+        return generateAutoEncodeIdforSampleForm(obj.id,user)
+    
     class Meta:
         model = SampleForm
         fields = '__all__'
