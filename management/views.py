@@ -14,6 +14,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from . import roles
 from rest_framework.exceptions import PermissionDenied
 from django.db.models import Q
+from django.http import Http404
+from hashids import Hashids
 
 class ClientCategoryViewSet(viewsets.ModelViewSet):
     queryset = ClientCategory.objects.all()
@@ -89,6 +91,26 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated,SampleFormViewSetPermission]
     pagination_class = MyLimitOffsetPagination
+
+    def get_object(self):
+        user = self.request.user
+
+        if user.role == roles.USER:
+            hashids = Hashids(salt="user")
+            encoded_id = self.kwargs['pk']
+            decoded_ids = hashids.decode(encoded_id)
+            if not decoded_ids:
+                raise Http404("Object not found")
+            id = decoded_ids[0]
+        else:
+            id = self.kwargs['pk']           
+            
+        queryset = self.get_queryset()
+        obj = queryset.filter(id=id).first()
+        if not obj:
+            raise Http404("Object not found")
+
+        return obj
 
     def get_queryset(self):
         user = self.request.user
