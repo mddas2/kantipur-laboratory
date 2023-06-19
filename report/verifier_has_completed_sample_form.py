@@ -27,5 +27,5 @@ class CompletedSampleFormHasVerifierSerializer(serializers.ModelSerializer):
     commodity = CommoditySerializer(read_only = True)
     class Meta:
         model = SampleForm
-        fields = ['id','name','sample_has_parameter_analyst','commodity','status','created_date']
+        fields = ['id','name','sample_has_parameter_analyst','commodity','status','created_date','verifier_encode_id']
         ref_name = "verifier_CompletedSampleFormHasVerifierSerialize"
