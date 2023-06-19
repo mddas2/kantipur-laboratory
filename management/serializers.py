@@ -240,15 +240,23 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = SampleFormHasParameter
         fields = '__all__' 
+
+    def to_internal_value(self, data):
+        if 'sample_form' in data:
+            sample_form_id = data['sample_form'] 
+            decoded_sample_form_id = generateDecodeIdforSampleForm(sample_form_id,self.context['request'].user)#smart_text(urlsafe_base64_decode(data['sample_form']))
+            data['sample_form'] = decoded_sample_form_id
+            print(data['sample_form'])
+        return super().to_internal_value(data)
     
     def validate(self, attrs):
         sample_form = attrs.get('sample_form')
+        print(sample_form," not  printing this...")
         analyst_user = attrs.get('analyst_user')
         parameter = attrs.get('parameter')
 
         action = self.context['view'].action
     
-
         if len(attrs) == 2 and action == 'partial_update' and 'is_supervisor_sent' and 'status' in attrs:
             return attrs
         elif action == 'partial_update':
