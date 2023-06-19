@@ -41,6 +41,19 @@ class SampleFormHasVerifierViewSet(viewsets.ModelViewSet):
             raise Http404("Object not found")
 
         return obj
+    
+    def get_queryset(self):
+        query = SampleFormVerifier.objects.all()
+        encoded_sample_form_id = self.request.query_params.get('sample_form_id')
+        if encoded_sample_form_id is not None:              
+
+            # Perform the decoding to obtain the actual sample form ID
+            decoded_sample_form_id = generateDecodeIdforSampleForm(encoded_sample_form_id,self.request.user)
+
+            # Use the decoded sample form ID to filter the queryset
+            query = SampleFormVerifier.objects.filter(sample_form_id=decoded_sample_form_id)
+
+        return query
    
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
