@@ -163,6 +163,8 @@ class FormulaApiCalculate(APIView):
         return Response(response_data, status=response_status)
 
 class FormulaApiGetFields(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, format=None):
         response_data = {
             'number_of_field': 3,
@@ -191,10 +193,10 @@ class FormulaApiGetFields(APIView):
         return Response(response_data)
     
     def post(self, request, format=None):
-        # Deserialize the request data
-        serializer = FormulaApiGetFieldSerializer(data=request.data)
+        
+        serializer = FormulaApiGetFieldSerializer(data=request.data,context={'request': request})
         if serializer.is_valid():
-            # Get validated data
+            # Get validated datas
             commodity_id = serializer.validated_data['commodity_id']
             parameter_id = serializer.validated_data['parameter_id']
             sample_form_id = serializer.validated_data['sample_form_id']

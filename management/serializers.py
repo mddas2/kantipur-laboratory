@@ -135,6 +135,13 @@ class SampleFormReadAnalystSerializer(serializers.ModelSerializer):
     commodity = CommoditySerializer(read_only=True,many=False)
     owner_user = serializers.SerializerMethodField()
     supervisor_user = ApprovedBySerializer(read_only = True)
+
+    id = serializers.SerializerMethodField()
+
+    def get_id(self, obj):
+        user = self.context['request'].user
+        return generateAutoEncodeIdforSampleForm(obj.id,user)
+
     def validate(self, data):
         action = self.context['view'].action
         if action == "create":
