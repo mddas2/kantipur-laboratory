@@ -18,6 +18,8 @@ def generateAutoEncodeIdforSampleForm(original_id,user):
         hashids = Hashids(salt=sample_form_supervisor_salt, min_length=6)
     elif user.role == roles.ANALYST:
         hashids = Hashids(salt=sample_form_analyst_salt, min_length=6)
+    elif user.role == roles.VERIFIER:
+        hashids = Hashids(salt=sample_form_verifier_salt, min_length=6)
     else:
         return original_id
     encoded_id = hashids.encode(original_id)
@@ -32,6 +34,9 @@ def generateDecodeIdforSampleForm(encoded_id,user):
 
     elif user.role == roles.ANALYST:
         hashids = Hashids(salt=sample_form_analyst_salt,min_length=6)
+
+    elif user.role == roles.VERIFIER:
+        hashids = Hashids(salt=sample_form_verifier_salt,min_length=6)
     # elif user.role == roles.SUPERVISOR:
     #     hashids = Hashids(salt="supervisor")
     # elif user.role == roles.ANALYST:

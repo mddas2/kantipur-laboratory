@@ -12,6 +12,8 @@ from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import SampleFormVerifier
 from .custompermission import SampleFormHasVerifierViewSetPermission
+from . encode_decode import generateDecodeIdforSampleForm
+from django.http import Http404
 
 class SampleFormHasVerifierViewSet(viewsets.ModelViewSet):
     queryset = SampleFormVerifier.objects.all()
@@ -27,6 +29,18 @@ class SampleFormHasVerifierViewSet(viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated,SampleFormHasVerifierViewSetPermission]
     pagination_class = MyLimitOffsetPagination
+
+    def get_object(self):
+        user = self.request.user
+
+        id = generateDecodeIdforSampleForm(self.kwargs['pk'],user) 
+
+        queryset = self.get_queryset()
+        obj = queryset.filter(id=id).first()
+        if not obj:
+            raise Http404("Object not found")
+
+        return obj
    
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
