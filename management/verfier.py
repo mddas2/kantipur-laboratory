@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from . verifier_serializer import SampleFormWriteVerifierSerilizer
+from . verifier_serializer import SampleFormWriteVerifierSerilizer,SampleFormReadVerifierSerilizer
 from .models import ClientCategory, SampleForm, Commodity, CommodityCategory,TestResult, Payment
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -17,7 +17,7 @@ from django.http import Http404
 
 class SampleFormHasVerifierViewSet(viewsets.ModelViewSet):
     queryset = SampleFormVerifier.objects.all()
-    serializer_class = SampleFormWriteVerifierSerilizer
+    serializer_class = SampleFormReadVerifierSerilizer
     filter_backends = [SearchFilter,OrderingFilter]
     search_fields = ['name']
     ordering_fields = ['name','id']
@@ -33,16 +33,15 @@ class SampleFormHasVerifierViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         query = SampleFormVerifier.objects.all()
         encoded_sample_form_id = self.request.query_params.get('sample_form_id')
-        print(encoded_sample_form_id)
         if encoded_sample_form_id is not None:              
-
-            # Perform the decoding to obtain the actual sample form ID
             decoded_sample_form_id = generateDecodeIdforSampleForm(encoded_sample_form_id,self.request.user)
-            print(decoded_sample_form_id)
-            # Use the decoded sample form ID to filter the queryset
             query = SampleFormVerifier.objects.filter(sample_form_id=decoded_sample_form_id)
-        print(query)
         return query
+    
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return SampleFormWriteVerifierSerilizer
+        return super().get_serializer_class()
    
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
