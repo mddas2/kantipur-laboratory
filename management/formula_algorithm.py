@@ -119,9 +119,11 @@ class FormulaGetToVerifier(APIView):
         return Response(serializer.data)
        
 class FormulaApiCalculate(APIView): 
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, format=None):
 
-        serializer = FormulaApiCalculateSerializer(data=request.data)
+        serializer = FormulaApiCalculateSerializer(data=request.data,context={'request': request})
         serializer.is_valid(raise_exception=True)
 
         # Get validated data
