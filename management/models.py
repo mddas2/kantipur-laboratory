@@ -45,7 +45,7 @@ class SampleForm(models.Model):#ClientRequest
     batch = models.IntegerField()
     brand = models.CharField(max_length=255)
     purpose = models.CharField(max_length=255)
-    requested_export = models.CharField(choices=(('r','request'),('e','export')), default=None, max_length=155,null=True)
+    requested_export = models.CharField(choices=(('requested','request'),('export','export')), default=None, max_length=155,null=True)
     report_date = models.DateField()
     amendments = models.CharField(max_length=255,null=True,blank=True)
     is_commodity_select = models.BooleanField(default=False) #if parameter not select then auto select parameter.this insure that commodity select or parameter.
@@ -104,13 +104,19 @@ class SampleForm(models.Model):#ClientRequest
     updated_date = models.DateTimeField(default=timezone.now)
 
     def save(self, *args, **kwargs):
+        create = False
         if not self.pk:
             # Generate and save the encoded IDs for all user roles
-            self.user_encode_id = encode_decode.generateEncodeIdforSampleForm("3", "user")
-            self.supervisor_encode_id = encode_decode.generateEncodeIdforSampleForm("4", "supervisor")
-            self.analyst_encode_id = encode_decode.generateEncodeIdforSampleForm("43", "analyst")
-            self.verifier_encode_id = encode_decode.generateEncodeIdforSampleForm("34", "verifier")
+            create = True
+           
         super().save(*args, **kwargs)
+        if create == True:
+            self.user_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "user")
+            self.supervisor_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "supervisor")
+            self.analyst_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "analyst")
+            self.verifier_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "verifier")
+            self.save()
+
 
 class SampleFormHasParameter(models.Model):#sample form has parameter and parameter for each parameter each analyst
     sample_form = models.ForeignKey(SampleForm,related_name="sample_has_parameter_analyst",on_delete=models.CASCADE,null=True)
