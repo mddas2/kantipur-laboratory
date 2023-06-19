@@ -30,7 +30,7 @@ class SampleFormHasAnalystSerializer(serializers.ModelSerializer):
     commodity = CommoditySerializer(read_only = True)
     class Meta:
         model = SampleForm
-        fields = ['id','name','sample_has_parameter_analyst','commodity','status','created_date','is_analyst_test']
+        fields = ['id','supervisor_encode_id','name','sample_has_parameter_analyst','commodity','status','created_date','is_analyst_test']
 
     
     def to_representation(self, instance):
