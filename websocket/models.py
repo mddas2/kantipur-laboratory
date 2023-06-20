@@ -13,14 +13,8 @@ class Notification(models.Model):
     isinstance_id = models.CharField(max_length=200,null=True)
     to_notification = models.ManyToManyField(CustomUser,related_name="notification")
     is_read = models.BooleanField(default=False)
-    ROLE_CHOICES = (
-        ('SUPERADMIN', 'SUPERADMIN'),
-        ('SMU','SMU'),
-        ('SUPERVISOR', 'SUPERVISOR'),
-        ('ANALYST', 'ANALYST'),
-        ('USER', 'USER'),
-        ('USER_ADMIN', 'USER_ADMIN'),
-    )
-    group_notification = models.CharField(max_length = 1000,choices=ROLE_CHOICES, blank=True, null=True)
+
+    group_notification = models.CharField(max_length = 1000,blank=True, null=True)
+    
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
