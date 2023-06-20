@@ -11,15 +11,15 @@ from . serializer import NotificationWriteSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 
 # Create your views here.
-class CommodityCategoryViewSet(viewsets.ModelViewSet):
+class NotificationViewSet(viewsets.ModelViewSet):
 
     queryset = Notification.objects.all()
     serializer_class = NotificationWriteSerializer
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     filterset_fields = ['id']
     search_fields = ['id']
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated]
     pagination_class = MyLimitOffsetPagination
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
