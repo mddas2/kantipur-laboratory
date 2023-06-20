@@ -86,7 +86,7 @@ def sampleFormNotificationHandler(instance,method,model_name,notification_messag
     # Create a custom response
     response_data = {
         "message": "Notification created successfully",
-        "data": serializer.data
+        "data": serializer.data,
     }
 
     return response_data, status.HTTP_201_CREATED
