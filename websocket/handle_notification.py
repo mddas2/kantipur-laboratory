@@ -53,7 +53,7 @@ def sampleFormNotificationHandler(instance,method,model_name,notification_messag
     notification_message = "a new user has been created"
     particular_message = "Congratulation "
     path = frontend_setting.user_request
-    model_name = "CustomUser"
+    model_name = model_name
     is_read = False
     group_notification = "admin"
 
@@ -84,7 +84,7 @@ def sampleFormNotificationHandler(instance,method,model_name,notification_messag
 
     # Create a custom response
     response_data = {
-        "message": "Notification created successfully",
+        "message": "sample form Notification created successfully ",
         "data": serializer.data,
     }
 
