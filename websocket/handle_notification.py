@@ -3,6 +3,7 @@ from .models import Notification
 from .serializer import NotificationWriteSerializer
 from rest_framework import status
 from . import frontend_setting
+from . import mapping_notification_type
 
 def NotificationHandler(instance, request,method,model_name):
     notification_message = "a new user has been created"
@@ -49,25 +50,26 @@ def NotificationHandler(instance, request,method,model_name):
 
     return response_data, status.HTTP_201_CREATED
 
-def sampleFormNotificationHandler(instance,method,model_name,notification_message,particular_message,to_message,from_message):
-    notification_message = "a new user has been created"
-    particular_message = "Congratulation "
-    path = frontend_setting.user_request
-    model_name = model_name
+def sampleFormNotificationHandler(instance,notification_type):
+
+    notification_message = mapping_notification_type.mapping['notification_type']['admin_message']
+    particular_message = mapping_notification_type.mapping['notification_type']['user_message']
+    model_name = mapping_notification_type.mapping['notification_type']['model_name']
+    path = mapping_notification_type.mapping['notification_type']['path']
+    group_notification = mapping_notification_type.mapping['notification_type']['to_users']
+    from_notification = mapping_notification_type.mapping['notification_type']['from_user']
+    to_notification = CustomUser.objects.values_list('id', flat=True) #mapping_notification_type.mapping['new_sample_form']['from_user']
+
     is_read = False
-    group_notification = "admin"
-
-    # Get all users for notification recipients
-    to_notification = CustomUser.objects.values_list('id', flat=True)
-    print(to_notification)
 
 
+   
     # Create notification data
     notification_data = {
         "notification_message": notification_message,
         'particular_message':particular_message,
         "path": path,
-        "from_notification": from_message,
+        "from_notification": from_notification,
         "model_name": model_name,
         "is_read": is_read,
         "group_notification": 'USER_ADMIN',

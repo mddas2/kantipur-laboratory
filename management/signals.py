@@ -19,7 +19,7 @@ def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwarg
 
     sample_form_has_parameter = SampleFormHasParameter.objects.filter(sample_form_id = sample_form_obj.id,parameter = parameter_obj.id)   
     if sample_form_has_parameter.first().status == "pending":
-        sampleFormNotificationHandler(instance,"update","SampleFormHasParameter","Analyst started testing sample form "+instance.id ,"particular message ","SUPERVISOR","ANALYST from message")
+        # sampleFormNotificationHandler(instance,"update","SampleFormHasParameter","Analyst started testing sample form "+instance.id ,"particular message ","SUPERVISOR","ANALYST from message")
         sample_form_has_parameter.update(status="processing")
         
     
@@ -27,12 +27,12 @@ def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwarg
 def handle_sampleform_presave(sender, instance, **kwargs):
     original_sample_form = None
     if not instance.pk:
-        sampleFormNotificationHandler(instance,"create","SampleForm","new sample form creating ","particular message ","USER_ADMIN","USER to message")
+        sampleFormNotificationHandler(instance,"new_sample_form")
     if instance.id:
         original_sample_form = SampleForm.objects.get(pk=instance.id).supervisor_user
     if instance.supervisor_user != original_sample_form:
         instance.status = "not_assigned"
-        sampleFormNotificationHandler(instance,"create","SampleForm","assigned to supervisor new sample form update ","particular message ","ADMIN_SUPERVISOR","ADMIN")
+        sampleFormNotificationHandler(instance,"assigned_supervisor")
         instance.approved_date = timezone.now()
             
              
@@ -56,9 +56,6 @@ def sample_form_has_parameter_m2m_changed(sender, instance, action, reverse, mod
         else:
             status = "not_assigned"
             break
-   
-    print(status," look ")
-    print(sample_form_obj.status," obj  status")
         
     sample_form_obj.status = status   
     sample_form_obj.save()
@@ -108,7 +105,7 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
 def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
     if not instance.pk:
         instance.status = "pending"
-        sampleFormNotificationHandler(instance,"create","SampleFormHasParameter","assigned to analyst","particular message ","SUPERVISOR","All admin except verifier")
+        sampleFormNotificationHandler(instance,"assigned_analyst")
         
    
 @receiver(pre_save, sender=SampleFormVerifier)
