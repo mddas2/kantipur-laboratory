@@ -14,7 +14,7 @@ mapping = {
         "to_users":['supervisor'],
         "path":frontend_setting.sample_request,
         "admin_message":"A Sample Form Assigned to You",
-        "user_message":"",
+        "user_message":"None",
     },
     "assigned_analyst":{
         "model_name":"SampleFormHasParameter",
@@ -22,7 +22,7 @@ mapping = {
         "to_users":['analyst'],
         "path":frontend_setting.sample_request,
         "admin_message":"A Sample Form Assigned to You",
-        "user_message":"",
+        "user_message":"None",
     },
     "assigned_verifier":{
         "model_name":"SampleFormVerifier",
@@ -30,7 +30,7 @@ mapping = {
         "to_users":['verifier'],
         "path":frontend_setting.sample_request,
         "admin_message":"A Sample Form Assigned to You",
-        "user_message":"",
+        "user_message":"None",
     },
     "verified":{
         "model_name":"SampleFormVerifier",
