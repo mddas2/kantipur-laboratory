@@ -30,7 +30,7 @@ class NotificationViewSet(viewsets.ModelViewSet):
 
         # Create a custom response
         response_data = {
-            "message": "commodity category created successfully",
+            "message": "Notification created successfully",
             "data": serializer.data
         }
 
@@ -48,7 +48,7 @@ class NotificationViewSet(viewsets.ModelViewSet):
 
         # Create a custom response
         response_data = {
-            "message": "commodity category updated successfully",
+            "message": "Notification updated successfully",
             "data": serializer.data
         }
 
@@ -63,7 +63,7 @@ class NotificationViewSet(viewsets.ModelViewSet):
 
         # Create a custom response
         response_data = {
-            "message": "commodity category deleted successfully"
+            "message": "Notification category deleted successfully"
         }
 
         # Return the custom response

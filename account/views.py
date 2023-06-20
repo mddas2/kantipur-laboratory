@@ -20,6 +20,7 @@ from management import roles
 from rest_framework.exceptions import PermissionDenied
 from .custompermission import Account
 from . import department_type
+from websocket.handle_notification import userNotification
 
 class CustomUserSerializerViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
@@ -81,7 +82,7 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
             "message": "User Account created successfully",
             "data": serializer.data
         }
-
+       
         # Return the custom response
         return Response(response_data, status=status.HTTP_201_CREATED)
     
@@ -99,7 +100,7 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
             "message": "User Account updated successfully",
             "data": serializer.data
         }
-
+        userNotification(serializer.instance,request)
         # Return the custom response
         return Response(response_data)
     
