@@ -52,16 +52,16 @@ def NotificationHandler(instance, request,method,model_name):
 
 def sampleFormNotificationHandler(instance,notification_type):
 
-    notification_message = mapping_notification_type.mapping['notification_type']['admin_message']
-    particular_message = mapping_notification_type.mapping['notification_type']['user_message']
-    model_name = mapping_notification_type.mapping['notification_type']['model_name']
-    path = mapping_notification_type.mapping['notification_type']['path']
+    notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
+    particular_message = mapping_notification_type.mapping[notification_type]['user_message']
+    model_name = mapping_notification_type.mapping[notification_type]['model_name']
+    path = mapping_notification_type.mapping[notification_type]['path']
 
-    group_notification = mapping_notification_type.mapping['notification_type']['to_users']
+    group_notification = mapping_notification_type.mapping[notification_type]['to_users']
     group_notification = ','.join(group_notification)
 
 
-    from_notification = mapping_notification_type.mapping['notification_type']['from_user']
+    from_notification = mapping_notification_type.mapping[notification_type]['from_user']
     from_notification = ','.join(from_notification)
 
     to_notification = CustomUser.objects.values_list('id', flat=True) #mapping_notification_type.mapping['new_sample_form']['from_user']
