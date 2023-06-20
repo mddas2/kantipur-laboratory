@@ -1,5 +1,6 @@
 from django.db import models
 from account.models import CustomUser
+from django.utils import timezone
 
 # Create your models here.
 
@@ -18,3 +19,5 @@ class Notification(models.Model):
         ('USER', 'USER'),
     )
     group_notification = models.CharField(max_length = 1000,choices=ROLE_CHOICES, blank=True, null=True)
+    created_date = models.DateTimeField(default=timezone.now)
+    updated_date = models.DateTimeField(default=timezone.now)
