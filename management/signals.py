@@ -9,7 +9,7 @@ from django.db import transaction
 from django.db.models.signals import m2m_changed
 # from datetime import datetime
 from django.utils import timezone
-
+from websocket.handle_notification import sampleFormNotificationHandler
 
 @receiver(post_save, sender=SampleFormParameterFormulaCalculate)
 def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwargs):
@@ -19,17 +19,20 @@ def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwarg
 
     sample_form_has_parameter = SampleFormHasParameter.objects.filter(sample_form_id = sample_form_obj.id,parameter = parameter_obj.id)   
     if sample_form_has_parameter.first().status == "pending":
+        sampleFormNotificationHandler(instance,"update","SampleFormHasParameter","Analyst started testing sample form "+instance.id ,"particular message ","SUPERVISOR","ANALYST from message")
         sample_form_has_parameter.update(status="processing")
         
     
 @receiver(pre_save, sender=SampleForm)
 def handle_sampleform_presave(sender, instance, **kwargs):
     original_sample_form = None
+    if not instance.pk:
+        sampleFormNotificationHandler(instance,"create","SampleForm","new sample form creating ","particular message ","USER_ADMIN","USER to message")
     if instance.id:
         original_sample_form = SampleForm.objects.get(pk=instance.id).supervisor_user
     if instance.supervisor_user != original_sample_form:
         instance.status = "not_assigned"
-        print("smu approved date")
+        sampleFormNotificationHandler(instance,"create","SampleForm","assigned to supervisor new sample form update ","particular message ","ADMIN_SUPERVISOR","ADMIN")
         instance.approved_date = timezone.now()
             
              
@@ -105,6 +108,8 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
 def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
     if not instance.pk:
         instance.status = "pending"
+        sampleFormNotificationHandler(instance,"create","SampleFormHasParameter","assigned to analyst","particular message ","SUPERVISOR","All admin except verifier")
+        
    
 @receiver(pre_save, sender=SampleFormVerifier)
 def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
