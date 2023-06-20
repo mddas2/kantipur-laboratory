@@ -7,7 +7,8 @@ from . import frontend_setting
 def userNotification(instance, request):
     print("handling notification")
     print(instance,request.user)
-    notification_message = "A client Category has been created"
+    notification_message = "a new user has been created"
+    particular_message = "Congratulation "
     path = frontend_setting.user_request
     try:
         from_notification = request.user.id
@@ -25,6 +26,7 @@ def userNotification(instance, request):
     # Create notification data
     notification_data = {
         "notification_message": notification_message,
+        'particular_message':particular_message,
         "path": path,
         "from_notification": from_notification,
         "model_name": model_name,
