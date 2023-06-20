@@ -50,7 +50,6 @@ def NotificationHandler(instance, request,method,model_name):
     return response_data, status.HTTP_201_CREATED
 
 def sampleFormNotificationHandler(instance,method,model_name,notification_message,particular_message,to_message,from_message):
-    return True
     notification_message = "a new user has been created"
     particular_message = "Congratulation "
     path = frontend_setting.user_request
