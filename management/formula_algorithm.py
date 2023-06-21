@@ -285,13 +285,15 @@ class FormulaApiCalculateSave(APIView):
         commodity_id = serializer.validated_data['commodity']
         parameter_id = serializer.validated_data['parameter']
         sample_form_id = serializer.validated_data['sample_form']
-        formula_variable_fields_value = serializer.validated_data['formula_variable_fields_value']
+        # formula_variable_fields_value = serializer.validated_data['formula_variable_fields_value']
         result = serializer.validated_data['result']
         data = {
             'result' : result,
-            'input_fields_value' : None,
         }
-        data = SampleFormParameterFormulaCalculate.objects.update_or_create(sample_form_id = self.sample_form_id, parameter_id = self.parameter_id, commodity_id = self.commodity_id,defaults=data)
 
-
-        return Response(data, status=status.HTTP_200_OK)
+        data,created = SampleFormParameterFormulaCalculate.objects.update_or_create(sample_form_id = sample_form_id, parameter_id =parameter_id, commodity_id = commodity_id,defaults=data)
+        message = {
+            "message":"save successfully"
+        }
+    
+        return Response(message, status=status.HTTP_200_OK)
