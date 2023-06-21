@@ -313,8 +313,8 @@ class TestResultViewSet(viewsets.ModelViewSet):
     serializer_class = TestResultSerializer
     filter_backends = [SearchFilter]
     search_fields = ['name','formula']
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated,TestResultViewSetPermission]
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated,TestResultViewSetPermission]
     pagination_class = MyLimitOffsetPagination
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

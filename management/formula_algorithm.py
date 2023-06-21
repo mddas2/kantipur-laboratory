@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from .formula_serializers import SampleFormParameterFormulaCalculateReadSerializer,FormulaApiCalculateSerializer,FormulaApiGetFieldSerializer
+from .formula_serializers import SampleFormParameterFormulaCalculateReadSerializer,FormulaApiCalculateSerializer,FormulaApiGetFieldSerializer,FormulaApiCalculateSaveSerializer
 from .models import SampleFormParameterFormulaCalculate,Commodity,TestResult,SampleForm
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -269,5 +269,29 @@ class SampleFormParameterFormulaCalculateViewSet(viewsets.ModelViewSet):
 
         # Return the custom response
         return Response(response_data)
+
+
+class FormulaApiCalculateSave(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     
-        
+ 
+    def post(self, request, format=None):
+
+        serializer = FormulaApiCalculateSaveSerializer(data=request.data,context={'request': request})
+        serializer.is_valid(raise_exception=True)
+
+        # Get validated data
+        commodity_id = serializer.validated_data['commodity']
+        parameter_id = serializer.validated_data['parameter']
+        sample_form_id = serializer.validated_data['sample_form']
+        formula_variable_fields_value = serializer.validated_data['formula_variable_fields_value']
+        result = serializer.validated_data['result']
+        data = {
+            'result' : result,
+            'input_fields_value' : None,
+        }
+        data = SampleFormParameterFormulaCalculate.objects.update_or_create(sample_form_id = self.sample_form_id, parameter_id = self.parameter_id, commodity_id = self.commodity_id,defaults=data)
+
+
+        return Response(data, status=status.HTTP_200_OK)
