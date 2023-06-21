@@ -5,6 +5,7 @@ from . serializers import CustomUserSerializer,CommodityCategorySerializer,Sampl
 from django.http import HttpResponse
 import pandas as pd
 from management import roles
+from datetime import date
 from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm,generateDecodeIdByRoleforSampleForm
 # https://limsserver.kantipurinfotech.com.np/api/report/get-report/report_name/report_type/report_lang/
 def ReportAdminList(report_type,report_lang,id=None):
@@ -244,17 +245,26 @@ def FinalReport(request,report_type,report_lang,id=None,role=None):
 
         # Define the context data
         sample_form_name = query.name
-        try:
-            user_obj = CustomUser.objects.get(email = query.owner_user)
-            owner_name = user_obj.first_name
-            owner_name = user_obj.client_category.name
-        except:
-            owner_name = query.owner_user
+        mfd = query.mfd
+        batch = query.batch
+        brand = query.brand
+        # try:
+        user_obj = CustomUser.objects.get(email = query.owner_user)
+        owner_name = user_obj.first_name
+        department_address = user_obj.department_address
+        print(user_obj.department_address)
+        print(department_address)
+        department_address = getDepartmentValue(department_address)
+        print(department_address)
+
+        owner_name = user_obj.client_category.name
+        # except:
+        #     owner_name = query.owner_user
             
-        sample_registration_date = query.created_date
+        sample_registration_date = query.created_date.date()
         sample_code = query.id
-        analysis_starting_date = query.created_date
-        analysis_completion_date = query.created_date
+        analysis_starting_date = query.created_date.date()
+        analysis_completion_date = query.created_date.date()
 
         parameters = query.result.all()
 
@@ -262,12 +272,16 @@ def FinalReport(request,report_type,report_lang,id=None,role=None):
 
         context = {
            'sample_form_name' : sample_form_name,
+           'department_address' : department_address,
            'owner_name' : owner_name,
            'sample_registration_date':sample_registration_date,
            'sample_code':sample_code,
            "analysis_starting_date":analysis_starting_date,
            "analysis_completion_date":analysis_completion_date,
-           'parameters':parameters
+           'parameters':parameters,
+           'mfd':mfd,
+           'brand':brand,
+           'batch':batch
         }
 
         # Render the template with the context
@@ -281,3 +295,11 @@ def FinalReport(request,report_type,report_lang,id=None,role=None):
         pisa.CreatePDF(html, dest=response)
 
         return response
+    
+from account.department_type import department_code
+
+def getDepartmentValue(key):
+    for code, k_value in department_code:
+        if code == department_code:
+            return k_value
+    return key

@@ -304,14 +304,14 @@
 
     <div style="margin-top: 30px;">
         <p style="font-size:12px; margin:0;">TO</p>
-        <p style="font-size:12px; margin:0;">M/S <u>{{owner_name}}</u></p>
+        <p style="font-size:12px; margin:0;">M/S <u>{{owner_name}} {{department_address}}</u></p>
     </div>
 
     <table style="width: 1320px; margin: 25px 5px 0; ">
         <tbody>
             <tr>
                 <td style="width:50%;">
-                    <h1 style=" font-size:12px; padding: 0; margin: 0;"> Sample Particular:</h1>
+                    <h1 style=" font-size:12px; padding: 0; margin: 0;"> Sample Particular:{{sample_form_name}}</h1>
                 </td>
                 <td style="width: 50%;">
                     <h1 style="  font-size:12px; padding: 0; margin: 0; ">Issue Date:</h1>
@@ -427,17 +427,17 @@
             <tr>
                 <td style="width:12%; padding-bottom: 15px;" rowspan="3">Comments if any: </td>
                 <td>
-                    1. MFD:-
+                    1. MFD:-{{mfd}}
                 </td>
             </tr>
             <tr>
                 <td>
-                    2. Brand:-
+                    2. Brand:-{{brand}}
                 </td>
             </tr>
             <tr>
                 <td>
-                    3. Batch No:-
+                    3. Batch No:-{{batch}}
                 </td>
             </tr>
         </tbody>
