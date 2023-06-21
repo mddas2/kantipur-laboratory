@@ -245,7 +245,9 @@ def FinalReport(request,report_type,report_lang,id=None,role=None):
         # Define the context data
         sample_form_name = query.name
         try:
-            owner_name = CustomUser.objects.get(email = query.owner_user).first_name
+            user_obj = CustomUser.objects.get(email = query.owner_user)
+            owner_name = user_obj.first_name
+            owner_name = user_obj.client_category.all().first().name
         except:
             owner_name = query.owner_user
             

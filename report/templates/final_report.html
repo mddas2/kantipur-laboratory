@@ -335,7 +335,11 @@
                     <p style=" font-size:12px; margin: 0; padding:5px 0;"> <i> Condition of Packaging:completed</i></p>
                 </td>
                 <td style="width: 50%; border:none;">
-                    <p style="  font-size:12px; margin: 0; padding:5px 0; "> <i> Test Required:</i></p>
+                    <p style="  font-size:12px; margin: 0; padding:5px 0; "> <i> Test Required:</i>
+                        {% for param in parameters %}
+                            {{param.parameter.name}},
+                        {% endfor %}
+                    </p>
                 </td>
             </tr>
             <tr style="border:none;">
