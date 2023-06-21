@@ -20,7 +20,7 @@ class FinalSampleFormHasVerifiedAPIView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
   
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['id','name','owner_user','status','form_available','commodity__name']
+    search_fields = ['id','name','owner_user','status','form_available','commodity__name','user_encode_id','supervisor_encode_id','analyst_encode_id','verifier_encode_id']
     ordering_fields = ['name','id']
     
     filterset_fields = {
