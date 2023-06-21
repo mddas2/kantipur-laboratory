@@ -228,6 +228,8 @@ class PermissionAllDelete(APIView):
         return Response({'message': 'All permission delete successful'}, status=status.HTTP_200_OK)
 
 class CheckTokenExpireView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]  
     def get(self, request, format=None):
         # Get the token from the request headers or query parameters
         raw_token = request.META.get('HTTP_AUTHORIZATION', '').split(' ')[1]
