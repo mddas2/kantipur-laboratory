@@ -39,7 +39,7 @@ class FinalSampleFormHasVerifiedAPIView(generics.ListAPIView):
         if user.role == roles.USER:
             query = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True) & Q(owner_user=user.email))
         elif user.role == roles.SUPERVISOR:
-            query = SampleForm.objects.filter(supervisor_user=user).filter(Q(status="completed") | Q(status="not_verified"))
+            query = SampleForm.objects.filter(supervisor_user=user).filter(Q(status="completed") | Q(status="not_verified")).filter(verifier__is_sent=True)
 
         elif user.role == roles.SMU:
             query = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True))
