@@ -107,8 +107,8 @@ class DetailParameterHasAssignedAnalyst(views.APIView):
         return Response(serializer.data)
         
 class ReportDownload(views.APIView):
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request,report_name,report_type,report_lang,id=None):
         if report_name == "users-list":
             response = ReportUserList(report_type,report_lang,id)
@@ -146,7 +146,7 @@ class ReportDownload(views.APIView):
             return response
                 
         if report_name == "final-report":
-            response = FinalReport(report_type,report_lang,id)
+            response = FinalReport(request,report_type,report_lang,id)
             return response
         else:
             data = {

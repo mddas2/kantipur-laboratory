@@ -4,6 +4,7 @@ from management.models import SampleForm,Commodity,SampleFormHasParameter,Commod
 from . serializers import CustomUserSerializer,CommodityCategorySerializer,SampleFormOnlySerializer,CommodityOnlySerializer,ClientCategorySerializer
 from django.http import HttpResponse
 import pandas as pd
+from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
 # https://limsserver.kantipurinfotech.com.np/api/report/get-report/report_name/report_type/report_lang/
 def ReportAdminList(report_type,report_lang,id=None):
     query = CustomUser.objects.all()
@@ -195,12 +196,17 @@ def ReportParameter(report_type,report_lang,id=None):
         return HttpResponse("<html><body> this is report admin list pdf download </body></html>")
 
 
-def FinalReport(report_type,report_lang,id=None):
+def FinalReport(request,report_type,report_lang,id=None):
     from rest_framework.response import Response
+
+    id = generateDecodeIdforSampleForm(id,request.user)
+
     if id == None:
-        return Response({'error':"please provide http://127.0.0.1:8000/api/report/get-report/final-report/pdf/eng/id/","statu":400})
-    
-    query = SampleForm.objects.get(id = id)
+        return Response({'error':"please provide http://127.0.0.1:8000/api/report/get-report/final-report/pdf/eng/id/ or unvalid id","statu":400})
+    try:
+        query = SampleForm.objects.get(id = id)
+    except:
+        return HttpResponse("You are trying to access with sample form with other id")
 
     try:
         if query.verifier.is_verified == False:
