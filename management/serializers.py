@@ -76,7 +76,6 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
 
         sample_form_id = representation.get('id')
         sample_form_id = generateDecodeIdforSampleForm(sample_form_id,self.context['request'].user)
-        print(sample_form_id," asasad asd")
 
         parameters_data = representation.get('parameters', [])
 
@@ -100,6 +99,10 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
                 representation['status'] = status
             else:
                 representation['status'] = "processing"
+                
+        if request.user.role == roles.SUPERVISOR:
+            if status == "not_assigned":
+                representation['status'] = "Not Assigned"
 
 
         return representation
