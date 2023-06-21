@@ -97,7 +97,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         user = self.request.user
 
         id = generateDecodeIdforSampleForm(self.kwargs['pk'],user) 
-
+    
         queryset = self.get_queryset()
         obj = queryset.filter(id=id).first()
         if not obj:
@@ -112,6 +112,8 @@ class SampleFormViewSet(viewsets.ModelViewSet):
             query =  SampleForm.objects.filter(Q(owner_user = user.email) & ~Q(status="completed") )
         elif user.role == roles.SUPERVISOR:
             query =  SampleForm.objects.filter(supervisor_user=user,status="not_assigned")
+            if self.request.method == "PATCH":
+                query =  SampleForm.objects.filter(supervisor_user=user)
         elif user.role == roles.SMU:
             query = SampleForm.objects.filter(form_available = 'smu')
         elif user.role == roles.SUPERADMIN:
