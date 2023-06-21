@@ -36,6 +36,6 @@ urlpatterns = [
     path('preeti-to-pdf', preeti_to_pdf.PreetiToPdf,name="Preeti-to-pdf"),
     path('final-report', views.FinalReportPdf,name="FinalReport"),
 
-    path('dashboard-report', dashboard.reportStatus.as_view()),
+    path('dashboard-report/', dashboard.reportStatus.as_view()),
  
 ]
