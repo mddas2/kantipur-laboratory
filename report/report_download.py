@@ -248,6 +248,7 @@ def FinalReport(request,report_type,report_lang,id=None,role=None):
         sample_form_name = query.name
         mfd = query.mfd
         batch = query.batch
+        remarks = query.remarks
         brand = query.brand
         condition = query.condition
         department_address = ''
@@ -271,6 +272,7 @@ def FinalReport(request,report_type,report_lang,id=None,role=None):
 
         context = {
            'sample_form_name' : sample_form_name,
+           'remarks':remarks,
            'department_address' : department_address,
            'condition':condition,
            'owner_name' : owner_name,
