@@ -8,6 +8,7 @@ from management import roles
 
 class ApprovedBySerializer(serializers.ModelSerializer):
      class Meta:
+        ref_name = "ApprovedBySerializer_account"
         model = CustomUser
         fields = '__all__' 
 

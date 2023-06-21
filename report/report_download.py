@@ -238,28 +238,27 @@ def FinalReport(request,report_type,report_lang,id=None,role=None):
 
 
         # Load the HTML template
-        if role ==  roles.USER:
-            template = get_template('final_user_report.html')
-        else:
-            template = get_template('final_report.html')
+        # if role ==  roles.USER:
+        #     template = get_template('final_user_report.html')
+        # else:
+        #     template = get_template('final_report.html')
+        template = get_template('final_report.html')
 
         # Define the context data
         sample_form_name = query.name
         mfd = query.mfd
         batch = query.batch
         brand = query.brand
-        # try:
-        user_obj = CustomUser.objects.get(email = query.owner_user)
-        owner_name = user_obj.first_name
-        department_address = user_obj.department_address
-        print(user_obj.department_address)
-        print(department_address)
-        department_address = getDepartmentValue(department_address)
-        print(department_address)
-
-        owner_name = user_obj.client_category.name
-        # except:
-        #     owner_name = query.owner_user
+        condition = query.condition
+        department_address = ''
+        try:
+            user_obj = CustomUser.objects.get(email = query.owner_user)
+            owner_name = user_obj.first_name
+            department_address = user_obj.department_address
+            department_address = getDepartmentValue(department_address) 
+            owner_name = user_obj.client_category.name
+        except:
+            owner_name = query.owner_user
             
         sample_registration_date = query.created_date.date()
         sample_code = query.id
@@ -273,6 +272,7 @@ def FinalReport(request,report_type,report_lang,id=None,role=None):
         context = {
            'sample_form_name' : sample_form_name,
            'department_address' : department_address,
+           'condition':condition,
            'owner_name' : owner_name,
            'sample_registration_date':sample_registration_date,
            'sample_code':sample_code,
@@ -300,6 +300,7 @@ from account.department_type import department_code
 
 def getDepartmentValue(key):
     for code, k_value in department_code:
-        if code == department_code:
+        print(code,k_value)
+        if code == key:
             return k_value
     return key
