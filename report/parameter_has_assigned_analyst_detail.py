@@ -6,6 +6,8 @@ from account.models import CustomUser
 from rest_framework import serializers
 from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
 
+from management import roles
+
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
@@ -132,7 +134,13 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
 
         # Add extra response data for parameters field
         parameters_data = representation.get('parameters', [])
-      
+
+        user = self.context['request'].user
+        if user.role == roles.SMU or user.role == roles.SUPERADMIN:
+            smu_superadmin_status = representation.get('status')
+            if smu_superadmin_status == "not_assigned" or smu_superadmin_status == "not_verified":
+                representation['status'] = "processing"
+
         for parameter_data in parameters_data:
             parameter_id = parameter_data.get('id')
             # Check if the parameter exists in SampleFormHasParameter model
