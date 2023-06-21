@@ -305,10 +305,10 @@
                     <h1 style=" font-size:12px;margin: 5px 0; text-align:center; padding: 2px 0;"> S.N. </h1>
                 </td>
                 <td style="width: 17%; border: 1px solid black; ">
-                    <h1 style="  font-size:12px; margin: 5px 0; text-align:center; padding: 2px 0;">Ref. Parameters</h1>
+                    <h1 style="  font-size:12px; margin: 5px 0; text-align:center; padding: 2px 0;"> Parameters</h1>
                 </td>
                 <td style="width: 20%; border: 1px solid black; ">
-                    <h1 style="  font-size:12px; margin: 5px 0; text-align:center; padding: 2px 0;"> Test Method</h1>
+                    <h1 style="  font-size:12px; margin: 5px 0; text-align:center; padding: 2px 0;">Ref. Test Method</h1>
                 </td>
                 <td style="width: 12.5%; border: 1px solid black; ">
                     <h1 style="  font-size:12px; margin: 5px 0; text-align:center; padding: 2px 0;">Unit</h1>
@@ -323,120 +323,39 @@
                     <h1 style="  font-size:12px; margin: 5px 0; text-align:center;">Remark</h1>
                 </td>
             </tr>
-       
+            {% for param in parameters  %}
             <tr>
-                <td style="width:6.5%; border: 1px solid black; " rowspan="3">
-                    <h1 style=" font-weight: 400;   font-size:11px;   line-height: 1.2; margin: 5px 0; text-align:center; padding:2px 0;">  coun  </h1>
+                <td style="width:6.5%; border: 1px solid black; " >
+                    <h1 style=" font-weight: 400;   font-size:11px;   line-height: 1.2; margin: 5px 0; text-align:center; padding:2px 0;">{% if param.parameter.test_type == '2' %} MB {% else %} CH  {% endif %}</h1>
                 </td>
                 <td style="width:6.5%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px;   line-height: 1.2; margin: 5px 0; text-align:center; padding:2px 0;">  coun  </h1>
+                    <h1 style=" font-weight: 400;   font-size:11px;   line-height: 1.2; margin: 5px 0; text-align:center; padding:2px 0;">  {{ forloop.counter }}  </h1>
                 </td>
                 <td style="width: 17%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;"> parameter</h1>
+                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;"> {{param.parameter.name}} </h1>
                 </td>
                 <td style="width: 20%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">parameter</h1>
+                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">{{param.parameter.ref_test_method}}</h1>
                 </td>
                 <td style="width: 12.5%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">paramunits</h1>
+                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">{{param.parameter.units}}</h1>
                 </td>
                 <td style="width: 12.5%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">paramresult</h1>
+                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">{{param.result}}</h1>
                 </td>
                 <td style="width: 12.5%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">paraparameter</h1>
+                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">{{param.parameter.mandatory_standard}}</h1>
                 </td>
-                <td style="width: 12.5%; border: 1px solid black;" rowspan="5" >
+            
+                {% if forloop.counter == 1 %} 
+                <td style="width: 12.5%; border: 1px solid black;" rowspan="{{parameters|length}}" >
                     <h1 style=" font-weight: 400;   font-size:12px; margin: 0;padding-bottom: 0;">`</h1>
                 </td>
+                {% endif %}
             </tr>
+            {%  endfor %}
 
-            <tr> 
-                <td style="width:6.5%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px;   line-height: 1.2; margin: 5px 0; text-align:center; padding:2px 0;">  coun  </h1>
-                </td>
-                <td style="width: 17%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;"> parameter</h1>
-                </td>
-                <td style="width: 20%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">parameter</h1>
-                </td>
-                <td style="width: 12.5%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">paramunits</h1>
-                </td>
-                <td style="width: 12.5%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">paramresult</h1>
-                </td>
-                <td style="width: 12.5%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">paraparameter</h1>
-                </td>
-            </tr>
-
-            <tr>       
-                <td style="width:6.5%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px;   line-height: 1.2; margin: 5px 0; text-align:center; padding:2px 0;">  coun  </h1>
-                </td>
-                <td style="width: 17%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;"> parameter</h1>
-                </td>
-                <td style="width: 20%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">parameter</h1>
-                </td>
-                <td style="width: 12.5%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">paramunits</h1>
-                </td>
-                <td style="width: 12.5%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">paramresult</h1>
-                </td>
-                <td style="width: 12.5%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">paraparameter</h1>
-                </td>
-            </tr>
-        
-            <tr>  
-                <td style="width:6.5%; border: 1px solid black; " rowspan="2">
-                    <h1 style=" font-weight: 400;   font-size:11px;   line-height: 1.2; margin: 5px 0; text-align:center; padding:2px 0;">  coun  </h1>
-                </td>
-                <td style="width:6.5%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px;   line-height: 1.2; margin: 5px 0; text-align:center; padding:2px 0;">  coun  </h1>
-                </td>
-                <td style="width: 17%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;"> parameter</h1>
-                </td>
-                <td style="width: 20%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">parameter</h1>
-                </td>
-                <td style="width: 12.5%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">paramunits</h1>
-                </td>
-                <td style="width: 12.5%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">paramresult</h1>
-                </td>
-                <td style="width: 12.5%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">paraparameter</h1>
-                </td>
-            </tr>
-
-            <tr>  
-                <td style="width:6.5%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px;   line-height: 1.2; margin: 5px 0; text-align:center; padding:2px 0;">  coun  </h1>
-                </td>
-                <td style="width: 17%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;"> parameter</h1>
-                </td>
-                <td style="width: 20%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">parameter</h1>
-                </td>
-                <td style="width: 12.5%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">paramunits</h1>
-                </td>
-                <td style="width: 12.5%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">paramresult</h1>
-                </td>
-                <td style="width: 12.5%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">paraparameter</h1>
-                </td>
-            </tr>
+       
 
         </tbody>
     </table>
