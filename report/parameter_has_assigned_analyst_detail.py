@@ -55,6 +55,10 @@ class DetailSampleFormHasParameterAnalystSerializer(serializers.ModelSerializer)
 
         sample_form_id = representation.get('id')
 
+        normal_status = representation.get('status')
+        if normal_status == "not_assigned":
+            representation['status'] = "Processing"
+
         # Add extra response data for parameters field
         parameters_data = representation.get('parameters', [])
 
