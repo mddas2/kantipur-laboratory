@@ -24,7 +24,7 @@ urlpatterns = [
 
     path('track-report-sample-form/', track.TrackSampleFormAPIView.as_view()),
 
-    path('status/<str:url/', status.GetStatus.as_view()),
+    path('status/<str:url>/', status.GetStatus.as_view()),
     # path('completed-sample-form-has-assigned-verifier-check-exists/<int:sample_form_id>/', supervisor.getStatusOfVerifierSampleForm.as_view()),
 
     path('get-report/<str:report_name>/<str:report_type>/<str:report_lang>/', views.ReportDownload.as_view()),
