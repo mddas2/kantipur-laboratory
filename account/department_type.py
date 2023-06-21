@@ -10,5 +10,5 @@ department_code = [
         ('fex', 'Other'),
         ('fnu', 'Nuwakot'),
         ('fsin', 'Sindhuli'),
-        ('','None')
+        ('null','N/A')
     ]
