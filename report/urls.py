@@ -24,12 +24,12 @@ urlpatterns = [
 
     path('track-report-sample-form/', track.TrackSampleFormAPIView.as_view()),
 
-    path('status/', status.GetStatus.as_view()),
+    path('status/<str:url/', status.GetStatus.as_view()),
     # path('completed-sample-form-has-assigned-verifier-check-exists/<int:sample_form_id>/', supervisor.getStatusOfVerifierSampleForm.as_view()),
 
     path('get-report/<str:report_name>/<str:report_type>/<str:report_lang>/', views.ReportDownload.as_view()),
-    path('get-single-report/<str:report_name>/<str:report_type>/<str:report_lang>/<str:id>/<str:role/', views.ReportDownload.as_view()),
-    path('get-single-report/<str:report_name>/<str:report_type>/<str:report_lang>/<int:id>/<str:role/', views.ReportDownload.as_view()),
+    path('get-single-report/<str:report_name>/<str:report_type>/<str:report_lang>/<str:id>/<int:role>/', views.ReportDownload.as_view()),
+    # path('get-single-report/<str:report_name>/<str:report_type>/<str:report_lang>/<int:id>/', views.ReportDownload.as_view()),
     
     path('preeti-to-unicode', preeti_to_unicode.PreetiToUniCode.as_view()),
     path('unicode-to-preeti', preeti_to_unicode.UnicodeToPreeti.as_view()),

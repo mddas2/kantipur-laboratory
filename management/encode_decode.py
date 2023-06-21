@@ -53,16 +53,16 @@ def generateDecodeIdforSampleForm(encoded_id,user):
     return None
 
 def generateDecodeIdByRoleforSampleForm(encoded_id,role):
-    if role == "user":
+    if role == roles.USER:
         hashids = Hashids(salt=sample_form_user_salt,min_length=6)
 
-    elif role == "supervisor":
+    elif role == roles.SUPERVISOR:
         hashids = Hashids(salt=sample_form_supervisor_salt,min_length=6)
 
-    elif role == "analyst":
+    elif role == roles.ANALYST:
         hashids = Hashids(salt=sample_form_analyst_salt,min_length=6)
 
-    elif role == "verifier":
+    elif role == roles.VERIFIER:
         hashids = Hashids(salt=sample_form_verifier_salt,min_length=6)
     # elif user.role == roles.SUPERVISOR:
     #     hashids = Hashids(salt="supervisor")

@@ -107,8 +107,6 @@ class DetailParameterHasAssignedAnalyst(views.APIView):
         return Response(serializer.data)
         
 class ReportDownload(views.APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
     def get(self, request,report_name,report_type,report_lang,id=None,role=None):
         if report_name == "users-list":
             response = ReportUserList(report_type,report_lang,id)
