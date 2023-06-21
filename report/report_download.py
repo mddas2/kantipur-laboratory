@@ -4,6 +4,7 @@ from management.models import SampleForm,Commodity,SampleFormHasParameter,Commod
 from . serializers import CustomUserSerializer,CommodityCategorySerializer,SampleFormOnlySerializer,CommodityOnlySerializer,ClientCategorySerializer
 from django.http import HttpResponse
 import pandas as pd
+from management import roles
 from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm,generateDecodeIdByRoleforSampleForm
 # https://limsserver.kantipurinfotech.com.np/api/report/get-report/report_name/report_type/report_lang/
 def ReportAdminList(report_type,report_lang,id=None):
@@ -236,7 +237,10 @@ def FinalReport(request,report_type,report_lang,id=None,role=None):
 
 
         # Load the HTML template
-        template = get_template('final_report.html')
+        if role ==  roles.USER:
+            template = get_template('final_user_report.html')
+        else:
+            template = get_template('final_report.html')
 
         # Define the context data
         sample_form_name = query.name
