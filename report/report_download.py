@@ -247,7 +247,7 @@ def FinalReport(request,report_type,report_lang,id=None,role=None):
         try:
             user_obj = CustomUser.objects.get(email = query.owner_user)
             owner_name = user_obj.first_name
-            owner_name = user_obj.client_category.all().first().name
+            owner_name = user_obj.client_category.name
         except:
             owner_name = query.owner_user
             
