@@ -1,4 +1,4 @@
-from . import views,preeti_to_unicode,preeti_to_pdf
+from . import views,preeti_to_unicode,preeti_to_pdf,dashboard
 from . import final_report,track,status,assigned_sample_for_smu_superadmin
 from report.admin_folders import supervisor
 
@@ -34,5 +34,7 @@ urlpatterns = [
     path('unicode-to-preeti', preeti_to_unicode.UnicodeToPreeti.as_view()),
     path('preeti-to-pdf', preeti_to_pdf.PreetiToPdf,name="Preeti-to-pdf"),
     path('final-report', views.FinalReportPdf,name="FinalReport"),
+
+    path('dashboard-report', dashboard.reportStatus.as_view()),
  
 ]
