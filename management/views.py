@@ -277,8 +277,8 @@ class CommodityCategoryViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     filterset_fields = ['name','id']
     search_fields = ['name']
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated,CommodityCategoryViewSetPermission]
+    # authentication_classes = [JWTAuthentication]
+    permission_classes = [CommodityCategoryViewSetPermission]
     pagination_class = MyLimitOffsetPagination
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
