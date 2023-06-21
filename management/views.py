@@ -78,7 +78,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     queryset = SampleForm.objects.all()
     serializer_class = SampleFormReadSerializer
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['id','name','owner_user','status','form_available','commodity__name']
+    search_fields = ['id','name','owner_user','status','form_available','commodity__name','user_encode_id','supervisor_encode_id','analyst_encode_id','verifier_encode_id']
     ordering_fields = ['name','id']
     filterset_fields = {
         'name': ['exact', 'icontains'],
@@ -313,8 +313,8 @@ class TestResultViewSet(viewsets.ModelViewSet):
     serializer_class = TestResultSerializer
     filter_backends = [SearchFilter]
     search_fields = ['name','formula']
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated,TestResultViewSetPermission]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated,TestResultViewSetPermission]
     pagination_class = MyLimitOffsetPagination
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
