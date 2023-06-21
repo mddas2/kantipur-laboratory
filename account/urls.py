@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from . import views
 from .views import LoginView
 from rest_framework.routers import DefaultRouter
-from .views import PermissionAllDelete,RoleViewSet,DepartmentTypesViewSet
+from .views import PermissionAllDelete,RoleViewSet,DepartmentTypesViewSet,CheckTokenExpireView
 from .group_permission import PermissionHasGroupViewSet,CustomPermissionInsert
 
 from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView,TokenVerifyView
@@ -24,6 +24,8 @@ urlpatterns = [
     path('gettoken/',TokenObtainPairView.as_view(),name="token_obtain_pair"),
     path('refresh-token',TokenRefreshView.as_view(),name = 'refresg-token'),
     path('token-verify/',TokenVerifyView.as_view(),name="token_verify"),
+
+    path('check-token-status/',CheckTokenExpireView.as_view(),name="token_verify"),
 
     path('permission-all-delete/', PermissionAllDelete.as_view()),
     path('roles/',RoleViewSet.as_view()),
