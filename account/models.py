@@ -8,7 +8,7 @@ from django.utils import timezone
 from . import department_type
 
 class CustomUser(AbstractUser):
-    phone = models.CharField(max_length=15 , null=True)
+    phone = models.CharField(max_length=15 , unique=True)
     email = models.EmailField(max_length=255,unique=True)
     username = models.CharField(max_length=255,unique=True)  
 
