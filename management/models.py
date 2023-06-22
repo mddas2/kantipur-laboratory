@@ -65,7 +65,7 @@ class SampleForm(models.Model):#ClientRequest
     verifier_encode_id = models.CharField(max_length=255, blank=True, null=True)
 
     
-    remarks = models.CharField(max_length=10,null=True)
+    remarks = models.CharField(max_length=1000,null=True)
 
     verified_by = models.ForeignKey(CustomUser, related_name="sample_form_verified_by",on_delete=models.SET_NULL,null=True) #verifier
 
