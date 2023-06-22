@@ -86,8 +86,10 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
             smple_frm_exist = SampleFormHasParameter.objects.filter(parameter=parameter_id, sample_form = sample_form_id)
             exists = smple_frm_exist.exists()
             parameter_data['exist'] = exists
-        
+            
             if exists:
+                # print(smple_frm_exist.first().analyst_user.username)
+                parameter_data['status'] = "pending"
                 parameter_data['analyst'] = smple_frm_exist.first().analyst_user.username
             
 
