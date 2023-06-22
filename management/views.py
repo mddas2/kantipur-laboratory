@@ -14,6 +14,9 @@ from django_filters.rest_framework import DjangoFilterBackend
 from . import roles
 from rest_framework.exceptions import PermissionDenied
 from django.db.models import Q
+from django.http import Http404
+from . encode_decode import generateDecodeIdforSampleForm
+
 
 class ClientCategoryViewSet(viewsets.ModelViewSet):
     queryset = ClientCategory.objects.all()
@@ -75,7 +78,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     queryset = SampleForm.objects.all()
     serializer_class = SampleFormReadSerializer
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['id','name','owner_user','status','form_available','commodity__name']
+    search_fields = ['id','name','owner_user','status','form_available','commodity__name','user_encode_id','supervisor_encode_id','analyst_encode_id','verifier_encode_id']
     ordering_fields = ['name','id']
     filterset_fields = {
         'name': ['exact', 'icontains'],
@@ -90,6 +93,18 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated,SampleFormViewSetPermission]
     pagination_class = MyLimitOffsetPagination
 
+    def get_object(self):
+        user = self.request.user
+
+        id = generateDecodeIdforSampleForm(self.kwargs['pk'],user) 
+    
+        queryset = self.get_queryset()
+        obj = queryset.filter(id=id).first()
+        if not obj:
+            raise Http404("Object not found")
+
+        return obj
+
     def get_queryset(self):
         user = self.request.user
 
@@ -97,6 +112,8 @@ class SampleFormViewSet(viewsets.ModelViewSet):
             query =  SampleForm.objects.filter(Q(owner_user = user.email) & ~Q(status="completed") )
         elif user.role == roles.SUPERVISOR:
             query =  SampleForm.objects.filter(supervisor_user=user,status="not_assigned")
+            if self.request.method == "PATCH":
+                query =  SampleForm.objects.filter(supervisor_user=user)
         elif user.role == roles.SMU:
             query = SampleForm.objects.filter(form_available = 'smu')
         elif user.role == roles.SUPERADMIN:
@@ -161,6 +178,24 @@ class SampleFormViewSet(viewsets.ModelViewSet):
 
         # Return the custom response
         return Response(response_data)
+
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        print(instance.id)
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+
+        # Save the updated object to the database
+        self.perform_update(serializer)
+
+        # Create a custom response
+        response_data = {
+            "message": "Sample partially updated successfully",
+            "data": serializer.data
+        }
+
+        # Return the custom response
+        return Response(response_data, status=status.HTTP_200_OK)
     
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -242,8 +277,8 @@ class CommodityCategoryViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     filterset_fields = ['name','id']
     search_fields = ['name']
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated,CommodityCategoryViewSetPermission]
+    # authentication_classes = [JWTAuthentication]
+    permission_classes = [CommodityCategoryViewSetPermission]
     pagination_class = MyLimitOffsetPagination
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -297,7 +332,7 @@ class TestResultViewSet(viewsets.ModelViewSet):
     queryset = TestResult.objects.all()
     serializer_class = TestResultSerializer
     filter_backends = [SearchFilter]
-    search_fields = ['name']
+    search_fields = ['name','formula']
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated,TestResultViewSetPermission]
     pagination_class = MyLimitOffsetPagination

@@ -1,5 +1,6 @@
 from .models import SampleFormParameterFormulaCalculate
 from rest_framework import serializers
+from . encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
 
 class SampleFormParameterFormulaCalculateReadSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,11 +12,47 @@ class FormulaApiCalculateSerializer(serializers.Serializer):
     parameter = serializers.IntegerField()
     sample_form = serializers.IntegerField()
     formula_variable_fields_value = serializers.CharField()
+    
+    def to_internal_value(self, data):
+        user = self.context['request'].user
+     
+        decoded_sample_form_id = generateDecodeIdforSampleForm(data['sample_form'],user)
+
+        data['sample_form'] = decoded_sample_form_id
+
+        return super().to_internal_value(data)
+
+class FormulaApiCalculateSaveSerializer(serializers.Serializer):
+    commodity = serializers.IntegerField()#serializers.CharField()
+    parameter = serializers.IntegerField()
+    sample_form = serializers.CharField()
+    result = serializers.CharField()
+    formula_variable_fields_value = serializers.CharField()
+    
+    def to_internal_value(self, data):
+        user = self.context['request'].user
+     
+        decoded_sample_form_id = generateDecodeIdforSampleForm(data['sample_form'],user)
+
+        data['sample_form'] = decoded_sample_form_id
+
+        return super().to_internal_value(data)
 
 class FormulaApiGetFieldSerializer(serializers.Serializer):
     commodity_id = serializers.IntegerField()
     parameter_id = serializers.IntegerField()
     sample_form_id = serializers.IntegerField()
+
+    def to_internal_value(self, data):
+        user = self.context['request'].user
+     
+        decoded_sample_form_id = generateDecodeIdforSampleForm(data['sample_form_id'],user)
+
+        data['sample_form_id'] = decoded_sample_form_id
+
+        return super().to_internal_value(data)
+
+
 
     def validate(self, data):
         commodity_id = data.get('commodity_id')

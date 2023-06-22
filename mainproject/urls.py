@@ -41,6 +41,7 @@ urlpatterns = [
 
     path('api/report/', include('report.urls')), 
     path('api/account/', include('account.urls')),
+    path('api/websocket/', include('websocket.urls')),
     path('api/', include('management.urls')), 
     path('api/email-management/', include('emailmanagement.urls')), 
     

@@ -14,7 +14,7 @@ class GetStatus(views.APIView):
     # authentication_classes = [JWTAuthentication]
     # permission_classes = [IsAuthenticated]
         
-    def get(self, request, format=None):
+    def get(self, request, format=None,url=None):
         import json
         status = [
             {

@@ -12,11 +12,11 @@ class CustomUser(AbstractUser):
     email = models.EmailField(max_length=255,unique=True)
     username = models.CharField(max_length=255,unique=True)  
 
-    renew_document = models.FileField(upload_to='media/user/renew_doument',null=True)
-    registration_document =models.FileField(upload_to='media/user/registration',null=True)
+    renew_document = models.FileField(upload_to='media/user/renew_doument',default=None)
+    registration_document =models.FileField(upload_to='media/user/registration',default=None)
      
     department_name = models.CharField(max_length=255,null=True) 
-    department_address =  models.CharField(max_length=60, choices=department_type.department_code,default=None)#s
+    department_address =  models.CharField(max_length=60, choices=department_type.department_code,default=None,null=True)#s
     registration_number = models.CharField(max_length=255,null=True) 
 
     # department_type = models.CharField(max_length=60, choices=department_type.department_code,default=None)#  

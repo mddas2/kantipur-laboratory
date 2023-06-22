@@ -4,6 +4,9 @@ from management.models import SampleForm,Commodity,SampleFormHasParameter,Commod
 from . serializers import CustomUserSerializer,CommodityCategorySerializer,SampleFormOnlySerializer,CommodityOnlySerializer,ClientCategorySerializer
 from django.http import HttpResponse
 import pandas as pd
+from management import roles
+from datetime import date
+from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm,generateDecodeIdByRoleforSampleForm
 # https://limsserver.kantipurinfotech.com.np/api/report/get-report/report_name/report_type/report_lang/
 def ReportAdminList(report_type,report_lang,id=None):
     query = CustomUser.objects.all()
@@ -195,12 +198,17 @@ def ReportParameter(report_type,report_lang,id=None):
         return HttpResponse("<html><body> this is report admin list pdf download </body></html>")
 
 
-def FinalReport(report_type,report_lang,id=None):
+def FinalReport(request,report_type,report_lang,id=None,role=None):
     from rest_framework.response import Response
+
+    id = generateDecodeIdByRoleforSampleForm(id,role)
+
     if id == None:
-        return Response({'error':"please provide http://127.0.0.1:8000/api/report/get-report/final-report/pdf/eng/id/","statu":400})
-    
-    query = SampleForm.objects.get(id = id)
+        return Response({'error':"please provide http://127.0.0.1:8000/api/report/get-report/final-report/pdf/eng/id/ or unvalid id","statu":400})
+    try:
+        query = SampleForm.objects.get(id = id)
+    except:
+        return HttpResponse("You are trying to access with sample form with other id")
 
     try:
         if query.verifier.is_verified == False:
@@ -230,19 +238,33 @@ def FinalReport(report_type,report_lang,id=None):
 
 
         # Load the HTML template
+        # if role ==  roles.USER:
+        #     template = get_template('final_user_report.html')
+        # else:
+        #     template = get_template('final_report.html')
         template = get_template('final_report.html')
 
         # Define the context data
         sample_form_name = query.name
+        mfd = query.mfd
+        batch = query.batch
+        remarks = query.remarks
+        brand = query.brand
+        condition = query.condition
+        department_address = ''
         try:
-            owner_name = CustomUser.objects.get(email = query.owner_user).first_name
+            user_obj = CustomUser.objects.get(email = query.owner_user)
+            owner_name = user_obj.first_name
+            department_address = user_obj.department_address
+            department_address = getDepartmentValue(department_address) 
+            owner_name = user_obj.department_name #
         except:
             owner_name = query.owner_user
             
-        sample_registration_date = query.created_date
-        sample_code = query.id
-        analysis_starting_date = query.created_date
-        analysis_completion_date = query.created_date
+        sample_registration_date = query.created_date.date()
+        sample_code = query.user_encode_id
+        analysis_starting_date = query.created_date.date()
+        analysis_completion_date = query.created_date.date()
 
         parameters = query.result.all()
 
@@ -250,12 +272,18 @@ def FinalReport(report_type,report_lang,id=None):
 
         context = {
            'sample_form_name' : sample_form_name,
+           'remarks':remarks,
+           'department_address' : department_address,
+           'condition':condition,
            'owner_name' : owner_name,
            'sample_registration_date':sample_registration_date,
            'sample_code':sample_code,
            "analysis_starting_date":analysis_starting_date,
            "analysis_completion_date":analysis_completion_date,
-           'parameters':parameters
+           'parameters':parameters,
+           'mfd':mfd,
+           'brand':brand,
+           'batch':batch
         }
 
         # Render the template with the context
@@ -269,3 +297,12 @@ def FinalReport(report_type,report_lang,id=None):
         pisa.CreatePDF(html, dest=response)
 
         return response
+    
+from account.department_type import department_code
+
+def getDepartmentValue(key):
+    for code, k_value in department_code:
+        print(code,k_value)
+        if code == key:
+            return k_value
+    return key

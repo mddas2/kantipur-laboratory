@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from .formula_serializers import SampleFormParameterFormulaCalculateReadSerializer,FormulaApiCalculateSerializer,FormulaApiGetFieldSerializer
+from .formula_serializers import SampleFormParameterFormulaCalculateReadSerializer,FormulaApiCalculateSerializer,FormulaApiGetFieldSerializer,FormulaApiCalculateSaveSerializer
 from .models import SampleFormParameterFormulaCalculate,Commodity,TestResult,SampleForm
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -119,9 +119,11 @@ class FormulaGetToVerifier(APIView):
         return Response(serializer.data)
        
 class FormulaApiCalculate(APIView): 
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, format=None):
 
-        serializer = FormulaApiCalculateSerializer(data=request.data)
+        serializer = FormulaApiCalculateSerializer(data=request.data,context={'request': request})
         serializer.is_valid(raise_exception=True)
 
         # Get validated data
@@ -163,6 +165,8 @@ class FormulaApiCalculate(APIView):
         return Response(response_data, status=response_status)
 
 class FormulaApiGetFields(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, format=None):
         response_data = {
             'number_of_field': 3,
@@ -191,10 +195,10 @@ class FormulaApiGetFields(APIView):
         return Response(response_data)
     
     def post(self, request, format=None):
-        # Deserialize the request data
-        serializer = FormulaApiGetFieldSerializer(data=request.data)
+        
+        serializer = FormulaApiGetFieldSerializer(data=request.data,context={'request': request})
         if serializer.is_valid():
-            # Get validated data
+            # Get validated datas
             commodity_id = serializer.validated_data['commodity_id']
             parameter_id = serializer.validated_data['parameter_id']
             sample_form_id = serializer.validated_data['sample_form_id']
@@ -265,5 +269,31 @@ class SampleFormParameterFormulaCalculateViewSet(viewsets.ModelViewSet):
 
         # Return the custom response
         return Response(response_data)
+
+
+class FormulaApiCalculateSave(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     
-        
+ 
+    def post(self, request, format=None):
+
+        serializer = FormulaApiCalculateSaveSerializer(data=request.data,context={'request': request})
+        serializer.is_valid(raise_exception=True)
+
+        # Get validated data
+        commodity_id = serializer.validated_data['commodity']
+        parameter_id = serializer.validated_data['parameter']
+        sample_form_id = serializer.validated_data['sample_form']
+        # formula_variable_fields_value = serializer.validated_data['formula_variable_fields_value']
+        result = serializer.validated_data['result']
+        data = {
+            'result' : result,
+        }
+
+        data,created = SampleFormParameterFormulaCalculate.objects.update_or_create(sample_form_id = sample_form_id, parameter_id =parameter_id, commodity_id = commodity_id,defaults=data)
+        message = {
+            "message":"save successfully"
+        }
+    
+        return Response(message, status=status.HTTP_200_OK)

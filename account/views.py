@@ -11,7 +11,7 @@ from rest_framework import viewsets
 from .serializers import CustomUserSerializer, GroupSerializer, PermissionSerializer,RoleSerializer,departmentTypeSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken,TokenError
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework.filters import SearchFilter
 from rest_framework.filters import OrderingFilter
@@ -20,6 +20,8 @@ from management import roles
 from rest_framework.exceptions import PermissionDenied
 from .custompermission import Account
 from . import department_type
+from websocket.handle_notification import NotificationHandler
+from django.http import HttpResponse
 
 class CustomUserSerializerViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
@@ -81,7 +83,8 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
             "message": "User Account created successfully",
             "data": serializer.data
         }
-
+        NotificationHandler(serializer.instance,request,'create',"CustomUser")
+       
         # Return the custom response
         return Response(response_data, status=status.HTTP_201_CREATED)
     
@@ -99,7 +102,7 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
             "message": "User Account updated successfully",
             "data": serializer.data
         }
-
+        NotificationHandler(serializer.instance,request,'update','CustomUser')
         # Return the custom response
         return Response(response_data)
     
@@ -223,6 +226,27 @@ class PermissionAllDelete(APIView):
     def get(self, request, format=None):
         object = Permission.objects.all().delete()
         return Response({'message': 'All permission delete successful'}, status=status.HTTP_200_OK)
+
+class CheckTokenExpireView(APIView): 
+    def get(self, request, format=None):
+        # Get the token from the request headers or query parameters
+        try:
+            raw_token = request.META.get('HTTP_AUTHORIZATION', '').split(' ')[1]
+        except:
+            return Response({'valid': False}, status=status.HTTP_401_UNAUTHORIZED)
+
+        try:
+            # Verify the access token
+            access_token = AccessToken(raw_token)
+            access_token.verify()
+
+            # If the token is valid and not expired
+            return Response({'valid': True}, status=status.HTTP_200_OK)
+
+        except TokenError:
+            # If the token is expired or invalid
+            return Response({'valid': False}, status=status.HTTP_401_UNAUTHORIZED)
+
     
 # Create your views here.
 class LoginView(APIView):

@@ -21,6 +21,7 @@ from django.db.models import Q
 from management import roles
 from rest_framework import generics
 from .report_download import ReportAdminList,ReportParameter,ReportCommodity,ReportUserSampleForm,ReportUserList,ReportSampleForm,ReportUserRequest,ReportComodityCategory,FinalReport
+from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
 #report_type:['pdf','excel','csv']
 #report_name:['admin-list','users-list','user-with-sample-form','sample-form','commodity','parameter']
 #['sample-request','user-request','client-category','commodity-with-parameter','commodity-category','commodity','parameter']
@@ -93,20 +94,20 @@ class ParameterHasAssignedAnalyst(views.APIView):
 class DetailParameterHasAssignedAnalyst(views.APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+
     def get(self, request, sample_form_id, format=None):
+        sample_form_id = generateDecodeIdforSampleForm(sample_form_id,request.user)
+      
         if self.request.user.role == roles.ANALYST:
             queryset = SampleForm.objects.filter(id=sample_form_id).first()
             serializer = DetailSampleFormHasParameterAnalystSerializer(queryset,many = False,context={'request': request})
         else:
-            print("smu detail")
             queryset = SampleForm.objects.filter(id=sample_form_id).first()
             serializer = DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(queryset,many = False,context={'request': request})
         return Response(serializer.data)
         
 class ReportDownload(views.APIView):
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated]
-    def get(self, request,report_name,report_type,report_lang,id=None):
+    def get(self, request,report_name,report_type,report_lang,id=None,role=None):
         if report_name == "users-list":
             response = ReportUserList(report_type,report_lang,id)
             return response
@@ -143,7 +144,7 @@ class ReportDownload(views.APIView):
             return response
                 
         if report_name == "final-report":
-            response = FinalReport(report_type,report_lang,id)
+            response = FinalReport(request,report_type,report_lang,id,role)
             return response
         else:
             data = {

@@ -20,7 +20,7 @@ class FinalSampleFormHasVerifiedAPIView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
   
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['id','name','owner_user','status','form_available','commodity__name']
+    search_fields = ['id','name','owner_user','status','form_available','commodity__name','user_encode_id','supervisor_encode_id','analyst_encode_id','verifier_encode_id']
     ordering_fields = ['name','id']
     
     filterset_fields = {
@@ -39,7 +39,7 @@ class FinalSampleFormHasVerifiedAPIView(generics.ListAPIView):
         if user.role == roles.USER:
             query = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True) & Q(owner_user=user.email))
         elif user.role == roles.SUPERVISOR:
-            query = SampleForm.objects.filter(supervisor_user=user).filter(Q(status="completed") | Q(status="not_verified"))
+            query = SampleForm.objects.filter(supervisor_user=user).filter(Q(status="completed") | Q(status="not_verified")).filter(verifier__is_sent=True)
 
         elif user.role == roles.SMU:
             query = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True))

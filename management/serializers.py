@@ -2,6 +2,7 @@ from .models import ClientCategory, SampleForm, Commodity, CommodityCategory , T
 from rest_framework import serializers
 from account.models import CustomUser
 from . import roles
+from . encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
 
 class ApprovedBySerializer(serializers.ModelSerializer):
      class Meta:
@@ -38,6 +39,13 @@ class CommoditySerializer(serializers.ModelSerializer):
 
 
 class SampleFormReadSerializer(serializers.ModelSerializer):
+
+    id = serializers.SerializerMethodField()
+
+    def get_id(self, obj):
+        user = self.context['request'].user
+        return generateAutoEncodeIdforSampleForm(obj.id,user)
+
     parameters = TestResultSerializer(many=True, read_only=True)
     payment = PaymentSerializer(read_only=True)
 
@@ -67,6 +75,7 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
 
         sample_form_id = representation.get('id')
+        sample_form_id = generateDecodeIdforSampleForm(sample_form_id,self.context['request'].user)
 
         parameters_data = representation.get('parameters', [])
 
@@ -74,8 +83,19 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
         for parameter_data in parameters_data:
             parameter_id = parameter_data.get('id')
             # Check if the parameter exists in SampleFormHasParameter model
-            exists = SampleFormHasParameter.objects.filter(parameter=parameter_id, sample_form = sample_form_id).exists()
+            smple_frm_exist = SampleFormHasParameter.objects.filter(parameter=parameter_id, sample_form = sample_form_id)
+            exists = smple_frm_exist.exists()
             parameter_data['exist'] = exists
+            
+            if exists:
+                # print(smple_frm_exist.first().analyst_user.username)
+                try:
+                    parameter_data['status'] = "assigned"
+                    parameter_data['analyst'] = smple_frm_exist.first().analyst_user.username
+                except:
+                    pass           
+
+
             if exists == True:
                 assigned+=1
 
@@ -90,6 +110,10 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
                 representation['status'] = status
             else:
                 representation['status'] = "processing"
+                
+        if request.user.role == roles.SUPERVISOR:
+            if status == "not_assigned":
+                representation['status'] = "Not Assigned"
 
 
         return representation
@@ -125,6 +149,13 @@ class SampleFormReadAnalystSerializer(serializers.ModelSerializer):
     commodity = CommoditySerializer(read_only=True,many=False)
     owner_user = serializers.SerializerMethodField()
     supervisor_user = ApprovedBySerializer(read_only = True)
+
+    id = serializers.SerializerMethodField()
+
+    def get_id(self, obj):
+        user = self.context['request'].user
+        return generateAutoEncodeIdforSampleForm(obj.id,user)
+
     def validate(self, data):
         action = self.context['view'].action
         if action == "create":
@@ -187,7 +218,6 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
 
     def get_parameter(self, obj):
         parameter_data = TestResultSerializer(obj.parameter, many=True).data
-
   
         count_status = 0
         for parameter in parameter_data:
@@ -196,7 +226,7 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
                 parameter['result'] = formula_calculate.result               
                 count_status = count_status + 1   
             else:
-                parameter['result'] = "-"      
+                parameter['result'] = ""      
          
         analyst_status = "processing"
         for parameter in parameter_data:
@@ -231,15 +261,23 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = SampleFormHasParameter
         fields = '__all__' 
+
+    def to_internal_value(self, data):
+        if 'sample_form' in data:
+            sample_form_id = data['sample_form'] 
+            decoded_sample_form_id = generateDecodeIdforSampleForm(sample_form_id,self.context['request'].user)#smart_text(urlsafe_base64_decode(data['sample_form']))
+            data['sample_form'] = decoded_sample_form_id
+            print(data['sample_form'])
+        return super().to_internal_value(data)
     
     def validate(self, attrs):
         sample_form = attrs.get('sample_form')
+        print(sample_form," not  printing this...")
         analyst_user = attrs.get('analyst_user')
         parameter = attrs.get('parameter')
 
         action = self.context['view'].action
     
-
         if len(attrs) == 2 and action == 'partial_update' and 'is_supervisor_sent' and 'status' in attrs:
             return attrs
         elif action == 'partial_update':

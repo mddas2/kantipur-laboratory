@@ -4,6 +4,9 @@ from rest_framework import serializers
 from management.models import SampleForm, Commodity,SampleFormHasParameter
 from account.models import CustomUser
 from rest_framework import serializers
+from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
+
+from management import roles
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -51,6 +54,10 @@ class DetailSampleFormHasParameterAnalystSerializer(serializers.ModelSerializer)
         representation = super().to_representation(instance)
 
         sample_form_id = representation.get('id')
+
+        normal_status = representation.get('status')
+        if normal_status == "not_assigned":
+            representation['status'] = "Processing"
 
         # Add extra response data for parameters field
         parameters_data = representation.get('parameters', [])
@@ -102,6 +109,14 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
     owner_user = serializers.SerializerMethodField()
     supervisor_user = CustomUserSerializer(read_only = True)
     verified_by = CustomUserSerializer(read_only = True)
+    
+    
+    id = serializers.SerializerMethodField()
+
+    def get_id(self, obj):
+        user = self.context['request'].user
+        return generateAutoEncodeIdforSampleForm(obj.id,user)
+    
     class Meta:
         model = SampleForm
         fields = '__all__'
@@ -119,10 +134,17 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
         representation = super().to_representation(instance)
 
         sample_form_id = representation.get('id')
+        sample_form_id = generateDecodeIdforSampleForm(sample_form_id,self.context['request'].user)
 
         # Add extra response data for parameters field
         parameters_data = representation.get('parameters', [])
-      
+
+        user = self.context['request'].user
+        if user.role == roles.SMU or user.role == roles.SUPERADMIN:
+            smu_superadmin_status = representation.get('status')
+            if smu_superadmin_status == "not_assigned" or smu_superadmin_status == "not_verified":
+                representation['status'] = "processing"
+
         for parameter_data in parameters_data:
             parameter_id = parameter_data.get('id')
             # Check if the parameter exists in SampleFormHasParameter model
