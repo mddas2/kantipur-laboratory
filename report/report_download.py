@@ -257,12 +257,12 @@ def FinalReport(request,report_type,report_lang,id=None,role=None):
             owner_name = user_obj.first_name
             department_address = user_obj.department_address
             department_address = getDepartmentValue(department_address) 
-            owner_name = user_obj.client_category.name
+            owner_name = user_obj.department_name #
         except:
             owner_name = query.owner_user
             
         sample_registration_date = query.created_date.date()
-        sample_code = query.id
+        sample_code = query.user_encode_id
         analysis_starting_date = query.created_date.date()
         analysis_completion_date = query.created_date.date()
 
