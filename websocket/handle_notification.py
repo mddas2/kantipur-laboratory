@@ -4,6 +4,7 @@ from .serializer import NotificationWriteSerializer
 from rest_framework import status
 from . import frontend_setting
 from . import mapping_notification_type
+from emailmanagement.email_sender import ESendMail
 
 def NotificationHandler(instance, request,method,model_name):
     notification_message = "a new user has been created"
@@ -19,7 +20,8 @@ def NotificationHandler(instance, request,method,model_name):
 
     # Get all users for notification recipients
     to_notification = CustomUser.objects.values_list('id', flat=True)
-    print(to_notification)
+    
+    
 
 
     # Create notification data
@@ -48,6 +50,8 @@ def NotificationHandler(instance, request,method,model_name):
         "data": serializer.data
     }
 
+    to_email = CustomUser.objects.values_list('email', flat=True)
+    ESendMail(notification_message,to_email)
     return response_data, status.HTTP_201_CREATED
 
 def sampleFormNotificationHandler(instance,notification_type):
