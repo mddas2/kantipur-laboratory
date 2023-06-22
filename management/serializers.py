@@ -89,9 +89,11 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
             
             if exists:
                 # print(smple_frm_exist.first().analyst_user.username)
-                parameter_data['status'] = "pending"
-                parameter_data['analyst'] = smple_frm_exist.first().analyst_user.username
-            
+                try:
+                    parameter_data['status'] = "assigned"
+                    parameter_data['analyst'] = smple_frm_exist.first().analyst_user.username
+                except:
+                    pass           
 
 
             if exists == True:
