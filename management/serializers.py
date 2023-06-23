@@ -243,14 +243,16 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
                 analyst_status = "processing" 
                 break     
                 
-        
-        total_len = str(len(parameter_data))
+        total_len = len(parameter_data)
+        print(completed_done,"md",total_len)
         if completed_done == 0:
             completed_done = str(total_len)
         elif completed_done == total_len:
-            completed_done = str(total_len)
+            completed_done = ''
+            print(analyst_status)
         else:
             completed_done = str(total_len)+"/"+str(completed_done)
+        
 
         if count_status == 0:
             analyst_status = "pending"       
