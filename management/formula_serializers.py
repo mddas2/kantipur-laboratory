@@ -26,8 +26,10 @@ class FormulaApiCalculateSaveSerializer(serializers.Serializer):
     commodity = serializers.IntegerField()#serializers.CharField()
     parameter = serializers.IntegerField()
     sample_form = serializers.CharField()
+    sample_form_has_parameter = serializers.IntegerField()
     result = serializers.CharField()
     formula_variable_fields_value = serializers.CharField()
+    # remarks = formula_variable_fields_value = serializers.CharField()
     
     def to_internal_value(self, data):
         user = self.context['request'].user

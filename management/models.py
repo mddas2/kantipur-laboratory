@@ -174,13 +174,14 @@ class Payment(models.Model):
 
 class SampleFormParameterFormulaCalculate(models.Model):
     sample_form = models.ForeignKey(SampleForm,related_name="result",on_delete=models.CASCADE,null=True)
+    sample_form_has_parameter = models.ForeignKey(SampleFormHasParameter,related_name="formula_calculate",on_delete=models.CASCADE,default=None,null=True)
     commodity = models.ForeignKey(Commodity,on_delete=models.CASCADE,null=True)
     parameter = models.ForeignKey(TestResult, on_delete=models.CASCADE,null=True)
     result =  models.FloatField(null=True)
     is_verified = models.BooleanField(default=False)
     input_fields_value = models.CharField(max_length=2000,null=True)
     auto_calculate_result = models.CharField(max_length=200,null=True)
-    remark = models.CharField(max_length=200,null=True)
+    remarks = models.CharField(max_length=200,null=True)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
 
@@ -200,7 +201,20 @@ class SampleFormVerifier(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
 
-
+class RawDataSheet(models.Model):
+    sample_form = models.ForeignKey(SampleForm,related_name="raw_datasheet",on_delete=models.CASCADE,default=None)
+    sample_form_has_parameter = models.ForeignKey(SampleFormHasParameter,related_name="raw_datasheet",on_delete=models.CASCADE,default=None)
+    
+class RawDataSheetDetail(models.Model):
+    raw_data = models.ForeignKey(RawDataSheet, on_delete=models.CASCADE,related_name="raw_data",null=True)
+    parameter = models.ForeignKey(TestResult, on_delete=models.CASCADE,null=True)
+    result =  models.FloatField(null=True)
+    is_verified = models.BooleanField(default=False)
+    input_fields_value = models.CharField(max_length=2000,null=True)
+    auto_calculate_result = models.CharField(max_length=200,null=True)
+    remark = models.CharField(max_length=200,null=True)
+    created_date = models.DateTimeField(default=timezone.now)
+    updated_date = models.DateTimeField(default=timezone.now)
 
 
 

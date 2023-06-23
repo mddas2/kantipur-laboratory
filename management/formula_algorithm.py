@@ -57,7 +57,7 @@ class Formula:
             json_fields = json.loads(json_fields)   
             field = [{"name": var, "label": var, "value":json_fields[var]} for var in variables]
         except:
-            field = [{"name": var, "label": var, "value":json_fields[var]} for var in variables]
+            field = [{"name": var, "label": var, "value":''} for var in variables]
 
         return {
             'fields' : field
@@ -268,13 +268,15 @@ class FormulaApiCalculateSave(APIView):
         commodity_id = serializer.validated_data['commodity']
         parameter_id = serializer.validated_data['parameter']
         sample_form_id = serializer.validated_data['sample_form']
+        sample_form_has_parameter_id = serializer.validated_data['sample_form_has_parameter']
+        # remarks =  serializer.validated_data['remarks']
         # formula_variable_fields_value = serializer.validated_data['formula_variable_fields_value']
         result = serializer.validated_data['result']
         data = {
             'result' : result,
         }
 
-        data,created = SampleFormParameterFormulaCalculate.objects.update_or_create(sample_form_id = sample_form_id, parameter_id =parameter_id, commodity_id = commodity_id,defaults=data)
+        data,created = SampleFormParameterFormulaCalculate.objects.update_or_create(sample_form_id = sample_form_id, parameter_id =parameter_id, commodity_id = commodity_id,sample_form_has_parameter_id=sample_form_has_parameter_id,defaults=data)
         message = {
             "message":"save successfully"
         }
