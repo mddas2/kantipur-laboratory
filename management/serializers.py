@@ -229,32 +229,44 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
                 parameter['result'] = ""      
          
         analyst_status = "processing"
+        completed_done = 0
         for parameter in parameter_data:
             formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(parameter = parameter['id'],sample_form=obj.sample_form_id)
             if formula_calculate.exists():
                 if formula_calculate.first().result != None:                
                     analyst_status = "completed"   
+                    completed_done = completed_done + 1
                 else:
-                    analyst_status = "processing"
+                    analyst_status = "tested"
                     break
             else:                
                 analyst_status = "processing" 
                 break     
                 
+        
+        total_len = str(len(parameter_data))
+        if completed_done == 0:
+            completed_done = str(total_len)
+        elif completed_done == total_len:
+            completed_done = str(total_len)
+        else:
+            completed_done = str(total_len)+"/"+str(completed_done)
 
         if count_status == 0:
-            analyst_status = "pending"
+            analyst_status = "pending"       
        
             
-        return parameter_data,analyst_status
+        return parameter_data,analyst_status,completed_done
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         # print(instance.parameter.first().id)
-        parameter,analyst_status = self.get_parameter(instance)
+        parameter,analyst_status,total_completed = self.get_parameter(instance)
         representation['parameter'] = parameter
 
         representation['status'] = analyst_status
+        representation['completed_done'] = total_completed
+
         return representation
 
 class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
