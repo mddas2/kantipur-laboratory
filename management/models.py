@@ -152,6 +152,8 @@ class SampleFormHasParameter(models.Model):#sample form has parameter and parame
     form_available = models.CharField(max_length=100,choices=ROLE_CHOICES, blank=True, null=True)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
+    remarks = models.CharField(max_length=1000,null=True)
+
 
     # class Meta:
     #     constraints = [
@@ -194,6 +196,7 @@ class SampleFormVerifier(models.Model):
     sample_form = models.OneToOneField(SampleForm,related_name="verifier",on_delete=models.CASCADE,default=None)
     is_verified = models.BooleanField(default=False)
     is_sent = models.BooleanField(default=False)
+    remarks = models.CharField(max_length=1000,null=True)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
 
