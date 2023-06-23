@@ -11,7 +11,7 @@ from rest_framework import status
 from rest_framework.filters import OrderingFilter,SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 import re
-
+import json
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -51,7 +51,14 @@ class Formula:
 
     
     def MakeProperResponse(self,variables,notations):
-        field =  [{"name": var, "label": var, "value": ""} for var in variables]
+        try:
+            result_obj = SampleFormParameterFormulaCalculate.objects.filter(sample_form = self.sample_form_id,parameter_id = self.parameter_id,commodity_id = self.commodity_id).first()
+            json_fields = result_obj.input_fields_value
+            json_fields = json.loads(json_fields)   
+            field = [{"name": var, "label": var, "value":json_fields[var]} for var in variables]
+        except:
+            field = [{"name": var, "label": var, "value":json_fields[var]} for var in variables]
+
         return {
             'fields' : field
         }
@@ -169,32 +176,6 @@ class FormulaApiCalculate(APIView):
 class FormulaApiGetFields(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    def get(self, request, format=None):
-        response_data = {
-            'number_of_field': 3,
-            'fields':[
-                {
-                'name':"l",
-                'label':'Length',
-                'value':'',
-
-            },
-            {
-                'name':"b",
-                'label':'Breadth',
-                'value':'',
-
-            },
-             {
-                'name':"h",
-                'label':'Height',
-                'value':'',
-
-            }
-        ]
-
-    }
-        return Response(response_data)
     
     def post(self, request, format=None):
         
