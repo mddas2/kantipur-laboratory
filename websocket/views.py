@@ -13,7 +13,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 # Create your views here.
 class NotificationViewSet(viewsets.ModelViewSet):
 
-    queryset = Notification.objects.all()
+    queryset = Notification.objects.all().order_by("-created_date")
     serializer_class = NotificationWriteSerializer
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     filterset_fields = ['id']
