@@ -109,8 +109,8 @@ class Formula:
             'result' : result,
             'input_fields_value' : input_fields_value,
         }
-        obj_result,create = SampleFormParameterFormulaCalculate.objects.update_or_create(sample_form_id = self.sample_form_id, parameter_id = self.parameter_id, commodity_id = self.commodity_id,defaults=data)
-        return obj_result,create
+        # obj_result,create = SampleFormParameterFormulaCalculate.objects.update_or_create(sample_form_id = self.sample_form_id, parameter_id = self.parameter_id, commodity_id = self.commodity_id,defaults=data)
+        return result
     
 class FormulaGetToVerifier(APIView):
     def get(self, request, sample_form_id, format=None):
@@ -143,10 +143,12 @@ class FormulaApiCalculate(APIView):
                 response_data = res
                 response_status = error['status']
             else:
-                object_result,is_create = formula_obj.Save(result,formula_variable_fields_value)
-                if object_result:
+                result = formula_obj.Save(result,formula_variable_fields_value)
+                if result:
                     response_data = {
-                        'message': "formula calculate !!!"
+                        'message': "formula returned !!!",
+                        'result' : result,
+                        'formula_variable_fields_value' : formula_variable_fields_value
                     }
                     response_status = status.HTTP_200_OK
                 else:
