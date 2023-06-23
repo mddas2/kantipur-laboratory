@@ -7,6 +7,7 @@ from . import mapping_notification_type
 from emailmanagement.email_sender import ESendMail
 
 def NotificationHandler(instance, request,method,model_name):
+    print(method," method")
     notification_message = "a new user has been created"
     particular_message = "Congratulation "
     path = frontend_setting.user_request
@@ -21,8 +22,6 @@ def NotificationHandler(instance, request,method,model_name):
     # Get all users for notification recipients
     to_notification = CustomUser.objects.values_list('id', flat=True)
     
-    
-
 
     # Create notification data
     notification_data = {

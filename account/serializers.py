@@ -13,7 +13,15 @@ class ApprovedBySerializer(serializers.ModelSerializer):
         fields = '__all__' 
 
 class CustomUserSerializer(serializers.ModelSerializer):
-    # client_category = ClientCategorySerializer(read_only=True)
+
+    # def to_internal_value(self, data):
+    #     mutable_data = data.copy()  # Create a mutable copy of the data
+
+    #     if 'password' in mutable_data and mutable_data['password'] == '':
+    #         mutable_data.pop('password')
+
+    #     return super().to_internal_value(mutable_data)
+
     
     def validate_password(self,value):#field level validation
         if len(value) < 2:
@@ -49,10 +57,21 @@ class CustomUserSerializer(serializers.ModelSerializer):
         return attrs
     
     approved_by = ApprovedBySerializer(read_only = True)
+
+    def get_extra_kwargs(self):
+        extra_kwargs = super().get_extra_kwargs()
+        try:
+            if self.context['request'].method == 'PUT':
+                extra_kwargs['password'] = {'required': False}
+            return extra_kwargs
+        except:
+            pass
+    
     class Meta:
         ref_name =  "account serializer"
         model = CustomUser
         fields = '__all__' 
+
 
 class RoleSerializer(serializers.Serializer):
     role_id = serializers.IntegerField()

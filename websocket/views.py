@@ -18,9 +18,15 @@ class NotificationViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     filterset_fields = ['id']
     search_fields = ['id']
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated]
+
     pagination_class = MyLimitOffsetPagination
+
+    def list(self, request, *args, **kwargs):
+        authentication_classes = [JWTAuthentication]
+        permission_classes = [IsAuthenticated]
+        response = super().list(request, *args, **kwargs)
+        return response
+    
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
