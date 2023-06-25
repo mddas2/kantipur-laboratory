@@ -1,4 +1,15 @@
 from .models import RawDataSheet,RawDataSheetDetail,TestResult,SampleFormHasParameter
+from django.db.models import Q
+from management import roles
+from rest_framework.exceptions import PermissionDenied
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
+
+from rest_framework.filters import SearchFilter,OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import generics
+from .raw_data_serializer import rawDataSerializer
+
 def generateRawData(sample_form_has_parameter_id):
     print(sample_form_has_parameter_id)
     
@@ -22,4 +33,30 @@ def generateRawData(sample_form_has_parameter_id):
         }
         RawDataSheetDetail.objects.update_or_create(raw_data_id=raw_data_sheet_instance.id,defaults=data)
     return True
+
+class rawDataDetail(generics.ListAPIView):
+    # queryset = SampleForm.objects.all() 
+    # serializer_class = CompletedSampleFormHasAnalystSerializer
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated]
+  
+    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    search_fields = ['id']
+    ordering_fields = ['id']
+
+
+    def get_queryset(self):
+
+        sample_form_has_parameter_id = self.kwargs.get('sample_form_has_parameter')
+        query = RawDataSheet.objects.filter(sample_form_has_parameter_id=sample_form_has_parameter_id)
+        print(query)
+    
+        return query
+    
+    def get_serializer_class(self):
+        serializer = rawDataSerializer
+        return serializer
+        
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
     

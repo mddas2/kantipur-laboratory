@@ -204,6 +204,11 @@ class SampleFormVerifier(models.Model):
 class RawDataSheet(models.Model):
     sample_form = models.ForeignKey(SampleForm,related_name="raw_datasheet",on_delete=models.CASCADE,default=None)
     sample_form_has_parameter = models.ForeignKey(SampleFormHasParameter,related_name="raw_datasheet",on_delete=models.CASCADE,default=None)
+    status = models.CharField(max_length=2000,null=True)
+    remarks = models.CharField(max_length=1000,null=True)
+    created_date = models.DateTimeField(default=timezone.now)
+    updated_date = models.DateTimeField(default=timezone.now)
+
     
 class RawDataSheetDetail(models.Model):
     raw_data = models.ForeignKey(RawDataSheet, on_delete=models.CASCADE,related_name="raw_data",null=True)

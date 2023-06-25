@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from . import views,import_excel,sample_form_has_parameter,formula_algorithm
+from . import views,import_excel,sample_form_has_parameter,formula_algorithm,raw_data
 from . import verfier
 
 router = DefaultRouter()
@@ -21,6 +21,8 @@ urlpatterns = [
     path('formula-calculate/', formula_algorithm.FormulaApiCalculate.as_view(), name='custom_endpoint'),
 
     path('formula-result-save/', formula_algorithm.FormulaApiCalculateSave.as_view(), name='custom_endpoint'),
+
+    path('detail-raw-data-sheet/<int:sample_form_has_parameter>/', raw_data.rawDataDetail.as_view(), name='rawData'),
     
     path('get-parameter-to-verified/<int:sample_form_id>/', formula_algorithm.FormulaGetToVerifier.as_view(), name='formula-calculte-verifier'),
     path('import-excel-bulk/',import_excel.ImportExcel,name="ImportExcel")
