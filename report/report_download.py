@@ -6,6 +6,8 @@ from django.http import HttpResponse
 import pandas as pd
 from management import roles
 from datetime import date
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm,generateDecodeIdByRoleforSampleForm
 # https://limsserver.kantipurinfotech.com.np/api/report/get-report/report_name/report_type/report_lang/
 def ReportAdminList(report_type,report_lang,id=None):
@@ -233,10 +235,6 @@ def FinalReport(request,report_type,report_lang,id=None,role=None):
         return response
 
     elif report_type == "pdf":
-        from django.template.loader import get_template
-        from xhtml2pdf import pisa
-
-
         # Load the HTML template
         # if role ==  roles.USER:
         #     template = get_template('final_user_report.html')
@@ -306,3 +304,28 @@ def getDepartmentValue(key):
         if code == key:
             return k_value
     return key
+
+def rawDataSheetAnalystReport(request,sample_form_has_param):
+    from rest_framework.response import Response
+    # from management.models
+
+    # raw_data =     
+    template = get_template('raw_data.html')
+
+    # print(parameters)
+
+    context = {
+    
+    }
+
+    # Render the template with the context
+    html = template.render(context)
+
+    # Create a PDF object
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="output.pdf"'
+
+    # Generate the PDF from the HTML content
+    pisa.CreatePDF(html, dest=response)
+
+    return response

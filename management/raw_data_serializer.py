@@ -1,10 +1,16 @@
-from .models import RawDataSheet,SampleForm,RawDataSheetDetail
+from .models import RawDataSheet,SampleForm,RawDataSheetDetail,TestResult
 from rest_framework import serializers
 from . encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
 
 
-class rawDataSheetDetailSerializer(serializers.ModelSerializer):
+class TestResultSerializer(serializers.ModelSerializer):
     
+    class Meta:
+        model = TestResult
+        fields = '__all__'
+
+class rawDataSheetDetailSerializer(serializers.ModelSerializer):
+    parameter = TestResultSerializer(read_only = True)
     class Meta:
         model = RawDataSheetDetail
         fields = '__all__'

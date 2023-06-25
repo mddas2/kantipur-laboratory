@@ -20,7 +20,7 @@ from management.pagination import MyLimitOffsetPagination
 from django.db.models import Q
 from management import roles
 from rest_framework import generics
-from .report_download import ReportAdminList,ReportParameter,ReportCommodity,ReportUserSampleForm,ReportUserList,ReportSampleForm,ReportUserRequest,ReportComodityCategory,FinalReport
+from .report_download import ReportAdminList,ReportParameter,ReportCommodity,ReportUserSampleForm,ReportUserList,ReportSampleForm,ReportUserRequest,ReportComodityCategory,FinalReport,rawDataSheetAnalystReport
 from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
 #report_type:['pdf','excel','csv']
 #report_name:['admin-list','users-list','user-with-sample-form','sample-form','commodity','parameter']
@@ -175,4 +175,5 @@ def FinalReportPdf(request):
 class rawDataReportDownload(views.APIView):
     def get(self, request,download_print=None,report_lang=None,sample_form_has_parameter=None):
         
-        return HttpResponse(sample_form_has_parameter)
+        response = rawDataSheetAnalystReport(request,sample_form_has_parameter)
+        return response
