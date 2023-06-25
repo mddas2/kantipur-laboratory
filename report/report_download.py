@@ -307,15 +307,15 @@ def getDepartmentValue(key):
 
 def rawDataSheetAnalystReport(request,sample_form_has_param):
     from rest_framework.response import Response
-    # from management.models
+    from management.models import RawDataSheet
 
     # raw_data =     
     template = get_template('raw_data.html')
 
-    # print(parameters)
+    raw_data = RawDataSheet.objects.filter(sample_form_has_parameter_id = sample_form_has_param)
 
     context = {
-    
+        'raw_data':raw_data
     }
 
     # Render the template with the context

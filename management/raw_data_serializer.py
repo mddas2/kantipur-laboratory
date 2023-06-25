@@ -6,6 +6,7 @@ from . encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdfo
 class TestResultSerializer(serializers.ModelSerializer):
     
     class Meta:
+        ref_name = "management.raw_data_serializer.TestResultSerializers"
         model = TestResult
         fields = '__all__'
 
