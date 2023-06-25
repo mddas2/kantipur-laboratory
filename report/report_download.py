@@ -305,7 +305,7 @@ def getDepartmentValue(key):
             return k_value
     return key
 
-def rawDataSheetAnalystReport(request,sample_form_has_param):
+def rawDataSheetAnalystReport(request,download_print,sample_form_has_param):
     from rest_framework.response import Response
     from management.models import RawDataSheet
 
@@ -325,9 +325,12 @@ def rawDataSheetAnalystReport(request,sample_form_has_param):
     # Create a PDF object
     response = HttpResponse(content_type='application/pdf')
 
-    response['Content-Disposition'] = 'inline; filename="output.pdf"'
-
-    # response['Content-Disposition'] = 'attachment; filename="output.pdf"'
+    if download_print == "print":
+        response['Content-Disposition'] = 'inline; filename="output.pdf"'
+    elif download_print == "download":
+        response['Content-Disposition'] = 'attachment; filename="output.pdf"'
+    else:
+        response['Content-Disposition'] = 'inline; filename="output.pdf"'
 
     # Generate the PDF from the HTML content
     pisa.CreatePDF(html, dest=response)

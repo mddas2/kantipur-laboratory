@@ -175,5 +175,5 @@ def FinalReportPdf(request):
 class rawDataReportDownload(views.APIView):
     def get(self, request,download_print=None,report_lang=None,sample_form_has_parameter=None):
         
-        response = rawDataSheetAnalystReport(request,sample_form_has_parameter)
+        response = rawDataSheetAnalystReport(request,download_print,sample_form_has_parameter)
         return response
