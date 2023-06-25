@@ -19,7 +19,7 @@ def generateRawData(sample_form_has_parameter_id):
 
     sample_form_id = obj.sample_form.id
     
-    raw_data_sheet_instance = RawDataSheet(sample_form_id=sample_form_id,sample_form_has_parameter_id = obj.id)
+    raw_data_sheet_instance = RawDataSheet(sample_form_id=sample_form_id,sample_form_has_parameter_id = obj.id,remarks=obj.remarks,status=obj.status)
     raw_data_sheet_instance.save()
     
     for param in formula_calculate_parameters:

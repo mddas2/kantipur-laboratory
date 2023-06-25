@@ -171,3 +171,8 @@ def FinalReportPdf(request):
 
     return response
     return HttpResponse("pdf")
+
+class rawDataReportDownload(views.APIView):
+    def get(self, request,download_print=None,report_lang=None,sample_form_has_parameter=None):
+        
+        return HttpResponse(sample_form_has_parameter)
