@@ -51,6 +51,8 @@ class Formula:
 
     
     def MakeProperResponse(self,variables,notations):
+        result_obj = SampleFormParameterFormulaCalculate.objects.filter(sample_form = self.sample_form_id,parameter_id = self.parameter_id,commodity_id = self.commodity_id).first()
+
         try:
             result_obj = SampleFormParameterFormulaCalculate.objects.filter(sample_form = self.sample_form_id,parameter_id = self.parameter_id,commodity_id = self.commodity_id).first()
             json_fields = result_obj.input_fields_value
@@ -270,10 +272,12 @@ class FormulaApiCalculateSave(APIView):
         sample_form_id = serializer.validated_data['sample_form']
         sample_form_has_parameter_id = serializer.validated_data['sample_form_has_parameter']
         # remarks =  serializer.validated_data['remarks']
-        # formula_variable_fields_value = serializer.validated_data['formula_variable_fields_value']
+        formula_variable_fields_value = serializer.validated_data['formula_variable_fields_value']
         result = serializer.validated_data['result']
+        print(formula_variable_fields_value, " formula_variable_fields_value")
         data = {
             'result' : result,
+            'input_fields_value':formula_variable_fields_value
         }
 
         data,created = SampleFormParameterFormulaCalculate.objects.update_or_create(sample_form_id = sample_form_id, parameter_id =parameter_id, commodity_id = commodity_id,sample_form_has_parameter_id=sample_form_has_parameter_id,defaults=data)
