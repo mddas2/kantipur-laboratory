@@ -9,7 +9,7 @@
     
     <title>Renew PDF</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-    <title>Watermarks example</title>
+    <title>Raw  Data sheets</title>
     <style type="text/css">
     @page  {
         margin: 20pt;
@@ -106,8 +106,8 @@
                         {% for data in raw_data.raw_data.all %}
                             <div style="margin: 20px;" class="formula">
                                 <h2 style="font-size: 12px;  line-height: 0;  padding:0 0 10px;margin: 0;   vertical-align: top; ">{{data.parameter.name}} gdf gdfdg </h2>
-                                <p style="font-size: 12px; line-height:0 ; margin: 0; padding: 0 0 10px; "> Weight = <span>123</span></p>
-                                <p style="font-size: 12px; line-height:0 ; margin: 0; padding: 0 0 10px; "> Height = <span>112</span></p>
+                                <p style="font-size: 12px; line-height:0 ; margin: 0; padding: 0 0 10px; "> Weight = <span>12313</span></p>
+                                <p style="font-size: 12px; line-height:0 ; margin: 0; padding: 0 0 10px; "> Height = <span>11452</span></p>
                                 <h3 style="font-size: 12px; line-height: 0; margin: 0 0 5px; padding: 0 0 10px; ">Result = <span>{{data.parameter.formula}}</span> = {{data.result}} </h3>
                             </div>
                         {% endfor %}
@@ -201,42 +201,16 @@
                 <td style="text-align: center;" ></td>
                 <td colspan="9"  style=" font-size: 12px; margin-top: 0; line-height: 1;">
                     <div id="parent" >
+                    
+                        {% for data in raw_data %}
                         <div style="margin: 20px;" class="formula">
-                            <h2 style="font-size: 12px;  line-height: 0;  padding:0 0 10px;margin: 0;   vertical-align: top; "> Parameters Name  </h2>
-                            <p style="font-size: 12px; line-height:0 ; margin: 0; padding: 0 0 10px; "> Weight = <span>123</span></p>
-                            <p style="font-size: 12px; line-height:0 ; margin: 0; padding: 0 0 10px; "> Height = <span>112</span></p>
-                            <h3 style="font-size: 12px; line-height: 0; margin: 0 0 5px; padding: 0 0 10px; ">Result = <span> (W*H) / 100</span> = 137.76 </h3>
+                            <h2 style="font-size: 12px;  line-height: 0;  padding:0 0 10px;margin: 0;   vertical-align: top; ">{{data.parameter.name}} gdf gdfdg </h2>
+                            <p style="font-size: 12px; line-height:0 ; margin: 0; padding: 0 0 10px; "> Weight = <span>12313</span></p>
+                            <p style="font-size: 12px; line-height:0 ; margin: 0; padding: 0 0 10px; "> Height = <span>11452</span></p>
+                            <h3 style="font-size: 12px; line-height: 0; margin: 0 0 5px; padding: 0 0 10px; ">Result = <span>{{data.parameter.formula}}</span> = {{data.result}} </h3>
                         </div>
-        
-                        <div style="margin: 20px;" class="formula">
-                            <h2 style="font-size: 12px;  line-height: 0;  padding:0 0 10px;margin: 0;   vertical-align: top; "> Parameters Name  </h2>
-                            <p style="font-size: 12px; line-height:0 ; margin: 0; padding: 0 0 10px; "> Weight = <span>123</span></p>
-                            <p style="font-size: 12px; line-height:0 ; margin: 0; padding: 0 0 10px; "> Height = <span>112</span></p>
-                            <h3 style="font-size: 12px; line-height: 0; margin: 0 0 5px; padding: 0 0 10px; ">Result = <span> (W*H) / 100</span> = 137.76 </h3>
-                        </div>
-
-                        <div style="margin: 20px;" class="formula">
-                            <h2 style="font-size: 12px;  line-height: 0;  padding:0 0 10px;margin: 0;   vertical-align: top; "> Parameters Name  </h2>
-                            <p style="font-size: 12px; line-height:0 ; margin: 0; padding: 0 0 10px; "> Weight = <span>123</span></p>
-                            <p style="font-size: 12px; line-height:0 ; margin: 0; padding: 0 0 10px; "> Height = <span>112</span></p>
-                            <h3 style="font-size: 12px; line-height: 0; margin: 0 0 5px; padding: 0 0 10px; ">Result = <span> (W*H) / 100</span> = 137.76 </h3>
-                        </div>
-
-                        <div style="margin: 20px;" class="formula">
-                            <h2 style="font-size: 12px;  line-height: 0;  padding:0 0 10px;margin: 0;   vertical-align: top; "> Parameters Name  </h2>
-                            <p style="font-size: 12px; line-height:0 ; margin: 0; padding: 0 0 10px; "> Weight = <span>123</span></p>
-                            <p style="font-size: 12px; line-height:0 ; margin: 0; padding: 0 0 10px; "> Height = <span>112</span></p>
-                            <h3 style="font-size: 12px; line-height: 0; margin: 0 0 5px; padding: 0 0 10px; ">Result = <span> (W*H) / 100</span> = 137.76 </h3>
-                        </div>
-
-                        <div style="margin: 20px;" class="formula">
-                            <h2 style="font-size: 12px;  line-height: 0;  padding:0 0 10px;margin: 0;   vertical-align: top; "> Parameters Name  </h2>
-                            <p style="font-size: 12px; line-height:0 ; margin: 0; padding: 0 0 10px; "> Weight = <span>123</span></p>
-                            <p style="font-size: 12px; line-height:0 ; margin: 0; padding: 0 0 10px; "> Height = <span>112</span></p>
-                            <h3 style="font-size: 12px; line-height: 0; margin: 0 0 5px; padding: 0 0 10px; ">Result = <span> (W*H) / 100</span> = 137.76 </h3>
-                        </div>
-
-                        
+                        {% endfor %}
+                    
                     </div>
                 </td>
             </tr>

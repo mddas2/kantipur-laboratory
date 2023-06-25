@@ -313,9 +313,10 @@ def rawDataSheetAnalystReport(request,sample_form_has_param):
     template = get_template('raw_data.html')
 
     raw_data = RawDataSheet.objects.filter(sample_form_has_parameter_id = sample_form_has_param)
-
+    
     context = {
-        'raw_data':raw_data
+        'raw_data':raw_data.first().raw_data.all(),
+        'sample_form':raw_data.first().sample_form
     }
 
     # Render the template with the context
@@ -323,7 +324,10 @@ def rawDataSheetAnalystReport(request,sample_form_has_param):
 
     # Create a PDF object
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="output.pdf"'
+
+    response['Content-Disposition'] = 'inline; filename="output.pdf"'
+
+    # response['Content-Disposition'] = 'attachment; filename="output.pdf"'
 
     # Generate the PDF from the HTML content
     pisa.CreatePDF(html, dest=response)
