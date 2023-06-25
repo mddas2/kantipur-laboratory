@@ -19,7 +19,7 @@ class rawDataSheetDetailSerializer(serializers.ModelSerializer):
 class SampleFormSerializer(serializers.ModelSerializer):
     class Meta:
         model = SampleForm
-        fields = ['id', 'name']
+        fields = ['id', 'name','created_date']
 
 class rawDataSerializer(serializers.ModelSerializer):
 

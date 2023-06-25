@@ -312,7 +312,7 @@ def rawDataSheetAnalystReport(request,download_print,sample_form_has_param):
     # raw_data =     
     template = get_template('raw_data.html')
 
-    raw_data = RawDataSheet.objects.filter(sample_form_has_parameter_id = sample_form_has_param)
+    raw_data = RawDataSheet.objects.filter(id = sample_form_has_param)
 
     context = {
         'raw_data':raw_data,
