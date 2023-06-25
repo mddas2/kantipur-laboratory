@@ -3,6 +3,7 @@ from rest_framework import serializers
 from account.models import CustomUser
 from . import roles
 from . encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
+from . raw_data import generateRawData
 
 class ApprovedBySerializer(serializers.ModelSerializer):
      class Meta:
@@ -293,7 +294,10 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
         action = self.context['view'].action
     
         if len(attrs) == 3 and action == 'partial_update' and 'is_supervisor_sent' and 'status' and 'remarks' in attrs:
-            return attrs
+            if attrs.get('is_supervisor_sent') == True:
+                id=self.context['view'].kwargs.get('pk')
+                generateRawData(id) #  if sent to supervisor then generate logs
+                return attrs
         elif action == 'partial_update':
             raise serializers.ValidationError('Partial updates not allowed....')
   
