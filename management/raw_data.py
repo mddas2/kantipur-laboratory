@@ -22,8 +22,11 @@ def generateRawData(sample_form_has_parameter_id):
     raw_data_sheet_instance = RawDataSheet(sample_form_id=sample_form_id,sample_form_has_parameter_id = obj.id,remarks=obj.remarks,status=obj.status)
     raw_data_sheet_instance.save()
     
+    print(formula_calculate_parameters)
     for param in formula_calculate_parameters:
+        print(param," md")
         data = {
+            'raw_data_id':raw_data_sheet_instance.id,
             'parameter_id':param.parameter.id,
             'result':param.result,
             'is_verified':param.is_verified,
@@ -31,7 +34,7 @@ def generateRawData(sample_form_has_parameter_id):
             'auto_calculate_result':param.auto_calculate_result,
             'remark':param.remarks,
         }
-        RawDataSheetDetail.objects.update_or_create(raw_data_id=raw_data_sheet_instance.id,defaults=data)
+        RawDataSheetDetail.objects.update_or_create(**data)
     return True
 
 class rawDataDetail(generics.ListAPIView):
