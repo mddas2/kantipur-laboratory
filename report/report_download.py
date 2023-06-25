@@ -313,9 +313,9 @@ def rawDataSheetAnalystReport(request,sample_form_has_param):
     template = get_template('raw_data.html')
 
     raw_data = RawDataSheet.objects.filter(sample_form_has_parameter_id = sample_form_has_param)
-    
+
     context = {
-        'raw_data':raw_data.first().raw_data.all(),
+        'raw_data':raw_data,
         'sample_form':raw_data.first().sample_form
     }
 
