@@ -132,6 +132,7 @@ class SampleFormHasParameter(models.Model):#sample form has parameter and parame
         ('pending', 'pending'), 
         ('processing', 'processing'),
         ('completed', 'completed'),
+        ('not_verified','not_verified')
     )
     status = models.CharField(choices=status_choices,default="pending" , blank=True, null=True, max_length=155)
 

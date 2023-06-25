@@ -81,7 +81,7 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
         for obj in sample_form_has_parameter_obj:
             if obj.is_supervisor_sent == True:
                 sample_form_has_param = SampleFormHasParameter.objects.filter(id=instance.id)
-                sample_form_has_param.update(status = "completed")
+                sample_form_has_param.update(status = "not_verified")
 
                 sample_form_has_parameters_analyst_parameters = obj.parameter.all()
                 for pram in sample_form_has_parameters_analyst_parameters:

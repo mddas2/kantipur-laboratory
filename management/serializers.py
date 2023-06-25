@@ -267,7 +267,11 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
         parameter,analyst_status,total_completed = self.get_parameter(instance)
         representation['parameter'] = parameter
 
-        representation['status'] = analyst_status
+        print(instance.sample_form)
+        if analyst_status == "completed" and instance.is_supervisor_sent == True:
+            representation['status'] = instance.status
+        else:
+            representation['status'] = analyst_status
         representation['completed_done'] = total_completed
 
         return representation
