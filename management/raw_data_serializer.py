@@ -1,7 +1,13 @@
 from .models import RawDataSheet,SampleForm,RawDataSheetDetail,TestResult
+from account.models import CustomUser
 from rest_framework import serializers
 from . encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
 
+class ApprovedBySerializer(serializers.ModelSerializer):
+     class Meta:
+        ref_name = "jpts"
+        model = CustomUser
+        fields = ['first_name','last_name','email','id'] 
 
 class TestResultSerializer(serializers.ModelSerializer):
     
@@ -27,6 +33,7 @@ class rawDataSerializer(serializers.ModelSerializer):
     #     user = self.context['request'].user
     #     return generateAutoEncodeIdforSampleForm(obj.id,user)
     raw_data = rawDataSheetDetailSerializer(read_only = True,many=True)
+    analyst_user = ApprovedBySerializer(read_only = True,many=False)
     # sample_form = SampleFormSerializer(read_only=True, many=True)
     class Meta:
         model = RawDataSheet
