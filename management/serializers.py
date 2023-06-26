@@ -301,7 +301,8 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
         if len(attrs) == 3 and action == 'partial_update' and 'is_supervisor_sent' and 'status' and 'remarks' in attrs:
             if attrs.get('is_supervisor_sent') == True:
                 id=self.context['view'].kwargs.get('pk')
-                generateRawData(id) #  if sent to supervisor then generate logs
+                remarks  = attrs.get('remarks')
+                generateRawData(id,remarks) #  if sent to supervisor then generate logs
                 return attrs
         elif action == 'partial_update':
             raise serializers.ValidationError('Partial updates not allowed....')

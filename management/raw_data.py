@@ -10,8 +10,9 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 from .raw_data_serializer import rawDataSerializer
 from . encode_decode import generateDecodeIdforSampleForm
+from django.http import HttpResponse
 
-def generateRawData(sample_form_has_parameter_id):
+def generateRawData(sample_form_has_parameter_id,remarks):
     print(sample_form_has_parameter_id)
     
     obj = SampleFormHasParameter.objects.get(id=sample_form_has_parameter_id)
@@ -20,7 +21,7 @@ def generateRawData(sample_form_has_parameter_id):
 
     sample_form_id = obj.sample_form.id
     
-    raw_data_sheet_instance = RawDataSheet(sample_form_id=sample_form_id,sample_form_has_parameter_id = obj.id,remarks=obj.remarks,status=obj.status,analyst_user=obj.analyst_user)
+    raw_data_sheet_instance = RawDataSheet(sample_form_id=sample_form_id,sample_form_has_parameter_id = obj.id,remarks=remarks,status=obj.status,analyst_user=obj.analyst_user)
     raw_data_sheet_instance.save()
     
     print(formula_calculate_parameters)
