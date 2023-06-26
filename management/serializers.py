@@ -210,7 +210,7 @@ class CommodityCategorySerializer(serializers.ModelSerializer):
 
 class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
     sample_form = SampleFormReadAnalystSerializer(read_only=True)
-    commodity = CommodityWriteSerializer(read_only=True,many=True)
+    # commodity = CommodityWriteSerializer(read_only=True,many=True)
     parameter = TestResultSerializer(many=True,read_only=True)
     class Meta:
         model = SampleFormHasParameter
@@ -310,7 +310,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                 # print(param)
                 if SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param).exists():
                     # obj = SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param)     
-                    print("error")        
+                    print("error md")        
                     raise serializers.ValidationError('A SampleFormHasParameter with the same sample_form and parameter already exists(create)')
             
           
