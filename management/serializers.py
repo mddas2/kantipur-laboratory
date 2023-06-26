@@ -373,7 +373,6 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                         return instance
 
                     return obj
-            print(obj.first().parameter.all())
             # raise serializers.ValidationError('remove from and re-assigning. i am fixing right now')
 
         if SampleFormHasParameter.objects.filter(sample_form=sample_form, analyst_user=analyst_user).exists():
