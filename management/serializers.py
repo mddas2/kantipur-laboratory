@@ -365,6 +365,12 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                     instance.parameter.add(*parameter) #if particular analysts already exist then add parameter to that analysts re-asign
                     return instance
                 else:
+                    print(analyst_user,obj.sample_form_id,obj.commodity_id,parameter)
+                    print("moli")
+                    samp = SampleFormHasParameter.objects.create(analyst_user=analyst_user,status="processing",commodity_id = obj.commodity_id,sample_form_id=obj.sample_form_id,form_available=obj.form_available)
+                    samp.parameter.set(parameter)
+                    samp.save()
+                
                     return obj
             else:
                 if obj.analyst_user == analyst_user:
