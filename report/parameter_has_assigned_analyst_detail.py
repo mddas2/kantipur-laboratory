@@ -159,6 +159,7 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
                 created_date = sample_form_has_assigned_analyst_obj.first().created_date
                 parameter_data['first_name'] = first_name
                 parameter_data['last_name'] = last_name
+                parameter_data['sample_form_has_parameter'] = sample_form_has_assigned_analyst_obj.first().id
                 parameter_data['assigned_date'] = created_date
                 
                 formula_obj_result = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id=sample_form_id,parameter_id = parameter_id)
