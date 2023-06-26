@@ -77,6 +77,7 @@ class SampleForm(models.Model):#ClientRequest
         ('processing', 'processing'), #smu-assign-supervisor (smu:pending-not_assign,display:processing)
         ('not_assigned', 'not_assigned'),#supervisor-assign-analyst (supervisor:not_assign-processing,display:processing)
         ('not_verified', 'not_verified'),#analyst-to-supervisor(supervisor:processing-not_verified,display:not_verified)
+        ('verified', 'verified'),
         ('completed', 'completed'),#supervisor-assign-verifier (supervisor:not_verified-verified,display:processing) action:recheck,reject
         ('recheck', 'recheck'),
         ('rejected', 'rejected'),
@@ -132,7 +133,10 @@ class SampleFormHasParameter(models.Model):#sample form has parameter and parame
         ('pending', 'pending'), 
         ('processing', 'processing'),
         ('completed', 'completed'),
-        ('not_verified','not_verified')
+        ('recheck', 'recheck'),
+        ('reject', 'reject'),
+        ('not_verified','not_verified'),
+        ('verified','verified')
     )
     status = models.CharField(choices=status_choices,default="pending" , blank=True, null=True, max_length=155)
 
@@ -187,7 +191,8 @@ class SampleFormParameterFormulaCalculate(models.Model):
     updated_date = models.DateTimeField(default=timezone.now)
 
     status_choices = (
-        ('pending', 'pending'),       
+        ('pending', 'pending'),
+        ('recheck', 'recheck'),       
         ('completed', 'completed'),
         ('processing', 'processing'),
     )
