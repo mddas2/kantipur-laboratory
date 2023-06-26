@@ -346,36 +346,47 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
         parameter = validated_data['parameter']
         
         re_assign = validated_data.get('re_assign', False)    
+        
+
         if re_assign == True:
+            
             obj = SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=parameter[0]).first()
             
             if len(obj.parameter.all())>1:
+                print(1)
                 obj.parameter.remove(*parameter) #revoke parameter from existence obj
                 obj.save()
 
                 instance = SampleFormHasParameter.objects.filter(sample_form=sample_form, analyst_user=analyst_user)
+                print(instance, " sdasd")
                 if instance.exists():
+                    print(2)
                     instance = instance.first()
                     instance.parameter.add(*parameter) #if particular analysts already exist then add parameter to that analysts re-asign
                     return instance
+                else:
+                    return obj
             else:
                 if obj.analyst_user == analyst_user:
+                    print(3)
                     return obj
                 else:
-                    raise serializers.ValidationError('remove from and re-assigning. i am fixing right now')
-                    obj.analyst_user = analyst_user
-                    obj.save()
-
+                    # raise serializers.ValidationError('remove from and re-assigning. i am fixing right now')
+                    print(" birat ")
                     instance = SampleFormHasParameter.objects.filter(sample_form=sample_form, analyst_user=analyst_user)
+                    
                     if instance.exists():
+                        obj.delete()
+                        print("exists")
                         instance = instance.first()
                         instance.parameter.add(*parameter) #if particular analysts already exist then add parameter to that analysts re-asign
                         return instance
-
+                    
                     return obj
             # raise serializers.ValidationError('remove from and re-assigning. i am fixing right now')
-
+        print(5)
         if SampleFormHasParameter.objects.filter(sample_form=sample_form, analyst_user=analyst_user).exists():
+            print(4)
             print("testing ok append parameter")
             instance = SampleFormHasParameter.objects.get(sample_form=sample_form, analyst_user=analyst_user)
             # Append the new parameters to the existing instance
