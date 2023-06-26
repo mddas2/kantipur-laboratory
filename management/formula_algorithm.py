@@ -281,8 +281,10 @@ class FormulaApiCalculateSave(APIView):
         }
 
         data,created = SampleFormParameterFormulaCalculate.objects.update_or_create(sample_form_id = sample_form_id, parameter_id =parameter_id, commodity_id = commodity_id,sample_form_has_parameter_id=sample_form_has_parameter_id,defaults=data)
+        param = data.parameter.name
+        
         message = {
-            "message":"save successfully"
+            "message":str(param)+" save successfully"
         }
     
         return Response(message, status=status.HTTP_200_OK)
