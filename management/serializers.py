@@ -357,9 +357,20 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                     instance.parameter.add(*parameter) #if particular analysts already exist then add parameter to that analysts re-asign
                     return instance
             else:
-                obj.analyst_user = analyst_user
-                obj.save()
-                return obj
+                if obj.analyst_user == analyst_user:
+                    return obj
+                else:
+                    raise serializers.ValidationError('remove from and re-assigning. i am fixing right now')
+                    obj.analyst_user = analyst_user
+                    obj.save()
+
+                    instance = SampleFormHasParameter.objects.filter(sample_form=sample_form, analyst_user=analyst_user)
+                    if instance.exists():
+                        instance = instance.first()
+                        instance.parameter.add(*parameter) #if particular analysts already exist then add parameter to that analysts re-asign
+                        return instance
+
+                    return obj
             print(obj.first().parameter.all())
             # raise serializers.ValidationError('remove from and re-assigning. i am fixing right now')
 
