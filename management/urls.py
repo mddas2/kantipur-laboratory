@@ -23,6 +23,7 @@ urlpatterns = [
     path('formula-result-save/', formula_algorithm.FormulaApiCalculateSave.as_view(), name='custom_endpoint'),
 
     path('detail-raw-data-sheet/<int:sample_form_has_parameter>/', raw_data.rawDataDetail.as_view(), name='rawData'),
+    path('sample-form-raw-data-sheet/<str:sample_form>/', raw_data.rawDataForSampleForm.as_view(), name='rawDataSupervisor'),
     
     path('get-parameter-to-verified/<int:sample_form_id>/', formula_algorithm.FormulaGetToVerifier.as_view(), name='formula-calculte-verifier'),
     path('import-excel-bulk/',import_excel.ImportExcel,name="ImportExcel")

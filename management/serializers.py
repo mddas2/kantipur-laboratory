@@ -305,13 +305,16 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
         elif action == 'partial_update':
             raise serializers.ValidationError('Partial updates not allowed....')
   
-        if action == "create":
+        if action == "create" and len(parameter)>1:
             for param in parameter:
-                # print(param)
+                print(len(parameter),"  check group or wht")
                 if SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param).exists():
-                    # obj = SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param)     
-                    print("error md")        
                     raise serializers.ValidationError('A SampleFormHasParameter with the same sample_form and parameter already exists(create)')
+        elif action == "create" and len(parameter) == 1:
+            for param in parameter:
+                print(len(parameter),"  check group or wht")
+                if SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param).exists():
+                    attrs['re_assign'] = True                          
             
           
         elif action == 'update' or action == 'partial_update':            
@@ -331,13 +334,34 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                 elif SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param).exists(): #if try to update and not same as previous parameter then check already exist parameter.if exist then raise error
                     raise serializers.ValidationError('A SampleFormHasParameter with the same sample_form and parameter already exists(update)')
                    
-
         return attrs
     
     def create(self, validated_data):
+        print(" create tes md f")
+       
         sample_form = validated_data['sample_form']
         analyst_user = validated_data['analyst_user']
         parameter = validated_data['parameter']
+        
+        re_assign = validated_data.get('re_assign', False)    
+        if re_assign == True:
+            obj = SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=parameter[0]).first()
+            
+            if len(obj.parameter.all())>1:
+                obj.parameter.remove(*parameter) #revoke parameter from existence obj
+                obj.save()
+
+                instance = SampleFormHasParameter.objects.filter(sample_form=sample_form, analyst_user=analyst_user)
+                if instance.exists():
+                    instance = instance.first()
+                    instance.parameter.add(*parameter) #if particular analysts already exist then add parameter to that analysts re-asign
+                    return instance
+            else:
+                obj.analyst_user = analyst_user
+                obj.save()
+                return obj
+            print(obj.first().parameter.all())
+            # raise serializers.ValidationError('remove from and re-assigning. i am fixing right now')
 
         if SampleFormHasParameter.objects.filter(sample_form=sample_form, analyst_user=analyst_user).exists():
             print("testing ok append parameter")
