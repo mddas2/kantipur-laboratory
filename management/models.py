@@ -213,6 +213,7 @@ class RawDataSheet(models.Model):
     status = models.CharField(max_length=2000,null=True)
     analyst_user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,default=None)
     remarks = models.CharField(max_length=1000,null=True)
+    supervisor_remarks = models.CharField(max_length=1000,null=True)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
 
