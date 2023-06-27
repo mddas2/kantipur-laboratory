@@ -377,7 +377,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                 obj.is_supervisor_sent = False
                 obj.save()
 
-                AlterRawDataStatus(obj)
+                # AlterRawDataStatus(obj)
                 flushFormulaCalculate(obj,parameter)
             
 
@@ -388,7 +388,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                     instance = instance.first()
                     instance.parameter.add(*parameter) #if particular analysts already exist then add parameter to that analysts re-asign
                     instance.is_supervisor_sent = False
-                    AlterRawDataStatus(instance.first())
+                    # AlterRawDataStatus(instance.first())
                     return instance
                 else:
                     print(analyst_user,obj.sample_form_id,obj.commodity_id,parameter)
@@ -414,7 +414,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                         instance.parameter.add(*parameter) #if particular analysts already exist then add parameter to that analysts re-asign
                         instance.is_supervisor_sent = False
                         instance.save()
-                        AlterRawDataStatus(instance.first())
+                        # AlterRawDataStatus(instance.first())
                         return instance
                     
                     return obj
