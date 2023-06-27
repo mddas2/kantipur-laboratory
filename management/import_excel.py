@@ -34,6 +34,8 @@ def ImportExcel(request):
 
             ref_test_method = row['ref._test_methods']
 
+            commodity_test_duration = row['commodity_test_duration']
+
             unit = row['units']
             unit_nepali = row['units_nepali']
 
@@ -66,6 +68,7 @@ def ImportExcel(request):
                 'name_nepali':commodity_name_nepali,
                 'units' : unit,
                 'price' : commodity_price,
+                'test_duration' : commodity_test_duration,
             }
             commodity_obj,create = Commodity.objects.update_or_create(name = commodity_name, defaults= commodity_data)
             if create:
@@ -82,10 +85,12 @@ def ImportExcel(request):
                 'mandatory_standard' : mandatory_standard,
                 'mandatory_standard_nepali' : mandatory_standard_nepali,
                 'remarks' : remarks,
-                'notation' : notation,
+                'test_type' : test_type,
+                'test_type_nepali' : test_type_nepali,
+                'formula_notation' : notation,
                 'formula' : formula,
             }
-            testresult_obj,create_test_result = TestResult.objects.update_or_create(commodity_id = commodity_id ,name = commodity_name, defaults = test_result)
+            testresult_obj,create_test_result = TestResult.objects.update_or_create(commodity_id = commodity_id ,name = parameters_name, defaults = test_result)
             if create_test_result:
                 print("parameter created successfully")
 

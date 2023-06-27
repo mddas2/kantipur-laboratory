@@ -21,7 +21,7 @@ class Commodity(models.Model):
     category = models.ForeignKey(CommodityCategory,related_name="commodity",on_delete=models.CASCADE,null=True) 
     name = models.CharField(max_length=255,null=False,unique=True)
     name_nepali = models.CharField(max_length=255,null=True)
-    test_duration = models.IntegerField(null=True)
+    test_duration = models.CharField(max_length=255,null=True)
     units = models.CharField(max_length=255,null=True)
     price = models.IntegerField(null=True)    
     
@@ -40,7 +40,7 @@ class TestResult(models.Model):
     results = models.CharField(max_length=100,null=True)
     mandatory_standard = models.CharField(max_length=100,null=True)
     mandatory_standard_nepali = models.CharField(max_length=100,null=True)
-    notation = models.CharField(max_length=5000,null=True)
+
     remarks = models.TextField(max_length=500,null=True)    
 
 class SampleForm(models.Model):#ClientRequest
