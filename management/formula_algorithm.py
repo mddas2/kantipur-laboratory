@@ -101,9 +101,6 @@ class Formula:
         error = 0
         result = 0
         is_error_occured = False
-        print(formula)
-        print(json)
-        result = eval(formula, json_values)
         try:
             result = eval(formula, json_values)
             result = round(result, 3)
