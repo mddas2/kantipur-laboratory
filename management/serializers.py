@@ -376,6 +376,8 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                 obj.parameter.remove(*parameter) #revoke parameter from existence obj
                 obj.is_supervisor_sent = False
                 obj.save()
+
+                AlterRawDataStatus(obj)
                 flushFormulaCalculate(obj,parameter)
             
 
@@ -386,6 +388,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                     instance = instance.first()
                     instance.parameter.add(*parameter) #if particular analysts already exist then add parameter to that analysts re-asign
                     instance.is_supervisor_sent = False
+                    AlterRawDataStatus(instance.first())
                     return instance
                 else:
                     print(analyst_user,obj.sample_form_id,obj.commodity_id,parameter)
@@ -393,7 +396,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                     samp = SampleFormHasParameter.objects.create(analyst_user=analyst_user,status="processing",commodity_id = obj.commodity_id,sample_form_id=obj.sample_form_id,form_available=obj.form_available)
                     samp.parameter.set(parameter)
                     samp.save()
-                
+                    
                     return obj
             else:
                 if obj.analyst_user == analyst_user:
@@ -411,6 +414,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                         instance.parameter.add(*parameter) #if particular analysts already exist then add parameter to that analysts re-asign
                         instance.is_supervisor_sent = False
                         instance.save()
+                        AlterRawDataStatus(instance.first())
                         return instance
                     
                     return obj
@@ -430,3 +434,10 @@ def flushFormulaCalculate(obj,parameter):
     formula_calculate_obj.delete()
     print(formula_calculate_obj)
     print("flushing formula calculate")
+
+def AlterRawDataStatus(obj):
+    raw_data_obj = obj.raw_datasheet.all().last()
+    raw_data_obj.status = "re-assign"
+    raw_data_obj.save()
+
+    print("alter raw data status")
