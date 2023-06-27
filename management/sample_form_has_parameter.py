@@ -13,6 +13,7 @@ from rest_framework.filters import OrderingFilter,SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from . import roles
 from rest_framework.exceptions import PermissionDenied
+from django.db.models import Q
 
 class SampleFormHasParameterViewSet(viewsets.ModelViewSet):
     queryset = SampleFormHasParameter.objects.all()
@@ -43,7 +44,7 @@ class SampleFormHasParameterViewSet(viewsets.ModelViewSet):
         user = self.request.user
         
         if user.role == roles.ANALYST:
-            return SampleFormHasParameter.objects.filter(analyst_user = user).order_by("-created_date")       
+            return SampleFormHasParameter.objects.filter(analyst_user = user).filter(~Q(status='verified')).order_by("-created_date")       
         else:
              raise PermissionDenied("You do not have permission to access this resource.")
 

@@ -24,7 +24,7 @@ class CommodityReadSerializer(serializers.ModelSerializer):
     class Meta:
         ref_name = "CommodityRead_management"
         model = Commodity
-        fields = ['name','name_nepali']
+        fields = ['id','name','name_nepali']
 
 class TestResultSerializer(serializers.ModelSerializer):
     commodity = CommodityReadSerializer(many=False,read_only = True)
@@ -155,7 +155,7 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class SampleFormReadAnalystSerializer(serializers.ModelSerializer):
-    commodity = CommoditySerializer(read_only=True,many=False)
+    commodity = CommodityReadSerializer(read_only=True,many=False)
     owner_user = serializers.SerializerMethodField()
     supervisor_user = ApprovedBySerializer(read_only = True)
 
