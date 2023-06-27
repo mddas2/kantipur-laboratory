@@ -20,10 +20,18 @@ class PaymentSerializer(serializers.ModelSerializer):
             model = Payment
             fields = '__all__' 
 
+class CommodityReadSerializer(serializers.ModelSerializer):
+    class Meta:
+        ref_name = "CommodityRead_management"
+        model = Commodity
+        fields = ['name','name_nepali']
+
 class TestResultSerializer(serializers.ModelSerializer):
+    commodity = CommodityReadSerializer(many=False,read_only = True)
     class Meta:
         model = TestResult
         fields = '__all__'
+
 
 class CommoditySerializer(serializers.ModelSerializer):
     test_result = TestResultSerializer(many=True,read_only=True)
