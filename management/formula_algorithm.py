@@ -319,8 +319,8 @@ class ParameterHasResultRecheck(APIView):
             sample_form_has_parameter_obj.is_supervisor_sent = False
             sample_form_has_parameter_obj.save()
             formula_recheck_obj.save()
-
-            raw_data_obj = RawDataSheet.object.filter(sample_form_has_parameter_id = sample_form_has_parameter_id).last() #update raw data after recheck.
+            
+            raw_data_obj = RawDataSheet.objects.filter(sample_form_has_parameter_id = sample_form_has_parameter_id).last() #update raw data after recheck.
             raw_data_obj.status =  "recheck"
             raw_data_obj.save()
         else:
