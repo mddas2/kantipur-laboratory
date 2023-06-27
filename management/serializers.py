@@ -286,7 +286,10 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
 
         print(instance.sample_form)
         if analyst_status == "completed" and instance.is_supervisor_sent == True:
-            representation['status'] = instance.status
+            if instance.status == "not_verified":
+                status = "Not Verified"
+            else:
+                representation['status'] = instance.status
         else:
             representation['status'] = analyst_status
         representation['completed_done'] = total_completed
