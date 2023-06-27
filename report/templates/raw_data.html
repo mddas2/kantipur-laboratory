@@ -109,10 +109,14 @@
                                     <!-- {{result.input_fields_value}} -->
         
                                     {% for key,value in result.input_fields_value|json_to_dict %}
-                                        <p style="font-size: 12px; line-height:0 ; margin: 0; padding: 0 0 10px; "> {{key}} = <span>{{value}}</span></p>
+                                        {%if key != 'nan' %}
+                                            <p style="font-size: 12px; line-height:0 ; margin: 0; padding: 0 0 10px; "> {{key}} = <span>{{value}}</span></p>
+                                        {% endif %}
                                     {% endfor %}
-                                    <h3 style="font-size: 12px; line-height: 0; margin: 0 0 5px; padding: 0 0 10px; ">Result = <span>{{result.parameter.formula}}</span> = {{result.result}} </h3>
+                                    <h3 style="font-size: 12px; line-height: 0; margin: 0 0 5px; padding: 0 0 10px; ">Result = <span> {%if result.parameter.formula != 'nan' %} {{result.parameter.formula}} {% endif %}</span>  {%if result.parameter.formula != 'nan' %} = {% endif %} {{result.result}} </h3>
                                 </div>
+
+                                <hr color="#d2d2d2">
                             {% endfor %}
                         </div>
                     </td>
