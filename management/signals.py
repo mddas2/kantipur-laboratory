@@ -122,8 +122,13 @@ def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
         sample_form_obj.save()
     else:        
         if instance.is_verified == True:
+            sample_form_has_parameter_obj = sample_form_obj.sample_has_parameter_analyst
+            sample_form_has_parameter_obj.update(status = "verified")
+            
             sample_form_obj.status = "completed"
             sample_form_obj.completed_date = timezone.now()
             sample_form_obj.save()
+
+            
 
 
