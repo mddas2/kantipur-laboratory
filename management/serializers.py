@@ -309,12 +309,12 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
   
         if action == "create" and len(parameter)>1:
             for param in parameter:
-                print(len(parameter),"  check group or wht")
+                
                 if SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param).exists():
                     raise serializers.ValidationError('A SampleFormHasParameter with the same sample_form and parameter already exists(create)')
         elif action == "create" and len(parameter) == 1:
             for param in parameter:
-                print(len(parameter),"  check group or wht")
+                
                 if SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param).exists():
                     attrs['re_assign'] = True                          
             
@@ -356,6 +356,8 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                 print(1)
                 obj.parameter.remove(*parameter) #revoke parameter from existence obj
                 obj.save()
+                flushFormulaCalculate(obj,parameter)
+            
 
                 instance = SampleFormHasParameter.objects.filter(sample_form=sample_form, analyst_user=analyst_user)
                 print(instance, " sdasd")
@@ -366,7 +368,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                     return instance
                 else:
                     print(analyst_user,obj.sample_form_id,obj.commodity_id,parameter)
-                    print("moli")
+                    print(3)
                     samp = SampleFormHasParameter.objects.create(analyst_user=analyst_user,status="processing",commodity_id = obj.commodity_id,sample_form_id=obj.sample_form_id,form_available=obj.form_available)
                     samp.parameter.set(parameter)
                     samp.save()
@@ -374,11 +376,11 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                     return obj
             else:
                 if obj.analyst_user == analyst_user:
-                    print(3)
+                    print(4)
                     return obj
                 else:
                     # raise serializers.ValidationError('remove from and re-assigning. i am fixing right now')
-                    print(" birat ")
+                    print(5)
                     instance = SampleFormHasParameter.objects.filter(sample_form=sample_form, analyst_user=analyst_user)
                     
                     if instance.exists():
@@ -390,9 +392,8 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                     
                     return obj
             # raise serializers.ValidationError('remove from and re-assigning. i am fixing right now')
-        print(5)
+        print(6)
         if SampleFormHasParameter.objects.filter(sample_form=sample_form, analyst_user=analyst_user).exists():
-            print(4)
             print("testing ok append parameter")
             instance = SampleFormHasParameter.objects.get(sample_form=sample_form, analyst_user=analyst_user)
             # Append the new parameters to the existing instance
@@ -400,3 +401,9 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
             return instance
         
         return super().create(validated_data)
+
+def flushFormulaCalculate(obj,parameter):
+    formula_calculate_obj = obj.formula_calculate.all().filter(parameter_id = parameter[0])
+    formula_calculate_obj.delete()
+    print(formula_calculate_obj)
+    print("flushing formula calculate")
