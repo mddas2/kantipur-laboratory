@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from .formula_serializers import SampleFormParameterFormulaCalculateReadSerializer,FormulaApiCalculateSerializer,FormulaApiGetFieldSerializer,FormulaApiCalculateSaveSerializer,RecheckSerializer
+from .formula_serializers import SampleFormParameterFormulaCalculateReadSerializer,FormulaApiCalculateSerializer,FormulaApiGetFieldSerializer,FormulaApiCalculateSaveSerializer,RecheckSerializer,SampleFormRecheckSerializer
 from .models import SampleFormParameterFormulaCalculate,Commodity,TestResult,SampleForm
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -336,6 +336,85 @@ class ParameterHasResultRecheck(APIView):
             'parameter_id':parameter_id,
             'sample_form_has_parameter_id':sample_form_has_parameter_id,
         }
+        message = {
+            "message":"Recheck successfully"
+        }
+    
+        return Response(message, status=status.HTTP_200_OK)
+
+class SampleFormResultRecheck(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+ 
+    def post(self, request, format=None):
+
+        
+        serializer = SampleFormRecheckSerializer(data=request.data,context={'request': request})
+
+        serializer.is_valid(raise_exception=True)
+
+        sample_form_id = serializer.validated_data['sample_form']
+        remarks = serializer.validated_data['remarks']
+        
+       
+        sample_form_recheck_obj = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id = sample_form_id)
+        print(sample_form_recheck_obj," recheck")
+        if sample_form_recheck_obj.exists():
+           sample_form_recheck_obj.update(status  = "recheck",remarks_recheck_verifier=remarks)
+        else:
+            message = {
+                "message":"some things went wrong"
+            }
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
+        #data = {
+        #    'result' : result,
+        #    'input_fields_value':formula_variable_fields_value
+        #}
+
+        #data,created = SampleFormParameterFormulaCalculate.objects.update_or_create(sample_form_id = sample_form_id, parameter_id =parameter_id, commodity_id = commodity_id,sample_form_has_parameter_id=sample_form_has_parameter_id,defaults=data)
+        #param = data.parameter.name
+    
+        message = {
+            "message":"Recheck successfully"
+        }
+    
+        return Response(message, status=status.HTTP_200_OK)
+
+
+class SampleFormReject(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+ 
+    def post(self, request, format=None):
+
+        
+        serializer = SampleFormRecheckSerializer(data=request.data,context={'request': request})
+
+        serializer.is_valid(raise_exception=True)
+
+        sample_form_id = serializer.validated_data['sample_form']
+        remarks = serializer.validated_data['remarks']
+        
+       
+        sample_form_recheck_obj = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id = sample_form_id)
+        print(sample_form_recheck_obj," recheck")
+        if sample_form_recheck_obj.exists():
+           sample_form_recheck_obj.update(status  = "reject",remarks_reject_verifier=remarks)
+        else:
+            message = {
+                "message":"some things went wrong"
+            }
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
+        #data = {
+        #    'result' : result,
+        #    'input_fields_value':formula_variable_fields_value
+        #}
+
+        #data,created = SampleFormParameterFormulaCalculate.objects.update_or_create(sample_form_id = sample_form_id, parameter_id =parameter_id, commodity_id = commodity_id,sample_form_has_parameter_id=sample_form_has_parameter_id,defaults=data)
+        #param = data.parameter.name
+    
         message = {
             "message":"Recheck successfully"
         }

@@ -87,3 +87,17 @@ class RecheckSerializer(serializers.Serializer):
         data['sample_form'] = decoded_sample_form_id
 
         return super().to_internal_value(data)
+
+class SampleFormRecheckSerializer(serializers.Serializer):
+    sample_form = serializers.CharField()
+    remarks = serializers.CharField()
+
+    
+    def to_internal_value(self, data):
+        user = self.context['request'].user
+     
+        decoded_sample_form_id = generateDecodeIdforSampleForm(data['sample_form'],user)
+
+        data['sample_form'] = decoded_sample_form_id
+
+        return super().to_internal_value(data)

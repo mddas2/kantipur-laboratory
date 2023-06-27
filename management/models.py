@@ -68,6 +68,8 @@ class SampleForm(models.Model):#ClientRequest
 
     
     remarks = models.CharField(max_length=1000,null=True)
+    remarks_recheck_verifier = models.CharField(max_length=1000,null=True)
+    remarks_reject_verifier = models.CharField(max_length=1000,null=True)
 
     verified_by = models.ForeignKey(CustomUser, related_name="sample_form_verified_by",on_delete=models.SET_NULL,null=True) #verifier
 
