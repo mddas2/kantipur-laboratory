@@ -155,7 +155,7 @@ class FormulaApiCalculate(APIView):
                 result = formula_obj.Save(result,formula_variable_fields_value)
                 if result:
                     response_data = {
-                        'message': "formula returned !!!",
+                        'message': " formula calculate !!!",
                         'result' : result,
                         'formula_variable_fields_value' : formula_variable_fields_value
                     }

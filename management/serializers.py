@@ -272,6 +272,7 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
         if count_status == 0:
             analyst_status = "pending"      
         elif recheck == True:
+            completed_done = ''
             analyst_status = "recheck" 
        
             
