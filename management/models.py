@@ -14,11 +14,13 @@ class ClientCategory(models.Model):
 
 class CommodityCategory(models.Model):
     name = models.CharField(max_length=255,unique=True) 
+    name_nepali = models.CharField(max_length=255,null=True) 
     
 class Commodity(models.Model):
     #type_test = choice 
     category = models.ForeignKey(CommodityCategory,related_name="commodity",on_delete=models.CASCADE,null=True) 
     name = models.CharField(max_length=255,null=False,unique=True)
+    name_nepali = models.CharField(max_length=255,null=True)
     test_duration = models.IntegerField(null=True)
     units = models.CharField(max_length=255,null=True)
     price = models.IntegerField(null=True)    
