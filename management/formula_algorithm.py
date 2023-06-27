@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from .formula_serializers import SampleFormParameterFormulaCalculateReadSerializer,FormulaApiCalculateSerializer,FormulaApiGetFieldSerializer,FormulaApiCalculateSaveSerializer
+from .formula_serializers import SampleFormParameterFormulaCalculateReadSerializer,FormulaApiCalculateSerializer,FormulaApiGetFieldSerializer,FormulaApiCalculateSaveSerializer,RecheckSerializer
 from .models import SampleFormParameterFormulaCalculate,Commodity,TestResult,SampleForm
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -277,6 +277,7 @@ class FormulaApiCalculateSave(APIView):
         print(formula_variable_fields_value, " formula_variable_fields_value")
         data = {
             'result' : result,
+            'status' : "completed",
             'input_fields_value':formula_variable_fields_value
         }
 
@@ -285,6 +286,58 @@ class FormulaApiCalculateSave(APIView):
         
         message = {
             "message":str(param)+" save successfully"
+        }
+    
+        return Response(message, status=status.HTTP_200_OK)
+
+
+class ParameterHasResultRecheck(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+ 
+    def post(self, request, format=None):
+
+        
+        serializer = RecheckSerializer(data=request.data,context={'request': request})
+
+        serializer.is_valid(raise_exception=True)
+
+        parameter_id = serializer.validated_data['parameter']
+        sample_form_id = serializer.validated_data['sample_form']
+        remarks = serializer.validated_data['remarks']
+        sample_form_has_parameter_id = serializer.validated_data['sample_form_has_parameter']
+       
+        formula_recheck_obj = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id = sample_form_id, parameter_id =parameter_id,sample_form_has_parameter_id=sample_form_has_parameter_id)
+        print(formula_recheck_obj," recheck")
+        if formula_recheck_obj.exists():
+            formula_recheck_obj = formula_recheck_obj.first()
+            formula_recheck_obj.status = "recheck"
+            formula_recheck_obj.remarks = remarks
+            sample_form_has_parameter_obj = formula_recheck_obj.sample_form_has_parameter
+            sample_form_has_parameter_obj.status = "processing"
+            sample_form_has_parameter_obj.is_supervisor_sent = False
+            sample_form_has_parameter_obj.save()
+            formula_recheck_obj.save()
+        else:
+            message = {
+                "message":"some things went wrong"
+            }
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
+        #data = {
+        #    'result' : result,
+        #    'input_fields_value':formula_variable_fields_value
+        #}
+
+        #data,created = SampleFormParameterFormulaCalculate.objects.update_or_create(sample_form_id = sample_form_id, parameter_id =parameter_id, commodity_id = commodity_id,sample_form_has_parameter_id=sample_form_has_parameter_id,defaults=data)
+        #param = data.parameter.name
+        data = {
+            'sample_form':sample_form_id,
+            'parameter_id':parameter_id,
+            'sample_form_has_parameter_id':sample_form_has_parameter_id,
+        }
+        message = {
+            "message":"Recheck successfully"
         }
     
         return Response(message, status=status.HTTP_200_OK)

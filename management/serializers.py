@@ -227,15 +227,20 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
                 parameter['result'] = formula_calculate.result               
                 count_status = count_status + 1   
                 parameter['input_fields_value'] = formula_calculate.input_fields_value
+                parameter['status'] = formula_calculate.status
+                parameter['remarks'] = formula_calculate.remarks
             else:
                 parameter['result'] = ""      
          
         analyst_status = "processing"
         completed_done = 0
+        recheck = False
         for parameter in parameter_data:
             formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(parameter = parameter['id'],sample_form=obj.sample_form_id)
             if formula_calculate.exists():
-                if formula_calculate.first().result != None:                
+                if formula_calculate.first().result != None:
+                    if formula_calculate.first().status == "recheck":
+                        recheck = True                
                     analyst_status = "completed"   
                     completed_done = completed_done + 1
                 else:
@@ -257,7 +262,9 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
         
 
         if count_status == 0:
-            analyst_status = "pending"       
+            analyst_status = "pending"      
+        elif recheck == True:
+            analyst_status = "recheck" 
        
             
         return parameter_data,analyst_status,completed_done

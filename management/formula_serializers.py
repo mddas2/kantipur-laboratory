@@ -71,3 +71,19 @@ class FormulaApiGetFieldSerializer(serializers.Serializer):
         # Return the validated data
         return data
  
+class RecheckSerializer(serializers.Serializer):
+    parameter = serializers.IntegerField()
+    sample_form = serializers.CharField()
+    remarks = serializers.CharField()
+    sample_form_has_parameter = serializers.IntegerField()
+
+    # remarks = formula_variable_fields_value = serializers.CharField()
+    
+    def to_internal_value(self, data):
+        user = self.context['request'].user
+     
+        decoded_sample_form_id = generateDecodeIdforSampleForm(data['sample_form'],user)
+
+        data['sample_form'] = decoded_sample_form_id
+
+        return super().to_internal_value(data)

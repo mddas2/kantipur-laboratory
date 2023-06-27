@@ -22,6 +22,8 @@ urlpatterns = [
 
     path('formula-result-save/', formula_algorithm.FormulaApiCalculateSave.as_view(), name='custom_endpoint'),
 
+    path('parameter-has-result-recheck/', formula_algorithm.ParameterHasResultRecheck.as_view(), name='single_recheck'),
+
     path('detail-raw-data-sheet/<int:sample_form_has_parameter>/', raw_data.rawDataDetail.as_view(), name='rawData'),
     path('sample-form-raw-data-sheet/<str:sample_form>/', raw_data.rawDataForSampleForm.as_view(), name='rawDataSupervisor'),
     
