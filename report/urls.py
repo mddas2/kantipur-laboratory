@@ -38,5 +38,8 @@ urlpatterns = [
     path('final-report', views.FinalReportPdf,name="FinalReport"),
 
     path('dashboard-report/', dashboard.reportStatus.as_view()),
+
+
+    path('final-report-in-nepali/<str:sample_form_id>/', views.FinalReportNepali.as_view()), #both are same
  
 ]

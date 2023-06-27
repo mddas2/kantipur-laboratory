@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from . sample_form_serializers import SampleFormHasAnalystSerializer
 from . parameter_has_assigned_analyst import SampleFormHasParameterAnalystSerializer
 from . analyst_final_report_serializer import DetailSampleFormHasParameterRoleAsAnalystSerializer
-from . parameter_has_assigned_analyst_detail import DetailSampleFormHasParameterAnalystSerializer,DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp
+from . parameter_has_assigned_analyst_detail import DetailSampleFormHasParameterAnalystSerializer,DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp,FinalReportNepaliAnalystSerializer
 from . verifier_has_completed_sample_form import CompletedSampleFormHasVerifierSerializer
 from django.shortcuts import render
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -104,6 +104,13 @@ class DetailParameterHasAssignedAnalyst(views.APIView):
         else:
             queryset = SampleForm.objects.filter(id=sample_form_id).first()
             serializer = DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(queryset,many = False,context={'request': request})
+        return Response(serializer.data)
+
+class FinalReportNepali(views.APIView):
+
+    def get(self, request, sample_form_id, format=None):  
+        queryset = SampleForm.objects.filter(id=sample_form_id).first()
+        serializer = FinalReportNepaliAnalystSerializer(queryset,many = False)
         return Response(serializer.data)
         
 class ReportDownload(views.APIView):
