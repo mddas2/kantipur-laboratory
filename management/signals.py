@@ -66,7 +66,7 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
         sample_form_obj = instance.sample_form
         sample_form_has_parameter_obj = SampleFormHasParameter.objects.filter(sample_form = sample_form_obj.id) 
         is_analyst_test = False
-
+    
         well = 0
         for parame in sample_form_obj.parameters.all():
             sample_form_has_parame_obj =  SampleFormHasParameter.objects.filter(sample_form = sample_form_obj.id,parameter=parame)
@@ -99,6 +99,10 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
             SampleForm.objects.filter(id=sample_form_obj.id).update(is_analyst_test = is_analyst_test,status=sample_form_status)
         else:
             print("all parameter has not assigned...")
+
+    elif instance.is_supervisor_sent == False:
+        SampleForm.objects.filter(id=instance.sample_form.id).update(is_analyst_test = False,status="processing")
+
         
   
 

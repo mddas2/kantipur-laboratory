@@ -355,6 +355,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
             if len(obj.parameter.all())>1:
                 print(1)
                 obj.parameter.remove(*parameter) #revoke parameter from existence obj
+                obj.is_supervisor_sent = False
                 obj.save()
                 flushFormulaCalculate(obj,parameter)
             
@@ -365,6 +366,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                     print(2)
                     instance = instance.first()
                     instance.parameter.add(*parameter) #if particular analysts already exist then add parameter to that analysts re-asign
+                    instance.is_supervisor_sent = False
                     return instance
                 else:
                     print(analyst_user,obj.sample_form_id,obj.commodity_id,parameter)
@@ -388,6 +390,8 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                         print("exists")
                         instance = instance.first()
                         instance.parameter.add(*parameter) #if particular analysts already exist then add parameter to that analysts re-asign
+                        instance.is_supervisor_sent = False
+                        instance.save()
                         return instance
                     
                     return obj
