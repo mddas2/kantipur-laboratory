@@ -30,12 +30,17 @@ class TestResult(models.Model):
     formula = models.CharField(max_length=255, null=True)
     formula_notation = models.TextField(max_length=1000,null=True)
     name = models.CharField(max_length=255,null=False) #parameter name
-    test_type = models.CharField(max_length=255,null=True)
+    name_nepali = models.CharField(max_length=255,null=True) #parameter name
+    test_type = models.CharField(choices=(('Biochemical','Biochemical'),('Instrumental','Instrumental'),('Microbiological','Microbiological')), default=None, max_length=155,null=True)
+    test_type_nepali = models.CharField(max_length=255,null=True)
     ref_test_method = models.CharField(max_length=255,null=True)
     units = models.CharField(max_length=100,null=True)
+    units_nepali = models.CharField(max_length=100,null=True)
     price = models.IntegerField(null=True)
     results = models.CharField(max_length=100,null=True)
     mandatory_standard = models.CharField(max_length=100,null=True)
+    mandatory_standard_nepali = models.CharField(max_length=100,null=True)
+    notation = models.CharField(max_length=5000,null=True)
     remarks = models.TextField(max_length=500,null=True)    
 
 class SampleForm(models.Model):#ClientRequest

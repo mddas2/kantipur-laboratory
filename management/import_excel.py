@@ -27,27 +27,31 @@ def ImportExcel(request):
             commodity_name_nepali = row['commodity_name_nepali']
 
             test_type = row['test_type']
+            test_type_nepali = row['test_type_nepali']
 
-            parameters_name = row['parameters']
-            parameters_nepali = row['paramater_nepali']
+            parameters_name = row['parameter']
+            parameters_nepali = row['parameter_nepali']
 
-            ref_test_method = row['ref_method_nepali']
+            ref_test_method = row['ref._test_methods']
 
-            unit = row['Units']
+            unit = row['units']
             unit_nepali = row['units_nepali']
 
-            mandatory_standard = row['Mandatory Standard']
+            mandatory_standard = row['mandatory_standard']
             mandatory_standard_nepali = row['mandatory_standard_nepali']
 
-            formula = row['Formula']
+            formula = row['formula']
 
-            remarks = row['Remarks']
+            notation = row['abbreviation']
 
-            commodity_price = row['c_price']
-            parameter_price = row['p_price']
+            remarks = row['remarks']
+
+            commodity_price = row['commodity_price']
+            parameter_price = row['paramater_price']
 
             commodity_category_data = {
-                'name' : commodity_category
+                'name' : commodity_category,
+                'name_nepali' : commodity_category_nepali,
             }
 
 
@@ -59,8 +63,9 @@ def ImportExcel(request):
             commodity_data = {
                 'category_id' : commodity_category_id,
                 'name' : commodity_name,
+                'name_nepali':commodity_name_nepali,
                 'units' : unit,
-                'price' : 0,
+                'price' : commodity_price,
             }
             commodity_obj,create = Commodity.objects.update_or_create(name = commodity_name, defaults= commodity_data)
             if create:
@@ -69,11 +74,15 @@ def ImportExcel(request):
             test_result = { #parameter
                 'commodity_id' : commodity_id,
                 'name' : parameters_name,
+                'name_nepali' : parameters_nepali,
                 'ref_test_method' : ref_test_method,
                 'units' : unit,
-                'price' : 0, #parameter_price,
+                'units_nepali' : unit_nepali,
+                'price' : parameter_price,
                 'mandatory_standard' : mandatory_standard,
+                'mandatory_standard_nepali' : mandatory_standard_nepali,
                 'remarks' : remarks,
+                'notation' : notation,
                 'formula' : formula,
             }
             testresult_obj,create_test_result = TestResult.objects.update_or_create(commodity_id = commodity_id ,name = commodity_name, defaults = test_result)
