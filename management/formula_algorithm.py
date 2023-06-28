@@ -405,10 +405,26 @@ class SampleFormReject(APIView):
         remarks = serializer.validated_data['remarks']
         
        
-        sample_form_recheck_obj = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id = sample_form_id)
-        print(sample_form_recheck_obj," recheck")
-        if sample_form_recheck_obj.exists():
-           sample_form_recheck_obj.update(status  = "reject",remarks_reject_verifier=remarks)
+        sample_form_formul_recheck_obj = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id = sample_form_id)
+        print(sample_form_formul_recheck_obj," reject")
+        if sample_form_formul_recheck_obj.exists():
+           sample_form_formul_recheck_obj.update(status  = "reject")
+
+           sample_form_obj = SampleForm.objects.get(id = sample_form_id)
+           sample_form_obj.status = "reject"
+           
+
+           sample_form_has_parameter = sample_form_obj.sample_has_parameter_analyst.all()
+           sample_form_has_parameter.update(status = "reject")
+
+           sample_form_raw_data = sample_form_obj.raw_datasheet.last()
+           sample_form_raw_data.status=status
+           sample_form_raw_data.save()
+
+           sample_form_verifier = sample_form_obj.verifier
+           sample_form_verifier.status ="rejected"
+
+           sample_form_obj.save()
         else:
             message = {
                 "message":"some things went wrong"
@@ -423,7 +439,7 @@ class SampleFormReject(APIView):
         #param = data.parameter.name
     
         message = {
-            "message":"Recheck successfully"
+            "message":"Rejected sample form"
         }
     
         return Response(message, status=status.HTTP_200_OK)

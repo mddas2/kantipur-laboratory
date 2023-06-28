@@ -70,5 +70,9 @@ class AssignedSampleForSmuSuperAdminSerializer(serializers.ModelSerializer):
 
         request = self.context.get('request')
 
-        representation['status'] = "processing"
+
+        if instance.status != "rejected":
+            representation['status'] = "processing"
+            
+        
         return representation

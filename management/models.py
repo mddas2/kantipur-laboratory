@@ -143,7 +143,7 @@ class SampleFormHasParameter(models.Model):#sample form has parameter and parame
         ('processing', 'processing'),
         ('completed', 'completed'),
         ('recheck', 'recheck'),
-        ('reject', 'reject'),
+        ('rejected', 'rejected'),
         ('not_verified','not_verified'),
         ('verified','verified')
     )
@@ -201,6 +201,7 @@ class SampleFormParameterFormulaCalculate(models.Model):
 
     status_choices = (
         ('pending', 'pending'),
+        ('rejected', 'rejected'),
         ('recheck', 'recheck'),       
         ('completed', 'completed'),
         ('processing', 'processing'),
