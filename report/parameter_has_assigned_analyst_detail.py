@@ -1,4 +1,4 @@
-from management.models import SampleForm, Commodity,SampleFormHasParameter,TestResult,SampleFormParameterFormulaCalculate
+from management.models import SampleForm, Commodity,SampleFormHasParameter,TestResult,SampleFormParameterFormulaCalculate,Payment
 from rest_framework import serializers
 
 from management.models import SampleForm, Commodity,SampleFormHasParameter
@@ -16,6 +16,12 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class CommoditySerializer(serializers.ModelSerializer):
     class Meta:
         model = Commodity
+        fields = ['name']
+
+class PaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        ref_name = "report_payment_detail"
+        model = Payment
         fields = ['name']
 
 class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
@@ -140,10 +146,14 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
         parameters_data = representation.get('parameters', [])
 
         user = self.context['request'].user
+
         if user.role == roles.SMU or user.role == roles.SUPERADMIN:
             smu_superadmin_status = representation.get('status')
             if smu_superadmin_status == "not_assigned" or smu_superadmin_status == "not_verified":
                 representation['status'] = "processing"
+
+        elif user.role == roles.USER:
+            representation['payment'] = PaymentSerializer(read_only = True,many=False)
 
         for parameter_data in parameters_data:
             parameter_id = parameter_data.get('id')
