@@ -4,6 +4,8 @@ from account.models import CustomUser
 from . import roles
 from . encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
 from . raw_data import generateRawData
+from .status_naming import over_all_status
+
 
 class ApprovedBySerializer(serializers.ModelSerializer):
      class Meta:
@@ -290,10 +292,7 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
 
         print(instance.sample_form)
         if analyst_status == "completed" and instance.is_supervisor_sent == True:
-            if instance.status == "not_verified":
-                status = "Not Verified"
-            else:
-                representation['status'] = instance.status
+            representation['status'] = over_all_status[instance.status]
         else:
             representation['status'] = analyst_status
         representation['completed_done'] = total_completed

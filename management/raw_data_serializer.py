@@ -2,6 +2,7 @@ from .models import RawDataSheet,SampleForm,RawDataSheetDetail,TestResult
 from account.models import CustomUser
 from rest_framework import serializers
 from . encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
+from .status_naming import over_all_status
 
 class ApprovedBySerializer(serializers.ModelSerializer):
      class Meta:
@@ -42,6 +43,7 @@ class rawDataSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['sample_form'] = SampleFormSerializer(instance.sample_form).data
+        representation['status'] = over_all_status[instance.status]
         return representation
 
 
