@@ -94,8 +94,10 @@ class Formula:
             formula = formula.replace('{', '(').replace('}', ')')
         
     
-
-        json_values = json.loads(formula_variable_fields_value)
+        try:
+            json_values = {key: int(value) for key, value in json_values.items()}
+        except:
+            json_values = json.loads(formula_variable_fields_value)
 
         error = {}
         error = 0
