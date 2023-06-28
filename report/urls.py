@@ -40,6 +40,6 @@ urlpatterns = [
     path('dashboard-report/', dashboard.reportStatus.as_view()),
 
 
-    path('final-report-in-nepali/<str:sample_form_id>/', views.FinalReportNepali.as_view()), #both are same
+    path('final-report-in-nepali/<str:sample_form_id>/<int:role_id>/', views.FinalReportNepali.as_view()), #both are same
  
 ]
