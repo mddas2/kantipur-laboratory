@@ -266,7 +266,11 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
             completed_done = ''
             print(analyst_status)
         else:
-            completed_done = str(total_len)+"/"+str(completed_done)
+            try:
+                completed_done = str(completed_done) + "/" +str(total_len)                
+            except:
+                completed_done = str(total_len)+"/"+str(completed_done)
+                
         
 
         if count_status == 0:
