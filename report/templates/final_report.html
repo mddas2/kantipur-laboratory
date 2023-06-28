@@ -388,7 +388,7 @@
             {% for param in parameters  %}
             <tr>
                 <td style="width:6.5%; border: 1px solid black; " >
-                    <h1 style=" font-weight: 400;   font-size:11px;   line-height: 1.2; margin: 5px 0; text-align:center; padding:2px 0;">{% if param.parameter.test_type == '2' %} MB {% else %} CH  {% endif %}</h1>
+                    <h1 style=" font-weight: 400;   font-size:11px;   line-height: 1.2; margin: 5px 0; text-align:center; padding:2px 0;">{% if param.parameter.test_type == 'Microbiological' %} MB {% else %} CH  {% endif %}</h1>
                 </td>
                 <td style="width:6.5%; border: 1px solid black; ">
                     <h1 style=" font-weight: 400;   font-size:11px;   line-height: 1.2; margin: 5px 0; text-align:center; padding:2px 0;">  {{ forloop.counter }}  </h1>
