@@ -177,7 +177,7 @@ class SampleFormHasParameter(models.Model):#sample form has parameter and parame
     #     ]
 
 class Payment(models.Model):
-    sample_form = models.OneToOneField(SampleForm,related_name='payment' , on_delete=models.DO_NOTHING)
+    sample_form = models.ForeignKey(SampleForm,related_name='payment' , on_delete=models.DO_NOTHING)
     owner_email = models.EmailField(max_length=100,null=True)
     voucher_number = models.CharField(blank=True, null=True, max_length=155)
     register_date = models.CharField(blank=True, null=True, max_length=155)
