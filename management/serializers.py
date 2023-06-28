@@ -58,7 +58,7 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
         return generateAutoEncodeIdforSampleForm(obj.id,user)
 
     parameters = TestResultSerializer(many=True, read_only=True)
-    payment = PaymentSerializer(read_only=True)
+    payment = PaymentSerializer(read_only=True,many=True)
 
     owner_user = serializers.SerializerMethodField()
     approved_by = ApprovedBySerializer(read_only = True,many=False)
