@@ -153,7 +153,9 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
                 representation['status'] = "processing"
 
         elif user.role == roles.USER:
-            representation['payment'] = PaymentSerializer(instance.payment).data
+            
+            pass
+            # representation['payment'] = PaymentSerializer(instance.payment).data
 
         for parameter_data in parameters_data:
             parameter_id = parameter_data.get('id')
