@@ -379,9 +379,10 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                 print(1)
                 obj.parameter.remove(*parameter) #revoke parameter from existence obj
                 obj.is_supervisor_sent = False
+                AlterRawDataStatus(obj)
                 obj.save()
 
-                # AlterRawDataStatus(obj)
+                
                 flushFormulaCalculate(obj,parameter)
             
 
@@ -390,9 +391,10 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                 if instance.exists():
                     print(2)
                     instance = instance.first()
+                    AlterRawDataStatus(instance)
                     instance.parameter.add(*parameter) #if particular analysts already exist then add parameter to that analysts re-asign
                     instance.is_supervisor_sent = False
-                    # AlterRawDataStatus(instance.first())
+                  
                     return instance
                 else:
                     print(analyst_user,obj.sample_form_id,obj.commodity_id,parameter)
@@ -415,10 +417,11 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                         obj.delete()
                         print("exists")
                         instance = instance.first()
+                        AlterRawDataStatus(instance.first())
                         instance.parameter.add(*parameter) #if particular analysts already exist then add parameter to that analysts re-asign
                         instance.is_supervisor_sent = False
                         instance.save()
-                        # AlterRawDataStatus(instance.first())
+                        
                         return instance
                     
                     return obj
@@ -441,7 +444,10 @@ def flushFormulaCalculate(obj,parameter):
 
 def AlterRawDataStatus(obj):
     raw_data_obj = obj.raw_datasheet.all().last()
-    raw_data_obj.status = "re-assign"
-    raw_data_obj.save()
-
+    print(raw_data_obj," obj none")
+    if raw_data_obj == None:
+        print("this sample form has parameter haave not raw data sheet")
+    else:
+        raw_data_obj.status = "re-assign"
+        raw_data_obj.save()
     print("alter raw data status")
