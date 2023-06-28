@@ -22,7 +22,7 @@ class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         ref_name = "report_payment_detail"
         model = Payment
-        fields = ['name']
+        fields = '__all__'
 
 class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
     analyst_user = CustomUserSerializer(read_only = True)
