@@ -18,13 +18,17 @@ class reportStatus(views.APIView):
             total_request = total_sample_forms_obj.count()
             completed = total_sample_forms_obj.filter(status = "completed").count()
             reject = total_sample_forms_obj.filter(status = "rejected").count()
-            not_verified = total_sample_forms_obj.filter(verifier__status = "not_verified").count()
+            not_verified = total_sample_forms_obj.filter(verifier__is_verified = False).count()
             pending = total_sample_forms_obj.filter(status = "pending").count()
             not_assigned = total_sample_forms_obj.filter(status = "not_assigned").count()
             processing = total_sample_forms_obj.filter(status = "processing").count()
 
-            recheck = total_sample_forms_obj.raw_datasheet.all().filter(status = "recheck").count()
-            re_assigned = total_sample_forms_obj.raw_datasheet.all().filter(status = "re-assign").count()
+            try:
+                recheck = total_sample_forms_obj.raw_datasheet.all().filter(status = "recheck").count()
+                re_assigned = total_sample_forms_obj.raw_datasheet.all().filter(status = "re-assign").count()
+            except:
+                recheck = 1
+                re_assigned = 1
 
             data = {
                 'total_request':total_request,
@@ -43,7 +47,7 @@ class reportStatus(views.APIView):
             total_request = total_sample_forms_obj.count()
             completed = total_sample_forms_obj.filter(status = "completed").count()
             reject = total_sample_forms_obj.filter(status = "rejected").count()
-            not_verified = total_sample_forms_obj.filter(verifier__status = "not_verified").count()
+            not_verified = total_sample_forms_obj.filter(verifier__is_verified = False).count()
             pending = total_sample_forms_obj.filter(status = "pending").count()
             not_assigned = total_sample_forms_obj.filter(status = "not_assigned").count()
             processing = total_sample_forms_obj.filter(status = "processing").count()
