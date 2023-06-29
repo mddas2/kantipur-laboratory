@@ -203,6 +203,7 @@ def ReportParameter(report_type,report_lang,id=None):
 def FinalReport(request,report_type,report_lang,id=None,role=None):
     from rest_framework.response import Response
 
+    encoded_id = id
     id = generateDecodeIdByRoleforSampleForm(id,role)
 
     if id == None:
@@ -325,7 +326,7 @@ def FinalReport(request,report_type,report_lang,id=None,role=None):
                     box_size=2,
                     border=3,
                 )
-                qr.add_data("https://www.facebook.com/manojdastopa/")  # Modify the data as needed
+                qr.add_data(f"https://limsserver.kantipurinfotech.com.np/api/report/get-single-report/final-report/pdf/en/{encoded_id}/{role}/")  # Modify the data as needed
                 qr.make(fit=True)
                 qr_image = qr.make_image(fill_color="black", back_color="white")
 
