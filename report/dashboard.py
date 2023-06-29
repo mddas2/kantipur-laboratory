@@ -87,9 +87,13 @@ class reportStatus(views.APIView):
                 recheck = 1
                 re_assign = 1
 
-            sample_form_obj = total_sample_forms_obj.sample_form.all()
-            not_verified = sample_form_obj.filter(status = "not_verified").count()
-            completed = sample_form_obj.filter(status = "completed").count()
+            try:
+                sample_form_obj = total_sample_forms_obj.sample_form.all()
+                not_verified = sample_form_obj.filter(status = "not_verified").count()
+                completed = sample_form_obj.filter(status = "completed").count()
+            except:
+                not_verified = 1
+                completed = 1
 
             total_report_generated = SampleFormHasParameter.objects.filter(analyst_user=self.request.user.id, sample_form__verifier__is_verified=True).count()
             data = {
