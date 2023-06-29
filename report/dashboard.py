@@ -14,22 +14,53 @@ class reportStatus(views.APIView):
     def get(self, request):        
         if self.request.user.role == roles.SUPERADMIN or self.request.user.role == roles.SMU:
             total_users = CustomUser.objects.all().count()
-            total_sample_forms = SampleForm.objects.all().count()
-            total_report_generated = SampleForm.objects.filter(verifier__is_verified=True).count()
+            total_sample_forms_obj = SampleForm.objects.all()
+            total_request = total_sample_forms_obj.count()
+            completed = total_sample_forms_obj.filter(status = "completed").count()
+            reject = total_sample_forms_obj.filter(status = "rejected").count()
+            not_verified = total_sample_forms_obj.filter(verifier__status = "not_verified").count()
+            pending = total_sample_forms_obj.filter(status = "pending").count()
+            not_assigned = total_sample_forms_obj.filter(status = "not_assigned").count()
+            processing = total_sample_forms_obj.filter(status = "processing").count()
+
+            recheck = total_sample_forms_obj.raw_datasheet.all().filter(status = "recheck").count()
+            re_assigned = total_sample_forms_obj.raw_datasheet.all().filter(status = "re-assign").count()
+
             data = {
-                'total_users':total_users,
-                'total_sample_forms':total_sample_forms,
-                'total_report_generated':total_report_generated,
+                'total_request':total_request,
+                'completed':completed,
+                'pending':pending,
+                'not_verified':not_verified,
+                "processing":processing,
+                "recheck":recheck,
+                "reject":reject,
+                're_assigned':re_assigned,
+                'not_assigned':not_assigned
             }
 
         elif self.request.user.role == roles.SUPERVISOR:
-            total_users = 0#CustomUser.objects.all().count()
-            total_sample_forms = SampleForm.objects.filter(supervisor_user = self.request.user.id).count()
-            total_report_generated = SampleForm.objects.filter(supervisor_user = self.request.user.id,verifier__is_verified=True).count()
+            total_sample_forms_obj = SampleForm.objects.filter(supervisor_user = self.request.user.id).all()
+            total_request = total_sample_forms_obj.count()
+            completed = total_sample_forms_obj.filter(status = "completed").count()
+            reject = total_sample_forms_obj.filter(status = "rejected").count()
+            not_verified = total_sample_forms_obj.filter(verifier__status = "not_verified").count()
+            pending = total_sample_forms_obj.filter(status = "pending").count()
+            not_assigned = total_sample_forms_obj.filter(status = "not_assigned").count()
+            processing = total_sample_forms_obj.filter(status = "processing").count()
+
+            recheck = total_sample_forms_obj.raw_datasheet.all().filter(status = "recheck").count()
+            re_assigned = total_sample_forms_obj.raw_datasheet.all().filter(status = "re-assign").count()
+
             data = {
-                'total_users':total_users,
-                'total_sample_forms':total_sample_forms,
-                'total_report_generated':total_report_generated,
+                'total_request':total_request,
+                'completed':completed,
+                'pending':pending,
+                'not_verified':not_verified,
+                "processing":processing,
+                "recheck":recheck,
+                "reject":reject,
+                're_assigned':re_assigned,
+                'not_assigned':not_assigned
             }
         
         elif self.request.user.role == roles.ANALYST:
@@ -74,7 +105,7 @@ class reportStatus(views.APIView):
                 'not_verified':not_verified,
                 'completed':completed,
                 'pending':pending,
-                'recheck':reject,
+                'reject':reject,
             }
 
         elif self.request.user.role == roles.USER:
