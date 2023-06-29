@@ -96,7 +96,7 @@ class Formula:
         json_values = json.loads(formula_variable_fields_value)
 
         try:
-            json_values = {key: int(value) for key, value in json_values.items()}
+            json_values = {key: float(value) for key, value in json_values.items()}
         except:
             json_values = json.loads(formula_variable_fields_value)
 
@@ -406,16 +406,16 @@ class SampleFormReject(APIView):
         
        
         sample_form_formul_recheck_obj = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id = sample_form_id)
-        print(sample_form_formul_recheck_obj," reject")
+
         if sample_form_formul_recheck_obj.exists():
-           sample_form_formul_recheck_obj.update(status  = "reject")
+           sample_form_formul_recheck_obj.update(status  = "rejected")
 
            sample_form_obj = SampleForm.objects.get(id = sample_form_id)
-           sample_form_obj.status = "reject"
+           sample_form_obj.status = "rejected"
            
 
            sample_form_has_parameter = sample_form_obj.sample_has_parameter_analyst.all()
-           sample_form_has_parameter.update(status = "reject")
+           sample_form_has_parameter.update(status = "rejected")
 
            sample_form_raw_data = sample_form_obj.raw_datasheet.last()
            sample_form_raw_data.status=status
