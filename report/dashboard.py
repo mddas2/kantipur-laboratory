@@ -36,13 +36,24 @@ class reportStatus(views.APIView):
             total_users = 0#CustomUser.objects.all().count()
             total_sample_forms_obj = SampleFormHasParameter.objects.filter(analyst_user = self.request.user.id).all()
             total_sample_forms = total_sample_forms_obj.count()
+
+            pending = total_sample_forms_obj.filter(status = "pending")
+
+            recheck = total_sample_forms_obj.raw_datasheet.all().filter(status = "recheck").count()
+            re_assign = total_sample_forms_obj.raw_datasheet.all().filter(status = "re-assign").count()
+
+            sample_form_obj = total_sample_forms_obj.sample_form.all()
+            not_verified = sample_form_obj.filter(status = "not_verified").count()
+            completed = sample_form_obj.filter(status = "completed").count()
+
             total_report_generated = SampleFormHasParameter.objects.filter(analyst_user=self.request.user.id, sample_form__verifier__is_verified=True).count()
             data = {
                 'total_request':total_sample_forms,
-                'pending':12,
-                'completed':23,
-                'recheck' : 99,
-                'not_verified':12,
+                'pending':pending,
+                'recheck' : recheck,
+                're_assign' : re_assign,
+                'completed' : completed,
+                'not_verified':not_verified,
             }
 
         elif self.request.user.role == roles.VERIFIER:
