@@ -5,7 +5,7 @@ from management.models import SampleForm, Commodity,SampleFormHasParameter
 from account.models import CustomUser
 from rest_framework import serializers
 from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
-
+from management.status_naming import over_all_status
 from management import roles
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -147,10 +147,12 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
 
         user = self.context['request'].user
 
+        # representation['status'] = over_all_status[representation.get('status')]
         if user.role == roles.SMU or user.role == roles.SUPERADMIN:
             smu_superadmin_status = representation.get('status')
             if smu_superadmin_status == "not_assigned" or smu_superadmin_status == "not_verified":
                 representation['status'] = "processing"
+        
 
         elif user.role == roles.USER:
             
