@@ -337,7 +337,7 @@ def FinalReport(request,report_type,report_lang,id=None,role=None):
                 page_height = page.mediabox [3]
 
                 # Create a blank image with the same size as the first page
-                blank_image = Image.new('RGBA', (int(page_width), int(page_height)), (255, 255, 255, 0))
+                blank_image = Image.new('RGB', (int(page_width), int(page_height)), (255, 255, 255, 0))
 
                 # Paste the QR code onto the blank image
                 blank_image.paste(qr_pil_image, (470, 690))  # w,h: Adjust the position as needed
