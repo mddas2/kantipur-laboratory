@@ -54,7 +54,7 @@ class reportStatus(views.APIView):
 
         elif self.request.user.role == roles.USER:
             total_users = 0#CustomUser.objects.all().count()
-            total_sample_forms_obj = SampleForm.objects.filter(owner_user = self.request.user.email).count()
+            total_sample_forms_obj = SampleForm.objects.filter(owner_user = self.request.user.email)
             total_sample_forms = total_sample_forms_obj.count()
             total_report_generated = total_sample_forms_obj.filter(verifier__is_verified=True).count()
             not_verified = total_sample_forms_obj.filter(verifier__is_verified=False).count()
