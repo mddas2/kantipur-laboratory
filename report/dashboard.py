@@ -71,11 +71,13 @@ class reportStatus(views.APIView):
             not_verified = total_sample_forms_obj.filter(verifier__is_verified=False).count()
             recheck = total_sample_forms_obj.filter(raw_datasheet__status="rechecks").count()
             pending = total_sample_forms_obj.filter(status = "pending").count()
+            rejected = total_sample_forms_obj.filter(status = "rejected").count()
+            processing = total_sample_forms_obj.filter(~Q(status = "pending") & ~Q(status="completed") )
             data = {
                 'total_request':total_sample_forms,
                 'not_verified':not_verified,
-                'processing':12,
-                'rejected':1,
+                'processing':processing,
+                'rejected':rejected,
                 'completed':total_report_generated,
                 'pending':pending,
                 'recheck':recheck,
