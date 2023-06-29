@@ -44,12 +44,23 @@ class reportStatus(views.APIView):
 
         elif self.request.user.role == roles.VERIFIER:
             total_users = 0#CustomUser.objects.all().count()
-            total_sample_forms = SampleFormVerifier.objects.all().count()
-            total_report_generated = SampleFormVerifier.objects.filter(is_verified=True).count()
+            total_sample_forms_obj = SampleFormVerifier.objects.all()
+            total_sample_forms = total_sample_forms_obj.count()
+            
+            not_verified = total_sample_forms_obj.filter(is_verified = False).count()
+            pending = not_verified
+
+            verified = total_sample_forms_obj.filter(is_verified=True).count()
+            completed = verified
+
+            reject = total_sample_forms_obj.filter(status = reject).count()
+
             data = {
-                'total_users':total_users,
-                'total_sample_forms':total_sample_forms,
-                'total_report_generated':total_report_generated,
+                'total_request':total_sample_forms,
+                'not_verified':not_verified,
+                'completed':completed,
+                'pending':pending,
+                'recheck':reject,
             }
 
         elif self.request.user.role == roles.USER:
@@ -63,6 +74,8 @@ class reportStatus(views.APIView):
             data = {
                 'total_request':total_sample_forms,
                 'not_verified':not_verified,
+                'processing':12,
+                'rejected':1,
                 'completed':total_report_generated,
                 'pending':pending,
                 'recheck':recheck,
