@@ -115,6 +115,7 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
     owner_user = serializers.SerializerMethodField()
     supervisor_user = CustomUserSerializer(read_only = True)
     verified_by = CustomUserSerializer(read_only = True)
+    approved_by = CustomUserSerializer(read_only = True)
     
     
     id = serializers.SerializerMethodField()
