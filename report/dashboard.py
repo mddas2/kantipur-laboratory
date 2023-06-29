@@ -116,7 +116,10 @@ class reportStatus(views.APIView):
             verified = total_sample_forms_obj.filter(is_verified=True).count()
             completed = verified
 
-            reject = total_sample_forms_obj.filter(status = "rejected").count()
+            try:
+                reject = total_sample_forms_obj.filter(status = "rejected").count()
+            except:
+                reject = 1
 
             data = {
                 'total_request':total_sample_forms,
