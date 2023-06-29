@@ -322,10 +322,10 @@ def FinalReport(request,report_type,report_lang,id=None,role=None):
                 qr = qrcode.QRCode(
                     version=1,
                     error_correction=qrcode.constants.ERROR_CORRECT_L,
-                    box_size=3,
-                    border=4,
+                    box_size=2,
+                    border=3,
                 )
-                qr.add_data("https://www.example.com")  # Modify the data as needed
+                qr.add_data("https://www.facebook.com/manojdastopa/")  # Modify the data as needed
                 qr.make(fit=True)
                 qr_image = qr.make_image(fill_color="black", back_color="white")
 
@@ -340,7 +340,7 @@ def FinalReport(request,report_type,report_lang,id=None,role=None):
                 blank_image = Image.new('RGBA', (int(page_width), int(page_height)), (255, 255, 255, 0))
 
                 # Paste the QR code onto the blank image
-                blank_image.paste(qr_pil_image, (300, 150))  # Adjust the position as needed
+                blank_image.paste(qr_pil_image, (470, 690))  # w,h: Adjust the position as needed
 
                 # Convert the image back to a PDF page
                 qr_page = BytesIO()
