@@ -7,4 +7,6 @@ over_all_status = {
     'pending':"Pending",
     'processing':"Processing",
     'completed':"Completed",
+    'rejected' : 'Rejected',
+    'reject'  : 'rejected',
 }
