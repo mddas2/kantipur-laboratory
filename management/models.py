@@ -122,9 +122,9 @@ class SampleForm(models.Model):#ClientRequest
         super().save(*args, **kwargs)
         if create == True:
             self.user_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "user")
-            self.supervisor_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "supervisor")
-            self.analyst_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "analyst")
-            self.verifier_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "verifier")
+            self.supervisor_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "common")
+            self.analyst_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "common")
+            self.verifier_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "common")
             self.save()
 
 
