@@ -80,8 +80,12 @@ class reportStatus(views.APIView):
 
             pending = total_sample_forms_obj.filter(status = "pending")
 
-            recheck = total_sample_forms_obj.raw_datasheet.all().filter(status = "recheck").count()
-            re_assign = total_sample_forms_obj.raw_datasheet.all().filter(status = "re-assign").count()
+            try:
+                recheck = total_sample_forms_obj.raw_datasheet.all().filter(status = "recheck").count()
+                re_assign = total_sample_forms_obj.raw_datasheet.all().filter(status = "re-assign").count()
+            except:
+                recheck = 1
+                re_assign = 1
 
             sample_form_obj = total_sample_forms_obj.sample_form.all()
             not_verified = sample_form_obj.filter(status = "not_verified").count()
