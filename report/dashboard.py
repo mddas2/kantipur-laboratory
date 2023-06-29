@@ -34,12 +34,15 @@ class reportStatus(views.APIView):
         
         elif self.request.user.role == roles.ANALYST:
             total_users = 0#CustomUser.objects.all().count()
-            total_sample_forms = SampleFormHasParameter.objects.filter(analyst_user = self.request.user.id).count()
+            total_sample_forms_obj = SampleFormHasParameter.objects.filter(analyst_user = self.request.user.id).all()
+            total_sample_forms = total_sample_forms_obj.count()
             total_report_generated = SampleFormHasParameter.objects.filter(analyst_user=self.request.user.id, sample_form__verifier__is_verified=True).count()
             data = {
-                'total_users':total_users,
-                'total_sample_forms':total_sample_forms,
-                'total_report_generated':total_report_generated,
+                'total_request':total_sample_forms,
+                'pending':12,
+                'completed':23,
+                'recheck' : 99,
+                'not_verified':12,
             }
 
         elif self.request.user.role == roles.VERIFIER:
