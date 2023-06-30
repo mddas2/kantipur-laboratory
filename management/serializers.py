@@ -1,4 +1,4 @@
-from .models import ClientCategory, SampleForm, Commodity, CommodityCategory , TestResult ,SampleFormHasParameter,Payment,SampleFormParameterFormulaCalculate
+from .models import ClientCategory,SuperVisorSampleForm, SampleForm, Commodity, CommodityCategory , TestResult ,SampleFormHasParameter,Payment,SampleFormParameterFormulaCalculate
 from rest_framework import serializers
 from account.models import CustomUser
 from . import roles
@@ -128,6 +128,16 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
 
 
         return representation
+class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SuperVisorSampleForm
+        fields = '__all__'
+   
+class SuperVisorSampleFormReadSerializer(serializers.ModelSerializer):  
+    class Meta:
+        model = SuperVisorSampleForm
+        fields = '__all__'
+
 
 class SampleFormWriteSerializer(serializers.ModelSerializer):
     def validate(self, data):

@@ -127,6 +127,29 @@ class SampleForm(models.Model):#ClientRequest
             self.verifier_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "common")
             self.save()
 
+class SuperVisorSampleForm(models.Model):#sample form has parameter and parameter for each parameter each suspervisor
+    sample_form = models.ForeignKey(SampleForm,related_name="supervisor_sample_form",on_delete=models.CASCADE,null=True)
+    supervisor_user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,default=None)
+       
+    parameter = models.ManyToManyField(TestResult, related_name="supervisor_has_parameter")
+
+    is_supervisor_sent = models.BooleanField(default=False)
+    
+    status_choices = (       
+        ('pending', 'pending'), 
+        ('processing', 'processing'),
+        ('completed', 'completed'),
+        ('recheck', 'recheck'),
+        ('rejected', 'rejected'),
+        ('not_verified','not_verified'),
+        ('verified','verified')
+    )
+    status = models.CharField(choices=status_choices,default="pending" , blank=True, null=True, max_length=155)
+
+    created_date = models.DateTimeField(default=timezone.now)
+    updated_date = models.DateTimeField(default=timezone.now)
+    remarks = models.CharField(max_length=1000,null=True)
+
 
 class SampleFormHasParameter(models.Model):#sample form has parameter and parameter for each parameter each analyst
     sample_form = models.ForeignKey(SampleForm,related_name="sample_has_parameter_analyst",on_delete=models.CASCADE,null=True)
