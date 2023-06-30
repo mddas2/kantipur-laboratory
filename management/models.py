@@ -131,7 +131,7 @@ class SuperVisorSampleForm(models.Model):#sample form has parameter and paramete
     sample_form = models.ForeignKey(SampleForm,related_name="supervisor_sample_form",on_delete=models.CASCADE,null=True)
     supervisor_user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,default=None)
        
-    parameter = models.ManyToManyField(TestResult, related_name="supervisor_has_parameter")
+    parameters = models.ManyToManyField(TestResult, related_name="supervisor_has_parameter")
 
     is_supervisor_sent = models.BooleanField(default=False)
     
