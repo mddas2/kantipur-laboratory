@@ -94,7 +94,7 @@ class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
         user = self.request.user
 
         if user.role == roles.SUPERVISOR:
-            query =  SuperVisorSampleForm.objects.all()
+            query =  SuperVisorSampleForm.objects.filter(supervisor_user = user.id)
         else:
             raise PermissionDenied("You do not have permission to access this resource.")
         
