@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from . sample_form_serializers import SampleFormHasAnalystSerializer
 from . parameter_has_assigned_analyst import SampleFormHasParameterAnalystSerializer
 from . analyst_final_report_serializer import DetailSampleFormHasParameterRoleAsAnalystSerializer
-from . parameter_has_assigned_analyst_detail import DetailSampleFormHasParameterAnalystSerializer,DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp
+from . parameter_has_assigned_analyst_detail import DetailSampleFormHasParameterAnalystSerializer,DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp,FinalReportNepaliAnalystSerializer
 from . verifier_has_completed_sample_form import CompletedSampleFormHasVerifierSerializer
 from django.shortcuts import render
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -20,8 +20,8 @@ from management.pagination import MyLimitOffsetPagination
 from django.db.models import Q
 from management import roles
 from rest_framework import generics
-from .report_download import ReportAdminList,ReportParameter,ReportCommodity,ReportUserSampleForm,ReportUserList,ReportSampleForm,ReportUserRequest,ReportComodityCategory,FinalReport
-from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
+from .report_download import ReportAdminList,ReportParameter,ReportCommodity,ReportUserSampleForm,ReportUserList,ReportSampleForm,ReportUserRequest,ReportComodityCategory,FinalReport,rawDataSheetAnalystReport
+from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm,generateDecodeIdByRoleforSampleForm
 #report_type:['pdf','excel','csv']
 #report_name:['admin-list','users-list','user-with-sample-form','sample-form','commodity','parameter']
 #['sample-request','user-request','client-category','commodity-with-parameter','commodity-category','commodity','parameter']
@@ -105,6 +105,14 @@ class DetailParameterHasAssignedAnalyst(views.APIView):
             queryset = SampleForm.objects.filter(id=sample_form_id).first()
             serializer = DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(queryset,many = False,context={'request': request})
         return Response(serializer.data)
+
+class FinalReportNepali(views.APIView):
+
+    def get(self, request, sample_form_id,role_id, format=None):
+        id = generateDecodeIdByRoleforSampleForm(sample_form_id,role_id)
+        queryset = SampleForm.objects.filter(id=id).first()
+        serializer = FinalReportNepaliAnalystSerializer(queryset,many = False)
+        return Response(serializer.data)
         
 class ReportDownload(views.APIView):
     def get(self, request,report_name,report_type,report_lang,id=None,role=None):
@@ -171,3 +179,9 @@ def FinalReportPdf(request):
 
     return response
     return HttpResponse("pdf")
+
+class rawDataReportDownload(views.APIView):
+    def get(self, request,download_print=None,report_lang=None,sample_form_has_parameter=None):
+        
+        response = rawDataSheetAnalystReport(request,download_print,sample_form_has_parameter)
+        return response

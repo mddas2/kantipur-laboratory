@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from .formula_serializers import SampleFormParameterFormulaCalculateReadSerializer,FormulaApiCalculateSerializer,FormulaApiGetFieldSerializer,FormulaApiCalculateSaveSerializer
-from .models import SampleFormParameterFormulaCalculate,Commodity,TestResult,SampleForm
+from .formula_serializers import SampleFormParameterFormulaCalculateReadSerializer,FormulaApiCalculateSerializer,FormulaApiGetFieldSerializer,FormulaApiCalculateSaveSerializer,RecheckSerializer,SampleFormRecheckSerializer
+from .models import SampleFormParameterFormulaCalculate,Commodity,TestResult,SampleForm,RawDataSheet
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -51,13 +51,15 @@ class Formula:
 
     
     def MakeProperResponse(self,variables,notations):
+        result_obj = SampleFormParameterFormulaCalculate.objects.filter(sample_form = self.sample_form_id,parameter_id = self.parameter_id,commodity_id = self.commodity_id).first()
+
         try:
             result_obj = SampleFormParameterFormulaCalculate.objects.filter(sample_form = self.sample_form_id,parameter_id = self.parameter_id,commodity_id = self.commodity_id).first()
             json_fields = result_obj.input_fields_value
             json_fields = json.loads(json_fields)   
             field = [{"name": var, "label": var, "value":json_fields[var]} for var in variables]
         except:
-            field = [{"name": var, "label": var, "value":json_fields[var]} for var in variables]
+            field = [{"name": var, "label": var, "value":''} for var in variables]
 
         return {
             'fields' : field
@@ -91,9 +93,12 @@ class Formula:
             formula = formula.replace('[', '(').replace(']', ')')
             formula = formula.replace('{', '(').replace('}', ')')
         
-    
-
         json_values = json.loads(formula_variable_fields_value)
+
+        try:
+            json_values = {key: float(value) for key, value in json_values.items()}
+        except:
+            json_values = json.loads(formula_variable_fields_value)
 
         error = {}
         error = 0
@@ -153,7 +158,7 @@ class FormulaApiCalculate(APIView):
                 result = formula_obj.Save(result,formula_variable_fields_value)
                 if result:
                     response_data = {
-                        'message': "formula returned !!!",
+                        'message': " formula calculate !!!",
                         'result' : result,
                         'formula_variable_fields_value' : formula_variable_fields_value
                     }
@@ -268,15 +273,173 @@ class FormulaApiCalculateSave(APIView):
         commodity_id = serializer.validated_data['commodity']
         parameter_id = serializer.validated_data['parameter']
         sample_form_id = serializer.validated_data['sample_form']
-        # formula_variable_fields_value = serializer.validated_data['formula_variable_fields_value']
+        sample_form_has_parameter_id = serializer.validated_data['sample_form_has_parameter']
+        # remarks =  serializer.validated_data['remarks']
+        formula_variable_fields_value = serializer.validated_data['formula_variable_fields_value']
         result = serializer.validated_data['result']
+        print(formula_variable_fields_value, " formula_variable_fields_value")
         data = {
             'result' : result,
+            'status' : "completed",
+            'input_fields_value':formula_variable_fields_value
         }
 
-        data,created = SampleFormParameterFormulaCalculate.objects.update_or_create(sample_form_id = sample_form_id, parameter_id =parameter_id, commodity_id = commodity_id,defaults=data)
+        data,created = SampleFormParameterFormulaCalculate.objects.update_or_create(sample_form_id = sample_form_id, parameter_id =parameter_id, commodity_id = commodity_id,sample_form_has_parameter_id=sample_form_has_parameter_id,defaults=data)
+        param = data.parameter.name
+        
         message = {
-            "message":"save successfully"
+            "message":str(param)+" save successfully"
+        }
+    
+        return Response(message, status=status.HTTP_200_OK)
+
+
+class ParameterHasResultRecheck(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+ 
+    def post(self, request, format=None):
+
+        
+        serializer = RecheckSerializer(data=request.data,context={'request': request})
+
+        serializer.is_valid(raise_exception=True)
+
+        parameter_id = serializer.validated_data['parameter']
+        sample_form_id = serializer.validated_data['sample_form']
+        remarks = serializer.validated_data['remarks']
+        sample_form_has_parameter_id = serializer.validated_data['sample_form_has_parameter']
+       
+        formula_recheck_obj = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id = sample_form_id, parameter_id =parameter_id,sample_form_has_parameter_id=sample_form_has_parameter_id)
+        print(formula_recheck_obj," recheck")
+        if formula_recheck_obj.exists():
+            formula_recheck_obj = formula_recheck_obj.first()
+            formula_recheck_obj.status = "recheck"
+            formula_recheck_obj.remarks = remarks
+            sample_form_has_parameter_obj = formula_recheck_obj.sample_form_has_parameter
+            sample_form_has_parameter_obj.status = "processing"
+            sample_form_has_parameter_obj.is_supervisor_sent = False
+            sample_form_has_parameter_obj.save()
+            formula_recheck_obj.save()
+            
+            raw_data_obj = RawDataSheet.objects.filter(sample_form_has_parameter_id = sample_form_has_parameter_id).last() #update raw data after recheck.
+            raw_data_obj.status =  "recheck"
+            raw_data_obj.save()
+        else:
+            message = {
+                "message":"some things went wrong"
+            }
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
+        #data = {
+        #    'result' : result,
+        #    'input_fields_value':formula_variable_fields_value
+        #}
+
+        #data,created = SampleFormParameterFormulaCalculate.objects.update_or_create(sample_form_id = sample_form_id, parameter_id =parameter_id, commodity_id = commodity_id,sample_form_has_parameter_id=sample_form_has_parameter_id,defaults=data)
+        #param = data.parameter.name
+        data = {
+            'sample_form':sample_form_id,
+            'parameter_id':parameter_id,
+            'sample_form_has_parameter_id':sample_form_has_parameter_id,
+        }
+        message = {
+            "message":"Recheck successfully"
+        }
+    
+        return Response(message, status=status.HTTP_200_OK)
+
+class SampleFormResultRecheck(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+ 
+    def post(self, request, format=None):
+
+        
+        serializer = SampleFormRecheckSerializer(data=request.data,context={'request': request})
+
+        serializer.is_valid(raise_exception=True)
+
+        sample_form_id = serializer.validated_data['sample_form']
+        remarks = serializer.validated_data['remarks']
+        
+       
+        sample_form_recheck_obj = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id = sample_form_id)
+        print(sample_form_recheck_obj," recheck")
+        if sample_form_recheck_obj.exists():
+           sample_form_recheck_obj.update(status  = "recheck",remarks_recheck_verifier=remarks)
+        else:
+            message = {
+                "message":"some things went wrong"
+            }
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
+        #data = {
+        #    'result' : result,
+        #    'input_fields_value':formula_variable_fields_value
+        #}
+
+        #data,created = SampleFormParameterFormulaCalculate.objects.update_or_create(sample_form_id = sample_form_id, parameter_id =parameter_id, commodity_id = commodity_id,sample_form_has_parameter_id=sample_form_has_parameter_id,defaults=data)
+        #param = data.parameter.name
+    
+        message = {
+            "message":"Recheck successfully"
+        }
+    
+        return Response(message, status=status.HTTP_200_OK)
+
+
+class SampleFormReject(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+ 
+    def post(self, request, format=None):
+
+        
+        serializer = SampleFormRecheckSerializer(data=request.data,context={'request': request})
+
+        serializer.is_valid(raise_exception=True)
+
+        sample_form_id = serializer.validated_data['sample_form']
+        remarks = serializer.validated_data['remarks']
+        
+       
+        sample_form_formul_recheck_obj = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id = sample_form_id)
+
+        if sample_form_formul_recheck_obj.exists():
+           sample_form_formul_recheck_obj.update(status  = "rejected")
+
+           sample_form_obj = SampleForm.objects.get(id = sample_form_id)
+           sample_form_obj.status = "rejected"
+           
+
+           sample_form_has_parameter = sample_form_obj.sample_has_parameter_analyst.all()
+           sample_form_has_parameter.update(status = "rejected")
+
+           sample_form_raw_data = sample_form_obj.raw_datasheet.last()
+           sample_form_raw_data.status=status
+           sample_form_raw_data.save()
+
+           sample_form_verifier = sample_form_obj.verifier
+           sample_form_verifier.status ="rejected"
+
+           sample_form_obj.save()
+        else:
+            message = {
+                "message":"some things went wrong"
+            }
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
+        #data = {
+        #    'result' : result,
+        #    'input_fields_value':formula_variable_fields_value
+        #}
+
+        #data,created = SampleFormParameterFormulaCalculate.objects.update_or_create(sample_form_id = sample_form_id, parameter_id =parameter_id, commodity_id = commodity_id,sample_form_has_parameter_id=sample_form_has_parameter_id,defaults=data)
+        #param = data.parameter.name
+    
+        message = {
+            "message":"Rejected sample form"
         }
     
         return Response(message, status=status.HTTP_200_OK)

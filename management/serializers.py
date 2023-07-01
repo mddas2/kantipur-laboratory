@@ -1,8 +1,11 @@
-from .models import ClientCategory, SampleForm, Commodity, CommodityCategory , TestResult ,SampleFormHasParameter,Payment,SampleFormParameterFormulaCalculate
+from .models import ClientCategory,SuperVisorSampleForm, SampleForm, Commodity, CommodityCategory , TestResult ,SampleFormHasParameter,Payment,SampleFormParameterFormulaCalculate
 from rest_framework import serializers
 from account.models import CustomUser
 from . import roles
 from . encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
+from . raw_data import generateRawData
+from .status_naming import over_all_status
+
 
 class ApprovedBySerializer(serializers.ModelSerializer):
      class Meta:
@@ -19,10 +22,18 @@ class PaymentSerializer(serializers.ModelSerializer):
             model = Payment
             fields = '__all__' 
 
+class CommodityReadSerializer(serializers.ModelSerializer):
+    class Meta:
+        ref_name = "CommodityRead_management"
+        model = Commodity
+        fields = ['id','name','name_nepali']
+
 class TestResultSerializer(serializers.ModelSerializer):
+    commodity = CommodityReadSerializer(many=False,read_only = True)
     class Meta:
         model = TestResult
         fields = '__all__'
+
 
 class CommoditySerializer(serializers.ModelSerializer):
     test_result = TestResultSerializer(many=True,read_only=True)
@@ -47,7 +58,7 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
         return generateAutoEncodeIdforSampleForm(obj.id,user)
 
     parameters = TestResultSerializer(many=True, read_only=True)
-    payment = PaymentSerializer(read_only=True)
+    payment = PaymentSerializer(read_only=True,many=True)
 
     owner_user = serializers.SerializerMethodField()
     approved_by = ApprovedBySerializer(read_only = True,many=False)
@@ -118,6 +129,8 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
 
         return representation
 
+
+
 class SampleFormWriteSerializer(serializers.ModelSerializer):
     def validate(self, data):
         action = self.context['view'].action
@@ -146,7 +159,7 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class SampleFormReadAnalystSerializer(serializers.ModelSerializer):
-    commodity = CommoditySerializer(read_only=True,many=False)
+    commodity = CommodityReadSerializer(read_only=True,many=False)
     owner_user = serializers.SerializerMethodField()
     supervisor_user = ApprovedBySerializer(read_only = True)
 
@@ -206,10 +219,23 @@ class CommodityCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = CommodityCategory
         fields = '__all__'
+        
+class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SuperVisorSampleForm
+        fields = '__all__'
+   
+class SuperVisorSampleFormReadSerializer(serializers.ModelSerializer):  
+    sample_form = SampleFormReadAnalystSerializer(read_only=True)
+    # commodity = CommodityWriteSerializer(read_only=True,many=True)
+    parameter = TestResultSerializer(many=True,read_only=True)
+    class Meta:
+        model = SuperVisorSampleForm
+        fields = '__all__'
 
 class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
     sample_form = SampleFormReadAnalystSerializer(read_only=True)
-    commodity = CommodityWriteSerializer(read_only=True,many=True)
+    # commodity = CommodityWriteSerializer(read_only=True,many=True)
     parameter = TestResultSerializer(many=True,read_only=True)
     class Meta:
         model = SampleFormHasParameter
@@ -225,15 +251,21 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
             if formula_calculate:
                 parameter['result'] = formula_calculate.result               
                 count_status = count_status + 1   
+                parameter['input_fields_value'] = formula_calculate.input_fields_value
+                parameter['status'] = formula_calculate.status
+                parameter['remarks'] = formula_calculate.remarks
             else:
                 parameter['result'] = ""      
          
         analyst_status = "processing"
         completed_done = 0
+        recheck = False
         for parameter in parameter_data:
             formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(parameter = parameter['id'],sample_form=obj.sample_form_id)
             if formula_calculate.exists():
-                if formula_calculate.first().result != None:                
+                if formula_calculate.first().result != None:
+                    if formula_calculate.first().status == "recheck":
+                        recheck = True                
                     analyst_status = "completed"   
                     completed_done = completed_done + 1
                 else:
@@ -251,11 +283,18 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
             completed_done = ''
             print(analyst_status)
         else:
-            completed_done = str(total_len)+"/"+str(completed_done)
+            try:
+                completed_done = str(completed_done) + "/" +str(total_len)                
+            except:
+                completed_done = str(total_len)+"/"+str(completed_done)
+                
         
 
         if count_status == 0:
-            analyst_status = "pending"       
+            analyst_status = "pending"      
+        elif recheck == True:
+            completed_done = ''
+            analyst_status = "recheck" 
        
             
         return parameter_data,analyst_status,completed_done
@@ -266,7 +305,11 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
         parameter,analyst_status,total_completed = self.get_parameter(instance)
         representation['parameter'] = parameter
 
-        representation['status'] = analyst_status
+        print(instance.sample_form)
+        if analyst_status == "completed" and instance.is_supervisor_sent == True:
+            representation['status'] = over_all_status[instance.status]
+        else:
+            representation['status'] = analyst_status
         representation['completed_done'] = total_completed
 
         return representation
@@ -293,17 +336,24 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
         action = self.context['view'].action
     
         if len(attrs) == 3 and action == 'partial_update' and 'is_supervisor_sent' and 'status' and 'remarks' in attrs:
-            return attrs
+            if attrs.get('is_supervisor_sent') == True:
+                id=self.context['view'].kwargs.get('pk')
+                remarks  = attrs.get('remarks')
+                generateRawData(id,remarks) #  if sent to supervisor then generate logs
+                return attrs
         elif action == 'partial_update':
             raise serializers.ValidationError('Partial updates not allowed....')
   
-        if action == "create":
+        if action == "create" and len(parameter)>1:
             for param in parameter:
-                # print(param)
+                
                 if SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param).exists():
-                    # obj = SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param)     
-                    print("error")        
                     raise serializers.ValidationError('A SampleFormHasParameter with the same sample_form and parameter already exists(create)')
+        elif action == "create" and len(parameter) == 1:
+            for param in parameter:
+                
+                if SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param).exists():
+                    attrs['re_assign'] = True                          
             
           
         elif action == 'update' or action == 'partial_update':            
@@ -323,14 +373,74 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                 elif SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param).exists(): #if try to update and not same as previous parameter then check already exist parameter.if exist then raise error
                     raise serializers.ValidationError('A SampleFormHasParameter with the same sample_form and parameter already exists(update)')
                    
-
         return attrs
     
     def create(self, validated_data):
+        print(" create tes md f")
+       
         sample_form = validated_data['sample_form']
         analyst_user = validated_data['analyst_user']
         parameter = validated_data['parameter']
+        
+        re_assign = validated_data.get('re_assign', False)    
+        
 
+        if re_assign == True:
+            
+            obj = SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=parameter[0]).first()
+            
+            if len(obj.parameter.all())>1:
+                print(1)
+                obj.parameter.remove(*parameter) #revoke parameter from existence obj
+                obj.is_supervisor_sent = False
+                AlterRawDataStatus(obj)
+                obj.save()
+
+                
+                flushFormulaCalculate(obj,parameter)
+            
+
+                instance = SampleFormHasParameter.objects.filter(sample_form=sample_form, analyst_user=analyst_user)
+                print(instance, " sdasd")
+                if instance.exists():
+                    print(2)
+                    instance = instance.first()
+                    AlterRawDataStatus(instance)
+                    instance.parameter.add(*parameter) #if particular analysts already exist then add parameter to that analysts re-asign
+                    instance.is_supervisor_sent = False
+                  
+                    return instance
+                else:
+                    print(analyst_user,obj.sample_form_id,obj.commodity_id,parameter)
+                    print(3)
+                    samp = SampleFormHasParameter.objects.create(analyst_user=analyst_user,status="processing",commodity_id = obj.commodity_id,sample_form_id=obj.sample_form_id,form_available=obj.form_available)
+                    samp.parameter.set(parameter)
+                    samp.save()
+                    
+                    return obj
+            else:
+                if obj.analyst_user == analyst_user:
+                    print(4)
+                    return obj
+                else:
+                    # raise serializers.ValidationError('remove from and re-assigning. i am fixing right now')
+                    print(5)
+                    instance = SampleFormHasParameter.objects.filter(sample_form=sample_form, analyst_user=analyst_user)
+                    
+                    if instance.exists():
+                        obj.delete()
+                        print("exists")
+                        instance = instance.first()
+                        AlterRawDataStatus(instance.first())
+                        instance.parameter.add(*parameter) #if particular analysts already exist then add parameter to that analysts re-asign
+                        instance.is_supervisor_sent = False
+                        instance.save()
+                        
+                        return instance
+                    
+                    return obj
+            # raise serializers.ValidationError('remove from and re-assigning. i am fixing right now')
+        print(6)
         if SampleFormHasParameter.objects.filter(sample_form=sample_form, analyst_user=analyst_user).exists():
             print("testing ok append parameter")
             instance = SampleFormHasParameter.objects.get(sample_form=sample_form, analyst_user=analyst_user)
@@ -339,3 +449,19 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
             return instance
         
         return super().create(validated_data)
+
+def flushFormulaCalculate(obj,parameter):
+    formula_calculate_obj = obj.formula_calculate.all().filter(parameter_id = parameter[0])
+    formula_calculate_obj.delete()
+    print(formula_calculate_obj)
+    print("flushing formula calculate")
+
+def AlterRawDataStatus(obj):
+    raw_data_obj = obj.raw_datasheet.all().last()
+    print(raw_data_obj," obj none")
+    if raw_data_obj == None:
+        print("this sample form has parameter haave not raw data sheet")
+    else:
+        raw_data_obj.status = "re-assign"
+        raw_data_obj.save()
+    print("alter raw data status")

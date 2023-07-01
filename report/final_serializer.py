@@ -6,6 +6,7 @@ from account.models import CustomUser
 from rest_framework import serializers
 from management import roles
 from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
+from management.status_naming import over_all_status
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -50,6 +51,9 @@ class CompletedSampleFormHasVerifierSerializer(serializers.ModelSerializer):
             if status == "completed":
                 stat = "verified"
                 representation['status'] = stat
+            else:
+                representation['status'] = over_all_status[status]
+
         return representation
 
 class AssignedSampleForSmuSuperAdminSerializer(serializers.ModelSerializer):
@@ -66,5 +70,9 @@ class AssignedSampleForSmuSuperAdminSerializer(serializers.ModelSerializer):
 
         request = self.context.get('request')
 
-        representation['status'] = "processing"
+
+        if instance.status != "rejected":
+            representation['status'] = "processing"
+            
+        
         return representation

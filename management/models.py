@@ -14,12 +14,14 @@ class ClientCategory(models.Model):
 
 class CommodityCategory(models.Model):
     name = models.CharField(max_length=255,unique=True) 
+    name_nepali = models.CharField(max_length=255,null=True) 
     
 class Commodity(models.Model):
     #type_test = choice 
     category = models.ForeignKey(CommodityCategory,related_name="commodity",on_delete=models.CASCADE,null=True) 
     name = models.CharField(max_length=255,null=False,unique=True)
-    test_duration = models.IntegerField(null=True)
+    name_nepali = models.CharField(max_length=255,null=True)
+    test_duration = models.CharField(max_length=255,null=True)
     units = models.CharField(max_length=255,null=True)
     price = models.IntegerField(null=True)    
     
@@ -28,12 +30,17 @@ class TestResult(models.Model):
     formula = models.CharField(max_length=255, null=True)
     formula_notation = models.TextField(max_length=1000,null=True)
     name = models.CharField(max_length=255,null=False) #parameter name
-    test_type = models.CharField(max_length=255,null=True)
+    name_nepali = models.CharField(max_length=255,null=True) #parameter name
+    test_type = models.CharField(choices=(('Biochemical','Biochemical'),('Instrumental','Instrumental'),('Microbiological','Microbiological')), default=None, max_length=155,null=True)
+    test_type_nepali = models.CharField(max_length=255,null=True)
     ref_test_method = models.CharField(max_length=255,null=True)
     units = models.CharField(max_length=100,null=True)
+    units_nepali = models.CharField(max_length=100,null=True)
     price = models.IntegerField(null=True)
     results = models.CharField(max_length=100,null=True)
     mandatory_standard = models.CharField(max_length=100,null=True)
+    mandatory_standard_nepali = models.CharField(max_length=100,null=True)
+
     remarks = models.TextField(max_length=500,null=True)    
 
 class SampleForm(models.Model):#ClientRequest
@@ -45,7 +52,7 @@ class SampleForm(models.Model):#ClientRequest
     batch = models.IntegerField()
     brand = models.CharField(max_length=255)
     purpose = models.CharField(max_length=255)
-    requested_export = models.CharField(choices=(('requested','request'),('export','export')), default=None, max_length=155,null=True)
+    requested_export = models.CharField(max_length=155,null=True)
     report_date = models.DateField()
     amendments = models.CharField(max_length=255,null=True,blank=True)
     is_commodity_select = models.BooleanField(default=False) #if parameter not select then auto select parameter.this insure that commodity select or parameter.
@@ -66,6 +73,8 @@ class SampleForm(models.Model):#ClientRequest
 
     
     remarks = models.CharField(max_length=1000,null=True)
+    remarks_recheck_verifier = models.CharField(max_length=1000,null=True)
+    remarks_reject_verifier = models.CharField(max_length=1000,null=True)
 
     verified_by = models.ForeignKey(CustomUser, related_name="sample_form_verified_by",on_delete=models.SET_NULL,null=True) #verifier
 
@@ -77,6 +86,7 @@ class SampleForm(models.Model):#ClientRequest
         ('processing', 'processing'), #smu-assign-supervisor (smu:pending-not_assign,display:processing)
         ('not_assigned', 'not_assigned'),#supervisor-assign-analyst (supervisor:not_assign-processing,display:processing)
         ('not_verified', 'not_verified'),#analyst-to-supervisor(supervisor:processing-not_verified,display:not_verified)
+        ('verified', 'verified'),
         ('completed', 'completed'),#supervisor-assign-verifier (supervisor:not_verified-verified,display:processing) action:recheck,reject
         ('recheck', 'recheck'),
         ('rejected', 'rejected'),
@@ -112,10 +122,34 @@ class SampleForm(models.Model):#ClientRequest
         super().save(*args, **kwargs)
         if create == True:
             self.user_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "user")
-            self.supervisor_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "supervisor")
-            self.analyst_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "analyst")
-            self.verifier_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "verifier")
+            self.supervisor_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "common")
+            self.analyst_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "common")
+            self.verifier_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "common")
             self.save()
+
+class SuperVisorSampleForm(models.Model):#sample form has parameter and parameter for each parameter each suspervisor
+    sample_form = models.ForeignKey(SampleForm,related_name="supervisor_sample_form",on_delete=models.CASCADE,null=True)
+    supervisor_user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,default=None)
+       
+    parameters = models.ManyToManyField(TestResult, related_name="supervisor_has_parameter")
+    test_type = models.CharField(max_length=1000,null=True)
+
+    is_supervisor_sent = models.BooleanField(default=False)
+    
+    status_choices = (       
+        ('pending', 'pending'), 
+        ('processing', 'processing'),
+        ('completed', 'completed'),
+        ('recheck', 'recheck'),
+        ('rejected', 'rejected'),
+        ('not_verified','not_verified'),
+        ('verified','verified')
+    )
+    status = models.CharField(choices=status_choices,default="pending" , blank=True, null=True, max_length=155)
+
+    created_date = models.DateTimeField(default=timezone.now)
+    updated_date = models.DateTimeField(default=timezone.now)
+    remarks = models.CharField(max_length=1000,null=True)
 
 
 class SampleFormHasParameter(models.Model):#sample form has parameter and parameter for each parameter each analyst
@@ -132,6 +166,10 @@ class SampleFormHasParameter(models.Model):#sample form has parameter and parame
         ('pending', 'pending'), 
         ('processing', 'processing'),
         ('completed', 'completed'),
+        ('recheck', 'recheck'),
+        ('rejected', 'rejected'),
+        ('not_verified','not_verified'),
+        ('verified','verified')
     )
     status = models.CharField(choices=status_choices,default="pending" , blank=True, null=True, max_length=155)
 
@@ -163,7 +201,7 @@ class SampleFormHasParameter(models.Model):#sample form has parameter and parame
     #     ]
 
 class Payment(models.Model):
-    sample_form = models.OneToOneField(SampleForm,related_name='payment' , on_delete=models.DO_NOTHING)
+    sample_form = models.ForeignKey(SampleForm,related_name='payment' , on_delete=models.DO_NOTHING)
     owner_email = models.EmailField(max_length=100,null=True)
     voucher_number = models.CharField(blank=True, null=True, max_length=155)
     register_date = models.CharField(blank=True, null=True, max_length=155)
@@ -174,18 +212,21 @@ class Payment(models.Model):
 
 class SampleFormParameterFormulaCalculate(models.Model):
     sample_form = models.ForeignKey(SampleForm,related_name="result",on_delete=models.CASCADE,null=True)
+    sample_form_has_parameter = models.ForeignKey(SampleFormHasParameter,related_name="formula_calculate",on_delete=models.CASCADE,default=None,null=True)
     commodity = models.ForeignKey(Commodity,on_delete=models.CASCADE,null=True)
     parameter = models.ForeignKey(TestResult, on_delete=models.CASCADE,null=True)
     result =  models.FloatField(null=True)
     is_verified = models.BooleanField(default=False)
     input_fields_value = models.CharField(max_length=2000,null=True)
     auto_calculate_result = models.CharField(max_length=200,null=True)
-    remark = models.CharField(max_length=200,null=True)
+    remarks = models.CharField(max_length=200,null=True)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
 
     status_choices = (
-        ('pending', 'pending'),       
+        ('pending', 'pending'),
+        ('rejected', 'rejected'),
+        ('recheck', 'recheck'),       
         ('completed', 'completed'),
         ('processing', 'processing'),
     )
@@ -200,7 +241,27 @@ class SampleFormVerifier(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
 
+class RawDataSheet(models.Model):
+    sample_form = models.ForeignKey(SampleForm,related_name="raw_datasheet",on_delete=models.CASCADE,default=None)
+    sample_form_has_parameter = models.ForeignKey(SampleFormHasParameter,related_name="raw_datasheet",on_delete=models.CASCADE,default=None)
+    status = models.CharField(max_length=2000,null=True)
+    analyst_user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,default=None)
+    remarks = models.CharField(max_length=1000,null=True)
+    supervisor_remarks = models.CharField(max_length=1000,null=True)
+    created_date = models.DateTimeField(default=timezone.now)
+    updated_date = models.DateTimeField(default=timezone.now)
 
+    
+class RawDataSheetDetail(models.Model):
+    raw_data = models.ForeignKey(RawDataSheet, on_delete=models.CASCADE,related_name="raw_data",null=True)
+    parameter = models.ForeignKey(TestResult, on_delete=models.CASCADE,null=True)
+    result =  models.FloatField(null=True)
+    is_verified = models.BooleanField(default=False)
+    input_fields_value = models.CharField(max_length=2000,null=True)
+    auto_calculate_result = models.CharField(max_length=200,null=True)
+    remark = models.CharField(max_length=200,null=True)
+    created_date = models.DateTimeField(default=timezone.now)
+    updated_date = models.DateTimeField(default=timezone.now)
 
 
 

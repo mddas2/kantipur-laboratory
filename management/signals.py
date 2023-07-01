@@ -66,7 +66,7 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
         sample_form_obj = instance.sample_form
         sample_form_has_parameter_obj = SampleFormHasParameter.objects.filter(sample_form = sample_form_obj.id) 
         is_analyst_test = False
-
+    
         well = 0
         for parame in sample_form_obj.parameters.all():
             sample_form_has_parame_obj =  SampleFormHasParameter.objects.filter(sample_form = sample_form_obj.id,parameter=parame)
@@ -81,7 +81,8 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
         for obj in sample_form_has_parameter_obj:
             if obj.is_supervisor_sent == True:
                 sample_form_has_param = SampleFormHasParameter.objects.filter(id=instance.id)
-                sample_form_has_param.update(status = "completed")
+                sample_form_has_param.update(status = "not_verified")
+        
 
                 sample_form_has_parameters_analyst_parameters = obj.parameter.all()
                 for pram in sample_form_has_parameters_analyst_parameters:
@@ -98,6 +99,10 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
             SampleForm.objects.filter(id=sample_form_obj.id).update(is_analyst_test = is_analyst_test,status=sample_form_status)
         else:
             print("all parameter has not assigned...")
+
+    elif instance.is_supervisor_sent == False:
+        SampleForm.objects.filter(id=instance.sample_form.id).update(is_analyst_test = False,status="processing")
+
         
   
 
@@ -117,8 +122,13 @@ def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
         sample_form_obj.save()
     else:        
         if instance.is_verified == True:
+            sample_form_has_parameter_obj = sample_form_obj.sample_has_parameter_analyst
+            sample_form_has_parameter_obj.update(status = "verified")
+            
             sample_form_obj.status = "completed"
             sample_form_obj.completed_date = timezone.now()
             sample_form_obj.save()
+
+            
 
 

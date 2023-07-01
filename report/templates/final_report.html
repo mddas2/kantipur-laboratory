@@ -388,7 +388,7 @@
             {% for param in parameters  %}
             <tr>
                 <td style="width:6.5%; border: 1px solid black; " >
-                    <h1 style=" font-weight: 400;   font-size:11px;   line-height: 1.2; margin: 5px 0; text-align:center; padding:2px 0;">{% if param.parameter.test_type == '2' %} MB {% else %} CH  {% endif %}</h1>
+                    <h1 style=" font-weight: 400;   font-size:11px;   line-height: 1.2; margin: 5px 0; text-align:center; padding:2px 0;">{% if param.parameter.test_type == 'Microbiological' %} MB {% else %} CH  {% endif %}</h1>
                 </td>
                 <td style="width:6.5%; border: 1px solid black; ">
                     <h1 style=" font-weight: 400;   font-size:11px;   line-height: 1.2; margin: 5px 0; text-align:center; padding:2px 0;">  {{ forloop.counter }}  </h1>
@@ -479,16 +479,22 @@
         </tbody>
     </table>
 
-    <div style=" margin: auto; padding-top: 5px; margin-bottom: 0;">
-        <h1 style="font-size:12px; margin-bottom: 0; padding-bottom: 0; writing-mode: vertical-rl; text-orientation: mixed;"> <i>Notes:</i> </h1>
-        <ol style="list-style-type: number; padding-left: 25px; margin-top: 0;">
-
-            <li style="font-size:12px; ">This report is applicable only to the sample received in the laboratory for
-                analysis.</li>
-            <li style="font-size:12px; ">This test report shall not be reproduced without the written approval of the
-                laboratory. For your perusal, DG, Department of Food Technology and Quality Control, Kathmandu.</li>
-        </ol>
-    </div>
+    <table>
+        <tr>
+            <td style="width: 70%;"><div style=" margin: auto; padding-top: 5px; margin-bottom: 0;">
+                <h1 style="font-size:12px; margin-bottom: 0; padding-bottom: 0; writing-mode: vertical-rl; text-orientation: mixed;"> <i>Notes:</i> </h1>
+                <ol style="list-style-type: number; padding-left: 25px; margin-top: 0;">
+        
+                    <li style="font-size:12px; ">This report is applicable only to the sample received in the laboratory for
+                        analysis.</li>
+                    <li style="font-size:12px; ">This test report shall not be reproduced without the written approval of the
+                        laboratory. For your perusal, DG, Department of Food Technology and Quality Control, Kathmandu.</li>
+                </ol>
+            </div></td>
+            <td></td>
+        </tr>
+    </table>
+    
 
     <div>
         <h1 style="margin-top: 10px; padding-top: 3px; font-size:14px;  color: red; border-top: 3px solid red; text-align: center;"> G.P.O Box No. 21265, Babarmahal, Kathmandu </h1>

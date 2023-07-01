@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from .serializers import ClientCategorySerializer, SampleFormWriteSerializer,SampleFormReadSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer
-from .models import ClientCategory, SampleForm, Commodity, CommodityCategory,TestResult, Payment
+from .serializers import ClientCategorySerializer, SampleFormWriteSerializer,SampleFormReadSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer,SuperVisorSampleFormReadSerializer,SuperVisorSampleFormWriteSerializer
+from .models import ClientCategory, SampleForm, Commodity, CommodityCategory,TestResult, Payment,SuperVisorSampleForm
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -69,6 +69,119 @@ class ClientCategoryViewSet(viewsets.ModelViewSet):
         # Create a custom response
         response_data = {
             "message": "client category deleted successfully"
+        }
+
+        # Return the custom response
+        return Response(response_data)
+
+class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
+    queryset = SuperVisorSampleForm.objects.all()
+    serializer_class = SuperVisorSampleFormReadSerializer
+    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    search_fields = ['id']
+    ordering_fields = ['id']
+    filterset_fields = {
+        'supervisor_user': ['exact'],
+        'status': ['exact'],       
+        'created_date': ['date__gte', 'date__lte']  # Date filtering
+    }
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated,SampleFormViewSetPermission]
+    pagination_class = MyLimitOffsetPagination
+
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.role == roles.SUPERVISOR:
+            query =  SuperVisorSampleForm.objects.filter(supervisor_user = user.id)
+        else:
+            raise PermissionDenied("You do not have permission to access this resource.")
+        
+        return query.order_by("-created_date")
+        
+        
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return SuperVisorSampleFormWriteSerializer
+        return super().get_serializer_class()
+    
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, *args, **kwargs)
+    
+        return response
+
+    def retrieve(self, request, *args, **kwargs):
+        response = super().retrieve(request, *args, **kwargs)
+        
+        # Add extra response data for retrieve action
+        extra_data = {
+            "extra_field": "Extra value for retrieve",
+            "another_field": "Another value for retrieve"
+        }
+        # response.data.update(extra_data)
+        return response
+    
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # Save the new object to the database
+        self.perform_create(serializer)
+
+        # Create a custom response
+        response_data = {
+            "message": "submitted successfully",
+            "data": serializer.data
+        }
+
+        # Return the custom response
+        return Response(response_data, status=status.HTTP_201_CREATED)
+    
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+
+        # Save the updated object to the database
+        self.perform_update(serializer)
+
+        # Create a custom response
+        response_data = {
+            "message": "updated successfully",
+            "data": serializer.data
+        }
+
+        # Return the custom response
+        return Response(response_data)
+
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+
+        # Save the updated object to the database
+        self.perform_update(serializer)
+
+        # Create a custom response
+        response_data = {
+            "message": "partially updated successfully",
+            "data": serializer.data
+        }
+
+        # Return the custom response
+        return Response(response_data, status=status.HTTP_200_OK)
+    
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        # Perform the default delete logic
+        self.perform_destroy(instance)
+
+        # Create a custom response
+        response_data = {
+            "message": "deleted successfully"
         }
 
         # Return the custom response

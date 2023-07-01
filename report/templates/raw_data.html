@@ -1,0 +1,152 @@
+{% load json_custom_tag %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    
+    <title>Renew PDF</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Raw  Data sheets</title>
+    <style type="text/css">
+    @page  {
+        margin: 20pt;
+        size: letter portrait;
+        @frame header_frame {           /* Static frame */
+            -pdf-frame-content: parent;         
+            left: 80pt;
+            right: 20pt;
+                /* width: 300pt; */
+                top: 255pt;
+                /* height: 62pt; */
+                /* border: 1;  */
+        }
+      
+    }
+
+
+   
+    
+    </style>
+
+</head>
+    <body>
+    <body>
+
+       
+    {% for data in raw_data %}
+        <table>
+                <tr >
+                    <td style="width:11%; padding: 6px; border: 1px solid black;">
+                        <img src="https://logos-download.com/wp-content/uploads/2021/07/Emblem_of_Nepal.png" alt="logo" style="width: 60px;">
+                    </td>
+                    <td style="width: 70%; border: 1px solid black; border-right: 0;">
+                        <h2 style="font-size: 20px; font-weight: 600; text-align:center; margin: 0 0 4px 0; padding: 0; line-height: 1;">National Food and Feed Reference Laboratory  </h2>
+                        <p style="font-size: 20px; font-weight: 400; text-align:center; margin: 0; padding: 0; line-height: 1;">DFTQC, Kathmandu, Nepal</p>
+                    </td>
+                    <td style="border: 1px solid black; border-left: 0;">
+                        <p style="font-size: 22px; font-weight: 400; text-align: center; padding-top: 20px; margin: 0; line-height: 1;">{{data.id}}</p>
+                    </td>
+                </tr>
+        </table>
+
+
+        <h2 style="font-size: 20px; font-weight: 600; text-align:center; margin: 0 ; padding: 10px 0; line-height: 1;">NFFRL/SR/7.5/03: RAW DATA WORKSHEET (Chemical)</h2>
+
+            <table id="header_content" >
+                <tr style="border: 1px solid black;">
+                    <th style="text-align: center; " ><h2 style="font-size: 12px; line-height: 0; padding: 10px 3px;">S.N.</h2></th>
+                    <th  colspan="5"><h2 style="font-size: 12px; line-height: 0; text-align: left; padding: 10px 3px;"> Name of Laboratory:</h2></th>
+                    <th   colspan="4"><h2 style="font-size: 12px; line-height: 0; text-align: left; padding: 10px 3px;">  Reported date:{{data.sample_form.created_date.date}}</h2></th>
+                </tr>
+                <tr style="border: 1px solid black; padding: 0; margin: 0;">
+                    <td  style="margin:0; padding:0; text-align: center;">1</td>
+                    <td colspan="3"style="margin:0; padding:0;">
+                        <h2 style="font-size: 12px; line-height: 0; text-align: top; padding: 10px 3px; border: 1px solid black; margin: 0;"> Sample Name:{{data.sample_form.name}}</h2>
+                    </td>
+                    <td colspan="3"style="margin:0; padding:0;">
+                        <h2 style="font-size: 12px; line-height: 0; text-align: top; padding: 10px 3px;margin: 0;"> Date of Receipt:{{data.sample_form.created_date.date}}</h2>
+                    </td>
+                    <td colspan="3"style="margin:0; padding:0;">
+                        <h2 style="font-size: 12px; line-height: 0; text-align: top; padding: 10px 3px;margin: 0;"> Date of Receipt:{{data.sample_form.created_date.date}}</h2>
+                    </td>
+                </tr>
+                <tr style="border: 1px solid black; padding: 0; margin: 0;">
+                    <td style="text-align: center;">2</td>
+                    <td colspan="3"><h2 style="font-size: 12px; line-height: 0; text-align: top; padding: 10px 3px;margin: 0;"> Due Date:{{data.sample_form.created_date.date}}</h2></td>
+                    <td colspan="3"><h2 style="font-size: 12px; line-height: 0; text-align: top; padding: 10px 3px;margin: 0;">Started on:{{data.sample_form.created_date.date}}</h2></td>
+                    <td colspan="3"><h2 style="font-size: 12px; line-height: 0; text-align: top; padding: 10px 3px;margin: 0;">Completed on:{{data.sample_form.created_date.date}}</h2></td>
+                </tr>
+                
+                <tr style="border: 1px solid black; padding: 0; margin: 0;">
+                    <td style="text-align: center;">3</td>
+                    <td colspan="9"><h2 style="font-size: 12px; line-height: 0; text-align: top; padding: 10px 3px;margin: 0;">Parameters to be analyzed: {% for result in data.raw_data.all %} {{result.parameter.name}},{% endfor %}</h2></td>
+                </tr>
+        
+                <tr style="border: 1px solid black; padding: 0; margin: 0;">
+                    <td style="text-align: center;">4</td>
+                    <td colspan="9"><h2 style="font-size: 12px; line-height: 0; text-align: top; padding: 10px 3px;margin: 0;">Method of Analysis/Testing:  </h2></td>
+                </tr>
+        
+                <tr style="border: 1px solid black; border-bottom: none; padding: 0; margin: 0; line-height: 1;">
+                    <td style="text-align: center;" >5</td>
+                    <td colspan="9"  style="  font-size: 12px; margin-top: 0; line-height: 1;">
+                        <h2 style="font-size: 12px; line-height: 0; text-align: top; padding: 10px 3px;margin: 0;  vertical-align: top; "> RAW DATA (Observations, Readings, calculations etc.)  </h2>
+        
+                    </td>
+                </tr>
+        
+                <tr style="border-left: 1px solid black; border-right: 1px solid black; padding: 0; margin: 0; line-height: 1; height: 470pt;">
+                    <td style="text-align: center;" ></td>
+                    <td colspan="9"  style=" font-size: 12px; margin-top: 0; line-height: 1;">
+                        <div id="parent" >
+                        
+                            {% for result in data.raw_data.all %}
+                                <div style="margin: 20px;" class="formula">
+                                    <h2 style="font-size: 12px;  line-height: 0;  padding:0 0 10px;margin: 0;   vertical-align: top; ">{{result.parameter.name}}</h2>
+                                    <!-- {{result.input_fields_value}} -->
+        
+                                    {% for key,value in result.input_fields_value|json_to_dict %}
+                                        {%if key != 'nan' %}
+                                            <p style="font-size: 12px; line-height:0 ; margin: 0; padding: 0 0 10px; "> {{key}} = <span>{{value}}</span></p>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <h3 style="font-size: 12px; line-height: 0; margin: 0 0 5px; padding: 0 0 10px; ">Result = <span> {%if result.parameter.formula != 'nan' %} {{result.parameter.formula}} {% endif %}</span>  {%if result.parameter.formula != 'nan' %} = {% endif %} {{result.result}} </h3>
+                                </div>
+
+                                <hr color="#d2d2d2">
+                            {% endfor %}
+                        </div>
+                    </td>
+                </tr>
+        
+                <tr style="border: 1px solid black; padding: 0; margin: 0; ">
+                    <td style="text-align: center;">6</td>
+                    <td colspan="5" style="border-right: 0;"><h2 style="font-size: 12px; line-height: 0; text-align: top; padding: 10px 3px;margin: 0;">Name and Signature of analyst:{{data.analyst_user.username}}  </h2></td>
+                    <td colspan="4" style="border-left: 0;"><h2 style="font-size: 12px; line-height: 0; text-align: top; padding: 10px 3px;margin: 0;">Verified by:  </h2></td>
+                </tr>
+        <!-- Content for Static Frame 'header_frame' -->
+                <tr style="border: 1px solid black; padding: 0; margin: 0; " >
+                    
+                    <td style="text-align: center;">7</td>
+                    <td colspan="5" style="border-right: 0;"><h2 style="font-size: 12px; line-height: 0; text-align: top; padding: 10px 3px;margin: 0;">Remarks (If any): {{data.remarks}} </h2></td>
+                    <td colspan="4" style="border-left: 0;"><h2 style="font-size: 12px; line-height: 0; text-align: top; padding: 10px 3px;margin: 0;">Page:<pdf:pagenumber>  of: <pdf:pagecount>  </h2></td>
+                
+                </tr>
+            </table>
+            <!-- <pdf:nextpage /> for next data-->
+    {% endfor %}
+
+
+
+<!----for extra next page -->
+
+
+     
+<!----for extra next page end -->
+
+    
+    </body>
+    </html>
