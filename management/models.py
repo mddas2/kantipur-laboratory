@@ -238,7 +238,6 @@ class SampleFormParameterFormulaCalculate(models.Model):
 
 class SampleFormVerifier(models.Model):
     sample_form = models.OneToOneField(SampleForm,related_name="verifier",on_delete=models.CASCADE,default=None)
-    super_visor_sample_form = models.ManyToManyField(SuperVisorSampleForm,related_name="verifiers")
     is_verified = models.BooleanField(default=False)
     is_sent = models.BooleanField(default=False)
     remarks = models.CharField(max_length=1000,null=True)
