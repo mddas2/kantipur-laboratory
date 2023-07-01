@@ -551,7 +551,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
     
     def validate(self, attrs):
         sample_form = attrs.get('sample_form')
-        print(sample_form," not  printing this...")
+        print(attrs.get('super_visor_sample_form')," not  printing this...")
         analyst_user = attrs.get('analyst_user')
         parameter = attrs.get('parameter')
 
@@ -573,7 +573,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                     raise serializers.ValidationError('A SampleFormHasParameter with the same sample_form and parameter already exists(create)')
         elif action == "create" and len(parameter) == 1:
             for param in parameter:
-                
+                print(sample_form,param," re-assign debug")
                 if SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param).exists():
                     attrs['re_assign'] = True                          
             
@@ -606,7 +606,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
         
         re_assign = validated_data.get('re_assign', False)    
         
-
+        print(re_assign,sample_form," sampl s")
         if re_assign == True:
             
             obj = SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=parameter[0]).first()
@@ -648,16 +648,17 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                     # raise serializers.ValidationError('remove from and re-assigning. i am fixing right now')
                     print(5)
                     instance = SampleFormHasParameter.objects.filter(sample_form=sample_form, analyst_user=analyst_user)
-                    
+                    print(instance," ins md")
                     if instance.exists():
-                        obj.delete()
                         print("exists")
                         instance = instance.first()
-                        AlterRawDataStatus(instance.first())
+                        AlterRawDataStatus(instance)
                         instance.parameter.add(*parameter) #if particular analysts already exist then add parameter to that analysts re-asign
                         instance.is_supervisor_sent = False
                         instance.save()
                         
+                        obj.delete()
+
                         return instance
                     
                     return obj
