@@ -101,7 +101,15 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
             smple_frm_exist_for_supervisor = SuperVisorSampleForm.objects.filter(parameters=parameter_id, sample_form = sample_form_id)
             exists_supervisor_parameter = smple_frm_exist_for_supervisor.exists()
             parameter_data['exists_supervisor_parameter'] = exists_supervisor_parameter
-            
+
+            if exists_supervisor_parameter:
+                # print(smple_frm_exist.first().analyst_user.username)
+                try:
+                    parameter_data['status_supervisor'] = "assigned"
+                    parameter_data['supervisor_user'] = smple_frm_exist_for_supervisor.first().supervisor_user.username
+                except:
+                    pass 
+
             if exists:
                 # print(smple_frm_exist.first().analyst_user.username)
                 try:
@@ -359,7 +367,7 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
 class SuperVisorSampleFormReadSerializer(serializers.ModelSerializer):  
     sample_form = SampleFormReadAnalystSerializer(read_only=True)
     commodity = CommodityWriteSerializer(read_only=True,many=True)
-    parameter = TestResultSerializer(many=True,read_only=True)
+    parameters = TestResultSerializer(many=True,read_only=True)
     class Meta:
         model = SuperVisorSampleForm
         fields = '__all__'

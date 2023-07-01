@@ -154,6 +154,7 @@ class SuperVisorSampleForm(models.Model):#sample form has parameter and paramete
 
 class SampleFormHasParameter(models.Model):#sample form has parameter and parameter for each parameter each analyst
     sample_form = models.ForeignKey(SampleForm,related_name="sample_has_parameter_analyst",on_delete=models.CASCADE,null=True)
+    super_visor_sample_form = models.OneToOneField(SuperVisorSampleForm,related_name="sample_has_parameter_analyst", on_delete=models.CASCADE,null=True)
     commodity = models.ForeignKey(Commodity,related_name="sample_has_parameter_analyst",on_delete=models.CASCADE,null=True)
 
     analyst_user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,default=None)
