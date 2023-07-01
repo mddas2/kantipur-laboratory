@@ -239,11 +239,10 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
         
         print(parameters, " supervisor paaraameters")
         if len(attrs) == 3 and action == 'partial_update' and 'is_supervisor_sent' and 'status' and 'remarks' in attrs:
-            return attrs
             if attrs.get('is_supervisor_sent') == True:
                 id=self.context['view'].kwargs.get('pk')
                 remarks  = attrs.get('remarks')
-                generateRawData(id,remarks) #  if sent to supervisor then generate logs
+                #generateRawData(id,remarks) #  if sent to supervisor then generate logs
                 return attrs
         elif action == 'partial_update':
             raise serializers.ValidationError('Partial updates not allowed....')
@@ -359,7 +358,7 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
    
 class SuperVisorSampleFormReadSerializer(serializers.ModelSerializer):  
     sample_form = SampleFormReadAnalystSerializer(read_only=True)
-    # commodity = CommodityWriteSerializer(read_only=True,many=True)
+    commodity = CommodityWriteSerializer(read_only=True,many=True)
     parameter = TestResultSerializer(many=True,read_only=True)
     class Meta:
         model = SuperVisorSampleForm
