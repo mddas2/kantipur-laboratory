@@ -6,7 +6,7 @@ import json
 from management.models import SampleForm,SuperVisorSampleForm
 from rest_framework import viewsets,status
 from rest_framework.response import Response
-from . sample_form_serializers import SampleFormHasAnalystSerializer
+from . sample_form_serializers import SampleFormHasSupervisorParameterSerializer
 from . parameter_has_assigned_analyst import SampleFormHasParameterAnalystSerializer
 from . analyst_final_report_serializer import DetailSampleFormHasParameterRoleAsAnalystSerializer
 from . parameter_has_assigned_analyst_detail import DetailSampleFormHasParameterAnalystSerializer,DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp,FinalReportNepaliAnalystSerializer
@@ -28,21 +28,16 @@ from management.encode_decode import generateDecodeIdforSampleForm,generateAutoE
 class SampleFormHasAnalystAPIView(generics.ListAPIView):
     
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['id','name','owner_user','status','form_available','commodity__name']
-    ordering_fields = ['name','id']
+    search_fields = ['id']
+    ordering_fields = ['id']
     filterset_fields = {
-        'name': ['exact', 'icontains'],
-        'owner_user': ['exact'],
-        'form_available': ['exact'],
-        'commodity_id': ['exact'],
-        'supervisor_user': ['exact'],
         'created_date': ['date__gte', 'date__lte']  # Date filtering
     }
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self): 
-        return SampleFormHasAnalystSerializer
+        return SampleFormHasSupervisorParameterSerializer
     
     def get_queryset(self):
         request = self.request

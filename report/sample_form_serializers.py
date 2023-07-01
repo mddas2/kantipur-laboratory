@@ -2,7 +2,7 @@ from management.models import SampleForm, Commodity,SampleFormHasParameter
 from rest_framework import serializers
 from management import roles
 
-from management.models import SampleForm, Commodity,SampleFormHasParameter
+from management.models import SampleForm, Commodity,SampleFormHasParameter,SuperVisorSampleForm
 from account.models import CustomUser
 from rest_framework import serializers
 
@@ -27,19 +27,20 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
         model = SampleFormHasParameter
         fields = ['analyst_user','created_date','status'] 
 
-class SampleFormHasAnalystSerializer(serializers.ModelSerializer):
+class SampleFormSerializer(serializers.ModelSerializer):
+    class Meta:
+        ref_name = "SupervisorSampleform"
+        model = SampleForm
+        fields = '__all__'
+
+class SampleFormHasSupervisorParameterSerializer(serializers.ModelSerializer):
     sample_has_parameter_analyst = SampleFormHasParameterReadSerializer(many=True,read_only=True)
     commodity = CommoditySerializer(read_only = True)
-
-    id = serializers.SerializerMethodField()
-
-    def get_id(self, obj):
-        user = self.context['request'].user
-        return generateAutoEncodeIdforSampleForm(obj.id,user)
-    
+    sample_form = SampleFormSerializer(read_only = True)
+ 
     class Meta:
-        model = SampleForm
-        fields = ['id','supervisor_encode_id','name','sample_has_parameter_analyst','commodity','status','created_date','is_analyst_test']
+        model = SuperVisorSampleForm
+        fields = ['id','sample_form','commodity','sample_has_parameter_analyst','commodity','status','created_date','is_analyst_test']
 
     
     def to_representation(self, instance):
@@ -52,5 +53,7 @@ class SampleFormHasAnalystSerializer(serializers.ModelSerializer):
             if is_analyst_test == True:
                 stat = "completed"
                 representation['status'] = stat
+            commodity_obj = Commodity.objects.get(id = instance.sample_form.commodity_id)
+            representation['commodity'] = CommoditySerializer(commodity_obj,many = False).data
         return representation
                 
