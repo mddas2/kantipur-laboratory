@@ -98,7 +98,7 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
             exists = smple_frm_exist.exists()
             parameter_data['exist'] = exists
 
-            smple_frm_exist_for_supervisor = SuperVisorSampleForm.objects.filter(parameter=parameter_id, sample_form = sample_form_id)
+            smple_frm_exist_for_supervisor = SuperVisorSampleForm.objects.filter(parameters=parameter_id, sample_form = sample_form_id)
             exists_supervisor_parameter = smple_frm_exist_for_supervisor.exists()
             parameter_data['exists_supervisor_parameter'] = exists_supervisor_parameter
             
@@ -228,6 +228,7 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = SuperVisorSampleForm
         fields = '__all__'
+    
    
 class SuperVisorSampleFormReadSerializer(serializers.ModelSerializer):  
     sample_form = SampleFormReadAnalystSerializer(read_only=True)
