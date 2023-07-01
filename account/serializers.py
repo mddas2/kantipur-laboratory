@@ -71,6 +71,16 @@ class CustomUserSerializer(serializers.ModelSerializer):
         ref_name =  "account serializer"
         model = CustomUser
         fields = '__all__' 
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        test_type = instance.test_type
+        try:            
+            string = [int(value) for value in test_type.split(',')]
+        except:
+            string = test_type
+        representation['test_type'] = string
+        return representation
 
 
 class RoleSerializer(serializers.Serializer):
