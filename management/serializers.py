@@ -387,6 +387,26 @@ class SuperVisorSampleFormReadSerializer(serializers.ModelSerializer):
             # Check if the parameter exists in SampleFormHasParameter model
             smple_frm_exist = SampleFormHasParameter.objects.filter(parameter=parameter_id, sample_form = sample_form_id)
             exists = smple_frm_exist.exists()
+
+            if exists:
+                analyst_obj = smple_frm_exist.first().analyst_user
+                first_name = analyst_obj.first_name
+                last_name = analyst_obj.last_name
+                status = smple_frm_exist.first().status
+                created_date = smple_frm_exist.first().created_date
+                parameter_data['first_name'] = first_name
+                parameter_data['last_name'] = last_name
+                parameter_data['sample_form_has_parameter'] = smple_frm_exist.first().id
+                parameter_data['assigned_date'] = created_date
+                
+                formula_obj_result = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id=sample_form_id,parameter_id = parameter_id)
+                if formula_obj_result.count()>0:
+                    parameter_data['status'] = formula_obj_result.first().status
+                    parameter_data['result'] = formula_obj_result.first().result
+                else:
+                    parameter_data['status'] = "processing"
+                    parameter_data['result'] = '-'
+
             parameter_data['exist'] = exists
 
             smple_frm_exist_for_supervisor = SuperVisorSampleForm.objects.filter(parameters=parameter_id, sample_form = sample_form_id)
@@ -431,6 +451,7 @@ class SuperVisorSampleFormReadSerializer(serializers.ModelSerializer):
 
 
         return representation
+        
 
 class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
     sample_form = SampleFormReadAnalystSerializer(read_only=True)
