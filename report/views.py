@@ -3,7 +3,7 @@ from django.conf import settings
 from django.http import HttpResponse
 from rest_framework import views
 import json
-from management.models import SampleForm
+from management.models import SampleForm,SuperVisorSampleForm
 from rest_framework import viewsets,status
 from rest_framework.response import Response
 from . sample_form_serializers import SampleFormHasAnalystSerializer
@@ -46,7 +46,7 @@ class SampleFormHasAnalystAPIView(generics.ListAPIView):
     
     def get_queryset(self):
         request = self.request
-        queryset = SampleForm.objects.filter(Q(supervisor_user = request.user) & ~Q(status="completed") & ~Q(status="not_assigned") & ~Q(verifier__is_sent=True)).order_by("-created_date")
+        queryset = SuperVisorSampleForm.objects.filter(Q(supervisor_user = request.user) & ~Q(status="completed") & ~Q(status="not_assigned")).order_by("-created_date")
         return queryset
 
     def get(self, request, *args, **kwargs):

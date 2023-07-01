@@ -135,9 +135,11 @@ class SuperVisorSampleForm(models.Model):#sample form has parameter and paramete
     test_type = models.CharField(max_length=1000,null=True)
 
     is_supervisor_sent = models.BooleanField(default=False)
+    is_analyst_test = models.BooleanField(default=False)
     
     status_choices = (       
         ('pending', 'pending'), 
+        ('not_assigned', 'not_assigned'), 
         ('processing', 'processing'),
         ('completed', 'completed'),
         ('recheck', 'recheck'),
@@ -145,7 +147,7 @@ class SuperVisorSampleForm(models.Model):#sample form has parameter and paramete
         ('not_verified','not_verified'),
         ('verified','verified')
     )
-    status = models.CharField(choices=status_choices,default="pending" , blank=True, null=True, max_length=155)
+    status = models.CharField(choices=status_choices,default="not_assigned" , blank=True, null=True, max_length=155)
 
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)

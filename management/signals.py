@@ -2,7 +2,7 @@
 
 from django.db.models.signals import pre_save,post_save
 from django.dispatch import receiver
-from management.models import SampleFormHasParameter,SampleForm,ClientCategory,SampleFormParameterFormulaCalculate,SampleFormVerifier
+from management.models import SuperVisorSampleForm,SampleFormHasParameter,SampleForm,ClientCategory,SampleFormParameterFormulaCalculate,SampleFormVerifier
 from websocket import frontend_setting
 from account.models import CustomUser
 from django.db import transaction
@@ -39,7 +39,7 @@ def handle_sampleform_presave(sender, instance, **kwargs):
 
 @receiver(m2m_changed, sender=SampleFormHasParameter.parameter.through)
 def sample_form_has_parameter_m2m_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
-    sample_form_obj = instance.sample_form    
+    super_visor_sample_form_obj = instance.super_visor_sample_form    
 
     instance.is_supervisor_sent = False #blunder error fixed
     instance.status="processing"
@@ -47,29 +47,29 @@ def sample_form_has_parameter_m2m_changed(sender, instance, action, reverse, mod
 
     status = "not_assigned"
     
-    parameters = sample_form_obj.parameters.all()
+    parameters = super_visor_sample_form_obj.parameters.all()
 
     for param in parameters:    
-        sample_form_has_parameter_object = SampleFormHasParameter.objects.filter(sample_form = sample_form_obj,parameter = param.id)
+        sample_form_has_parameter_object = SampleFormHasParameter.objects.filter(sample_form = instance.sample_form,parameter = param.id)
         if sample_form_has_parameter_object.exists():
             status = "processing"
         else:
             status = "not_assigned"
             break
         
-    sample_form_obj.status = status   
-    sample_form_obj.save()
+    super_visor_sample_form_obj.status = status   
+    super_visor_sample_form_obj.save()
 
 @receiver(post_save, sender=SampleFormHasParameter)
 def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
     if instance.is_supervisor_sent == True:
-        sample_form_obj = instance.sample_form
-        sample_form_has_parameter_obj = SampleFormHasParameter.objects.filter(sample_form = sample_form_obj.id) 
+        super_visor_sample_form_obj = instance.super_visor_sample_form
+        sample_form_has_parameter_obj = SampleFormHasParameter.objects.filter(sample_form = instance.sample_form.id) 
         is_analyst_test = False
     
         well = 0
-        for parame in sample_form_obj.parameters.all():
-            sample_form_has_parame_obj =  SampleFormHasParameter.objects.filter(sample_form = sample_form_obj.id,parameter=parame)
+        for parame in super_visor_sample_form_obj.parameters.all():
+            sample_form_has_parame_obj =  SampleFormHasParameter.objects.filter(sample_form = instance.sample_form.id,parameter=parame)
             if sample_form_has_parame_obj.exists():
                 well = 1
             else:
@@ -86,7 +86,7 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
 
                 sample_form_has_parameters_analyst_parameters = obj.parameter.all()
                 for pram in sample_form_has_parameters_analyst_parameters:
-                    formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(sample_form = sample_form_obj.id,parameter_id = pram.id)
+                    formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(sample_form = instance.sample_form.id,parameter_id = pram.id)
                     formula_calculate.update(status="completed")
 
                 sample_form_status = "not_verified"
@@ -96,12 +96,30 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
                 sample_form_status = "processing"
                 break
         if well == 1:
-            SampleForm.objects.filter(id=sample_form_obj.id).update(is_analyst_test = is_analyst_test,status=sample_form_status)
+            SuperVisorSampleForm.objects.filter(id=super_visor_sample_form_obj.id).update(is_analyst_test = is_analyst_test,status=sample_form_status)
+            supervisor_objs = SuperVisorSampleForm.filter(sample_form = instance.sample_form.id)
+            sup_is_analyst_test = False
+            sup_status = "processing"
+           
+            for supervisor_obj in supervisor_objs: # if all supervisor analyst_test is True then update in sample form is_analyst_test = True
+             
+                if supervisor_obj.is_analyst_test == True:
+                    sup_is_analyst_test = True
+                    sup_status = "not_verified"
+                else:
+                    sup_is_analyst_test = False
+                    sup_status = "processing"
+            
+            if sup_is_analyst_test:
+                SampleForm.objects.filter(id=instance.sample_form.id).update(is_analyst_test = sup_is_analyst_test,status=sup_status)
+
+            elif instance.is_supervisor_sent == False:
+                SampleForm.objects.filter(id=instance.sample_form.id).update(is_analyst_test = False,status="processing")
+                    
         else:
             print("all parameter has not assigned...")
 
-    elif instance.is_supervisor_sent == False:
-        SampleForm.objects.filter(id=instance.sample_form.id).update(is_analyst_test = False,status="processing")
+    
 
         
   
