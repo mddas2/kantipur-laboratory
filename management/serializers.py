@@ -97,6 +97,10 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
             smple_frm_exist = SampleFormHasParameter.objects.filter(parameter=parameter_id, sample_form = sample_form_id)
             exists = smple_frm_exist.exists()
             parameter_data['exist'] = exists
+
+            smple_frm_exist_for_supervisor = SuperVisorSampleForm.objects.filter(parameter=parameter_id, sample_form = sample_form_id)
+            exists_supervisor_parameter = smple_frm_exist_for_supervisor.exists()
+            parameter_data['exists_supervisor_parameter'] = exists_supervisor_parameter
             
             if exists:
                 # print(smple_frm_exist.first().analyst_user.username)
