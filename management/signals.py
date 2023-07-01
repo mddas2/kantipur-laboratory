@@ -120,9 +120,38 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
             print("all parameter has not assigned...")
 
     
-
+@receiver(post_save, sender=SuperVisorSampleForm)
+def SupervisorHaveParameterAfterSave(sender, instance ,created , **kwargs):
+    if instance.is_supervisor_sent == True:      
+     
+        supervisor_objs = SuperVisorSampleForm.objects.filter(sample_form = instance.sample_form.id)
+        sup_is_analyst_test = False
+        sup_status = "processing"
         
-  
+        for supervisor_obj in supervisor_objs: # if all supervisor analyst_test is True then update in sample form is_analyst_test = True
+            
+            if supervisor_obj.is_supervisor_sent == True:
+                sup_is_analyst_test = True
+                sup_status = "not_verified"
+            else:
+                sup_is_analyst_test = False
+                sup_status = "processing"
+        
+        
+        if sup_is_analyst_test:
+            data = {
+                'is_verified':False,
+                'is_sent':True,
+            }
+            verifier_obj,created = SampleFormVerifier.objects.update_or_create(sample_form_id = instance.sample_form_id,defaults=data)
+            if created:
+                print(created," abc")
+                SampleForm.objects.filter(id=instance.sample_form.id).update(is_analyst_test = sup_is_analyst_test,status=sup_status)
+
+        elif instance.is_supervisor_sent == False:
+            SampleForm.objects.filter(id=instance.sample_form.id).update(is_analyst_test = False,status="processing")
+
+    
 
 @receiver(pre_save, sender=SampleFormHasParameter)
 def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
