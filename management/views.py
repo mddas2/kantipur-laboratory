@@ -92,10 +92,17 @@ class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+        action = self.action
 
+        print(action)
+        if action == 'list':
+            query = SuperVisorSampleForm.objects.filter(supervisor_user=user.id,status = "not_assigned")
+        elif action == 'retrieve':
+            query = SuperVisorSampleForm.objects.filter(supervisor_user=user.id)
+            
         if user.role == roles.SUPERVISOR:
-            # query =  SuperVisorSampleForm.objects.filter(supervisor_user = user.id,status = "not_assigned")
-            query =  SuperVisorSampleForm.objects.filter(supervisor_user = user.id)
+            query =  query.filter(supervisor_user = user.id)
+            # query =  SuperVisorSampleForm.objects.filter(supervisor_user = user.id)
         else:
             raise PermissionDenied("You do not have permission to access this resource.")
         

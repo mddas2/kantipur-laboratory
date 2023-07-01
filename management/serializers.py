@@ -424,7 +424,7 @@ class SuperVisorSampleFormReadSerializer(serializers.ModelSerializer):
             if exists:
                 # print(smple_frm_exist.first().analyst_user.username)
                 try:
-                    parameter_data['status'] = "assigned"
+                    parameter_data['status'] = smple_frm_exist.first().status
                     parameter_data['analyst'] = smple_frm_exist.first().analyst_user.username
                 except:
                     pass           
