@@ -371,6 +371,66 @@ class SuperVisorSampleFormReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = SuperVisorSampleForm
         fields = '__all__'
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        sample_form_id = instance.sample_form.id
+        # print(sample_form_id,"sasdadada sdd ds")
+        # sample_form_id = generateDecodeIdforSampleForm(sample_form_id,self.context['request'].user)
+
+        parameters_data = representation.get('parameters', [])
+
+        assigned = 0
+        for parameter_data in parameters_data:
+            parameter_id = parameter_data.get('id')
+            # Check if the parameter exists in SampleFormHasParameter model
+            smple_frm_exist = SampleFormHasParameter.objects.filter(parameter=parameter_id, sample_form = sample_form_id)
+            exists = smple_frm_exist.exists()
+            parameter_data['exist'] = exists
+
+            smple_frm_exist_for_supervisor = SuperVisorSampleForm.objects.filter(parameters=parameter_id, sample_form = sample_form_id)
+            exists_supervisor_parameter = smple_frm_exist_for_supervisor.exists()
+            parameter_data['exists_supervisor_parameter'] = exists_supervisor_parameter
+
+            if exists_supervisor_parameter:
+                # print(smple_frm_exist.first().analyst_user.username)
+                try:
+                    parameter_data['status_supervisor'] = "assigned"
+                    parameter_data['supervisor_user'] = smple_frm_exist_for_supervisor.first().supervisor_user.username
+                except:
+                    pass 
+
+            if exists:
+                # print(smple_frm_exist.first().analyst_user.username)
+                try:
+                    parameter_data['status'] = "assigned"
+                    parameter_data['analyst'] = smple_frm_exist.first().analyst_user.username
+                except:
+                    pass           
+
+
+            if exists == True:
+                assigned+=1
+
+        representation['total_assign'] = assigned
+        representation['parameters'] = parameters_data
+        
+        status = representation.get('status')
+        request = self.context.get('request')
+
+        if request.user.role == roles.USER:
+            if status == "pending" or status == "processing" or status=="completed":
+                representation['status'] = status
+            else:
+                representation['status'] = "processing"
+                
+        if request.user.role == roles.SUPERVISOR:
+            if status == "not_assigned":
+                representation['status'] = "Not Assigned"
+
+
+        return representation
 
 class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
     sample_form = SampleFormReadAnalystSerializer(read_only=True)
