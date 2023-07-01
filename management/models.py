@@ -31,7 +31,7 @@ class TestResult(models.Model):
     formula_notation = models.TextField(max_length=1000,null=True)
     name = models.CharField(max_length=255,null=False) #parameter name
     name_nepali = models.CharField(max_length=255,null=True) #parameter name
-    test_type = models.CharField(choices=(('Biochemical','Biochemical'),('Instrumental','Instrumental'),('Microbiological','Microbiological')), default=None, max_length=155,null=True)
+    test_type = models.CharField(choices=(('Chemical','Chemical'),('Instrumental','Instrumental'),('Microbiological','Microbiological')), default=None, max_length=155,null=True)
     test_type_nepali = models.CharField(max_length=255,null=True)
     ref_test_method = models.CharField(max_length=255,null=True)
     units = models.CharField(max_length=100,null=True)
