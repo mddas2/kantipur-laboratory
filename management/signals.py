@@ -39,7 +39,7 @@ def handle_sampleform_presave(sender, instance, **kwargs):
 
 @receiver(m2m_changed, sender=SampleFormHasParameter.parameter.through)
 def sample_form_has_parameter_m2m_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
-    super_visor_sample_form_obj = instance.super_visor_sample_form    
+    super_visor_sample_form_obj = instance.super_visor_sample_form 
 
     instance.is_supervisor_sent = False #blunder error fixed
     instance.status="processing"
@@ -97,7 +97,7 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
                 break
         if well == 1:
             SuperVisorSampleForm.objects.filter(id=super_visor_sample_form_obj.id).update(is_analyst_test = is_analyst_test,status=sample_form_status)
-            supervisor_objs = SuperVisorSampleForm.filter(sample_form = instance.sample_form.id)
+            supervisor_objs = SuperVisorSampleForm.objects.filter(sample_form = instance.sample_form.id)
             sup_is_analyst_test = False
             sup_status = "processing"
            

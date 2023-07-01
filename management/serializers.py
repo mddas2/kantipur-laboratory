@@ -425,6 +425,8 @@ class SuperVisorSampleFormReadSerializer(serializers.ModelSerializer):
                 # print(smple_frm_exist.first().analyst_user.username)
                 try:
                     parameter_data['status'] = smple_frm_exist.first().status
+                    if smple_frm_exist.first().status == "not_verified":
+                        parameter_data['status'] = "completed"
                     parameter_data['analyst'] = smple_frm_exist.first().analyst_user.username
                 except:
                     pass           
@@ -633,7 +635,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                 else:
                     print(analyst_user,obj.sample_form_id,obj.commodity_id,parameter)
                     print(3)
-                    samp = SampleFormHasParameter.objects.create(analyst_user=analyst_user,status="processing",commodity_id = obj.commodity_id,sample_form_id=obj.sample_form_id,form_available=obj.form_available)
+                    samp = SampleFormHasParameter.objects.create(analyst_user=analyst_user,status="processing",commodity_id = obj.commodity_id,sample_form_id=obj.sample_form_id,form_available=obj.form_available,super_visor_sample_form = obj.super_visor_sample_form)
                     samp.parameter.set(parameter)
                     samp.save()
                     
