@@ -147,7 +147,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'lims',
         'USER': 'root',
-        'PASSWORD':'what?kiki',
+        'PASSWORD':'',
         'HOST':'localhost',
         'PORT': '3306',
         'OPTIONS': {
