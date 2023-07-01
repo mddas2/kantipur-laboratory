@@ -53,7 +53,7 @@ def NotificationHandler(instance, request,method,model_name):
     }
 
     to_email = CustomUser.objects.values_list('email', flat=True)
-    ESendMail(notification_message,to_email)
+    # ESendMail(notification_message,to_email)
     return response_data, status.HTTP_201_CREATED
 
 def sampleFormNotificationHandler(instance,notification_type):

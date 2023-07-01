@@ -229,6 +229,56 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
         model = SuperVisorSampleForm
         fields = '__all__'
     
+        def validate(self, attrs):
+            sample_form = attrs.get('sample_form')
+            print(sample_form," not  printing this...")
+            supervisor_user = attrs.get('supervisor_user')
+            parameters = attrs.get('parameters')
+
+            action = self.context['view'].action
+        
+            if len(attrs) == 3 and action == 'partial_update' and 'is_supervisor_sent' and 'status' and 'remarks' in attrs:
+                return attrs
+                if attrs.get('is_supervisor_sent') == True:
+                    id=self.context['view'].kwargs.get('pk')
+                    remarks  = attrs.get('remarks')
+                    generateRawData(id,remarks) #  if sent to supervisor then generate logs
+                    return attrs
+            elif action == 'partial_update':
+                raise serializers.ValidationError('Partial updates not allowed....')
+    
+            if action == "create" and len(parameters)>1:
+                for param in parameters:
+                    
+                    if SuperVisorSampleForm.objects.filter(sample_form=sample_form, parameters=param).exists():
+                        raise serializers.ValidationError('A SuperVisorSampleForm with the same sample_form and parameter already exists(create)')
+            elif action == "create" and len(parameters) == 1:
+                for param in parameters:
+                    
+                    if SuperVisorSampleForm.objects.filter(sample_form=sample_form, parameters=param).exists():
+                        raise serializers.ValidationError('A SuperVisorSampleForm with the same sample_form and parameter already exists(create)')
+                        attrs['re_assign'] = True                          
+                
+            
+            elif action == 'update' or action == 'partial_update':            
+                instance_id = self.instance.id 
+            
+                sample_form_has_parameter_obj = SuperVisorSampleForm.objects.get(id=instance_id)  
+
+                if SuperVisorSampleForm.objects.filter(sample_form=sample_form, supervisor_user=supervisor_user).exists() and sample_form_has_parameter_obj.sample_form == sample_form:
+                    pass
+
+                else:
+                    raise serializers.ValidationError('A SuperVisorSampleForm with the same sample_form and analyst already exists(update)')
+                
+                for param in parameters:
+                    if sample_form_has_parameter_obj.parameters.filter(id=param.id).exists() and sample_form_has_parameter_obj.sample_form == sample_form: #if try to update same parameter as previous stored then dod nothing
+                        pass
+                    elif SuperVisorSampleForm.objects.filter(sample_form=sample_form, parameters=param).exists(): #if try to update and not same as previous parameter then check already exist parameter.if exist then raise error
+                        raise serializers.ValidationError('A SuperVisorSampleForm with the same sample_form and parameter already exists(update)')
+                    
+            return attrs
+    
    
 class SuperVisorSampleFormReadSerializer(serializers.ModelSerializer):  
     sample_form = SampleFormReadAnalystSerializer(read_only=True)
