@@ -8,7 +8,7 @@ from .serializers import LoginSerializer
 from django.contrib.auth.models import Group, Permission
 from account.models import CustomUser
 from rest_framework import viewsets
-from .serializers import CustomUserSerializer, GroupSerializer, PermissionSerializer,RoleSerializer,departmentTypeSerializer
+from .serializers import CustomUserReadSerializer,CustomUserSerializer, GroupSerializer, PermissionSerializer,RoleSerializer,departmentTypeSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken,TokenError
@@ -26,7 +26,7 @@ from django.http import HttpResponse
 class CustomUserSerializerViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     # permission_classes = [Account]
-    serializer_class = CustomUserSerializer
+    serializer_class = CustomUserReadSerializer
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     search_fields = ['id','email','username','first_name','last_name','is_verified']
     ordering_fields = ['username','id']
@@ -50,6 +50,11 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
         else:
             # For other actions, no authentication is required
             return []
+    
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return CustomUserSerializer
+        return super().get_serializer_class()
     
     def get_queryset(self):
         user = self.request.user

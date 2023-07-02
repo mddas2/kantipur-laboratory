@@ -12,28 +12,39 @@ class ApprovedBySerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = '__all__' 
 
+class CustomUserReadSerializer(serializers.ModelSerializer):
+     class Meta:
+        ref_name =  "account serializers"
+        model = CustomUser
+        fields = '__all__' 
+
+
 class CustomUserSerializer(serializers.ModelSerializer):
-
-    # def to_internal_value(self, data):
-    #     data = data.copy()
-    #     if 'test_type' in data:
-    #         print("test type  ",data['test_type'])
-    #         ids_str = data['test_type']
-    #         ids = [int(id_str) for id_str in ids_str.split(',') if id_str.isdigit()]
-    #         data['test_type'] = ids
-    #         print(ids)
-    #     if 'client_category' in data:
-    #         client_category = data['client_category']
-    #         print(client_category)
-    #         data['client_category_id'] = client_category
-
-    #     return data
-
     
     def validate_password(self,value):#field level validation
         if len(value) < 2:
             raise serializers.ValidationError('Password must be 8 digit')
         return make_password(value) 
+    
+    def validate_test_types(self,value):#field level validation
+        if value != None:
+            try:            
+                string = [int(id) for id in value.split(',')]
+                instance = self.instance
+                if instance.role == roles.ANALYST and len(string) <2:
+                    return string
+                elif instance.role == roles.SUPERVISOR:
+                    return string
+                else:
+                    if instance.role == roles.ANALYST:
+                        raise serializers.ValidationError('multiple test type not alowed')
+                    else:
+                        raise serializers.ValidationError('Test type allowed for only analyst and supervisor.')                
+            except:
+                raise serializers.ValidationError('Test type unknown id')
+        
+            return string
+        return value
       
     def validate_role(self,value):#field level validation
         user = self.context['request'].user
@@ -77,7 +88,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         ref_name =  "account serializer"
         model = CustomUser
-        fields = '__all__' 
+        # fields = '__all__' 
+        exclude = ['test_type']
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)

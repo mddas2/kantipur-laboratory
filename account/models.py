@@ -17,6 +17,7 @@ class CustomUser(AbstractUser):
     username = models.CharField(max_length=255,unique=True)  
 
     test_type = models.ManyToManyField(TestType, related_name="users",default=None,null=True) 
+    test_types = models.CharField(max_length=255,null=True)
 
     renew_document = models.FileField(upload_to='media/user/renew_doument',default=None)
     registration_document =models.FileField(upload_to='media/user/registration',default=None)
@@ -78,8 +79,17 @@ class CustomUser(AbstractUser):
         if self.pk is None:
             # New instance, set is_active to False by default
             self.is_active = True
-            print(self.test_type)
+
+            if self.test_types != None:
+                self.test_type.set(self.test_types)
+                
         else:
+            if self.test_types != None:
+                self.test_type.set(self.test_types)
+                print(self.test_types)
+            else:
+                self.test_type.clear()
+
             if self.delete == "delete":
                pass
             else:
