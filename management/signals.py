@@ -132,6 +132,8 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
     
 @receiver(post_save, sender=SuperVisorSampleForm)
 def SupervisorHaveParameterAfterSave(sender, instance ,created , **kwargs):
+    if created:
+        print(" creating ...asda .asaa.d. s.a.da.asd. .as.d ")
     if instance.is_supervisor_sent == True:      
      
         supervisor_objs = SuperVisorSampleForm.objects.filter(sample_form = instance.sample_form.id)
@@ -162,7 +164,13 @@ def SupervisorHaveParameterAfterSave(sender, instance ,created , **kwargs):
                 SampleForm.objects.filter(id=instance.sample_form.id).update(is_analyst_test = sup_is_analyst_test,status=sup_status)
 
         elif instance.is_supervisor_sent == False:
-            SampleForm.objects.filter(id=instance.sample_form.id).update(is_analyst_test = False,status="processing")
+            if sample_obj_param == supervisor_param:
+                status = "processing"
+                form_available = "supervisor"
+            else:
+                status = "not_assigned"
+                form_available = "smu"
+            SampleForm.objects.filter(id=instance.sample_form.id).update(is_analyst_test = False,status=status,form_available = form_available)
 
     
 

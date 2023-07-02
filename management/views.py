@@ -239,9 +239,9 @@ class SampleFormViewSet(viewsets.ModelViewSet):
             if self.request.method == "PATCH":
                 query =  SampleForm.objects.filter(supervisor_user=user)
         elif user.role == roles.SMU:
-            query = SampleForm.objects.filter(form_available = 'smu')
+            query = SampleForm.objects.filter(Q(form_available = 'smu') or ~Q(status = "not_assigned"))
         elif user.role == roles.SUPERADMIN:
-            query = SampleForm.objects.filter(form_available = 'smu')
+            query = SampleForm.objects.filter(Q(form_available = 'smu') or ~Q(status = "not_assigned"))
         else:
             raise PermissionDenied("You do not have permission to access this resource.")
         
