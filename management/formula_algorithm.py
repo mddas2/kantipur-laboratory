@@ -319,7 +319,7 @@ class ParameterHasResultRecheck(APIView):
             formula_recheck_obj.status = "recheck"
             formula_recheck_obj.remarks = remarks
             sample_form_has_parameter_obj = formula_recheck_obj.sample_form_has_parameter
-            sample_form_has_parameter_obj.status = "processing"
+            sample_form_has_parameter_obj.status = "recheck"
             sample_form_has_parameter_obj.is_supervisor_sent = False
             sample_form_has_parameter_obj.save()
             formula_recheck_obj.save()
