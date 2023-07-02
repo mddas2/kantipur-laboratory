@@ -401,10 +401,10 @@ class SuperVisorSampleFormReadSerializer(serializers.ModelSerializer):
                 
                 formula_obj_result = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id=sample_form_id,parameter_id = parameter_id)
                 if formula_obj_result.count()>0:
-                    parameter_data['status'] = formula_obj_result.first().status
+                    parameter_data['status'] = over_all_status[formula_obj_result.first().status]
                     parameter_data['result'] = formula_obj_result.first().result
                 else:
-                    parameter_data['status'] = "processing"
+                    parameter_data['status'] = over_all_status['processing']
                     parameter_data['result'] = '-'
 
             parameter_data['exist'] = exists
@@ -426,7 +426,7 @@ class SuperVisorSampleFormReadSerializer(serializers.ModelSerializer):
                 try:
                     parameter_data['status'] = smple_frm_exist.first().status
                     if smple_frm_exist.first().status == "not_verified":
-                        parameter_data['status'] = "completed"
+                        parameter_data['status'] = over_all_status['completed']
                     parameter_data['analyst'] = smple_frm_exist.first().analyst_user.username
                 except:
                     pass           
@@ -443,13 +443,12 @@ class SuperVisorSampleFormReadSerializer(serializers.ModelSerializer):
 
         if request.user.role == roles.USER:
             if status == "pending" or status == "processing" or status=="completed":
-                representation['status'] = status
+                representation['status'] = over_all_status[status]
             else:
-                representation['status'] = "processing"
+                representation['status'] = over_all_status['processing']
                 
         if request.user.role == roles.SUPERVISOR:
-            if status == "not_assigned":
-                representation['status'] = "Not Assigned"
+            representation['status'] = over_all_status[status]
 
 
         return representation

@@ -145,7 +145,8 @@ class SuperVisorSampleForm(models.Model):#sample form has parameter and paramete
         ('recheck', 'recheck'),
         ('rejected', 'rejected'),
         ('not_verified','not_verified'),
-        ('verified','verified')
+        ('tested','tested'),
+        ('verified','verified'),
     )
     status = models.CharField(choices=status_choices,default="not_assigned" , blank=True, null=True, max_length=155)
 
@@ -172,6 +173,7 @@ class SampleFormHasParameter(models.Model):#sample form has parameter and parame
         ('recheck', 'recheck'),
         ('rejected', 'rejected'),
         ('not_verified','not_verified'),
+        ('tested','tested'),
         ('verified','verified')
     )
     status = models.CharField(choices=status_choices,default="pending" , blank=True, null=True, max_length=155)
@@ -231,6 +233,7 @@ class SampleFormParameterFormulaCalculate(models.Model):
         ('rejected', 'rejected'),
         ('recheck', 'recheck'),       
         ('completed', 'completed'),
+        ('tested','tested'),
         ('processing', 'processing'),
     )
     status = models.CharField(choices=status_choices, default="processing", max_length=155)
