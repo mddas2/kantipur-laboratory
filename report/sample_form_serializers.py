@@ -50,9 +50,9 @@ class SampleFormHasSupervisorParameterSerializer(serializers.ModelSerializer):
    
         if request.user.role == roles.SUPERVISOR:
             is_analyst_test = representation.get('is_analyst_test')
-            if is_analyst_test == True:
-                stat = "completed"
-                representation['status'] = stat
+            # if is_analyst_test == True:
+            #     stat = "completed"
+            #     representation['status'] = stat
             commodity_obj = Commodity.objects.get(id = instance.sample_form.commodity_id)
             representation['commodity'] = CommoditySerializer(commodity_obj,many = False).data
         return representation
