@@ -15,12 +15,19 @@ class ApprovedBySerializer(serializers.ModelSerializer):
 class CustomUserSerializer(serializers.ModelSerializer):
 
     # def to_internal_value(self, data):
-    #     mutable_data = data.copy()  # Create a mutable copy of the data
+    #     data = data.copy()
+    #     if 'test_type' in data:
+    #         print("test type  ",data['test_type'])
+    #         ids_str = data['test_type']
+    #         ids = [int(id_str) for id_str in ids_str.split(',') if id_str.isdigit()]
+    #         data['test_type'] = ids
+    #         print(ids)
+    #     if 'client_category' in data:
+    #         client_category = data['client_category']
+    #         print(client_category)
+    #         data['client_category_id'] = client_category
 
-    #     if 'password' in mutable_data and mutable_data['password'] == '':
-    #         mutable_data.pop('password')
-
-    #     return super().to_internal_value(mutable_data)
+    #     return data
 
     
     def validate_password(self,value):#field level validation
@@ -79,7 +86,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
             string = [int(value) for value in test_type.split(',')]
         except:
             string = test_type
-        representation['test_type'] = string
+        #representation['test_type'] = string
         return representation
 
 

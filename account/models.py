@@ -7,12 +7,16 @@ from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from . import department_type
 
+
+class TestType(models.Model):
+    name = models.CharField(choices=(('Chemical','Chemical'),('Microbiological','Microbiological'),('Instrumental','Instrumental')), default=None, max_length=155,null=True)
+
 class CustomUser(AbstractUser):
     phone = models.CharField(max_length=15 , unique=True)
     email = models.EmailField(max_length=255,unique=True)
     username = models.CharField(max_length=255,unique=True)  
 
-    test_type = models.CharField(max_length=255,null=True) 
+    test_type = models.ManyToManyField(TestType, related_name="users",default=None,null=True) 
 
     renew_document = models.FileField(upload_to='media/user/renew_doument',default=None)
     registration_document =models.FileField(upload_to='media/user/registration',default=None)
@@ -74,6 +78,7 @@ class CustomUser(AbstractUser):
         if self.pk is None:
             # New instance, set is_active to False by default
             self.is_active = True
+            print(self.test_type)
         else:
             if self.delete == "delete":
                pass
