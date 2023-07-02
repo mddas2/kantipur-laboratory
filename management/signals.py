@@ -138,8 +138,10 @@ def SupervisorHaveParameterAfterSave(sender, instance ,created , **kwargs):
         sup_is_analyst_test = False
         sup_status = "processing"
         
+        supervisor_param = 0
         for supervisor_obj in supervisor_objs: # if all supervisor analyst_test is True then update in sample form is_analyst_test = True
-            
+            param = supervisor_obj.parameters.all().count()
+            supervisor_param = param
             if supervisor_obj.is_supervisor_sent == True:
                 sup_is_analyst_test = True
                 sup_status = "not_verified"
@@ -147,8 +149,9 @@ def SupervisorHaveParameterAfterSave(sender, instance ,created , **kwargs):
                 sup_is_analyst_test = False
                 sup_status = "processing"
         
-        
-        if sup_is_analyst_test:
+        sample_obj_param = instance.sample_form.parameters.all().count()
+
+        if sup_is_analyst_test and sample_obj_param == supervisor_param:
             data = {
                 'is_verified':False,
                 'is_sent':True,
