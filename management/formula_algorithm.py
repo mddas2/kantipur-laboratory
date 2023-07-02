@@ -414,12 +414,14 @@ class SampleFormReject(APIView):
            sample_form_obj = SampleForm.objects.get(id = sample_form_id)
            sample_form_obj.status = "rejected"
            
+           supervisor_obj= sample_form_obj.supervisor_sample_form
+           supervisor_obj.update(status = "rejected")
 
            sample_form_has_parameter = sample_form_obj.sample_has_parameter_analyst.all()
            sample_form_has_parameter.update(status = "rejected")
 
            sample_form_raw_data = sample_form_obj.raw_datasheet.last()
-           sample_form_raw_data.status=status
+           sample_form_raw_data.status="rejected"
            sample_form_raw_data.save()
 
            sample_form_verifier = sample_form_obj.verifier
