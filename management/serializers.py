@@ -287,7 +287,7 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
         return attrs
     
     def create(self, validated_data):
-        print(" create tes md f")
+        print(" create tes md f sadsd s")
        
         sample_form = validated_data['sample_form']
         supervisor_user = validated_data['supervisor_user']
@@ -351,6 +351,8 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
                     
                     return obj
             # raise serializers.ValidationError('remove from and re-assigning. i am fixing right now')
+        print(sample_form," muk samaple ")
+        eventOnSampleform(sample_form,parameters)
         print(6)
         if SuperVisorSampleForm.objects.filter(sample_form=sample_form, supervisor_user=supervisor_user).exists():
             print("testing ok append parameter")
@@ -694,3 +696,23 @@ def AlterRawDataStatus(obj):
         raw_data_obj.status = "re-assign"
         raw_data_obj.save()
     print("alter raw data status")
+
+def eventOnSampleform(sample_form_id,parameters):
+    sample_form_obj = sample_form_id
+
+    sample_obj_params = sample_form_obj.parameters.all().count()
+    supervisor_params = 0
+    supervisor_objss = SuperVisorSampleForm.objects.filter(sample_form = sample_form_obj.id)
+    for supervisor_ob in supervisor_objss: # if all supervisor analyst_test is True then update in sample form is_analyst_test = True
+        params = supervisor_ob.parameters.all().count()
+        supervisor_params = supervisor_params + params
+    supervisor_params = supervisor_params + len(parameters)
+   
+    if sample_obj_params != supervisor_params:
+        statuss = "not_assigned"
+        form_availables = "smu"
+        SampleForm.objects.filter(id=sample_form_obj.id).update(is_analyst_test = False,status=statuss,form_available = form_availables)
+    else:
+        statuss = "processing"
+        form_availables = "supervisor"
+        SampleForm.objects.filter(id=sample_form_obj.id).update(is_analyst_test = False,status=statuss,form_available = form_availables)
