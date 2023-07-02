@@ -151,8 +151,9 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
         # representation['status'] = over_all_status[representation.get('status')]
         if user.role == roles.SMU or user.role == roles.SUPERADMIN:
             smu_superadmin_status = representation.get('status')
-            if smu_superadmin_status == "not_assigned" or smu_superadmin_status == "not_verified":
-                representation['status'] = "processing"
+            representation['status'] = over_all_status[smu_superadmin_status]
+            # if smu_superadmin_status == "not_assigned" or smu_superadmin_status == "not_verified":
+            #     representation['status'] = "processing"
         
 
         elif user.role == roles.USER:
