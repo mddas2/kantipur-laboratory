@@ -156,7 +156,8 @@ class FormulaApiCalculate(APIView):
                 response_status = error['status']
             else:
                 result = formula_obj.Save(result,formula_variable_fields_value)
-                if result:
+                print(result)
+                if result or result == 0:
                     response_data = {
                         'message': " formula calculate !!!",
                         'result' : result,
