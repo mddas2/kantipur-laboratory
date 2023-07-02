@@ -84,11 +84,13 @@ class CustomUser(AbstractUser):
                 self.test_type.set(self.test_types)
                 
         else:
+            print("login")
             if self.test_types != None:
-                self.test_type.set(self.test_types)
-                print(self.test_types)
-            else:
-                self.test_type.clear()
+                try:
+                    self.test_type.set(self.test_types)
+                    print("blunder error account")
+                except:
+                    pass                
 
             if self.delete == "delete":
                pass
