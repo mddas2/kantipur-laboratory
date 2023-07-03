@@ -101,7 +101,11 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
         print(" well ", well)
 
         print("is_analyst_test :" , is_analyst_test_param)
-        SuperVisorSampleForm.objects.filter(id=super_visor_sample_form_obj.id).update(is_analyst_test = is_analyst_test_param,status=sample_form_status)
+        if is_analyst_test_param == False:
+            SuperVisorSampleForm.objects.filter(id=super_visor_sample_form_obj.id).update(is_analyst_test = is_analyst_test_param,status=sample_form_status,is_supervisor_sent = False)
+        else:
+            SuperVisorSampleForm.objects.filter(id=super_visor_sample_form_obj.id).update(is_analyst_test = is_analyst_test_param,status=sample_form_status)
+        print(SuperVisorSampleForm.objects.filter(id=super_visor_sample_form_obj.id).first().is_analyst_test," hlo md")
         if is_analyst_test_param == True:
             supervisor_objs = SuperVisorSampleForm.objects.filter(sample_form = instance.sample_form.id)
             sup_is_analyst_test = False
