@@ -48,7 +48,8 @@ class FinalSampleFormHasVerifiedAPIView(generics.ListAPIView):
         elif user.role == roles.ANALYST:
             query = SampleForm.objects.filter(Q(sample_has_parameter_analyst__status='verified') & Q(sample_has_parameter_analyst__analyst_user=user) & Q(sample_has_parameter_analyst__is_supervisor_sent=True))
         elif user.role == roles.VERIFIER:
-            query = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True))
+            query = SampleForm.objects.filter(verifier__is_sent=True)
+            query = query.filter(Q(status="rejected") | Q(verifier__is_verified = True))
         else:
             raise PermissionDenied("You do not have permission to access this resource.")
         return query.order_by("-created_date")

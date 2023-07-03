@@ -70,7 +70,7 @@ class CompletedSampleFormHasVerifierAPIView(generics.ListAPIView):
     
     def get_queryset(self):
         request = self.request
-        queryset = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=False)).order_by("-created_date")
+        queryset = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=False) and Q(status="not_verified")).order_by("-created_date")
         return queryset
 
     def get(self, request, *args, **kwargs):
