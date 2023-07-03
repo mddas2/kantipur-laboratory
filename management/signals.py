@@ -162,7 +162,7 @@ def SupervisorHaveParameterAfterSave(sender, instance ,created , **kwargs):
             }
             verifier_obj,created = SampleFormVerifier.objects.update_or_create(sample_form_id = instance.sample_form_id,defaults=data)
             if created:
-                print(created," abc")
+                print("reached to verifier")
                 SampleForm.objects.filter(id=instance.sample_form.id).update(is_analyst_test = sup_is_analyst_test,status=sup_status)
 
         elif instance.is_supervisor_sent == False:
