@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
-from .raw_data_serializer import rawDataSerializer
+from .raw_data_serializer import rawDataSerializer,rawDataTestTypeSerializer
 from . encode_decode import generateDecodeIdforSampleForm
 from django.http import HttpResponse
 
@@ -21,6 +21,8 @@ def generateRawData(sample_form_has_parameter_id,remarks):
 
     sample_form_id = obj.sample_form.id
     supervisor_remarks = obj.sample_form.remarks
+
+    super_visor_sample_form_id = obj.super_visor_sample_form.id
     
     try:
         test_type = obj.analyst_user.test_type.name
@@ -29,7 +31,7 @@ def generateRawData(sample_form_has_parameter_id,remarks):
 
     print("data generating test type ", test_type)
 
-    raw_data_sheet_instance = RawDataSheet(sample_form_id=sample_form_id,sample_form_has_parameter_id = obj.id,remarks=remarks,status="not_verified",analyst_user=obj.analyst_user,supervisor_remarks=supervisor_remarks,test_type = test_type)
+    raw_data_sheet_instance = RawDataSheet(super_visor_sample_form_id = super_visor_sample_form_id ,sample_form_id=sample_form_id,sample_form_has_parameter_id = obj.id,remarks=remarks,status="not_verified",analyst_user=obj.analyst_user,supervisor_remarks=supervisor_remarks,test_type = test_type)
     raw_data_sheet_instance.save()
     
     print(formula_calculate_parameters)
@@ -97,6 +99,35 @@ class rawDataForSampleForm(generics.ListAPIView):
     
     def get_serializer_class(self):
         serializer = rawDataSerializer
+        return serializer
+        
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+    
+class rawDataForSampleFormTestType(generics.ListAPIView):
+    # queryset = SampleForm.objects.all() 
+    # serializer_class = CompletedSampleFormHasAnalystSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+  
+    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    search_fields = ['id']
+    ordering_fields = ['id']
+
+
+    def get_queryset(self):
+
+        sample_form_id = self.kwargs.get('sample_form')
+        print(sample_form_id)
+        user = self.request.user
+        sample_form_id = generateDecodeIdforSampleForm(sample_form_id,user) 
+        print(sample_form_id)
+        query = RawDataSheet.objects.filter(sample_form_id=sample_form_id)
+    
+        return query
+    
+    def get_serializer_class(self):
+        serializer = rawDataTestTypeSerializer
         return serializer
         
     def get(self, request, *args, **kwargs):

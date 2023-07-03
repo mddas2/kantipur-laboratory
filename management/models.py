@@ -250,6 +250,7 @@ class SampleFormVerifier(models.Model):
 class RawDataSheet(models.Model):
     sample_form = models.ForeignKey(SampleForm,related_name="raw_datasheet",on_delete=models.CASCADE,default=None)
     sample_form_has_parameter = models.ForeignKey(SampleFormHasParameter,related_name="raw_datasheet",on_delete=models.CASCADE,default=None)
+    super_visor_sample_form = models.ForeignKey(SuperVisorSampleForm,related_name="raw_datasheet", on_delete=models.CASCADE,null=True)
     test_type = models.CharField(max_length=2000,null=True)
     status = models.CharField(max_length=2000,null=True)
     analyst_user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,default=None)
