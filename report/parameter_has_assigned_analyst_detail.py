@@ -11,7 +11,7 @@ from management import roles
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['first_name','last_name','id','email'] 
+        fields = ['first_name','last_name','id','email','department_name'] 
 
 class CommoditySerializer(serializers.ModelSerializer):
     class Meta:
