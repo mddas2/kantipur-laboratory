@@ -23,15 +23,12 @@ def generateRawData(sample_form_has_parameter_id,remarks):
     supervisor_remarks = obj.sample_form.remarks
 
     super_visor_sample_form_id = obj.super_visor_sample_form.id
-    
-    try:
-        test_type = obj.analyst_user.test_type.name
-    except:
-        test_type = obj.parameter.all().first().test_type
 
-    print("data generating test type ", test_type)
+    test_type2 = obj.parameter.all().first().test_type
 
-    raw_data_sheet_instance = RawDataSheet(super_visor_sample_form_id = super_visor_sample_form_id ,sample_form_id=sample_form_id,sample_form_has_parameter_id = obj.id,remarks=remarks,status="not_verified",analyst_user=obj.analyst_user,supervisor_remarks=supervisor_remarks,test_type = test_type)
+    print("data generating test type ",test_type2)
+
+    raw_data_sheet_instance = RawDataSheet(super_visor_sample_form_id = super_visor_sample_form_id ,sample_form_id=sample_form_id,sample_form_has_parameter_id = obj.id,remarks=remarks,status="not_verified",analyst_user=obj.analyst_user,supervisor_remarks=supervisor_remarks,test_type = test_type2)
     raw_data_sheet_instance.save()
     
     print(formula_calculate_parameters)
