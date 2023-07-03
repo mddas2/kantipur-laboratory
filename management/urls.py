@@ -31,6 +31,8 @@ urlpatterns = [
     path('detail-raw-data-sheet/<int:sample_form_has_parameter>/', raw_data.rawDataDetail.as_view(), name='rawData'),
     path('sample-form-raw-data-sheet/<str:sample_form>/', raw_data.rawDataForSampleForm.as_view(), name='rawDataSupervisor'),
 
+    path('sample-form-raw-data-sheet-global/<str:sample_form>/', raw_data.rawDataForSampleFormGlobal.as_view(), name='rawDataSupervisor'),
+
     path('sample-form-raw-data-sheet-test-type/<str:sample_form>/', raw_data.rawDataForSampleFormTestType.as_view(), name='rawDataSupervisor'),
     
     path('get-parameter-to-verified/<int:sample_form_id>/', formula_algorithm.FormulaGetToVerifier.as_view(), name='formula-calculte-verifier'),

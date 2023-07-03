@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
-from .raw_data_serializer import rawDataSerializer,rawDataTestTypeSerializer
+from .raw_data_serializer import rawDataSerializer,rawDataTestTypeSerializer,rawDataTestTypeGlobalSerializer
 from . encode_decode import generateDecodeIdforSampleForm
 from django.http import HttpResponse
 
@@ -102,31 +102,82 @@ class rawDataForSampleForm(generics.ListAPIView):
         return self.list(request, *args, **kwargs)
     
 class rawDataForSampleFormTestType(generics.ListAPIView):
-    # queryset = SampleForm.objects.all() 
-    # serializer_class = CompletedSampleFormHasAnalystSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
   
-    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
     search_fields = ['id']
     ordering_fields = ['id']
 
-
     def get_queryset(self):
-
         sample_form_id = self.kwargs.get('sample_form')
-        print(sample_form_id)
         user = self.request.user
-        sample_form_id = generateDecodeIdforSampleForm(sample_form_id,user) 
-        print(sample_form_id)
-        query = RawDataSheet.objects.filter(sample_form_id=sample_form_id)
-    
+        sample_form_id = generateDecodeIdforSampleForm(sample_form_id, user)
+        query = RawDataSheet.objects.filter(sample_form_id=sample_form_id, super_visor_sample_form__supervisor_user=user.id)
         return query
     
     def get_serializer_class(self):
-        serializer = rawDataTestTypeSerializer
-        return serializer
+        return rawDataTestTypeSerializer
         
+    def list(self, request, *args, **kwargs):
+        from rest_framework.response import Response
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        data = serializer.data
+
+        test_type_data = {}
+        for item in data:
+            test_type = item.pop('test_type')
+            if test_type not in test_type_data:
+                test_type_data[test_type] = []
+            test_type_data[test_type].append(item)
+
+        response = {}
+        for test_type, test_type_values in test_type_data.items():
+            response[test_type] = test_type_values
+
+        return Response(response)
+    
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
+
     
+class rawDataForSampleFormGlobal(generics.ListAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+  
+    filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
+    search_fields = ['id']
+    ordering_fields = ['id']
+
+    def get_queryset(self):
+        sample_form_id = self.kwargs.get('sample_form')
+        user = self.request.user
+        sample_form_id = generateDecodeIdforSampleForm(sample_form_id, user)
+        query = RawDataSheet.objects.filter(sample_form_id=sample_form_id)
+        return query
+    
+    def get_serializer_class(self):
+        return rawDataTestTypeGlobalSerializer
+        
+    def list(self, request, *args, **kwargs):
+        from rest_framework.response import Response
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        data = serializer.data
+
+        test_type_data = {}
+        for item in data:
+            test_type = item.pop('test_type')
+            if test_type not in test_type_data:
+                test_type_data[test_type] = []
+            test_type_data[test_type].append(item)
+
+        response = {}
+        for test_type, test_type_values in test_type_data.items():
+            response[test_type] = test_type_values
+
+        return Response(response)
+    
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
