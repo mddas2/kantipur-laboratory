@@ -151,10 +151,11 @@ def SupervisorHaveParameterAfterSave(sender, instance ,created , **kwargs):
             else:
                 sup_is_analyst_test = False
                 sup_status = "processing"
+                break
         
         sample_obj_param = instance.sample_form.parameters.all().count()
 
-        if sup_is_analyst_test and sample_obj_param == supervisor_param:
+        if sup_is_analyst_test == True and sample_obj_param == supervisor_param:
             data = {
                 'is_verified':False,
                 'is_sent':True,
