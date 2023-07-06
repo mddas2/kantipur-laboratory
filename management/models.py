@@ -86,6 +86,7 @@ class SampleForm(models.Model):#ClientRequest
         ('processing', 'processing'), #smu-assign-supervisor (smu:pending-not_assign,display:processing)
         ('not_assigned', 'not_assigned'),#supervisor-assign-analyst (supervisor:not_assign-processing,display:processing)
         ('not_verified', 'not_verified'),#analyst-to-supervisor(supervisor:processing-not_verified,display:not_verified)
+        ('not_approved','not_approved'),
         ('verified', 'verified'),
         ('completed', 'completed'),#supervisor-assign-verifier (supervisor:not_verified-verified,display:processing) action:recheck,reject
         ('recheck', 'recheck'),
@@ -145,6 +146,7 @@ class SuperVisorSampleForm(models.Model):#sample form has parameter and paramete
         ('recheck', 'recheck'),
         ('rejected', 'rejected'),
         ('not_verified','not_verified'),
+        ('not_approved','not_approved'),
         ('tested','tested'),
         ('verified','verified'),
     )
@@ -174,7 +176,7 @@ class SampleFormHasParameter(models.Model):#sample form has parameter and parame
         ('rejected', 'rejected'),
         ('not_verified','not_verified'),
         ('tested','tested'),
-        ('verified','verified')
+        ('verified','verified'),
     )
     status = models.CharField(choices=status_choices,default="pending" , blank=True, null=True, max_length=155)
 
@@ -244,6 +246,14 @@ class SampleFormVerifier(models.Model):
     is_verified = models.BooleanField(default=False)
     is_sent = models.BooleanField(default=False)
     remarks = models.CharField(max_length=1000,null=True)
+    status_choices = (
+        ('pending', 'pending'),
+        ('recheck', 'recheck'),
+        ('not_approved', 'not_approved'),       
+        ('completed', 'completed'),
+    )
+    status = models.CharField(choices=status_choices, default="processing", max_length=155)
+
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
 

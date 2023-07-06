@@ -146,8 +146,8 @@ class RoleViewSet(APIView):
         serializer = RoleSerializer(data=my_tuple,many=True)
         serializer.is_valid()
         serialized_data = serializer.data
-        authentication_classes = [JWTAuthentication]
-        permission_classes = [IsAuthenticated]
+        # authentication_classes = [JWTAuthentication]
+        # permission_classes = [IsAuthenticated]
         return Response({"roles": serialized_data},status=status.HTTP_200_OK)
 
 class DepartmentTypesViewSet(APIView):    
