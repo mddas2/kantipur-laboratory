@@ -263,8 +263,13 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
             for param in parameters:
                 
                 if SuperVisorSampleForm.objects.filter(sample_form=sample_form, parameters=param).exists():
-                    attrs['re_assign'] = True                          
-                    raise serializers.ValidationError('Umesh sir You cant do this ...ammm, reasign karna band karo')
+                    sample_form_has_parameters_check = SampleFormHasParameter.objects.filter(sample_form = sample_form, parameter = param).exists()
+                    if sample_form_has_parameters_check == False:
+                        print("False mk")
+                        attrs['re_assign'] = True 
+                    else:                         
+                        print("True mk")
+                        raise serializers.ValidationError('Umesh sir You cant do this ...ammm, reasign karna band karo')
             
         
         elif action == 'update' or action == 'partial_update':            
@@ -292,23 +297,28 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
         sample_form = validated_data['sample_form']
         supervisor_user = validated_data['supervisor_user']
         parameters = validated_data['parameters']
+        test_type = validated_data['test_type']
         
         re_assign = validated_data.get('re_assign', False)    
         
-
+        print(re_assign)
+        
         if re_assign == True:
             
-            obj = SuperVisorSampleForm.objects.filter(sample_form=sample_form, parameter=parameters[0]).first()
+            obj = SuperVisorSampleForm.objects.filter(sample_form=sample_form, parameters=parameters[0]).first()
+            print(obj)
+            print(obj.parameters.all())
             
-            if len(obj.parameter.all())>1:
-                print(1)
+            if len(obj.parameters.all())>1:
+                
                 obj.parameters.remove(*parameters) #revoke parameter from existence obj
                 obj.is_supervisor_sent = False
-                # AlterRawDataStatus(obj)
+                # AlterRawDataStatus(obj)  # supervisor doesnot need alter status
                 obj.save()
 
+
                 
-                flushsupervisorprameterCalculate(obj,parameters)
+                # flushsupervisorprameterCalculate(obj,parameters) # supervisor doesnot need flush analyst data
             
 
                 instance = SuperVisorSampleForm.objects.filter(sample_form=sample_form, supervisor_user=supervisor_user)
@@ -317,14 +327,14 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
                     print(2)
                     instance = instance.first()
                     #AlterRawDataStatus(instance)
-                    instance.parameters.add(*parameters) #if particular analysts already exist then add parameter to that analysts re-asign
+                    instance.parameters.add(*parameters) #if particular supervisor already exist then add parameter to that analysts re-asign
                     instance.is_supervisor_sent = False
                   
                     return instance
                 else:
-                    print(supervisor_user,obj.sample_form_id,obj.commodity_id,parameters)
+                    print(supervisor_user,obj.sample_form_id,parameters)
                     print(3)
-                    samp = SuperVisorSampleForm.objects.create(supervisor_user=supervisor_user,status="processing",commodity_id = obj.commodity_id,sample_form_id=obj.sample_form_id,form_available=obj.form_available)
+                    samp = SuperVisorSampleForm.objects.create(supervisor_user=supervisor_user,status="processing",sample_form_id=obj.sample_form_id,test_type = test_type)
                     samp.parameters.set(parameters)
                     samp.save()
                     
@@ -336,17 +346,17 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
                 else:
                     # raise serializers.ValidationError('remove from and re-assigning. i am fixing right now')
                     print(5)
-                    instance = SuperVisorSampleForm.objects.filter(sample_form=sample_form, supervisor_user=supervisor_user)
-                    
+                    instance = SuperVisorSampleForm.objects.filter(sample_form=sample_form, supervisor_user=obj.supervisor_user)
+                    print(instance," sadmd")
                     if instance.exists():
-                        obj.delete()
+                        
                         print("exists")
                         instance = instance.first()
                         #AlterRawDataStatus(instance.first())
                         instance.parameters.add(*parameters) #if particular analysts already exist then add parameter to that analysts re-asign
-                        instance.is_supervisor_sent = False
+                        instance.supervisor_user = supervisor_user
                         instance.save()
-                        
+                        # obj.delete()
                         return instance
                     
                     return obj
