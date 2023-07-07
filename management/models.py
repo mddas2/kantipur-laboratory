@@ -66,10 +66,9 @@ class SampleForm(models.Model):#ClientRequest
     approved_date = models.DateTimeField(null=True)
     completed_date = models.DateTimeField(null=True)
 
-    user_encode_id = models.CharField(max_length=255, blank=True, null=True)
-    supervisor_encode_id = models.CharField(max_length=255, blank=True, null=True)
-    analyst_encode_id = models.CharField(max_length=255, blank=True, null=True)
-    verifier_encode_id = models.CharField(max_length=255, blank=True, null=True)
+    refrence_number = models.CharField(max_length=255, blank=True, null=True)
+    sample_lab_id = models.CharField(max_length=255, blank=True, null=True)
+   
 
     
     remarks = models.CharField(max_length=1000,null=True)
@@ -122,10 +121,9 @@ class SampleForm(models.Model):#ClientRequest
            
         super().save(*args, **kwargs)
         if create == True:
-            self.user_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "user")
-            self.supervisor_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "common")
-            self.analyst_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "common")
-            self.verifier_encode_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "common")
+            self.refrence_number = encode_decode.generateEncodeIdforSampleForm(self.pk, "user")
+            self.sample_lab_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "common")
+           
             self.save()
 
 class SuperVisorSampleForm(models.Model):#sample form has parameter and parameter for each parameter each suspervisor

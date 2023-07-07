@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-z9jqz!rnkg1bew73i#s_#6(u+!tjr$kc)p&236oxy=!sz6c)d%
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['limsserver.kantipurinfotech.com.np','127.0.0.1','192.168.1.179','192.168.1.100','192.168.1.73','192.168.1.179']
+ALLOWED_HOSTS = ['limsserver.kantipurinfotech.com.np','127.0.0.1','192.168.1.179','192.168.1.100','192.168.1.73','192.168.1.179','192.168.1.88']
 
 # Application definition
 
