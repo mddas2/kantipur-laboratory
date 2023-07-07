@@ -346,18 +346,25 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
                 else:
                     # raise serializers.ValidationError('remove from and re-assigning. i am fixing right now')
                     print(5)
-                    instance = SuperVisorSampleForm.objects.filter(sample_form=sample_form, supervisor_user=obj.supervisor_user)
+                    instance = SuperVisorSampleForm.objects.filter(sample_form=sample_form, supervisor_user=supervisor_user)
                     print(instance," sadmd")
                     if instance.exists():
-                        
                         print("exists")
                         instance = instance.first()
                         #AlterRawDataStatus(instance.first())
                         instance.parameters.add(*parameters) #if particular analysts already exist then add parameter to that analysts re-asign
                         instance.supervisor_user = supervisor_user
                         instance.save()
-                        # obj.delete()
+                        obj.delete()
                         return instance
+                    elif obj.parameters.all().first() == parameters[0]:
+                        print(6)
+                        print(obj.parameters.all(),'::',parameters)
+                        obj.supervisor_user = supervisor_user
+                        obj.parameters.add(*parameters)
+                        obj.save()
+                    else:
+                        raise serializers.ValidationError('undefined assign supervisor rule')
                     
                     return obj
             # raise serializers.ValidationError('remove from and re-assigning. i am fixing right now')

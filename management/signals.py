@@ -95,8 +95,6 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
                 break
            
     
-        
-        
         sample_form_status = "processing"
         print(" well ", well)
 
@@ -130,6 +128,34 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
     if instance.is_supervisor_sent == False:
         SampleForm.objects.filter(id=instance.sample_form.id).update(is_analyst_test = False,status="processing")
         
+@receiver(m2m_changed, sender=SuperVisorSampleForm.parameters.through)
+def supervisor_sample_form_has_parameter_m2m_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
+    
+    instance.is_supervisor_sent = False #blunder error fixed
+    instance.status="not_assigned"
+    instance.is_analyst_test = False
+    instance.save()
+
+    status = "not_assigned"
+ 
+    
+    parameters = instance.parameters.all()
+
+    for param in parameters:    
+        sample_form_has_parameter_object = SuperVisorSampleForm.objects.filter(sample_form = instance.sample_form,parameters = param.id)
+        
+        if sample_form_has_parameter_object.exists():
+            status = "processing"
+                
+        else:
+            status = "not_assigned"
+            sample_form_obj= instance.sample_form
+            sample_form_obj.status = status
+            sample_form_obj.is_analyst_test = False
+            # sample_form_obj.form_available = 'smu'
+            sample_form_obj.save()
+            break
+
 
 
 @receiver(post_save, sender=SuperVisorSampleForm)
