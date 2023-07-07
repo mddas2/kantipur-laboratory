@@ -1,7 +1,7 @@
 from management.models import SampleForm, Commodity,SampleFormHasParameter,TestResult,SampleFormParameterFormulaCalculate,Payment
 from rest_framework import serializers
 
-from management.models import SampleForm, Commodity,SampleFormHasParameter
+from management.models import SampleForm, Commodity,SampleFormHasParameter,SuperVisorSampleForm
 from account.models import CustomUser
 from rest_framework import serializers
 from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
@@ -17,6 +17,13 @@ class CommoditySerializer(serializers.ModelSerializer):
     class Meta:
         model = Commodity
         fields = ['name']
+
+class SupervisorSampleFormSerializer(serializers.ModelSerializer):
+    supervisor_user = CustomUserSerializer(read_only = True)
+    class Meta:
+        ref_name = "SupervisorSampleFormSerializer"
+        model = SuperVisorSampleForm
+        fields = ['supervisor_user']
 
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -107,16 +114,15 @@ class DetailSampleFormHasParameterAnalystSerializer(serializers.ModelSerializer)
 
         representation['parameters'] = parameters_data
         return representation
-    
+
 
 class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.ModelSerializer):
     commodity = CommoditySerializer(read_only = True)
     parameters = ParameterSerializer(read_only = True, many = True)
     owner_user = serializers.SerializerMethodField()
-    supervisor_user = CustomUserSerializer(read_only = True)
     verified_by = CustomUserSerializer(read_only = True)
     approved_by = CustomUserSerializer(read_only = True)
-    
+
     
     id = serializers.SerializerMethodField()
 
@@ -165,6 +171,14 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
             parameter_id = parameter_data.get('id')
             # Check if the parameter exists in SampleFormHasParameter model
             # print(parameter_id)
+            if user.role == roles.SMU or user.role == roles.SUPERADMIN:
+                sample_form_has_supervisor_obj = SuperVisorSampleForm.objects.filter(parameters=parameter_id, sample_form = sample_form_id)
+                exists_sup = sample_form_has_supervisor_obj.exists()
+                if exists_sup:
+                    sup_full_name = str(sample_form_has_supervisor_obj.first().supervisor_user.first_name) +' '+ str(sample_form_has_supervisor_obj.first().supervisor_user.last_name)
+                    # parameter_data['sup_full_name'] = 'ask with manoj das'
+                    parameter_data['sup_full_name'] = sup_full_name
+
             sample_form_has_assigned_analyst_obj = SampleFormHasParameter.objects.filter(parameter=parameter_id, sample_form = sample_form_id)
             exists = sample_form_has_assigned_analyst_obj.exists()
             if exists:
@@ -175,7 +189,8 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
                 created_date = sample_form_has_assigned_analyst_obj.first().created_date
                 parameter_data['first_name'] = first_name
                 parameter_data['last_name'] = last_name
-                parameter_data['sample_form_has_parameter'] = sample_form_has_assigned_analyst_obj.first().id
+                
+                parameter_data['sample_form_has_parameter'] = sample_form_has_assigned_analyst_obj.first().id  
                 parameter_data['assigned_date'] = created_date
                 
                 formula_obj_result = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id=sample_form_id,parameter_id = parameter_id)
