@@ -263,8 +263,8 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
             for param in parameters:
                 
                 if SuperVisorSampleForm.objects.filter(sample_form=sample_form, parameters=param).exists():
-                    raise serializers.ValidationError('A SuperVisorSampleForm with the same sample_form and parameter already exists(create)')
                     attrs['re_assign'] = True                          
+                    raise serializers.ValidationError('Umesh sir You cant do this ...ammm, reasign karna band karo')
             
         
         elif action == 'update' or action == 'partial_update':            
