@@ -363,6 +363,7 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
                         obj.supervisor_user = supervisor_user
                         obj.parameters.add(*parameters)
                         obj.save()
+                        return obj
                     else:
                         raise serializers.ValidationError('undefined assign supervisor rule')
                     
