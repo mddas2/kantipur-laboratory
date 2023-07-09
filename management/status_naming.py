@@ -1,5 +1,6 @@
 over_all_status = {
     'not_verified':"not verified",
+    'not_approved':"not approved",
     'verified':"verified",
     'not_assigned':"not assigned",
     're-assign':"re-assign",

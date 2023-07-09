@@ -234,7 +234,7 @@ def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
             supervisor_sample_form_obj = sample_form_obj.supervisor_sample_form
             supervisor_sample_form_obj.update(status = "verified")
 
-            sample_form_obj.status = "completed"
+            sample_form_obj.status = "not_approved"
             sample_form_obj.completed_date = timezone.now()
             sample_form_obj.save()
 

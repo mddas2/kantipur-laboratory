@@ -53,13 +53,16 @@ class CompletedSampleFormHasVerifierSerializer(serializers.ModelSerializer):
 
         request = self.context.get('request')
 
+        status = representation.get('status')
         if request.user.role == roles.SUPERVISOR:
-            status = representation.get('status')
+            
             if status == "completed":
                 stat = "verified"
                 representation['status'] = stat
             else:
                 representation['status'] = over_all_status[status]
+        else:
+            representation['status'] = over_all_status[status]
 
         return representation
 

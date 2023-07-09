@@ -76,6 +76,34 @@ class CompletedSampleFormHasVerifierAPIView(generics.ListAPIView):
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
+class notApprovedSampleFormHasAdminAPIView(generics.ListAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    search_fields = ['id','name','owner_user','status','form_available','commodity__name']
+    ordering_fields = ['name','id']
+    filterset_fields = {
+        'name': ['exact', 'icontains'],
+        'owner_user': ['exact'],
+        'status': ['exact'],
+        'form_available': ['exact'],
+        'commodity_id': ['exact'],
+        'supervisor_user': ['exact'],
+        'created_date': ['date__gte', 'date__lte']  # Date filtering
+    }
+
+    def get_serializer_class(self): 
+        return CompletedSampleFormHasVerifierSerializer
+    
+    def get_queryset(self):
+        request = self.request
+        queryset = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True)).filter(status="not_approved").order_by("-created_date")
+        return queryset
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
 #parameter has assigned user
 
 class ParameterHasAssignedAnalyst(views.APIView):
