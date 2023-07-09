@@ -3,6 +3,7 @@ from rest_framework.permissions import BasePermission
 class SampleFormViewSetPermission(BasePermission):
     def has_permission(self, request, view):
         method_name = view.action
+        print(method_name)
         if method_name == 'list':
             return True
         elif method_name == 'create':
@@ -12,6 +13,7 @@ class SampleFormViewSetPermission(BasePermission):
         elif method_name == 'update':
             return True
         elif method_name == 'partial_update':
+            print("SDasd asd")
             return True
         elif method_name == 'destroy':
             return False

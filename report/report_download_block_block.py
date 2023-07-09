@@ -260,7 +260,7 @@ def FinalReport(request,report_type,report_lang,id=None,role=None):
             owner_name = query.owner_user
             
         sample_registration_date = query.created_date.date()
-        sample_code = query.user_encode_id
+        sample_code = query.refrence_number
         analysis_starting_date = query.created_date.date()
         analysis_completion_date = query.created_date.date()
 
