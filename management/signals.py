@@ -120,7 +120,9 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
                     break
             
             if sup_is_analyst_test:
-                SampleForm.objects.filter(id=instance.sample_form.id).update(is_analyst_test = sup_is_analyst_test,status=sup_status)
+                pass
+                # from here sample form sent to verifier , is_analyst_test True, status = not_verified
+                #SampleForm.objects.filter(id=instance.sample_form.id).update(is_analyst_test = sup_is_analyst_test,status=sup_status)
                     
         else:
             print("all parameter has not assigned...")
@@ -171,15 +173,21 @@ def SupervisorHaveParameterAfterSave(sender, instance ,created , **kwargs):
         for supervisor_obj in supervisor_objs: # if all supervisor analyst_test is True then update in sample form is_analyst_test = True
             param = supervisor_obj.parameters.all().count()
             supervisor_param = supervisor_param + param
-            if supervisor_obj.is_supervisor_sent == True:
+            
+            check = supervisor_obj.is_supervisor_sent
+            print(check,"::check","::",supervisor_obj.is_supervisor_sent)
+            if check == True:
                 sup_is_analyst_test = True
                 sup_status = "not_verified"
+                print(sup_is_analyst_test,"::",supervisor_obj.id)
             else:
                 sup_is_analyst_test = False
                 sup_status = "processing"
+                print(sup_is_analyst_test,"::",supervisor_obj.id)
                 break
         
         sample_obj_param = instance.sample_form.parameters.all().count()
+        print(sample_obj_param,"::",supervisor_param,"::",sup_is_analyst_test)
 
         if sup_is_analyst_test == True and sample_obj_param == supervisor_param:
             data = {
@@ -187,9 +195,11 @@ def SupervisorHaveParameterAfterSave(sender, instance ,created , **kwargs):
                 'is_sent':True,
             }
             verifier_obj,created = SampleFormVerifier.objects.update_or_create(sample_form_id = instance.sample_form_id,defaults=data)
-            if created:
+            print(verifier_obj,created)
+            if created or verifier_obj != None:
                 print("reached to verifier")
                 SampleForm.objects.filter(id=instance.sample_form.id).update(is_analyst_test = sup_is_analyst_test,status=sup_status)
+                
 
         elif instance.is_supervisor_sent == False:
             if sample_obj_param == supervisor_param:
