@@ -325,6 +325,7 @@ class ParameterHasResultRecheck(APIView):
             supervisor_sample_form_obj = sample_form_has_parameter_obj.super_visor_sample_form
             supervisor_sample_form_obj.is_analyst_test = False
             supervisor_sample_form_obj.is_supervisor_sent = False
+            supervisor_sample_form_obj.status = "recheck"
             supervisor_sample_form_obj.save()
 
             sample_form_has_parameter_obj.save()          
