@@ -441,15 +441,15 @@ class SuperVisorSampleFormReadSerializer(serializers.ModelSerializer):
                 except:
                     pass 
 
-            if exists:
-                # print(smple_frm_exist.first().analyst_user.username)
-                try:
-                    parameter_data['status'] = smple_frm_exist.first().status
-                    if smple_frm_exist.first().status == "not_verified":
-                        parameter_data['status'] = over_all_status['completed']
-                    parameter_data['analyst'] = smple_frm_exist.first().analyst_user.username
-                except:
-                    pass           
+            # if exists:
+            #     # print(smple_frm_exist.first().analyst_user.username)
+            #     try:
+            #         parameter_data['status'] = smple_frm_exist.first().status
+            #         if smple_frm_exist.first().status == "not_verified":
+            #             parameter_data['status'] = over_all_status['completed']
+            #         parameter_data['analyst'] = smple_frm_exist.first().analyst_user.username
+            #     except:
+            #         pass           
 
 
             if exists == True:
