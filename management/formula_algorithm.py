@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from .formula_serializers import SampleFormParameterFormulaCalculateReadSerializer,FormulaApiCalculateSerializer,FormulaApiGetFieldSerializer,FormulaApiCalculateSaveSerializer,RecheckSerializer,SampleFormRecheckSerializer
-from .models import SampleFormParameterFormulaCalculate,Commodity,TestResult,SampleForm,RawDataSheet
+from .models import SampleFormParameterFormulaCalculate,Commodity,TestResult,SampleForm,RawDataSheet,SampleFormHasParameter
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -15,6 +15,7 @@ import json
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+
 
 class Formula:
     def __init__(self,commodity_id,parameter_id,sample_form_id):
@@ -279,10 +280,30 @@ class FormulaApiCalculateSave(APIView):
         formula_variable_fields_value = serializer.validated_data['formula_variable_fields_value']
         result = serializer.validated_data['result']
         print(formula_variable_fields_value, " formula_variable_fields_value")
+
+        # Locking parameter
+        is_locked = False
+        raw_data_sheet_exists = RawDataSheet.objects.filter(sample_form_has_parameter_id = sample_form_has_parameter_id).exists()
+        sample_form_formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id = sample_form_id, parameter_id =parameter_id, commodity_id = commodity_id,sample_form_has_parameter_id=sample_form_has_parameter_id)
+        if raw_data_sheet_exists:
+            is_locked_dat = sample_form_formula_calculate.first().is_locked
+            if is_locked_dat == True:
+                message = {
+                    "message":"It is locked !!!"
+                }
+                return Response(message, status=status.HTTP_200_OK)
+            else:
+                is_locked = True
+        else:
+            is_locked = False
+    
+        # Locking parameter close
+
         data = {
             'result' : result,
             'status' : "completed",
-            'input_fields_value':formula_variable_fields_value
+            'input_fields_value':formula_variable_fields_value,
+            'is_locked' : is_locked
         }
 
         data,created = SampleFormParameterFormulaCalculate.objects.update_or_create(sample_form_id = sample_form_id, parameter_id =parameter_id, commodity_id = commodity_id,sample_form_has_parameter_id=sample_form_has_parameter_id,defaults=data)
@@ -318,6 +339,7 @@ class ParameterHasResultRecheck(APIView):
             formula_recheck_obj = formula_recheck_obj.first()
             formula_recheck_obj.status = "recheck"
             formula_recheck_obj.remarks = remarks
+            formula_recheck_obj.is_locked = False
             sample_form_has_parameter_obj = formula_recheck_obj.sample_form_has_parameter
             sample_form_has_parameter_obj.status = "recheck"
             sample_form_has_parameter_obj.is_supervisor_sent = False

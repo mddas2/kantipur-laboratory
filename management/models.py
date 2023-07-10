@@ -237,6 +237,7 @@ class SampleFormParameterFormulaCalculate(models.Model):
         ('processing', 'processing'),
     )
     status = models.CharField(choices=status_choices, default="processing", max_length=155)
+    is_locked = models.BooleanField(default=False)
 
 
 class SampleFormVerifier(models.Model):
