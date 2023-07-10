@@ -69,7 +69,12 @@ class SampleForm(models.Model):#ClientRequest
     refrence_number = models.CharField(max_length=255, blank=True, null=True)
     sample_lab_id = models.CharField(max_length=255, blank=True, null=True)
    
+    price = models.IntegerField(null=True)
 
+    sample_units = models.CharField(max_length=1000,null=True)
+    sample_type = models.CharField(max_length=1000,null=True)
+    sample_quantity = models.CharField(max_length=1000,null=True)
+    
     
     remarks = models.CharField(max_length=1000,null=True)
     remarks_recheck_verifier = models.CharField(max_length=1000,null=True)

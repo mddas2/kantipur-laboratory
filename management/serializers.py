@@ -148,14 +148,29 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
 class SampleFormWriteSerializer(serializers.ModelSerializer):
     def validate(self, data):
         action = self.context['view'].action
-        if action == "create":
+        if action == "create" or action=="update":
             parameters = data.get('parameters')
             
             #id = data.get('id')
-            if len(parameters) == 0:
-                commodity = data.get('commodity')   
-                parameters = TestResult.objects.filter(commodity=commodity)
-                data['parameters'] = parameters
+            commodity = data.get('commodity')
+            commodity_parameters = TestResult.objects.filter(commodity=commodity)
+            commodity_price = Commodity.objects.get(id = commodity.id).price
+            if len(parameters) == 0:        
+                data['parameters'] = commodity_parameters
+                data['price'] = commodity_price
+                print(price," : price")
+            else:
+                commodity_parameter_len =  commodity_parameters.count()
+                parameter_len = len(parameters)
+                if commodity_parameter_len == parameter_len:
+                    data['price'] = commodity_price
+                else:
+                    price = 0
+                    for paramet in parameters:
+                        price = paramet.price + price
+                    print(price)
+                    data['price'] = price
+                
             return data
         elif action == "partial_update" or action == "update":
             supervisor_user = data.get('supervisor_user')

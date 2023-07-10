@@ -2,7 +2,7 @@
 
 from django.db.models.signals import pre_save,post_save
 from django.dispatch import receiver
-from management.models import SuperVisorSampleForm,SampleFormHasParameter,SampleForm,ClientCategory,SampleFormParameterFormulaCalculate,SampleFormVerifier
+from management.models import RawDataSheet,SuperVisorSampleForm,SampleFormHasParameter,SampleForm,ClientCategory,SampleFormParameterFormulaCalculate,SampleFormVerifier
 from websocket import frontend_setting
 from account.models import CustomUser
 from django.db import transaction
@@ -10,6 +10,7 @@ from django.db.models.signals import m2m_changed
 # from datetime import datetime
 from django.utils import timezone
 from websocket.handle_notification import sampleFormNotificationHandler
+from django.db.models import Q
 
 @receiver(post_save, sender=SampleFormParameterFormulaCalculate)
 def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwargs):
@@ -25,15 +26,14 @@ def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwarg
     
 @receiver(pre_save, sender=SampleForm)
 def handle_sampleform_presave(sender, instance, **kwargs):
-    original_sample_form = None
+    original_sample_form_status = None
     if not instance.pk:
         sampleFormNotificationHandler(instance,"new_sample_form")
     if instance.id:
-        original_sample_form = SampleForm.objects.get(pk=instance.id).supervisor_user
-    if instance.supervisor_user != original_sample_form:
-        instance.status = "not_assigned"
-        sampleFormNotificationHandler(instance,"assigned_supervisor")
-        instance.approved_date = timezone.now()
+        original_sample_form_status = SampleForm.objects.get(pk=instance.id).supervisor_user
+    if instance.status != original_sample_form_status: # dynamic rawdata sheet status changing
+        raw_data_obj = RawDataSheet.objects.filter(sample_form_id = instance.id).filter(~Q(status="recheck") or ~Q(status="re-assign"))
+        raw_data_obj.update(status = instance.id)
             
              
 
