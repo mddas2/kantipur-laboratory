@@ -285,7 +285,7 @@ class FormulaApiCalculateSave(APIView):
         is_locked = False
         raw_data_sheet_exists = RawDataSheet.objects.filter(sample_form_has_parameter_id = sample_form_has_parameter_id).exists()
         sample_form_formula_calculate = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id = sample_form_id, parameter_id =parameter_id, commodity_id = commodity_id,sample_form_has_parameter_id=sample_form_has_parameter_id)
-        if raw_data_sheet_exists:
+        if raw_data_sheet_exists and sample_form_formula_calculate.exists():
             is_locked_dat = sample_form_formula_calculate.first().is_locked
             if is_locked_dat == True:
                 message = {

@@ -46,6 +46,13 @@ def generateRawData(sample_form_has_parameter_id,remarks):
         RawDataSheetDetail.objects.update_or_create(**data)
     return True
 
+def UpdategenerateRawData(supervisor_table_id,remarks):
+   raw_data_sheet_supervisor =  RawDataSheet.objects.filter(super_visor_sample_form_id = supervisor_table_id)
+   raw_data_sheet_supervisor.update(supervisor_remarks = remarks)
+   print("remarks added to supervisor")
+   
+
+
 class rawDataDetail(generics.ListAPIView):
     # queryset = SampleForm.objects.all() 
     # serializer_class = CompletedSampleFormHasAnalystSerializer

@@ -3,7 +3,7 @@ from rest_framework import serializers
 from account.models import CustomUser
 from . import roles
 from . encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
-from . raw_data import generateRawData
+from . raw_data import generateRawData,UpdategenerateRawData
 from .status_naming import over_all_status
 
 
@@ -250,7 +250,7 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
             if attrs.get('is_supervisor_sent') == True:
                 id=self.context['view'].kwargs.get('pk')
                 remarks  = attrs.get('remarks')
-                #generateRawData(id,remarks) #  if sent to supervisor then generate logs
+                UpdategenerateRawData(id,remarks) #  if sent to supervisor then generate logs
                 return attrs
         elif action == 'partial_update':
             raise serializers.ValidationError('Partial updates not allowed....')
@@ -503,6 +503,7 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
                 parameter['input_fields_value'] = formula_calculate.input_fields_value
                 parameter['status'] = formula_calculate.status
                 parameter['remarks'] = formula_calculate.remarks
+                parameter['is_locked'] = formula_calculate.is_locked
             else:
                 parameter['result'] = ""      
          
