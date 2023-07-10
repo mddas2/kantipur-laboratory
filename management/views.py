@@ -533,6 +533,24 @@ class PaymentViewSet(viewsets.ModelViewSet):
 
         # Return the custom response
         return Response(response_data, status=status.HTTP_201_CREATED)
+
+    # def create(self, request, *args, **kwargs):
+    #     print(request.data)
+    #     serializer = self.get_serializer(data=request.data, many=True)
+    #     serializer.is_valid(raise_exception=True)
+
+    #     # Save multiple payment objects to the database
+    #     self.perform_create(serializer)
+
+    #     # Create a custom response
+    #     response_data = {
+    #         "message": "Payments created successfully",
+    #         "data": serializer.data
+    #     }
+
+    #     # Return the custom response
+    #     return Response(response_data, status=status.HTTP_201_CREATED)
+
     
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)

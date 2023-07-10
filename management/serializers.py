@@ -18,9 +18,11 @@ class ClientCategorySerializer(serializers.ModelSerializer):
         fields = '__all__'        
 
 class PaymentSerializer(serializers.ModelSerializer):
+
         class Meta:
             model = Payment
             fields = '__all__' 
+            # fields = ['voucher_number', 'owner_email', 'sample_form', 'amount']
 
 class CommodityReadSerializer(serializers.ModelSerializer):
     class Meta:
