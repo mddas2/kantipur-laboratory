@@ -511,6 +511,7 @@ class TestResultViewSet(viewsets.ModelViewSet):
         return Response(response_data)
 
 class PaymentViewSet(viewsets.ModelViewSet):
+    from rest_framework.parsers import MultiPartParser, FormParser
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
     filter_backends = [SearchFilter]
@@ -518,38 +519,39 @@ class PaymentViewSet(viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated,PaymentViewSetPermission]
     pagination_class = MyLimitOffsetPagination
+    
+    parser_classes = [MultiPartParser, FormParser]
+
+
+    
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        payment_dict = {}
+        for key, value in request.data.items():
+            if key.startswith('payments'):
+                start_index = key.index('[')
+                end_index = key.index(']')
+                index = key[start_index + 1:end_index]
+                field = key[end_index + 2:-1]  # Adjust the index according to the key format
 
-        # Save the new object to the database
-        self.perform_create(serializer)
+                if index not in payment_dict:
+                    payment_dict[index] = {}
 
-        # Create a custom response
+                payment_dict[index][field] = value
+
+        payment_data = []
+
+        for index, payment_data_dict in payment_dict.items():
+            serializer = PaymentSerializer(data=payment_data_dict)
+            serializer.is_valid(raise_exception=True)
+            payment_obj = serializer.save()
+            payment_data.append(serializer.data)
+
         response_data = {
-            "message": "payment successfully",
-            "data": serializer.data
+            "message": "Payments created successfully",
+            "data": payment_data
         }
 
-        # Return the custom response
         return Response(response_data, status=status.HTTP_201_CREATED)
-
-    # def create(self, request, *args, **kwargs):
-    #     print(request.data)
-    #     serializer = self.get_serializer(data=request.data, many=True)
-    #     serializer.is_valid(raise_exception=True)
-
-    #     # Save multiple payment objects to the database
-    #     self.perform_create(serializer)
-
-    #     # Create a custom response
-    #     response_data = {
-    #         "message": "Payments created successfully",
-    #         "data": serializer.data
-    #     }
-
-    #     # Return the custom response
-    #     return Response(response_data, status=status.HTTP_201_CREATED)
 
     
     def update(self, request, *args, **kwargs):
