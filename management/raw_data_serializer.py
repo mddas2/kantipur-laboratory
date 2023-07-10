@@ -67,10 +67,21 @@ class rawDataTestTypeGlobalSerializer(serializers.ModelSerializer):
 
     raw_data = rawDataSheetDetailSerializer(read_only = True,many=True)
     analyst_user = ApprovedBySerializer(read_only = True,many=False)
+    supervisor_by = serializers.SerializerMethodField()
     # sample_form = SampleFormSerializer(read_only=True, many=True)
     class Meta:
         model = RawDataSheet
         fields = '__all__'
+    
+        
+    def get_supervisor_by(self, obj):
+        supervisor_table_obj = obj.super_visor_sample_form
+        try:
+            user = CustomUser.objects.get(id=supervisor_table_obj.supervisor_user.id)
+            return ApprovedBySerializer(user).data
+        except CustomUser.DoesNotExist:
+            return None
+        
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)

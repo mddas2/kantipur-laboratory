@@ -478,10 +478,18 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
     sample_form = SampleFormReadAnalystSerializer(read_only=True)
     # commodity = CommodityWriteSerializer(read_only=True,many=True)
     parameter = TestResultSerializer(many=True,read_only=True)
+    assigned_by = serializers.SerializerMethodField()
     class Meta:
         model = SampleFormHasParameter
         fields = '__all__' 
 
+    def get_assigned_by(self, obj):
+        supervisor_table_obj = obj.super_visor_sample_form
+        try:
+            user = CustomUser.objects.get(id=supervisor_table_obj.supervisor_user.id)
+            return ApprovedBySerializer(user).data
+        except CustomUser.DoesNotExist:
+            return None
 
     def get_parameter(self, obj):
         parameter_data = TestResultSerializer(obj.parameter, many=True).data
@@ -552,6 +560,8 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
         else:
             representation['status'] = analyst_status
         representation['completed_done'] = total_completed
+        representation['completed_done'] = total_completed
+        # representation['assigned_by'] = self.assigned_by
 
         return representation
 
