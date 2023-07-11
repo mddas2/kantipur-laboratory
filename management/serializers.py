@@ -158,7 +158,6 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
             if len(parameters) == 0:        
                 data['parameters'] = commodity_parameters
                 data['price'] = commodity_price
-                print(price," : price")
             else:
                 commodity_parameter_len =  commodity_parameters.count()
                 parameter_len = len(parameters)

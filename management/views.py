@@ -107,7 +107,7 @@ class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
             query =  query.filter(supervisor_user = user.id)
             # query =  SuperVisorSampleForm.objects.filter(supervisor_user = user.id)
         else:
-            raise PermissionDenied("You do not have permission to access this resource.")
+            raise PermissionDenied("You do not have permission to access thais resource.")
         
         return query.order_by("-created_date")
         
@@ -140,10 +140,26 @@ class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
         # Save the new object to the database
         self.perform_create(serializer)
 
+        # this is for redirect for angular
+        created_data = serializer.data
+
+        sample_form_id = created_data['sample_form']
+        sample_form_obj = SampleForm.objects.get(id=sample_form_id)
+        all_parameters = sample_form_obj.parameters.all()
+
+        all_supervisor_parameters = TestResult.objects.filter(supervisor_has_parameter__sample_form_id=sample_form_id)
+
+        if all_parameters.count() == all_supervisor_parameters.count():
+            total_assiged = True
+        else:
+            total_assiged = False
+
+        # print(all_parameters.count(),"::",all_supervisor_parameters.count())
         # Create a custom response
         response_data = {
             "message": "submitted successfully",
-            "data": serializer.data
+            "data": serializer.data,
+            "total_assiged" : total_assiged
         }
 
         # Return the custom response
