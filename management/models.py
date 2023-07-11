@@ -292,5 +292,36 @@ class RawDataSheetDetail(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
 
+class MicroParameter(models.Model):
+    sample_form_has_parameter = models.ForeignKey(SampleFormHasParameter,related_name="micro_detail_sample_form_has_parameter",on_delete=models.CASCADE,null=True,default=None)
+    parameter = models.ForeignKey(TestResult, on_delete=models.CASCADE,null=True)
+    sample_form = models.ForeignKey(SampleForm,related_name="micro_detail",on_delete=models.CASCADE,null=True,default=None)
+    physical_condition_of_sample = models.CharField(max_length=500,null=True)
+    media_used = models.CharField(max_length=500,null=True)
+    prepared_dilution = models.CharField(max_length=500,null=True)
+    diluent_used = models.CharField(max_length=500,null=True)
+    positive_control_used = models.CharField(max_length=500,null=True)
+    negative_control_used = models.CharField(max_length=500,null=True)
+    date_of_incubation = models.DateTimeField(null=True)
+    required_temperature = models.CharField(max_length=500,null=True)
+
+class MicroObservationTable(models.Model):
+    observation_number = models.IntegerField(null=True)
+    observation_time = models.CharField(max_length=500,null=True)
+    temperature = models.CharField(max_length=500,null=True)
+    time = models.CharField(max_length=500,null=True)
+
+    first_exponent = models.CharField(max_length=500,null=True)
+    first_exponent_a = models.CharField(max_length=500,null=True)
+    first_exponent_b = models.CharField(max_length=500,null=True)
+
+    second_exponent = models.CharField(max_length=500,null=True)
+    second_exponent_a = models.CharField(max_length=500,null=True)
+    second_exponent_b = models.CharField(max_length=500,null=True)
+
+    third_exponent = models.CharField(max_length=500,null=True)
+    third_exponent_a = models.CharField(max_length=500,null=True)
+    third_exponent_b = models.CharField(max_length=500,null=True)
+
 
 
