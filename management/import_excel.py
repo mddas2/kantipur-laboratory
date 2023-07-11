@@ -44,8 +44,7 @@ def ImportExcel(request):
             mandatory_standard_nepali = row['mandatory_standard_nepali']
 
             formula = row['formula']
-            print(formula)
-
+      
             notation = row['abbreviation']
 
             remarks = row['remarks']
