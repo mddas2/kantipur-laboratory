@@ -30,6 +30,7 @@ class PaymentSerializer(serializers.ModelSerializer):
         ref_name = "report_payment_detail"
         model = Payment
         fields = '__all__'
+        depth = 1
 
 class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
     analyst_user = CustomUserSerializer(read_only = True)

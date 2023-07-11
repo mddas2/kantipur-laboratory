@@ -211,7 +211,7 @@ class SampleFormHasParameter(models.Model):#sample form has parameter and parame
     #     ]
 
 class Payment(models.Model):
-    sample_form = models.ForeignKey(SampleForm, related_name='payments_sample_form', on_delete=models.DO_NOTHING)
+    sample_form = models.ForeignKey(SampleForm, related_name='payment', on_delete=models.DO_NOTHING)
     owner_email = models.EmailField(max_length=100,null=True)
     owner_user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,default=None)
     voucher_number = models.CharField(blank=True, null=True, max_length=155)
