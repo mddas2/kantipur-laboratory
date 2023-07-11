@@ -13,7 +13,7 @@ def ImportExcel(request):
     # SampleForm.objects.all().delete()
     # return HttpResponse("deleted successfully!!!....")
     
-    file_path = os.path.join(settings.MEDIA_ROOT, "import_data/lims_data.xlsx")
+    file_path = os.path.join(settings.MEDIA_ROOT, "import_data/micro.xlsx")
     print(file_path)
 
     if os.path.exists(file_path):
@@ -40,16 +40,29 @@ def ImportExcel(request):
             unit_nepali = row['units_nepali']
 
             mandatory_standard = row['mandatory_standard']
+            print(mandatory_standard)
             mandatory_standard_nepali = row['mandatory_standard_nepali']
 
             formula = row['formula']
+            print(formula)
 
             notation = row['abbreviation']
 
             remarks = row['remarks']
 
             commodity_price = row['commodity_price']
+            try:
+                commodity_price = int(commodity_price)
+            except:
+                commodity_price = 0
+            
             parameter_price = row['paramater_price']
+            try:
+                parameter_price = int(parameter_price)
+            except:
+                parameter_price = 0
+            print(parameter_price)
+            # return HttpResponse(parameter_price)
 
             commodity_category_data = {
                 'name' : commodity_category,
