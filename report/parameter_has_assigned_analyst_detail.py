@@ -74,13 +74,14 @@ class DetailSampleFormHasParameterAnalystSerializer(serializers.ModelSerializer)
 
         # Add extra response data for parameters field
         parameters_data = representation.get('parameters', [])
-
+        sample_form_has_param_id = None
         params_data_fixed = []
         for param in parameters_data:
             parameter_id = param.get('id')
             obk = SampleFormHasParameter.objects.filter(parameter=parameter_id, sample_form = sample_form_id,analyst_user=user)
             exists = obk.exists()
             if exists:
+                sample_form_has_param_id = obk.first().id
                 params_data_fixed.append(param)    
 
         parameters_data = params_data_fixed
@@ -113,6 +114,7 @@ class DetailSampleFormHasParameterAnalystSerializer(serializers.ModelSerializer)
             parameter_data['exist'] = exists
 
         representation['parameters'] = parameters_data
+        representation['sample_form_has_param_id'] = sample_form_has_param_id
         return representation
 
 
@@ -122,6 +124,8 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
     owner_user = serializers.SerializerMethodField()
     verified_by = CustomUserSerializer(read_only = True)
     approved_by = CustomUserSerializer(read_only = True)
+
+    # payment = PaymentSerializer(read_only = True,many = False)
 
     
     id = serializers.SerializerMethodField()
