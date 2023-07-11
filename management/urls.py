@@ -8,6 +8,10 @@ router.register('client-category', views.ClientCategoryViewSet, basename="apis/c
 router.register('sample-form', views.SampleFormViewSet, basename="sample_form")
 router.register('commodity', views.CommodityViewSet, basename="commodity")
 router.register('supervisors-have-parameter', views.SuperVisorSampleFormViewset, basename="SuperVisorHaveParameter")
+
+router.register('microparameter', views.MicroparameterViewset, basename="microparameter")
+router.register('micro-observation-table', views.MicroObservationTableViewSet, basename="MicroObservationTableViewSet")
+
 router.register('test-result', views.TestResultViewSet, basename="test_result")
 router.register('commodity-category', views.CommodityCategoryViewSet, basename="commodity_category")
 router.register('sample-form-has-parameter-assign-users', sample_form_has_parameter.SampleFormHasParameterViewSet, basename="SampleFormHasParameterViewSet")

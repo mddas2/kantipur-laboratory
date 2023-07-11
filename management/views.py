@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from .serializers import ClientCategorySerializer, SampleFormWriteSerializer,SampleFormReadSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer,SuperVisorSampleFormReadSerializer,SuperVisorSampleFormWriteSerializer
-from .models import ClientCategory, SampleForm, Commodity, CommodityCategory,TestResult, Payment,SuperVisorSampleForm
+from .serializers import MicroObservationTableSerializer,MicroParameterSerializer,ClientCategorySerializer, SampleFormWriteSerializer,SampleFormReadSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer,SuperVisorSampleFormReadSerializer,SuperVisorSampleFormWriteSerializer
+from .models import ClientCategory, SampleForm, Commodity, CommodityCategory,TestResult, Payment,SuperVisorSampleForm,MicroParameter,MicroObservationTable
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -597,6 +597,122 @@ class PaymentViewSet(viewsets.ModelViewSet):
         # Create a custom response
         response_data = {
             "message": "payment deleted successfully"
+        }
+
+        # Return the custom response
+        return Response(response_data)
+
+class MicroparameterViewset(viewsets.ModelViewSet):
+    queryset = MicroParameter.objects.all()
+    serializer_class = MicroParameterSerializer   
+    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    ordering_fields = ['id']
+    search_fields = ['id']
+    filterset_fields = ['id']
+    # authentication_classes = [JWTAuthentication]
+    permission_classes = [CommodityViewSetPermission]
+    pagination_class = MyLimitOffsetPagination
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # Save the new object to the database
+        self.perform_create(serializer)
+
+        # Create a custom response
+        response_data = {
+            "message": "MicroparameterViewset created successfully",
+            "data": serializer.data
+        }
+
+        # Return the custom response
+        return Response(response_data, status=status.HTTP_201_CREATED)
+    
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+
+        # Save the updated object to the database
+        self.perform_update(serializer)
+
+        # Create a custom response
+        response_data = {
+            "message": "MicroparameterViewset updated successfully",
+            "data": serializer.data
+        }
+
+        # Return the custom response
+        return Response(response_data)
+    
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        # Perform the default delete logic
+        self.perform_destroy(instance)
+
+        # Create a custom response
+        response_data = {
+            "message": "MicroparameterViewset deleted successfully"
+        }
+
+        # Return the custom response
+        return Response(response_data)
+    
+class MicroObservationTableViewSet(viewsets.ModelViewSet):
+    queryset = MicroObservationTable.objects.all()
+    serializer_class = MicroObservationTableSerializer   
+    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    ordering_fields = ['id']
+    search_fields = ['id']
+    filterset_fields = ['id']
+    # authentication_classes = [JWTAuthentication]
+    permission_classes = [CommodityViewSetPermission]
+    pagination_class = MyLimitOffsetPagination
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # Save the new object to the database
+        self.perform_create(serializer)
+
+        # Create a custom response
+        response_data = {
+            "message": "MicroObservationTable created successfully",
+            "data": serializer.data
+        }
+
+        # Return the custom response
+        return Response(response_data, status=status.HTTP_201_CREATED)
+    
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+
+        # Save the updated object to the database
+        self.perform_update(serializer)
+
+        # Create a custom response
+        response_data = {
+            "message": "MicroObservationTable updated successfully",
+            "data": serializer.data
+        }
+
+        # Return the custom response
+        return Response(response_data)
+    
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        # Perform the default delete logic
+        self.perform_destroy(instance)
+
+        # Create a custom response
+        response_data = {
+            "message": "MicroObservationTable deleted successfully"
         }
 
         # Return the custom response

@@ -1,4 +1,4 @@
-from .models import ClientCategory,SuperVisorSampleForm, SampleForm, Commodity, CommodityCategory , TestResult ,SampleFormHasParameter,Payment,SampleFormParameterFormulaCalculate
+from .models import MicroObservationTable,ClientCategory,SuperVisorSampleForm, SampleForm, Commodity, CommodityCategory, MicroParameter , TestResult ,SampleFormHasParameter,Payment,SampleFormParameterFormulaCalculate
 from rest_framework import serializers
 from account.models import CustomUser
 from . import roles
@@ -43,6 +43,16 @@ class CommoditySerializer(serializers.ModelSerializer):
         ref_name = "Commodity_management"
         model = Commodity
         fields = '__all__'
+        
+class MicroParameterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MicroObservationTable
+        fields = '__all__' 
+
+class MicroObservationTableSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MicroParameter
+        fields = '__all__' 
 
 # class CommoditySerializer(serializers.ModelSerializer):
 #     class Meta:
