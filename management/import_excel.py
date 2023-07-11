@@ -40,7 +40,7 @@ def ImportExcel(request):
             unit_nepali = row['units_nepali']
 
             mandatory_standard = row['mandatory_standard']
-            print(mandatory_standard)
+       
             mandatory_standard_nepali = row['mandatory_standard_nepali']
 
             formula = row['formula']
@@ -60,7 +60,7 @@ def ImportExcel(request):
                 parameter_price = int(parameter_price)
             except:
                 parameter_price = 0
-            print(parameter_price)
+     
             # return HttpResponse(parameter_price)
 
             commodity_category_data = {
