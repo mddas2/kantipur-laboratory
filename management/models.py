@@ -53,7 +53,7 @@ class SampleForm(models.Model):#ClientRequest
     brand = models.CharField(max_length=255)
     purpose = models.CharField(max_length=255)
     requested_export = models.CharField(max_length=155,null=True)
-    report_date = models.DateField()
+    report_date = models.DateField(null=True)
     amendments = models.CharField(max_length=255,null=True,blank=True)
     is_commodity_select = models.BooleanField(default=False) #if parameter not select then auto select parameter.this insure that commodity select or parameter.
     language = models.CharField(max_length=10)
@@ -211,7 +211,7 @@ class SampleFormHasParameter(models.Model):#sample form has parameter and parame
     #     ]
 
 class Payment(models.Model):
-    sample_form = models.ForeignKey(SampleForm,related_name='payment' , on_delete=models.DO_NOTHING)
+    sample_form = models.ForeignKey(SampleForm, related_name='payments_sample_form', on_delete=models.DO_NOTHING)
     owner_email = models.EmailField(max_length=100,null=True)
     owner_user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,default=None)
     voucher_number = models.CharField(blank=True, null=True, max_length=155)
