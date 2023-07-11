@@ -237,6 +237,7 @@ class SampleFormParameterFormulaCalculate(models.Model):
     input_fields_value = models.CharField(max_length=2000,null=True)
     auto_calculate_result = models.CharField(max_length=200,null=True)
     remarks = models.CharField(max_length=200,null=True)
+    analyst_remarks = models.CharField(max_length=200,null=True)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
 
@@ -306,6 +307,10 @@ class MicroParameter(models.Model):
     required_temperature = models.CharField(max_length=500,null=True)
 
 class MicroObservationTable(models.Model):
+    micro_parameter_table = models.ForeignKey(MicroParameter,related_name="micro_observation_table",on_delete=models.CASCADE,null=True,default=None)
+    parameter = models.ForeignKey(TestResult, on_delete=models.CASCADE,null=True)
+    sample_form = models.ForeignKey(SampleForm,related_name="micro_observation_table",on_delete=models.CASCADE,null=True,default=None)
+    
     observation_number = models.IntegerField(null=True)
     observation_time = models.CharField(max_length=500,null=True)
     temperature = models.CharField(max_length=500,null=True)

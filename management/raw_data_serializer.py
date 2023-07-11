@@ -60,8 +60,13 @@ class rawDataTestTypeSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
 
         representation['sample_form'] = SampleFormSerializer(instance.sample_form).data
-        representation['status'] = over_all_status[instance.status]
+        
+        try:
+            representation['status'] = over_all_status[instance.status]
+        except:
+            representation['status'] = over_all_status[instance.status]
         return representation
+  
 
 class rawDataTestTypeGlobalSerializer(serializers.ModelSerializer):
 
