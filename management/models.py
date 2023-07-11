@@ -38,8 +38,8 @@ class TestResult(models.Model):
     units_nepali = models.CharField(max_length=100,null=True)
     price = models.IntegerField(null=True)
     results = models.CharField(max_length=100,null=True)
-    mandatory_standard = models.CharField(max_length=100,null=True)
-    mandatory_standard_nepali = models.CharField(max_length=100,null=True)
+    mandatory_standard = models.CharField(max_length=500,null=True)
+    mandatory_standard_nepali = models.CharField(max_length=500,null=True)
 
     remarks = models.TextField(max_length=500,null=True)    
 
