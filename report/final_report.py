@@ -39,7 +39,8 @@ class FinalSampleFormHasVerifiedAPIView(generics.ListAPIView):
         if user.role == roles.USER:
             query = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True) & Q(owner_user=user.email) & Q(status="completed"))
         elif user.role == roles.SUPERVISOR:
-            query = SampleForm.objects.filter(supervisor_user=user).filter(Q(status="completed") | Q(status="not_verified")).filter(verifier__is_sent=True)
+            raise PermissionDenied("You do not have permission to access this resource.")
+            query = SampleForm.objects.filter(Q(status="completed") | Q(status="not_verified")).filter(verifier__is_sent=True).filter(supervisor_sample_form__supervisor_user = user)
 
         elif user.role == roles.SMU:
             query = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True))

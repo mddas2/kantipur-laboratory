@@ -46,6 +46,29 @@ class SampleFormHasAnalystAPIView(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
+    
+class SampleFormHasAnalystFinalReportAPIView(generics.ListAPIView): #supervisor final report
+    
+    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    search_fields = ['id']
+    ordering_fields = ['id']
+    filterset_fields = {
+        'created_date': ['date__gte', 'date__lte']  # Date filtering
+    }
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self): 
+        return SampleFormHasSupervisorParameterSerializer
+    
+    def get_queryset(self):
+        request = self.request
+        queryset = SuperVisorSampleForm.objects.filter(supervisor_user = request.user).filter(sample_form__status="completed").order_by("-created_date")
+        return queryset
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
 
     
 class CompletedSampleFormHasVerifierAPIView(generics.ListAPIView):
@@ -128,6 +151,7 @@ class DetailParameterHasAssignedAnalyst(views.APIView):
             queryset = SampleForm.objects.filter(id=sample_form_id).first()
             serializer = DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(queryset,many = False,context={'request': request})
         return Response(serializer.data)
+    
 
 class FinalReportNepali(views.APIView):
 
