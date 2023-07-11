@@ -7,6 +7,7 @@ from management.models import SampleForm,SuperVisorSampleForm
 from rest_framework import viewsets,status
 from rest_framework.response import Response
 from . sample_form_serializers import SampleFormHasSupervisorParameterSerializer
+from . supervisor_final_report_serializer import SupervisorFinalReportSerializer
 from . parameter_has_assigned_analyst import SampleFormHasParameterAnalystSerializer
 from . analyst_final_report_serializer import DetailSampleFormHasParameterRoleAsAnalystSerializer
 from . parameter_has_assigned_analyst_detail import DetailSampleFormHasParameterAnalystSerializer,DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp,FinalReportNepaliAnalystSerializer
@@ -69,7 +70,16 @@ class SampleFormHasAnalystFinalReportAPIView(generics.ListAPIView): #supervisor 
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
+    
 
+    
+class DetailSampleFormHasAnalystFinalReportAPIView(views.APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get(self, request, supervisor_table_id, format=None):
+        queryset = SuperVisorSampleForm.objects.filter(id=supervisor_table_id).first()
+        serializer = SupervisorFinalReportSerializer(queryset,many = False)
+        return Response(serializer.data)
 
     
 class CompletedSampleFormHasVerifierAPIView(generics.ListAPIView):

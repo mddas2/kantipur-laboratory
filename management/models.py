@@ -48,7 +48,13 @@ class SampleForm(models.Model):#ClientRequest
     name = models.CharField(max_length=255, null=True)
     condition = models.CharField(max_length=255)
     mfd = models.DateField()
-    dfb = models.DateField()
+
+    dfb = models.DateField(null=True)
+
+    days_dfb = models.CharField(max_length=255,null=True,blank=True)
+    dfb_duration = models.CharField(choices=(('days','days'),('month','month'),('year','year'),('','')), default=None, max_length=155,null=True)
+    dfb_type = models.CharField(choices=(('days','days'),('date','date'),('','')), default=None, max_length=155,null=True)
+
     batch = models.IntegerField()
     brand = models.CharField(max_length=255)
     purpose = models.CharField(max_length=255)

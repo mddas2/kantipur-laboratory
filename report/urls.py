@@ -10,6 +10,7 @@ from rest_framework.routers import DefaultRouter
 urlpatterns = [   
     path('sample-form-has-assigned-analyst/', views.SampleFormHasAnalystAPIView.as_view()),
     path('sample-form-has-assigned-analyst-final-report/', views.SampleFormHasAnalystFinalReportAPIView.as_view()),
+    path('detail-sample-form-has-assigned-analyst-final-report/<int:supervisor_table_id>/', views.DetailSampleFormHasAnalystFinalReportAPIView.as_view()),
 
     path('sample-form-has-parameter-has-assigned-analyst/<int:sample_form_id>/', views.ParameterHasAssignedAnalyst.as_view()), #both are same
 
