@@ -315,7 +315,7 @@ class MicroObservationTable(models.Model):
     parameter = models.ForeignKey(TestResult, on_delete=models.CASCADE,null=True)
     sample_form = models.ForeignKey(SampleForm,related_name="micro_observation_table",on_delete=models.CASCADE,null=True,default=None)
     
-    observation_number = models.IntegerField(null=True)
+    observation_number = models.CharField(max_length=500,null=True)
     observation_time = models.CharField(max_length=500,null=True)
     temperature = models.CharField(max_length=500,null=True)
     time = models.CharField(max_length=500,null=True)

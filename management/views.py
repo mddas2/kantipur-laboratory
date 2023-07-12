@@ -671,7 +671,7 @@ class MicroObservationTableViewSet(viewsets.ModelViewSet):
     permission_classes = [CommodityViewSetPermission]
     pagination_class = MyLimitOffsetPagination
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(data=request.data,many=True)
         serializer.is_valid(raise_exception=True)
 
         # Save the new object to the database
