@@ -437,31 +437,44 @@ class SampleFormReject(APIView):
         serializer.is_valid(raise_exception=True)
 
         sample_form_id = serializer.validated_data['sample_form']
+        print(sample_form_id,"reject sample form id")
         remarks = serializer.validated_data['remarks']
         
        
         sample_form_formul_recheck_obj = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id = sample_form_id)
 
-        if sample_form_formul_recheck_obj.exists():
-           sample_form_formul_recheck_obj.update(status  = "rejected")
+        sample_form_obj_t = SampleForm.objects.filter(id = sample_form_id)
+    
+        if sample_form_formul_recheck_obj.exists() or sample_form_obj_t.exists():
+            try:
+                sample_form_formul_recheck_obj.update(status  = "rejected")
+            except:
+                pass
 
-           sample_form_obj = SampleForm.objects.get(id = sample_form_id)
-           sample_form_obj.status = "rejected"
-           
-           supervisor_obj= sample_form_obj.supervisor_sample_form
-           supervisor_obj.update(status = "rejected")
+            sample_form_obj = SampleForm.objects.get(id = sample_form_id)
+            sample_form_obj.status = "rejected"
+            
+            try:
+                supervisor_obj= sample_form_obj.supervisor_sample_form
+                supervisor_obj.update(status = "rejected")
+            except:
+                pass
 
-           sample_form_has_parameter = sample_form_obj.sample_has_parameter_analyst.all()
-           sample_form_has_parameter.update(status = "rejected")
+            try:
+                sample_form_has_parameter = sample_form_obj.sample_has_parameter_analyst.all()
+                sample_form_has_parameter.update(status = "rejected")
+                
+                sample_form_raw_data = sample_form_obj.raw_datasheet.last()
+                sample_form_raw_data.status="rejected"
+                sample_form_raw_data.save()
 
-           sample_form_raw_data = sample_form_obj.raw_datasheet.last()
-           sample_form_raw_data.status="rejected"
-           sample_form_raw_data.save()
+                sample_form_verifier = sample_form_obj.verifier
+                sample_form_verifier.status ="rejected"
+            except:
+                pass
 
-           sample_form_verifier = sample_form_obj.verifier
-           sample_form_verifier.status ="rejected"
-
-           sample_form_obj.save()
+            sample_form_obj.save()
+            
         else:
             message = {
                 "message":"some things went wrong"
