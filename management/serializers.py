@@ -44,14 +44,31 @@ class CommoditySerializer(serializers.ModelSerializer):
         model = Commodity
         fields = '__all__'
         
-class MicroParameterSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = MicroParameter 
-        fields = '__all__' 
 
 class MicroObservationTableSerializer(serializers.ModelSerializer):
+    def to_internal_value(self, data):
+        if 'sample_form' in data:
+            sample_form_id = data['sample_form'] 
+            decoded_sample_form_id = generateDecodeIdforSampleForm(sample_form_id,self.context['request'].user)#smart_text(urlsafe_base64_decode(data['sample_form']))
+            data['sample_form'] = decoded_sample_form_id
+            print(data['sample_form'])
+        return super().to_internal_value(data)
+    
     class Meta:
         model = MicroObservationTable
+        fields = '__all__' 
+
+class MicroParameterSerializer(serializers.ModelSerializer):
+    def to_internal_value(self, data):
+        if 'sample_form' in data:
+            sample_form_id = data['sample_form'] 
+            decoded_sample_form_id = generateDecodeIdforSampleForm(sample_form_id,self.context['request'].user)#smart_text(urlsafe_base64_decode(data['sample_form']))
+            data['sample_form'] = decoded_sample_form_id
+            print(data['sample_form'])
+        return super().to_internal_value(data)
+    micro_observation_table = MicroObservationTableSerializer(many = True,read_only = True)
+    class Meta:
+        model = MicroParameter 
         fields = '__all__' 
 
 # class CommoditySerializer(serializers.ModelSerializer):
