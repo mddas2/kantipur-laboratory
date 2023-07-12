@@ -64,7 +64,7 @@ class rawDataTestTypeSerializer(serializers.ModelSerializer):
         try:
             representation['status'] = over_all_status[instance.status]
         except:
-            representation['status'] = over_all_status[instance.status]
+            representation['status'] = instance.status
         return representation
   
 
