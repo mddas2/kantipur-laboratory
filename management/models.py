@@ -241,6 +241,10 @@ class SampleFormParameterFormulaCalculate(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
 
+    converted_result = models.CharField(max_length=200,null=True)
+    analyst_remarks = models.CharField(max_length=200,null=True)
+    decimal_place = models.CharField(max_length=200,null=True)
+
     status_choices = (
         ('pending', 'pending'),
         ('rejected', 'rejected'),

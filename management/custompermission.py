@@ -40,6 +40,7 @@ class CommodityViewSetPermission(BasePermission):
         
 class RejectSampleFormViewSetPermission(BasePermission):
     def has_permission(self, request, view):
+        return True
         method_name = view.action
         if method_name == 'list':
             return True
