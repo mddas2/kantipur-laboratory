@@ -237,7 +237,7 @@ class SampleFormParameterFormulaCalculate(models.Model):
     input_fields_value = models.CharField(max_length=2000,null=True)
     auto_calculate_result = models.CharField(max_length=200,null=True)
     remarks = models.CharField(max_length=200,null=True)
-    analyst_remarks = models.CharField(max_length=200,null=True)
+ 
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
 
