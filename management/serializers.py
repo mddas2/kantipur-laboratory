@@ -46,12 +46,12 @@ class CommoditySerializer(serializers.ModelSerializer):
         
 class MicroParameterSerializer(serializers.ModelSerializer):
     class Meta:
-        model = MicroObservationTable
+        model = MicroParameter 
         fields = '__all__' 
 
 class MicroObservationTableSerializer(serializers.ModelSerializer):
     class Meta:
-        model = MicroParameter
+        model = MicroObservationTable
         fields = '__all__' 
 
 # class CommoditySerializer(serializers.ModelSerializer):

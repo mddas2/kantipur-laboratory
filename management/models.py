@@ -332,5 +332,9 @@ class MicroObservationTable(models.Model):
     third_exponent_a = models.CharField(max_length=500,null=True)
     third_exponent_b = models.CharField(max_length=500,null=True)
 
+    negative_control = models.CharField(max_length=500,null=True)
+    positive_control = models.CharField(max_length=500,null=True)
+
+
 
 

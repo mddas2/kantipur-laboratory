@@ -33,7 +33,7 @@ def handle_sampleform_presave(sender, instance, **kwargs):
         original_sample_form_status = SampleForm.objects.get(pk=instance.id).supervisor_user
     if instance.status != original_sample_form_status: # dynamic rawdata sheet status changing
         raw_data_obj = RawDataSheet.objects.filter(sample_form_id = instance.id).filter(~Q(status="recheck") or ~Q(status="re-assign"))
-        raw_data_obj.update(status = instance.id)
+        raw_data_obj.update(status = instance.status)
             
              
 

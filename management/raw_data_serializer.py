@@ -61,10 +61,11 @@ class rawDataTestTypeSerializer(serializers.ModelSerializer):
 
         representation['sample_form'] = SampleFormSerializer(instance.sample_form).data
         
-        try:
-            representation['status'] = over_all_status[instance.status]
-        except:
-            representation['status'] = "completed" # blunder need to fix
+        representation['status'] = over_all_status[instance.status]
+        # try:
+        #     representation['status'] = over_all_status[instance.status]
+        # except:
+        #     representation['status'] = "completed" # blunder need to fix
         return representation
   
 
