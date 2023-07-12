@@ -38,6 +38,23 @@ class CommodityViewSetPermission(BasePermission):
         else:
             return False
         
+class RejectSampleFormViewSetPermission(BasePermission):
+    def has_permission(self, request, view):
+        method_name = view.action
+        if method_name == 'list':
+            return True
+        elif method_name == 'create':
+            return True
+        elif method_name == 'retrieve':
+            return True
+        elif method_name == 'update':
+            return True
+        elif method_name == 'partial_update':
+            return True
+        elif method_name == 'destroy':
+            return True
+        else:
+            return False
 class CommodityCategoryViewSetPermission(BasePermission):
     def has_permission(self, request, view):
         method_name = view.action

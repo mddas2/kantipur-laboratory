@@ -15,6 +15,7 @@ import json
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from . custompermission import RejectSampleFormViewSetPermission
 
 
 class Formula:
@@ -421,7 +422,7 @@ class SampleFormResultRecheck(APIView):
 
 class SampleFormReject(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,RejectSampleFormViewSetPermission]
     
  
     def post(self, request, format=None):
