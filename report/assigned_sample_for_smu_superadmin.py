@@ -37,9 +37,9 @@ class FinalSampleFormHasVerifiedAPIView(generics.ListAPIView):
         user = self.request.user 
        
         if user.role == roles.SMU:
-            query = SampleForm.objects.filter(~Q(status="pending") & ~Q(status="completed"))
+            query = SampleForm.objects.filter(~Q(status="pending") & ~Q(status="completed")).filter(~Q(status="rejected"))
         elif user.role == roles.SUPERADMIN:
-            query = SampleForm.objects.filter(~Q(status="pending") & ~Q(status="completed"))
+            query = SampleForm.objects.filter(~Q(status="pending") & ~Q(status="completed")).filter(~Q(status="rejected"))
         else:
             raise PermissionDenied("You do not have permission to access this resource.")
         return query.order_by("-created_date")
