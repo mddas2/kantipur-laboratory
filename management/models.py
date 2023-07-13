@@ -309,6 +309,8 @@ class MicroParameter(models.Model):
     negative_control_used = models.CharField(max_length=500,null=True)
     date_of_incubation = models.DateTimeField(null=True)
     required_temperature = models.CharField(max_length=500,null=True)
+    status = models.CharField(max_length=2000,null=True)
+
 
 class MicroObservationTable(models.Model):
     micro_parameter_table = models.ForeignKey(MicroParameter,related_name="micro_observation_table",on_delete=models.CASCADE,null=True,default=None)
