@@ -687,13 +687,19 @@ class MicroObservationTableViewSet(viewsets.ModelViewSet):
         return Response(response_data, status=status.HTTP_201_CREATED)
     
     def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
+        
+        data = request.data
+        for dat in data:
+            print(dat)
+            # update_url_id = dat.ids
+            print(dat)
+            partial = kwargs.pop('partial', False)
+            instance = MicroObservationTable.objects.get(id = dat['id'])
+            serializer = self.get_serializer(instance, data=dat, partial=partial)
+            serializer.is_valid(raise_exception=True)
 
-        # Save the updated object to the database
-        self.perform_update(serializer)
+            # Save the updated object to the database
+            self.perform_update(serializer)
 
         # Create a custom response
         response_data = {
