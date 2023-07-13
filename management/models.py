@@ -335,6 +335,44 @@ class MicroObservationTable(models.Model):
     negative_control = models.CharField(max_length=500,null=True,blank=True)
     positive_control = models.CharField(max_length=500,null=True,blank=True)
 
+class MicroParameterRawData(models.Model):
+    sample_form_has_parameter = models.ForeignKey(SampleFormHasParameter,related_name="micro_detail_sample_form_has_parameter_rawdata",on_delete=models.CASCADE,null=True,default=None)
+    parameter = models.ForeignKey(TestResult, on_delete=models.CASCADE,null=True)
+    sample_form = models.ForeignKey(SampleForm,related_name="micro_detail_rawdata",on_delete=models.CASCADE,null=True,default=None)
+    physical_condition_of_sample = models.CharField(max_length=500,null=True)
+    media_used = models.CharField(max_length=500,null=True)
+    prepared_dilution = models.CharField(max_length=500,null=True)
+    diluent_used = models.CharField(max_length=500,null=True)
+    positive_control_used = models.CharField(max_length=500,null=True)
+    negative_control_used = models.CharField(max_length=500,null=True)
+    date_of_incubation = models.DateTimeField(null=True)
+    required_temperature = models.CharField(max_length=500,null=True)
+
+class MicroObservationTableRawData(models.Model):
+    micro_parameter_table = models.ForeignKey(MicroParameter,related_name="micro_observation_table_rawdata",on_delete=models.CASCADE,null=True,default=None)
+    parameter = models.ForeignKey(TestResult, on_delete=models.CASCADE,null=True)
+    sample_form = models.ForeignKey(SampleForm,related_name="micro_observation_table_rawdata",on_delete=models.CASCADE,null=True,default=None)
+    
+    observation_number = models.CharField(max_length=500,null=True,blank=True)
+    observation_time = models.CharField(max_length=500,null=True,blank=True)
+    temperature = models.CharField(max_length=500,null=True,blank=True)
+    time = models.CharField(max_length=500,null=True,blank=True)
+
+    first_exponent = models.CharField(max_length=500,null=True,blank=True)
+    first_exponent_a = models.CharField(max_length=500,null=True,blank=True)
+    first_exponent_b = models.CharField(max_length=500,null=True,blank=True)
+
+    second_exponent = models.CharField(max_length=500,null=True,blank=True)
+    second_exponent_a = models.CharField(max_length=500,null=True,blank=True)
+    second_exponent_b = models.CharField(max_length=500,null=True,blank=True)
+
+    third_exponent = models.CharField(max_length=500,null=True,blank=True)
+    third_exponent_a = models.CharField(max_length=500,null=True,blank=True)
+    third_exponent_b = models.CharField(max_length=500,null=True,blank=True)
+
+    negative_control = models.CharField(max_length=500,null=True,blank=True)
+    positive_control = models.CharField(max_length=500,null=True,blank=True)
+
 
 
 
