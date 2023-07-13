@@ -609,8 +609,8 @@ class MicroparameterViewset(viewsets.ModelViewSet):
     ordering_fields = ['id']
     search_fields = ['id']
     filterset_fields = ['id']
-    # authentication_classes = [JWTAuthentication]
-    permission_classes = [CommodityViewSetPermission]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated,CommodityViewSetPermission]
     pagination_class = MyLimitOffsetPagination
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -667,8 +667,8 @@ class MicroObservationTableViewSet(viewsets.ModelViewSet):
     ordering_fields = ['id']
     search_fields = ['id']
     filterset_fields = ['id']
-    # authentication_classes = [JWTAuthentication]
-    permission_classes = [CommodityViewSetPermission]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated,CommodityViewSetPermission]
     pagination_class = MyLimitOffsetPagination
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data,many=True)

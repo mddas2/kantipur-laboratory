@@ -548,7 +548,13 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
                 parameter['remarks'] = formula_calculate.remarks
                 parameter['is_locked'] = formula_calculate.is_locked
             else:
-                parameter['result'] = ""      
+                parameter['result'] = ""     
+             
+            micro_table = MicroParameter.objects.filter(parameter = parameter['id'],sample_form=obj.sample_form_id,sample_form_has_parameter = obj.id)
+            if micro_table.exists():
+                parameter['micro_table'] = micro_table.last().id
+            else:
+                parameter['micro_table'] = None
          
         analyst_status = "processing"
         completed_done = 0
