@@ -161,7 +161,7 @@ class rawDataForSampleFormGlobal(generics.ListAPIView):
         sample_form_id = self.kwargs.get('sample_form')
         user = self.request.user
         sample_form_id = generateDecodeIdforSampleForm(sample_form_id, user)
-        query = RawDataSheet.objects.filter(sample_form_id=sample_form_id,status= "not_verified")
+        query = RawDataSheet.objects.filter(sample_form_id=sample_form_id)#.filter(Q(status = "not_approved") status= "not_verified")
         return query
     
     def get_serializer_class(self):
