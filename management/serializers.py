@@ -631,11 +631,19 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         sample_form = attrs.get('sample_form')
         print(attrs.get('super_visor_sample_form')," not  printing this...")
+        super_visor_sample_form_table = attrs.get('super_visor_sample_form')
         analyst_user = attrs.get('analyst_user')
         parameter = attrs.get('parameter')
 
         action = self.context['view'].action
-    
+        check_exist_for_other_supervisor = SampleFormHasParameter.objects.filter(sample_form = sample_form,analyst_user = analyst_user)
+        
+        if check_exist_for_other_supervisor.exists():
+            obj_check_exist_for_other_supervisor = check_exist_for_other_supervisor.first()
+            if obj_check_exist_for_other_supervisor.super_visor_sample_form.id != super_visor_sample_form_table.id:
+                # print(obj_check_exist_for_other_supervisor.super_visor_sample_form,"::",super_visor_sample_form_table , "you are trying to update where other supervisor already assigned")
+                raise serializers.ValidationError('you are trying to update where other supervisor already assigned')
+
         if len(attrs) == 3 and action == 'partial_update' and 'is_supervisor_sent' and 'status' and 'remarks' in attrs:
             if attrs.get('is_supervisor_sent') == True:
                 id=self.context['view'].kwargs.get('pk')
