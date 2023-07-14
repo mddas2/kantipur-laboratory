@@ -739,6 +739,13 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                         obj.delete()
 
                         return instance
+                    else:
+                        # obj.analyst_user = analyst_user
+                        # flushFormulaCalculate(obj,parameter)
+                        # AlterRawDataStatus(obj)
+                        # obj.save()
+                        
+                        print("this sample form has parameter have single parameter and this is changable analyst and this parameter and changeble analyst is not exist, so this need to create new and then delete,or simply change analyst name")
                     
                     return obj
             # raise serializers.ValidationError('remove from and re-assigning. i am fixing right now')
