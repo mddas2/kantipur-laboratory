@@ -68,7 +68,7 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
         elif user.role == roles.SUPERADMIN:
             # Regular user can see SampleForm instances with form_available='user'
             query = CustomUser.objects.filter(is_active = True)           
-        elif user.role == roles.SUPERVISOR:
+        elif user.role == roles.ADMIN:
             # Regular user can see SampleForm instances with form_available='user'
             query = CustomUser.objects.filter(is_active = True)            
         else:
