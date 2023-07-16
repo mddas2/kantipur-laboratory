@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from .serializers import SampleFormHasParameterReadSerializer,SampleFormHasParameterWriteSerializer
-from .models import SampleFormHasParameter
+from .models import SampleFormHasParameter,TestResult
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -60,10 +60,21 @@ class SampleFormHasParameterViewSet(viewsets.ModelViewSet):
         # Save the new object to the database
         self.perform_create(serializer)
 
+        supervisor_obj = serializer.validated_data['super_visor_sample_form']
+        supervisor_parameters = supervisor_obj.parameters.all()
+
+        all_assigned_parameters = TestResult.objects.filter(sample_has_parameters__super_visor_sample_form_id=supervisor_obj.id) #is supervisor has assigned 
+
+        if supervisor_parameters.count() == all_assigned_parameters.count():
+            total_assiged = True
+        else:
+            total_assiged = False
+
         # Create a custom response
         response_data = {
             "message": "created successfully",
-            "data": serializer.data
+            "data": serializer.data,
+            "total_assigned" : total_assiged
         }
 
         # Return the custom response
