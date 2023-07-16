@@ -284,18 +284,7 @@ class RawDataSheet(models.Model):
     supervisor_remarks = models.CharField(max_length=1000,null=True)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
-
     
-class RawDataSheetDetail(models.Model):
-    raw_data = models.ForeignKey(RawDataSheet, on_delete=models.CASCADE,related_name="raw_data",null=True)
-    parameter = models.ForeignKey(TestResult, on_delete=models.CASCADE,null=True)
-    result =  models.FloatField(null=True)
-    is_verified = models.BooleanField(default=False)
-    input_fields_value = models.CharField(max_length=2000,null=True)
-    auto_calculate_result = models.CharField(max_length=200,null=True)
-    remark = models.CharField(max_length=200,null=True)
-    created_date = models.DateTimeField(default=timezone.now)
-    updated_date = models.DateTimeField(default=timezone.now)
 
 class MicroParameter(models.Model):
     sample_form_has_parameter = models.ForeignKey(SampleFormHasParameter,related_name="micro_detail_sample_form_has_parameter",on_delete=models.CASCADE,null=True,default=None)
@@ -310,6 +299,19 @@ class MicroParameter(models.Model):
     date_of_incubation = models.DateTimeField(null=True)
     required_temperature = models.CharField(max_length=500,null=True)
     status = models.CharField(max_length=2000,null=True)
+    is_original = models.BooleanField(default=True)
+
+class RawDataSheetDetail(models.Model):
+    raw_data = models.ForeignKey(RawDataSheet, on_delete=models.CASCADE,related_name="raw_data",null=True)
+    parameter = models.ForeignKey(TestResult, on_delete=models.CASCADE,null=True)
+    micro_table = models.ForeignKey(MicroParameter,related_name="raw_data", on_delete=models.CASCADE,null=True,default=None,blank=True)
+    result =  models.FloatField(null=True)
+    is_verified = models.BooleanField(default=False)
+    input_fields_value = models.CharField(max_length=2000,null=True)
+    auto_calculate_result = models.CharField(max_length=200,null=True)
+    remark = models.CharField(max_length=200,null=True)
+    created_date = models.DateTimeField(default=timezone.now)
+    updated_date = models.DateTimeField(default=timezone.now)
 
 
 class MicroObservationTable(models.Model):

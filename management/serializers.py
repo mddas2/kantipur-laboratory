@@ -550,7 +550,7 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
             else:
                 parameter['result'] = ""     
              
-            micro_table = MicroParameter.objects.filter(parameter = parameter['id'],sample_form=obj.sample_form_id,sample_form_has_parameter = obj.id)
+            micro_table = MicroParameter.objects.filter(parameter = parameter['id'],sample_form=obj.sample_form_id,sample_form_has_parameter = obj.id,is_original = True)
             if micro_table.exists():
                 parameter['micro_table'] = micro_table.last().id
             else:
