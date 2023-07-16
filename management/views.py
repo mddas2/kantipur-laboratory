@@ -689,6 +689,8 @@ class MicroObservationTableViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         
         data = request.data
+        
+        response_data = {}
         for dat in data:
             print(dat)
             # update_url_id = dat.ids
@@ -702,10 +704,10 @@ class MicroObservationTableViewSet(viewsets.ModelViewSet):
             self.perform_update(serializer)
 
         # Create a custom response
-        response_data = {
-            "message": "MicroObservationTable updated successfully",
-            "data": serializer.data
-        }
+            response_data = {
+                "message": "MicroObservationTable updated successfully",
+                "data": serializer.data
+            }
 
         # Return the custom response
         return Response(response_data)
