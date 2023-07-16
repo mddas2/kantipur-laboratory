@@ -393,7 +393,7 @@ def rawDataSheetAnalystReport(request,download_print,sample_form_has_param):
         print(raw_data," generating report pdf as microbiology...")
         template = get_template('raw_data_micro.html')
         context = {
-            'raw_data':raw_data,
+            'raw_data':raw_data.first(),
             'sample_form':raw_data.first().sample_form
         }
     else:
