@@ -383,16 +383,28 @@ def rawDataSheetAnalystReport(request,download_print,sample_form_has_param):
     from rest_framework.response import Response
     from management.models import RawDataSheet
 
-    # raw_data =     
-    template = get_template('raw_data.html')
 
     raw_data = RawDataSheet.objects.filter(id = sample_form_has_param)
 
-    context = {
-        'raw_data':raw_data,
-        'sample_form':raw_data.first().sample_form
-    }
+    test_type = raw_data.first().test_type
 
+    print(raw_data," generating report pdf as microbiology...")
+    if test_type == "Microbiological":
+        print(raw_data," generating report pdf as microbiology...")
+        template = get_template('raw_data_micro.html')
+        context = {
+            'raw_data':raw_data,
+            'sample_form':raw_data.first().sample_form
+        }
+    else:
+        template = get_template('raw_data.html')
+        context = {
+            'raw_data':raw_data,
+            'sample_form':raw_data.first().sample_form
+        }
+
+
+    print(raw_data.first().test_type, "raw data ...")
     # Render the template with the context
     html = template.render(context)
 
