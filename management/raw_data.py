@@ -11,6 +11,7 @@ from rest_framework import generics
 from .raw_data_serializer import rawDataSerializer,rawDataTestTypeSerializer,rawDataTestTypeGlobalSerializer
 from . encode_decode import generateDecodeIdforSampleForm
 from django.http import HttpResponse
+from management.models import MicroParameter
 
 def generateRawData(sample_form_has_parameter_id,remarks):
     print(sample_form_has_parameter_id)
@@ -33,16 +34,33 @@ def generateRawData(sample_form_has_parameter_id,remarks):
     
     print(formula_calculate_parameters)
     for param in formula_calculate_parameters:
-        print(param," md")
-        data = {
-            'raw_data_id':raw_data_sheet_instance.id,
-            'parameter_id':param.parameter.id,
-            'result':param.result,
-            'is_verified':param.is_verified,
-            'input_fields_value':param.input_fields_value,
-            'auto_calculate_result':param.auto_calculate_result,
-            'remark':param.remarks,
-        }
+        print(param,"::",param.parameter.test_type)
+
+        test_type = param.parameter.test_type
+
+        if test_type == "Microbiological":
+            micro_table = MicroParameter.objects.filter(parameter = param.parameter_id,sample_form=sample_form_id,sample_form_has_parameter = obj.id,is_original = True).last()
+            # print(micro_table," micro table")
+            data = {
+                'raw_data_id':raw_data_sheet_instance.id,
+                'parameter_id':param.parameter.id,
+                'result':param.result,
+                'is_verified':param.is_verified,
+                'input_fields_value':param.input_fields_value,
+                'auto_calculate_result':param.auto_calculate_result,
+                'remark':param.remarks,
+                'micro_table' : micro_table,
+            }
+        else:
+            data = {
+                'raw_data_id':raw_data_sheet_instance.id,
+                'parameter_id':param.parameter.id,
+                'result':param.result,
+                'is_verified':param.is_verified,
+                'input_fields_value':param.input_fields_value,
+                'auto_calculate_result':param.auto_calculate_result,
+                'remark':param.remarks,
+            }
         RawDataSheetDetail.objects.update_or_create(**data)
     return True
 
