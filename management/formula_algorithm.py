@@ -282,9 +282,9 @@ class FormulaApiCalculateSave(APIView):
         result = serializer.validated_data['result']
         print(formula_variable_fields_value, " formula_variable_fields_value")
 
-        # converted_result = serializer.validated_data['converted_result']
-        # analyst_remarks = serializer.validated_data['analyst_remarks']
-        # decimal_place = serializer.validated_data['decimal_place']
+        converted_result = serializer.validated_data['converted_result']
+        analyst_remarks = serializer.validated_data['analyst_remarks']
+        decimal_place = serializer.validated_data['decimal_place']
 
         # Locking parameter
         is_locked = False
@@ -308,7 +308,11 @@ class FormulaApiCalculateSave(APIView):
             'result' : result,
             'status' : "completed",
             'input_fields_value':formula_variable_fields_value,
-            'is_locked' : is_locked
+            'is_locked' : is_locked,
+            'converted_result':converted_result,
+            'analyst_remarks':analyst_remarks,
+            'decimal_place':decimal_place,
+
         }
 
         data,created = SampleFormParameterFormulaCalculate.objects.update_or_create(sample_form_id = sample_form_id, parameter_id =parameter_id, commodity_id = commodity_id,sample_form_has_parameter_id=sample_form_has_parameter_id,defaults=data)
