@@ -34,6 +34,8 @@ class CustomUser(AbstractUser):
     approved_by = models.ForeignKey("CustomUser",related_name="user_approved",null=True,on_delete=models.SET_NULL)
     approved_date = models.DateField(null=True)
 
+    is_reject = models.BooleanField(default=False)
+
     client_category = models.ForeignKey("management.ClientCategory",related_name="user",on_delete=models.CASCADE,null=True) 
 
     created_by = models.IntegerField(null=True)
