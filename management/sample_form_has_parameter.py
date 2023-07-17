@@ -44,7 +44,7 @@ class SampleFormHasParameterViewSet(viewsets.ModelViewSet):
         user = self.request.user
         
         if user.role == roles.ANALYST:
-            return SampleFormHasParameter.objects.filter(analyst_user = user).filter(~Q(status='verified')).order_by("-created_date")       
+            return SampleFormHasParameter.objects.filter(analyst_user = user).filter(~Q(status='verified')).filter(~Q(status='rejected')).order_by("-created_date")       
         else:
              raise PermissionDenied("You do not have permission to access this resource.")
 
