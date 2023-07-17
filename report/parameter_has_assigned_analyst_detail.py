@@ -126,7 +126,7 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
     verified_by = CustomUserSerializer(read_only = True)
     approved_by = CustomUserSerializer(read_only = True)
 
-    payment = PaymentSerializer(read_only = True,many = False)
+    payment = PaymentSerializer(read_only = True,many = True)
 
     
     id = serializers.SerializerMethodField()
