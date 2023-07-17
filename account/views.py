@@ -34,6 +34,7 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
         'email': ['exact', 'icontains'],
         'username': ['exact'],
         'is_verified': ['exact'],
+        'is_reject': ['exact'],
         'role': ['exact'],
         'client_category_id': ['exact'],
         'created_date': ['date__gte', 'date__lte']  # Date filtering
