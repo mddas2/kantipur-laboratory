@@ -457,6 +457,8 @@ class SampleFormReject(APIView):
 
             sample_form_obj = SampleForm.objects.get(id = sample_form_id)
             sample_form_obj.status = "rejected"
+            sample_form_obj.remarks = remarks
+
             
             try:
                 supervisor_obj= sample_form_obj.supervisor_sample_form
