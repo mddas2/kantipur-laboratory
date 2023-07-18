@@ -249,13 +249,14 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         user = self.request.user
 
         if user.role == roles.USER:         
-            query =  SampleForm.objects.filter(Q(owner_user = user.email) & ~Q(status="completed") & ~Q(status="rejected") )
+            # query =  SampleForm.objects.filter(Q(owner_user = user.email) & ~Q(status="completed") & ~Q(status="rejected") )
+            query =  SampleForm.objects.filter(Q(owner_user = user.email)).filter(~Q(status="completed")).filter(~Q(status="rejected") )
         elif user.role == roles.SUPERVISOR:
             query =  SampleForm.objects.filter(supervisor_user=user,status="not_assigned")
             if self.request.method == "PATCH":
                 query =  SampleForm.objects.filter(supervisor_user=user)
         elif user.role == roles.SMU:
-            query = SampleForm.objects.filter(Q(form_available = 'smu') or Q(status = "not_assigned")).filter(~Q(status = "rejected"))
+            query = SampleForm.objects.filter(Q(form_available = 'smu') or Q(status = "not_assigned")).filter(~Q(status = "rejected")).filter(~Q(status = "recheck"))
         elif user.role == roles.SUPERADMIN:
             query = SampleForm.objects.filter(Q(form_available = 'smu') or Q(status = "not_assigned")).filter(~Q(status = "rejected"))
         elif user.role == roles.ADMIN:

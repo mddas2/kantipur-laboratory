@@ -403,11 +403,11 @@ class SampleFormResultRecheck(APIView):
         sample_form_id = serializer.validated_data['sample_form']
         remarks = serializer.validated_data['remarks']
         
-       
-        sample_form_recheck_obj = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id = sample_form_id)
+    
+        sample_form_recheck_obj = SampleForm.objects.filter(id = sample_form_id)
         print(sample_form_recheck_obj," recheck")
         if sample_form_recheck_obj.exists():
-           sample_form_recheck_obj.update(status  = "recheck",remarks_recheck_verifier=remarks)
+           sample_form_recheck_obj.update(status  = "recheck",remarks=remarks)
         else:
             message = {
                 "message":"some things went wrong"

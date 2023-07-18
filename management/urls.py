@@ -29,7 +29,7 @@ urlpatterns = [
 
     path('parameter-has-result-recheck/', formula_algorithm.ParameterHasResultRecheck.as_view(), name='single_recheck'),
 
-    path('sample-form-result-recheck/', formula_algorithm.SampleFormResultRecheck.as_view(), name='SampleFormResultRecheck'),
+    path('sample-form-recheck/', formula_algorithm.SampleFormResultRecheck.as_view(), name='SampleFormResultRecheck'),
     path('sample-form-reject/', formula_algorithm.SampleFormReject.as_view(), name='SampleFormReject'),
 
     path('detail-raw-data-sheet/<int:sample_form_has_parameter>/', raw_data.rawDataDetail.as_view(), name='rawData'),
