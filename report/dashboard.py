@@ -30,6 +30,16 @@ class reportStatus(views.APIView):
                 recheck = 1
                 re_assigned = 1
 
+            import_export = 0
+            government_agencies = 0
+
+            client_category = {
+                "industry":total_request,
+                "import_export":import_export,
+                "government_agencies":government_agencies,
+                "dftqc_section":0,
+            }
+       
             data = {
                 'total_request':total_request,
                 'completed':completed,
@@ -39,8 +49,10 @@ class reportStatus(views.APIView):
                 "recheck":recheck,
                 "reject":reject,
                 're_assigned':re_assigned,
-                'not_assigned':not_assigned
+                'not_assigned':not_assigned,
+                'client_category':client_category
             }
+            
 
         elif self.request.user.role == roles.SUPERVISOR:
             total_sample_forms_obj = SampleForm.objects.filter(supervisor_user = self.request.user.id).all()
@@ -72,6 +84,7 @@ class reportStatus(views.APIView):
                 're_assigned':re_assigned,
                 'not_assigned':not_assigned
             }
+            
         
         elif self.request.user.role == roles.ANALYST:
             total_users = 0#CustomUser.objects.all().count()
