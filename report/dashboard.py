@@ -47,8 +47,6 @@ class reportStatus(views.APIView):
                 supervisor_verifier_sent_sample_form = supervisor_all_sample_form.filter(is_supervisor_sent = True).count()
                 
 
-
-
                 data = {
                     'name':full_name,
                     'total_sample_form': supervisor_all_sample_form_count,
@@ -178,7 +176,7 @@ class reportStatus(views.APIView):
             recheck = total_sample_forms_obj.filter(raw_datasheet__status="rechecks").count()
             pending = total_sample_forms_obj.filter(status = "pending").count()
             rejected = total_sample_forms_obj.filter(status = "rejected").count()
-            processing = total_sample_forms_obj.filter(~Q(status = "pending") & ~Q(status="completed") ).count()
+            processing = total_sample_forms_obj.filter(~Q(status = "pending") & ~Q(status="completed") & ~Q(status="rejected")).count()
             data = {
                 'total_request':total_sample_forms,
                 'not_verified':not_verified,
