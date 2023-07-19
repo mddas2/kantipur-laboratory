@@ -63,7 +63,8 @@ class reportStatus(views.APIView):
                 "government_agencies":government_agencies,
                 "dftqc_section":0,
             }
-       
+            test_type_data = testTypeData(total_sample_forms_obj)
+            report_generated_week = reportGeneratedWeek(total_sample_forms_obj)
             data = {
                 'total_request':total_request,
                 'completed':completed,
@@ -76,6 +77,7 @@ class reportStatus(views.APIView):
                 'not_assigned':not_assigned,
                 'client_category':client_category,
                 'task_by_supervisor':task_by_supervisor,
+                'report_generated_week':report_generated_week
             }
             
 
@@ -104,7 +106,8 @@ class reportStatus(views.APIView):
                 }
                 task_by_analyst.append(data)
 
-
+            report_generated_week = reportGeneratedWeek(total_sample_forms_obj)
+      
             data = {
                 'total_request':total_requests,
                 'completed':completed,
@@ -115,7 +118,8 @@ class reportStatus(views.APIView):
                 "recheck":recheck,
                 "reject":reject,
                 'not_assigned':not_assigned,
-                'task_by_analyst':task_by_analyst
+                'task_by_analyst':task_by_analyst,
+                'report_generated_week':report_generated_week,
             }
             
         
@@ -198,3 +202,32 @@ class reportStatus(views.APIView):
             data = {}   
 
         return Response(data)
+
+def reportGeneratedWeek(query):
+    report_generated_week = []
+    # Get the start and end of the current week (assuming Sunday as the start of the week)
+    from django.utils import timezone
+    from django.db.models import Count
+    today = timezone.now()     
+    start_of_week = today - timezone.timedelta(days=today.weekday())  # Sunday    
+    end_of_week = start_of_week + timezone.timedelta(days=7)  # Saturday      
+    # Perform the query to get the count of entries created within this week
+    this_week_entries = query.filter(created_date__range=(start_of_week, end_of_week))
+    # Get the count of entries for each day of the week
+    counts_by_day = this_week_entries.extra({'day': 'date(created_date)'}).values('day').annotate(count=Count('id'))
+    # Display the counts        
+    for entry in counts_by_day:
+        day = entry['day'].strftime('%A')
+        count = entry['count']
+        data  =  {
+            "day":day,
+            "count":count,
+        }
+        report_generated_week.append(data)
+        # print(entry)
+        # print(f"{entry['day'].strftime('%A')}: {entry['count']}")
+    return report_generated_week
+
+def testTypeData(query):
+    return []
+    # chemical = SampleFormHasParameter.objects.filter(tes)
