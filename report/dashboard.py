@@ -77,7 +77,8 @@ class reportStatus(views.APIView):
                 'not_assigned':not_assigned,
                 'client_category':client_category,
                 'task_by_supervisor':task_by_supervisor,
-                'report_generated_week':report_generated_week
+                'report_generated_week':report_generated_week,
+                'test_type_data':test_type_data,
             }
             
 
@@ -229,5 +230,17 @@ def reportGeneratedWeek(query):
     return report_generated_week
 
 def testTypeData(query):
-    return []
+    chemical1 = 40
+    micro1 = 35
+    instrumental1 = 23
+    totals = chemical1+micro1+instrumental1
+
+    data = {
+        "chemical":23,
+        "micro":micro1,
+        "instrumental":instrumental1,
+        "total":totals
+    }
+
+    return [data]
     # chemical = SampleFormHasParameter.objects.filter(tes)
