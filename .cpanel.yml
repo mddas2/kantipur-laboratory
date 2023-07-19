@@ -1,7 +1,7 @@
 deployment:
   tasks:
-    # - export DEPLOYPATH=/home/kantggjb/lims/ #this is original
-    - export DEPLOYPATH=/home/kantggjb/staginglims/ #duplicate
+    - export DEPLOYPATH=/home/kantggjb/lims/ #this is original
+    # - export DEPLOYPATH=/home/kantggjb/staginglims/ #duplicate
     - /bin/cp -r account $DEPLOYPATH
     - /bin/cp -r management $DEPLOYPATH
     - /bin/cp -r emailmanagement $DEPLOYPATH
