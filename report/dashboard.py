@@ -12,7 +12,7 @@ class reportStatus(views.APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request):        
-        if self.request.user.role == roles.SUPERADMIN or self.request.user.role == roles.SMU:
+        if self.request.user.role == roles.SUPERADMIN or self.request.user.role == roles.SMU or self.request.user.role == roles.ADMIN:
             total_users = CustomUser.objects.all().count()
             total_sample_forms_obj = SampleForm.objects.all()
             total_request = total_sample_forms_obj.count()
@@ -132,6 +132,7 @@ class reportStatus(views.APIView):
             recheck = total_sample_forms_obj.filter(status = "recheck").count()
             pending = total_sample_forms_obj.filter(status = "pending").count()
             re_assign = total_sample_forms_obj.filter(status = "re_assign").count()
+            processing = total_sample_forms_obj.filter(status = "processing").count()
 
     
 
@@ -148,6 +149,7 @@ class reportStatus(views.APIView):
                 're_assign' : re_assign,
                 'completed' : completed,
                 'not_verified':not_verified,
+                'processing':processing
             }
 
         elif self.request.user.role == roles.VERIFIER:
@@ -159,7 +161,7 @@ class reportStatus(views.APIView):
             pending = not_verified
 
             verified = total_sample_forms_obj.filter(is_verified=True).count()
-            completed = verified
+            completed = SampleForm.objects.all(status = "completed")
 
             try:
                 reject = total_sample_forms_obj.filter(status = "rejected").count()
