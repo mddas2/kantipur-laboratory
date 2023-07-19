@@ -4,7 +4,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from management import roles
 from account.models import CustomUser
-from management.models import SampleForm,SampleFormHasParameter,SampleFormVerifier
+from management.models import SampleForm,SampleFormHasParameter,SampleFormVerifier,SuperVisorSampleForm
 from django.db.models import Q
 from rest_framework.response import Response
 
@@ -80,34 +80,42 @@ class reportStatus(views.APIView):
             
 
         elif self.request.user.role == roles.SUPERVISOR:
-            total_sample_forms_obj = SampleForm.objects.filter(supervisor_user = self.request.user.id).all()
-            total_request = total_sample_forms_obj.count()
-            completed = total_sample_forms_obj.filter(status = "completed").count()
-            reject = total_sample_forms_obj.filter(status = "rejected").count()
-            not_verified = total_sample_forms_obj.filter(verifier__is_verified = False).count()
+            total_sample_forms_obj = SuperVisorSampleForm.objects.filter(supervisor_user = self.request.user.id).all()
+            total_requests = total_sample_forms_obj.count()
+            completed = total_sample_forms_obj.filter(sample_form__status = "completed").count()
+            reject = total_sample_forms_obj.filter(sample_form__status = "rejected").count()
+            not_verified = total_sample_forms_obj.filter(sample_form__verifier__is_verified = False).count()
+            verified = total_sample_forms_obj.filter(sample_form__verifier__is_verified = True).count()
             pending = total_sample_forms_obj.filter(status = "pending").count()
             not_assigned = total_sample_forms_obj.filter(status = "not_assigned").count()
             processing = total_sample_forms_obj.filter(status = "processing").count()
 
-            try:
-                recheck = total_sample_forms_obj.raw_datasheet.all().filter(status = "recheck").count()
-                re_assigned = total_sample_forms_obj.raw_datasheet.all().filter(status = "re-assign").count()
-            except:
-                recheck = 1
-                re_assigned = 1
+            recheck = total_sample_forms_obj.filter(sample_form__status = "recheck").count()      
 
+            analyst_users = CustomUser.objects.filter(role = roles.ANALYST)
+            task_by_analyst = []
+            for ana_user in analyst_users:
+                supervisor_anaalyst_obj = ana_user.sample_has_parameter_analyst.all().filter(super_visor_sample_form__supervisor_user = request.user)
+                total_request = supervisor_anaalyst_obj.count()
+                name =   ana_user.email
+                data = {
+                    'name':name,
+                    'total_request':total_request,
+                }
+                task_by_analyst.append(data)
 
 
             data = {
-                'total_request':total_request,
+                'total_request':total_requests,
                 'completed':completed,
                 'pending':pending,
                 'not_verified':not_verified,
+                'verified':verified,
                 "processing":processing,
                 "recheck":recheck,
                 "reject":reject,
-                're_assigned':re_assigned,
-                'not_assigned':not_assigned
+                'not_assigned':not_assigned,
+                'task_by_analyst':task_by_analyst
             }
             
         
