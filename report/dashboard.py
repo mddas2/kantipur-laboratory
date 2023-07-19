@@ -33,6 +33,32 @@ class reportStatus(views.APIView):
             import_export = 0
             government_agencies = 0
 
+            task_by_supervisor = []
+
+            suspervisor_users = CustomUser.objects.filter(role = roles.SUPERVISOR)
+            for supervisor_user in suspervisor_users:
+                full_name = str(supervisor_user.first_name) + str(supervisor_user.last_name)
+                
+                supervisor_all_sample_form = supervisor_user.supervisor_sample_form.all()
+                supervisor_all_sample_form_count = supervisor_all_sample_form.count()
+
+                supervisor_completed_sample_form = supervisor_all_sample_form.filter(sample_form__status = "completed").count()
+                supervisor_pending_sample_form = supervisor_all_sample_form.filter(is_supervisor_sent = False).count()
+                supervisor_verifier_sent_sample_form = supervisor_all_sample_form.filter(is_supervisor_sent = True).count()
+                
+
+
+
+                data = {
+                    'name':full_name,
+                    'total_sample_form': supervisor_all_sample_form_count,
+                    'supervisor_completed_sample_form':supervisor_completed_sample_form,
+                    'supervisor_pending_sample_form':supervisor_pending_sample_form,
+                    'supervisor_verifier_sent_sample_form':supervisor_verifier_sent_sample_form
+                }
+                task_by_supervisor.append(data)
+
+
             client_category = {
                 "industry":total_request,
                 "import_export":import_export,
@@ -50,7 +76,8 @@ class reportStatus(views.APIView):
                 "reject":reject,
                 're_assigned':re_assigned,
                 'not_assigned':not_assigned,
-                'client_category':client_category
+                'client_category':client_category,
+                'task_by_supervisor':task_by_supervisor,
             }
             
 
