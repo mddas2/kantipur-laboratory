@@ -13,7 +13,7 @@ def ImportExcel(request):
     # SampleForm.objects.all().delete()
     # return HttpResponse("deleted successfully!!!....")
     
-    file_path = os.path.join(settings.MEDIA_ROOT, "import_data/micro.xlsx")
+    file_path = os.path.join(settings.MEDIA_ROOT, "import_data/water2.xlsx")
     print(file_path)
 
     if os.path.exists(file_path):
@@ -29,8 +29,11 @@ def ImportExcel(request):
             test_type = row['test_type']
             test_type_nepali = row['test_type_nepali']
 
-            parameters_name = row['parameter']
-            parameters_nepali = row['parameter_nepali']
+            parameters_name = row['parameters']
+            try:
+                parameters_nepali = row['parameter_nepali']
+            except:
+                parameters_nepali = parameters_name
 
             ref_test_method = row['ref._test_methods']
 
@@ -44,8 +47,11 @@ def ImportExcel(request):
             mandatory_standard_nepali = row['mandatory_standard_nepali']
 
             formula = row['formula']
-      
-            notation = row['abbreviation']
+
+            try:
+                notation = row['abbreviation']
+            except:
+                notation = ""
 
             remarks = row['remarks']
 
@@ -55,7 +61,7 @@ def ImportExcel(request):
             except:
                 commodity_price = 0
             
-            parameter_price = row['paramater_price']
+            parameter_price = row['parameter_price']
             try:
                 parameter_price = int(parameter_price)
             except:
