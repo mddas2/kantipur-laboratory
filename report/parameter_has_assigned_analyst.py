@@ -21,6 +21,12 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
         model = SampleFormHasParameter
         fields = ['analyst_user','created_date'] 
 
+class SampleFormTrackbyAnalystSerializer(serializers.ModelSerializer):
+    analyst_user = CustomUserSerializer(read_only = True)
+    class Meta:
+        model = SampleFormHasParameter
+        fields = ['analyst_user','status','created_date'] 
+
 class ParameterSerializer(serializers.ModelSerializer):
     class Meta:
         model = TestResult

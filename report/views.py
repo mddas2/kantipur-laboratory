@@ -3,12 +3,12 @@ from django.conf import settings
 from django.http import HttpResponse
 from rest_framework import views
 import json
-from management.models import SampleForm,SuperVisorSampleForm
+from management.models import SampleForm,SuperVisorSampleForm,SampleFormHasParameter
 from rest_framework import viewsets,status
 from rest_framework.response import Response
 from . sample_form_serializers import SampleFormHasSupervisorParameterSerializer
 from . supervisor_final_report_serializer import SupervisorFinalReportSerializer
-from . parameter_has_assigned_analyst import SampleFormHasParameterAnalystSerializer
+from . parameter_has_assigned_analyst import SampleFormHasParameterAnalystSerializer,SampleFormTrackbyAnalystSerializer
 from . analyst_final_report_serializer import DetailSampleFormHasParameterRoleAsAnalystSerializer
 from . parameter_has_assigned_analyst_detail import DetailSampleFormHasParameterAnalystSerializer,DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp,FinalReportNepaliAnalystSerializer
 from . verifier_has_completed_sample_form import CompletedSampleFormHasVerifierSerializer
@@ -143,10 +143,11 @@ class SampleFormTrackbyAnalyst(views.APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request, sample_form_id, format=None):
-        response = {'hello':"sdasd",'sample_form_id':sample_form_id}
-        queryset = SampleForm.objects.filter(id=sample_form_id).first()
-        serializer = SampleFormHasParameterAnalystSerializer(queryset,many = False)
-        return Response(response)
+        sample_form_id = generateDecodeIdforSampleForm(sample_form_id,request.user)
+        queryset = SampleFormHasParameter.objects.filter(sample_form_id=sample_form_id)
+        print(queryset," sample fom has analasadasad")
+        serializer = SampleFormTrackbyAnalystSerializer(queryset,many = True)
+        return Response(serializer.data)
 
 class ParameterHasAssignedAnalyst(views.APIView):
     authentication_classes = [JWTAuthentication]
