@@ -5,7 +5,7 @@ from . import roles
 from . encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
 from . raw_data import generateRawData,UpdategenerateRawData
 from .status_naming import over_all_status
-from datetime import date
+from django.utils import timezone
 
 
 class ApprovedBySerializer(serializers.ModelSerializer):
@@ -650,7 +650,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                 id=self.context['view'].kwargs.get('pk')
                 remarks  = attrs.get('remarks')
 
-                completed_date =  date.today() #if analyst generate raw data sheet then add completed date
+                completed_date =   timezone.now() #if analyst generate raw data sheet then add completed date
                 attrs['completed_date'] = completed_date
                 
                 generateRawData(id,remarks) #  if sent to supervisor then generate logs

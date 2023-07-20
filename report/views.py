@@ -139,6 +139,14 @@ class notApprovedSampleFormHasAdminAPIView(generics.ListAPIView):
         return self.list(request, *args, **kwargs)
 
 #parameter has assigned user
+class SampleFormTrackbyAnalyst(views.APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get(self, request, sample_form_id, format=None):
+        response = {'hello':"sdasd",'sample_form_id':sample_form_id}
+        queryset = SampleForm.objects.filter(id=sample_form_id).first()
+        serializer = SampleFormHasParameterAnalystSerializer(queryset,many = False)
+        return Response(response)
 
 class ParameterHasAssignedAnalyst(views.APIView):
     authentication_classes = [JWTAuthentication]
