@@ -22,6 +22,7 @@ from .custompermission import Account
 from . import department_type
 from websocket.handle_notification import NotificationHandler
 from django.http import HttpResponse
+from django.db.models import Q
 
 class CustomUserSerializerViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
@@ -75,7 +76,7 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
             query = CustomUser.objects.filter(is_active = True)    
         elif user.role == roles.SUPERVISOR:
             # Regular user can see SampleForm instances with form_available='user'
-            query = CustomUser.objects.filter(is_active = True,role=roles.ANALYST)          
+            query = CustomUser.objects.filter(is_active = True).filter(Q(role=roles.ANALYST) | Q(email = user.email))          
         else:
             query = CustomUser.objects.filter(email=user.email,is_active = True)
             # raise PermissionDenied("You do not have permission to access this resource.")
