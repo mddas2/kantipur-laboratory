@@ -29,7 +29,7 @@ def generateRawData(sample_form_has_parameter_id,remarks):
 
     print("data generating test type ",test_type2)
 
-    raw_data_sheet_instance = RawDataSheet(super_visor_sample_form_id = super_visor_sample_form_id ,sample_form_id=sample_form_id,sample_form_has_parameter_id = obj.id,remarks=remarks,status="not_verified",analyst_user=obj.analyst_user,supervisor_remarks=supervisor_remarks,test_type = test_type2)
+    raw_data_sheet_instance = RawDataSheet(super_visor_sample_form_id = super_visor_sample_form_id ,sample_form_id=sample_form_id,sample_form_has_parameter_id = obj.id,remarks=remarks,status="not_verified",analyst_user=obj.analyst_user,supervisor_remarks=supervisor_remarks,test_type = test_type2,started_date = obj.started_date,completed_date=obj.completed_date,sample_received_date = obj.sample_received_date)
     raw_data_sheet_instance.save()
     
     print(formula_calculate_parameters)

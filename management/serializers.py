@@ -655,6 +655,10 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                 
                 generateRawData(id,remarks) #  if sent to supervisor then generate logs
                 return attrs
+        
+        elif len(attrs) == 2 and action == 'partial_update' and 'started_date' and 'sample_received_date' in attrs:
+            return attrs
+            
         elif action == 'partial_update':
             raise serializers.ValidationError('Partial updates not allowed....')
   
