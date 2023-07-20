@@ -8,7 +8,7 @@ from rest_framework import serializers
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['first_name','last_name','id'] 
+        fields = ['first_name','last_name','id','test_type'] 
 
 class CommoditySerializer(serializers.ModelSerializer):
     class Meta:
