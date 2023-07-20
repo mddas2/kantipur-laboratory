@@ -5,6 +5,7 @@ from . import roles
 from . encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
 from . raw_data import generateRawData,UpdategenerateRawData
 from .status_naming import over_all_status
+from datetime import date
 
 
 class ApprovedBySerializer(serializers.ModelSerializer):
@@ -648,6 +649,10 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
             if attrs.get('is_supervisor_sent') == True:
                 id=self.context['view'].kwargs.get('pk')
                 remarks  = attrs.get('remarks')
+
+                completed_date =  date.today() #if analyst generate raw data sheet then add completed date
+                attrs['completed_date'] = completed_date
+                
                 generateRawData(id,remarks) #  if sent to supervisor then generate logs
                 return attrs
         elif action == 'partial_update':
