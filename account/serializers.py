@@ -10,7 +10,7 @@ class ApprovedBySerializer(serializers.ModelSerializer):
      class Meta:
         ref_name = "ApprovedBySerializer_account"
         model = CustomUser
-        fields = '__all__' 
+        fields = ['firstname','lastname','id','email','role','username'] 
 
 class CustomUserReadSerializer(serializers.ModelSerializer):
      class Meta:
@@ -64,8 +64,13 @@ class CustomUserSerializer(serializers.ModelSerializer):
             return False
     
     def validate(self, attrs):
+        print(attrs,"\n attrs...")
         request = self.context.get('request')
-        action = self.context['view'].action        
+        action = self.context['view'].action     
+
+        if action == 'partial_update' and 'is_verified' in attrs and 'remarks' in attrs:
+            attrs['approved_by'] = request.user
+
         if action == 'partial_update':
             old_password = request.data.get('old_password')  
             if old_password is not None:      
