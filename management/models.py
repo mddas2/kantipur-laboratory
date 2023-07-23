@@ -394,5 +394,37 @@ class MicroObservationTableRawData(models.Model):
     positive_control = models.CharField(max_length=500,null=True,blank=True)
 
 
+class ClientCategoryDetail(models.Model):
+    client_sub_category_choices = (
+        ('licensing', 'licensing'),
+        ('survelliance', 'survelliance'),
+        ('formal', 'formal'),       
+        ('gap', 'gap'),
+        ('standard_formation', 'standard_formation'),
+        ('import_export', 'import_export'),
+        ('null', 'null'),
+    )
+    client_sub_category = models.CharField(choices=client_sub_category_choices, default="null", max_length=155)
+
+    sample_form = models.ForeignKey(SampleForm,related_name="ClientCategoryDetail",on_delete=models.CASCADE,null=True,default=None)
+
+    client_category = models.CharField(max_length=200,null=True,blank=True)
+
+    image1 = models.FileField(upload_to='uploads/clientcategorydetail',null=True)
+    image2 = models.FileField(upload_to='uploads/clientcategorydetail',null=True)
+    image3 = models.FileField(upload_to='uploads/clientcategorydetail',null=True)
+    image4 = models.FileField(upload_to='uploads/clientcategorydetail',null=True)
+    image5 = models.FileField(upload_to='uploads/clientcategorydetail',null=True)
+    image6 = models.FileField(upload_to='uploads/clientcategorydetail',null=True)
+    image7 = models.FileField(upload_to='uploads/clientcategorydetail',null=True)
+    image8 = models.FileField(upload_to='uploads/clientcategorydetail',null=True)
+    image9 = models.FileField(upload_to='uploads/clientcategorydetail',null=True)
+    image10 = models.FileField(upload_to='uploads/clientcategorydetail',null=True)
+    
+ 
+
+
+    
+
 
 
