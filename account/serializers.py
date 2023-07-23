@@ -10,7 +10,7 @@ class ApprovedBySerializer(serializers.ModelSerializer):
      class Meta:
         ref_name = "ApprovedBySerializer_account"
         model = CustomUser
-        fields = ['firstname','lastname','id','email','role','username'] 
+        fields = ['first_name','last_name','id','email','role','username'] 
 
 class CustomUserReadSerializer(serializers.ModelSerializer):
      class Meta:
