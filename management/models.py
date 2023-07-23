@@ -410,16 +410,12 @@ class ClientCategoryDetail(models.Model): #DFTQC
 
     client_category = models.CharField(max_length=200,null=True,blank=True)
 
-    image1 = models.FileField(upload_to='uploads/clientcategorydetail',null=True)
-    image2 = models.FileField(upload_to='uploads/clientcategorydetail',null=True)
-    image3 = models.FileField(upload_to='uploads/clientcategorydetail',null=True)
-    image4 = models.FileField(upload_to='uploads/clientcategorydetail',null=True)
-    image5 = models.FileField(upload_to='uploads/clientcategorydetail',null=True)
-    image6 = models.FileField(upload_to='uploads/clientcategorydetail',null=True)
-    image7 = models.FileField(upload_to='uploads/clientcategorydetail',null=True)
-    image8 = models.FileField(upload_to='uploads/clientcategorydetail',null=True)
-    image9 = models.FileField(upload_to='uploads/clientcategorydetail',null=True)
-    image10 = models.FileField(upload_to='uploads/clientcategorydetail',null=True)
+
+class ClientCategoryDetailImages(models.Model):
+    client_category_detail = models.ForeignKey(ClientCategoryDetail,related_name="ClientCategoryDetail",on_delete=models.CASCADE,null=True,default=None)
+    image = models.FileField(upload_to='uploads/clientcategorydetailimages',null=True)
+
+
     
  
 
