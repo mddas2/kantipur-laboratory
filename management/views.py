@@ -289,6 +289,11 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         return response
     
     def create(self, request, *args, **kwargs):
+
+        client_category = request.data.get('client_category')
+        create_client = CeateClientCategoryDetail(client_category)
+    
+
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -747,6 +752,16 @@ def Home(request):
     user.client_category = clien_category
     user.save()
     return HttpResponse(user)
+
+def CeateClientCategoryDetail(data):
+    from . client_category_serializers import ClientCategorySerializer
+
+    serializer = ClientCategorySerializer(data=data)
+   
+    serializer.is_valid(raise_exception=True)
+    #create client category detail
+    serializer.save()
+    return True
    
 
 

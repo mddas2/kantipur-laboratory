@@ -6,3 +6,8 @@ class ClientCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ClientCategoryDetail
         fields = '__all__'
+    
+    def validate(self, attrs):
+        client_category = attrs.get('client_category')
+        # raise serializers.ValidationError('testing sample form client category...')
+        return super().validate(attrs)

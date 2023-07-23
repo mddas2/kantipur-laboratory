@@ -175,6 +175,7 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
 
 class SampleFormWriteSerializer(serializers.ModelSerializer):
     def validate(self, data):
+        raise serializers.ValidationError('testing sample form client category...')
         action = self.context['view'].action
         if action == "create" or action=="update":
             parameters = data.get('parameters')

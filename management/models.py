@@ -43,6 +43,22 @@ class TestResult(models.Model):
 
     remarks = models.TextField(max_length=500,null=True)    
 
+class ClientCategoryDetail(models.Model): #DFTQC
+    client_sub_category_choices = (
+        ('licensing', 'licensing'),
+        ('surveillance', 'surveillance'),
+        ('formal', 'formal'),       
+        ('gap', 'gap'),
+        ('standard_formation', 'standard_formation'),
+        ('import_export', 'import_export'),
+        ('null', 'null'),
+    )
+    client_sub_category = models.CharField(choices=client_sub_category_choices, default="null", max_length=155)
+
+    client_category = models.ForeignKey(ClientCategory, related_name="ClientCategoryDetail",default=None,on_delete=models.SET_NULL,null=True)
+
+    # client_category = models.CharField(max_length=200,null=True,blank=True)
+
 class SampleForm(models.Model):#ClientRequest
     owner_user = models.EmailField(max_length=100,null=False,default=None)
     name = models.CharField(max_length=255, null=True)
@@ -55,7 +71,7 @@ class SampleForm(models.Model):#ClientRequest
     dfb_duration = models.CharField(choices=(('days','days'),('month','month'),('year','year'),('','')), default=None, max_length=155,null=True)
     dfb_type = models.CharField(choices=(('days','days'),('date','date'),('','')), default=None, max_length=155,null=True)
 
-    batch = models.IntegerField()
+    batch = models.CharField(max_length=155,null=True)
     brand = models.CharField(max_length=255)
     purpose = models.CharField(max_length=255)
     requested_export = models.CharField(max_length=155,null=True)
@@ -94,6 +110,7 @@ class SampleForm(models.Model):#ClientRequest
 
     verified_by = models.ForeignKey(CustomUser, related_name="sample_form_verified_by",on_delete=models.SET_NULL,null=True) #verifier
 
+    client_category_detail = models.ForeignKey(ClientCategoryDetail, related_name="sample_form",default=None,on_delete=models.SET_NULL,null=True)
 
     is_analyst_test = models.BooleanField(default=False) #if in paramater_has_analyst send to supervisor then this.from all param then True
 
@@ -392,23 +409,6 @@ class MicroObservationTableRawData(models.Model):
 
     negative_control = models.CharField(max_length=500,null=True,blank=True)
     positive_control = models.CharField(max_length=500,null=True,blank=True)
-
-
-class ClientCategoryDetail(models.Model): #DFTQC
-    client_sub_category_choices = (
-        ('licensing', 'licensing'),
-        ('survelliance', 'survelliance'),
-        ('formal', 'formal'),       
-        ('gap', 'gap'),
-        ('standard_formation', 'standard_formation'),
-        ('import_export', 'import_export'),
-        ('null', 'null'),
-    )
-    client_sub_category = models.CharField(choices=client_sub_category_choices, default="null", max_length=155)
-
-    sample_form = models.ForeignKey(SampleForm,related_name="ClientCategoryDetail",on_delete=models.CASCADE,null=True,default=None)
-
-    client_category = models.CharField(max_length=200,null=True,blank=True)
 
 
 class ClientCategoryDetailImages(models.Model):
