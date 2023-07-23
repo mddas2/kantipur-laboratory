@@ -394,7 +394,7 @@ class MicroObservationTableRawData(models.Model):
     positive_control = models.CharField(max_length=500,null=True,blank=True)
 
 
-class ClientCategoryDetail(models.Model):
+class ClientCategoryDetail(models.Model): #DFTQC
     client_sub_category_choices = (
         ('licensing', 'licensing'),
         ('survelliance', 'survelliance'),
