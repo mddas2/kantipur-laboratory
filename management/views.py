@@ -754,13 +754,26 @@ def Home(request):
     return HttpResponse(user)
 
 def CeateClientCategoryDetail(data):
-    from . client_category_serializers import ClientCategorySerializer
+    print(data," !!lol")
+    from . client_category_serializers import ClientCategorySerializer,ClientCategoryDetailImagesSerializer
 
     serializer = ClientCategorySerializer(data=data)
    
     serializer.is_valid(raise_exception=True)
     #create client category detail
     serializer.save()
+
+    images = data.get('images')
+
+    print(images," image")
+
+    image_serializer = ClientCategoryDetailImagesSerializer(many=True,data=images)
+    image_serializer.is_valid(raise_exception=True)
+
+    print(image_serializer.data)
+
+    print(images,image_serializer.data)
+    
     return True
    
 
