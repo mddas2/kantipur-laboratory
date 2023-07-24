@@ -1,4 +1,4 @@
-from .models import MicroObservationTable,ClientCategory,SuperVisorSampleForm, SampleForm, Commodity, CommodityCategory, MicroParameter , TestResult ,SampleFormHasParameter,Payment,SampleFormParameterFormulaCalculate
+from .models import MicroObservationTable,ClientCategory,SuperVisorSampleForm,ClientCategoryDetailImages, SampleForm, Commodity, CommodityCategory, MicroParameter , TestResult ,SampleFormHasParameter,Payment,SampleFormParameterFormulaCalculate,ClientCategoryDetail
 from rest_framework import serializers
 from account.models import CustomUser
 from . import roles
@@ -43,6 +43,19 @@ class CommoditySerializer(serializers.ModelSerializer):
     class Meta:
         ref_name = "Commodity_management"
         model = Commodity
+        fields = '__all__'
+
+class ClientCategoryDetailImagesSerializer(serializers.ModelSerializer):
+    class Meta:
+        ref_name = "ClientCategoryDetailImagesSerializer"
+        model = ClientCategoryDetailImages
+        fields = '__all__'
+
+class ClientCategoryDetailSerializer(serializers.ModelSerializer):
+    ClientCategoryDetail = ClientCategoryDetailImagesSerializer(many=True,read_only=True)
+    class Meta:
+        ref_name = "ClientCategoryDetailSerializer"
+        model = ClientCategoryDetail
         fields = '__all__'
         
 
@@ -96,6 +109,8 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
     supervisor_user = ApprovedBySerializer(read_only = True)
 
     commodity = CommoditySerializer(read_only = True,many=False)
+
+    client_category_detail = ClientCategoryDetailSerializer(read_only = True,many=False)
     
     class Meta:
         approved_by = ApprovedBySerializer(read_only = True)
