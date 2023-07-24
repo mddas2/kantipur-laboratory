@@ -290,24 +290,37 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     
     def create(self, request, *args, **kwargs):
 
+        name = request.POST.getlist('images[name]')
+        files =  request.FILES.getlist('images[file]')
+        client_sub_category = request.data.get('client_sub_category')
         client_category = request.data.get('client_category')
-        create_client = CeateClientCategoryDetail(client_category)
-    
 
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        # print(name,files,"\n name and files...")
+        create_client,client_category_detail = CeateClientCategoryDetail(name,files,client_category,client_sub_category)
+        if create_client:
 
-        # Save the new object to the database
-        self.perform_create(serializer)
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
 
-        # Create a custom response
-        response_data = {
-            "message": "Sample submitted successfully",
-            "data": serializer.data
-        }
+            # Save the new object to the database
+            self.perform_create(serializer)
 
-        # Return the custom response
-        return Response(response_data, status=status.HTTP_201_CREATED)
+            # Create a custom response
+            response_data = {
+                "message": "Sample submitted successfully",
+                "data": serializer.data
+            }
+
+            # Return the custom response
+            return Response(response_data, status=status.HTTP_201_CREATED)
+        else:
+            esponse_data = {
+                "message": " can not create ",
+            }
+
+            # Return the custom response
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+
     
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
@@ -753,28 +766,42 @@ def Home(request):
     user.save()
     return HttpResponse(user)
 
-def CeateClientCategoryDetail(data):
-    print(data," !!lol")
+def CeateClientCategoryDetail(names,files,client_category,client_sub_category):
+    
     from . client_category_serializers import ClientCategorySerializer,ClientCategoryDetailImagesSerializer
-
+    data = {
+        'client_category':client_category,
+        'client_sub_category':client_sub_category,
+    }
     serializer = ClientCategorySerializer(data=data)
    
     serializer.is_valid(raise_exception=True)
     #create client category detail
     serializer.save()
 
-    images = data.get('images')
+    image_data = []
 
-    print(images," image")
-
-    image_serializer = ClientCategoryDetailImagesSerializer(many=True,data=images)
-    image_serializer.is_valid(raise_exception=True)
-
-    print(image_serializer.data)
-
-    print(images,image_serializer.data)
+    for name, file in zip(names, files):
+    #    print("name:",name," file:",file,int(serializer.data['id']))
+       dict_data = {
+           'client_category_detail':int(serializer.data['id']),
+           'name':name,
+           'file':file,
+       }
+       image_data.append(dict_data)
     
-    return True
+    # print(image_data)
+        
+
+    image_serializer = ClientCategoryDetailImagesSerializer(many=True,data=image_data)
+    image_serializer.is_valid(raise_exception=True)
+    image_serializer.save()
+
+    # print(image_serializer.data)
+
+    # print(image_data,image_serializer.data)
+    
+    return True,int(serializer.data['id'])
    
 
 

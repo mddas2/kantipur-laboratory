@@ -414,6 +414,7 @@ class MicroObservationTableRawData(models.Model):
 class ClientCategoryDetailImages(models.Model):
     client_category_detail = models.ForeignKey(ClientCategoryDetail,related_name="ClientCategoryDetail",on_delete=models.CASCADE,null=True,default=None)
     file = models.FileField(upload_to='uploads/clientcategorydetailimages',null=True)
+    name = models.CharField(max_length=500,null=True,blank=True)
 
 
     
