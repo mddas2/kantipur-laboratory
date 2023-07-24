@@ -18,7 +18,6 @@ class ClientCategoryDetailImagesSerializer(serializers.ModelSerializer):
         fields = '__all__'
     
     def validate(self, attrs):
-        image = attrs.get('images')
-        print(image," image serializer")
+      
         # raise serializers.ValidationError('testing sample form client category...')
         return super().validate(attrs)

@@ -297,9 +297,19 @@ class SampleFormViewSet(viewsets.ModelViewSet):
 
         # print(name,files,"\n name and files...")
         create_client,client_category_detail = CeateClientCategoryDetail(name,files,client_category,client_sub_category)
+        
         if create_client:
+            from django.http import QueryDict
+            
+            mutable_data = QueryDict(mutable=True)
+            mutable_data.update(request.data)
 
-            serializer = self.get_serializer(data=request.data)
+
+            # Set the client_category_detail_id in the mutable data
+            mutable_data['client_category_detail'] = client_category_detail
+
+
+            serializer = self.get_serializer(data=mutable_data)
             serializer.is_valid(raise_exception=True)
 
             # Save the new object to the database
@@ -781,8 +791,9 @@ def CeateClientCategoryDetail(names,files,client_category,client_sub_category):
 
     image_data = []
 
+
     for name, file in zip(names, files):
-    #    print("name:",name," file:",file,int(serializer.data['id']))
+       print("name:",name," file:",file,int(serializer.data['id']))
        dict_data = {
            'client_category_detail':int(serializer.data['id']),
            'name':name,
@@ -790,13 +801,14 @@ def CeateClientCategoryDetail(names,files,client_category,client_sub_category):
        }
        image_data.append(dict_data)
     
-    # print(image_data)
+    print(image_data)
         
 
     image_serializer = ClientCategoryDetailImagesSerializer(many=True,data=image_data)
     image_serializer.is_valid(raise_exception=True)
+    print("validate..",image_serializer.data)
     image_serializer.save()
-
+    print("validate..",image_serializer.data)
     # print(image_serializer.data)
 
     # print(image_data,image_serializer.data)

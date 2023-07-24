@@ -174,12 +174,37 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
 
 
 class SampleFormWriteSerializer(serializers.ModelSerializer):
+    
+    def to_internal_value(self, data):
+        import ast
+        from django.http import QueryDict
+        user = self.context['request'].user
+
+        # Create a mutable copy of the QueryDict and convert it to a regular dictionary
+        mutable_data = data.dict()
+
+        parameters = mutable_data['parameters']
+        client_category_detail_id = data['client_category_detail']
+        print(client_category_detail_id)
+
+        print(type(parameters))
+        converted_list = ast.literal_eval(parameters)
+       
+        print(converted_list, "to internal")
+        
+        print(type(converted_list))
+        mutable_data['parameters'] = converted_list
+
+        return super().to_internal_value(mutable_data)
+
     def validate(self, data):
-        raise serializers.ValidationError('testing sample form client category...')
+    
         action = self.context['view'].action
         if action == "create" or action=="update":
             parameters = data.get('parameters')
-            
+
+            client_category_detail_id = data.get('client_category_detail')
+            # raise serializers.ValidationError('testing sample form client category...')
             #id = data.get('id')
             commodity = data.get('commodity')
             commodity_parameters = TestResult.objects.filter(commodity=commodity)
