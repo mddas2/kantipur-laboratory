@@ -96,6 +96,8 @@ class SampleForm(models.Model):#ClientRequest
     sample_units = models.CharField(max_length=1000,null=True)
     sample_type = models.CharField(max_length=1000,null=True)
     sample_quantity = models.CharField(max_length=1000,null=True)
+
+    number_of_sample = models.CharField(max_length=1000,null=True)
     
     
     remarks = models.CharField(max_length=1000,null=True) #smu_remarks
