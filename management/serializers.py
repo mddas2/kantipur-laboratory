@@ -202,7 +202,9 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
 
             mutable_data['parameters'] = converted_list
 
-        return super().to_internal_value(mutable_data)
+            return super().to_internal_value(mutable_data)
+        else:
+            return super().to_internal_value(data)
 
     def validate(self, data):
     
