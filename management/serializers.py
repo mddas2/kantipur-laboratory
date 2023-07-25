@@ -191,21 +191,17 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
 class SampleFormWriteSerializer(serializers.ModelSerializer):
     
     def to_internal_value(self, data):
-        action = self.context['view'].action
 
-        if action == "create":
-            import ast
-            # Create a mutable copy of the QueryDict and convert it to a regular dictionary
-            mutable_data = data.dict()
-            parameters = mutable_data['parameters']        
-            converted_list = ast.literal_eval(parameters)
+        import ast
+        # Create a mutable copy of the QueryDict and convert it to a regular dictionary
+        mutable_data = data.dict()
+        parameters = mutable_data['parameters']        
+        converted_list = ast.literal_eval(parameters)
 
-            mutable_data['parameters'] = converted_list
+        mutable_data['parameters'] = converted_list
 
-            return super().to_internal_value(mutable_data)
-        else:
-            return super().to_internal_value(data)
-
+        return super().to_internal_value(mutable_data)
+        
     def validate(self, data):
     
         action = self.context['view'].action
