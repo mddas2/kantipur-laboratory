@@ -293,6 +293,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         name = request.POST.getlist('images[name]')
         files =  request.FILES.getlist('images[file]')
         client_sub_category = request.data.get('client_sub_category')
+     
         client_category = request.data.get('client_category')
 
         # print(name,files,"\n name and files...")

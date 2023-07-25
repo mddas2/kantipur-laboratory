@@ -51,7 +51,7 @@ class ClientCategoryDetail(models.Model): #DFTQC
         ('gap', 'gap'),
         ('standard_formation', 'standard_formation'),
         ('import_export', 'import_export'),
-        ('null', 'null'),
+        ('' , ''),
     )
     client_sub_category = models.CharField(choices=client_sub_category_choices, default="null", max_length=155)
 
