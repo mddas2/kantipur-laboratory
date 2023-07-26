@@ -18,6 +18,7 @@ class ApprovedBySerializer(serializers.ModelSerializer):
         fields = ['first_name','last_name','id','email','role','username'] 
 
 class CustomUserReadSerializer(serializers.ModelSerializer):
+     custom_user_image = CustomUserImageSerializer(many = True,read_only = True)
      class Meta:
         ref_name =  "account serializers"
         model = CustomUser
