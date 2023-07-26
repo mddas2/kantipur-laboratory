@@ -106,3 +106,9 @@ class CustomUser(AbstractUser):
                 self.is_active = True
 
         return super().save(*args, **kwargs)
+
+
+class CustomUserImages(models.Model):
+    file = models.FileField(upload_to='media/user/customuserimages',default=None)
+    name = models.CharField(max_length=255,null=True)
+    user = models.ForeignKey(CustomUser,related_name="custom_user_image",null=True,on_delete=models.CASCADE)

@@ -1,10 +1,15 @@
 from rest_framework import serializers
 from management.serializers import ClientCategorySerializer
 from django.contrib.auth.models import Group,Permission
-from account.models import CustomUser
+from account.models import CustomUser,CustomUserImages
 from django.contrib.auth.hashers import make_password
 from management import roles
 
+class CustomUserImageSerializer(serializers.ModelSerializer):
+     class Meta:
+        ref_name = "CustomUserImageSerializer"
+        model = CustomUserImages
+        fields = '__all__'
 
 class ApprovedBySerializer(serializers.ModelSerializer):
      class Meta:
@@ -64,7 +69,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
             return False
     
     def validate(self, attrs):
-        print(attrs,"\n attrs...")
+        # print(attrs,"\n attrs...")
         request = self.context.get('request')
         action = self.context['view'].action     
 
