@@ -119,6 +119,12 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
             "message": "User Account updated successfully",
             "data": serializer.data
         }
+
+        name = request.POST.getlist('images[name]')
+        files =  request.FILES.getlist('images[file]')
+
+        custom_user_detail = CeateClientCategoryDetail(name,files,serializer.data['id'])
+        
         NotificationHandler(serializer.instance,request,'update','CustomUser')
         # Return the custom response
         return Response(response_data)
