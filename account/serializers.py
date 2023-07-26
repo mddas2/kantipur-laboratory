@@ -19,6 +19,7 @@ class ApprovedBySerializer(serializers.ModelSerializer):
 
 class CustomUserReadSerializer(serializers.ModelSerializer):
      custom_user_image = CustomUserImageSerializer(many = True,read_only = True)
+     approved_by = ApprovedBySerializer(read_only = True)
      class Meta:
         ref_name =  "account serializers"
         model = CustomUser
