@@ -232,6 +232,7 @@ class SampleFormHasParameter(models.Model):#sample form has parameter and parame
 
     created_date = models.DateTimeField(default=timezone.now) #reported date
     started_date = models.DateTimeField(null=True) #started date
+    additional_info = models.CharField(max_length=100, blank=True, null=True)
     completed_date = models.DateTimeField(null=True) #raw data generated
     sample_received_date = models.DateTimeField(null=True) # sample received date.
 
