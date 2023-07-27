@@ -315,7 +315,7 @@ class RawDataSheet(models.Model):
     supervisor_remarks = models.CharField(max_length=1000,null=True)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
-
+    additional_info = models.CharField(max_length=100, blank=True, null=True)
     started_date = models.DateTimeField(null=True) #started date
     completed_date = models.DateTimeField(null=True) #raw data generated
     sample_received_date = models.DateTimeField(null=True) # sample received date.
@@ -348,6 +348,10 @@ class RawDataSheetDetail(models.Model):
     remark = models.CharField(max_length=200,null=True)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
+
+    converted_result = models.CharField(max_length=200,null=True)
+    analyst_remarks = models.CharField(max_length=200,null=True)
+    decimal_place = models.CharField(max_length=200,null=True)
 
 
 class MicroObservationTable(models.Model):

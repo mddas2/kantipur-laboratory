@@ -28,8 +28,9 @@ def generateRawData(sample_form_has_parameter_id,remarks):
     test_type2 = obj.parameter.all().first().test_type
 
     print("data generating test type ",test_type2)
+    # print(obj.completed_date," completed date..")
 
-    raw_data_sheet_instance = RawDataSheet(super_visor_sample_form_id = super_visor_sample_form_id ,sample_form_id=sample_form_id,sample_form_has_parameter_id = obj.id,remarks=remarks,status="not_verified",analyst_user=obj.analyst_user,supervisor_remarks=supervisor_remarks,test_type = test_type2,started_date = obj.started_date,completed_date=obj.completed_date,sample_received_date = obj.sample_received_date)
+    raw_data_sheet_instance = RawDataSheet(super_visor_sample_form_id = super_visor_sample_form_id ,sample_form_id=sample_form_id,sample_form_has_parameter_id = obj.id,remarks=remarks,status="not_verified",analyst_user=obj.analyst_user,supervisor_remarks=supervisor_remarks,test_type = test_type2,started_date = obj.started_date,completed_date=obj.completed_date,sample_received_date = obj.sample_received_date,additional_info=obj.additional_info)
     raw_data_sheet_instance.save()
     
     print(formula_calculate_parameters)
@@ -50,6 +51,11 @@ def generateRawData(sample_form_has_parameter_id,remarks):
                 'auto_calculate_result':param.auto_calculate_result,
                 'remark':param.remarks,
                 'micro_table' : micro_table,
+
+                'converted_result':param.converted_result,
+                'analyst_remarks':param.analyst_remarks,
+                'decimal_place':param.decimal_place,
+
             }
         else:
             data = {
@@ -60,6 +66,10 @@ def generateRawData(sample_form_has_parameter_id,remarks):
                 'input_fields_value':param.input_fields_value,
                 'auto_calculate_result':param.auto_calculate_result,
                 'remark':param.remarks,
+
+                'converted_result':param.converted_result,
+                'analyst_remarks':param.analyst_remarks,
+                'decimal_place':param.decimal_place,
             }
         RawDataSheetDetail.objects.update_or_create(**data)
     return True

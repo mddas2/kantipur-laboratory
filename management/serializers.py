@@ -683,11 +683,14 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
 
                 completed_date =   timezone.now() #if analyst generate raw data sheet then add completed date
                 attrs['completed_date'] = completed_date
+                print(completed_date)
+                # raise serializers.ValidationError(' checking completed on date.',completed_date)
+
                 
                 generateRawData(id,remarks) #  if sent to supervisor then generate logs
                 return attrs
         
-        elif len(attrs) == 2 and action == 'partial_update' and 'started_date' and 'sample_received_date' in attrs:
+        elif len(attrs) == 3 and action == 'partial_update' and 'started_date' and 'sample_received_date' and 'additional_info' in attrs:
             return attrs
             
         elif action == 'partial_update':
