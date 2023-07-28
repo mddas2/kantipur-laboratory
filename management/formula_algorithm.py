@@ -283,7 +283,8 @@ class FormulaApiCalculateSave(APIView):
         print(formula_variable_fields_value, " formula_variable_fields_value")
 
         converted_result = serializer.validated_data['converted_result']
-        analyst_remarks = serializer.validated_data['analyst_remarks']
+        analyst_remarks = request.data.get('analyst_remarks')
+        print(analyst_remarks," analys t remarks baby")
         decimal_place = serializer.validated_data['decimal_place']
 
         # Locking parameter
