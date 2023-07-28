@@ -53,13 +53,15 @@ class CompletedSampleFormHasVerifierSerializer(serializers.ModelSerializer):
     supervisor_user = CustomUserSerializer(read_only=True)
     id = serializers.SerializerMethodField()
 
+    client_category_detail = ClientCategoryDetailSerializer(read_only = True)
+    
     def get_id(self, obj):
         user = self.context['request'].user
         return generateAutoEncodeIdforSampleForm(obj.id,user)
     class Meta:
         name = "CompletedSampleFormHasVerifierSerializer_report_"
         model = SampleForm
-        fields = ['id','name','supervisor_user','sample_has_parameter_analyst','commodity','status','created_date','completed_date'] #user access
+        fields = ['id','name','supervisor_user','sample_has_parameter_analyst','commodity','status','created_date','completed_date','client_category_detail'] #user access
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
