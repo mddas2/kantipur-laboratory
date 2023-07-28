@@ -36,6 +36,8 @@ class TrackSampleFormAPIView(generics.ListAPIView):
             query = SampleForm.objects.all()
         elif user.role == roles.SUPERADMIN:
             query = SampleForm.objects.all()
+        elif user.role == roles.ADMIN:
+            query = SampleForm.objects.all()
         else:
             raise PermissionDenied("You do not have permission to access this resource.")
     

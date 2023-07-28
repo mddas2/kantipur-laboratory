@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-z9jqz!rnkg1bew73i#s_#6(u+!tjr$kc)p&236oxy=!sz6c)d%
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['limsserver.kantipurinfotech.com.np','127.0.0.1','192.168.1.179','192.168.1.100','192.168.1.73']
+ALLOWED_HOSTS = ['limsserver.kantipurinfotech.com.np','127.0.0.1','192.168.1.179','192.168.1.100','192.168.1.73','192.168.1.179','192.168.1.88']
 
 # Application definition
 
@@ -145,13 +145,14 @@ TEMPLATES = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'lims',
+        'NAME': 'lims_new',
         'USER': 'root',
         'PASSWORD':'',
         'HOST':'localhost',
         'PORT': '3306',
         'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            'charset': 'utf8mb4',
         }
     }
 }

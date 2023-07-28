@@ -7,22 +7,24 @@ from . import mapping_notification_type
 from emailmanagement.email_sender import ESendMail
 
 def NotificationHandler(instance, request,method,model_name):
-    notification_message = "a new user has been created"
-    particular_message = "Congratulation "
+    if method == "update":
+        notification_message = str(instance.username) + " has been modified"
+        particular_message = "Your aaccount has been modified"
+        to_notification = [instance.id]
+    if method == "create":
+        notification_message=str(instance.username) + " is arrived"
+        particular_message = "Welcome Here"
+        to_notification = [instance.id]
     path = frontend_setting.user_request
     try:
         from_notification = request.user.id
     except:
         from_notification = instance.id
+
     model_name = "CustomUser"
     is_read = False
     group_notification = "admin"
-
-    # Get all users for notification recipients
-    to_notification = CustomUser.objects.values_list('id', flat=True)
     
-    
-
 
     # Create notification data
     notification_data = {
@@ -51,7 +53,7 @@ def NotificationHandler(instance, request,method,model_name):
     }
 
     to_email = CustomUser.objects.values_list('email', flat=True)
-    ESendMail(notification_message,to_email)
+    # ESendMail(notification_message,to_email)
     return response_data, status.HTTP_201_CREATED
 
 def sampleFormNotificationHandler(instance,notification_type):

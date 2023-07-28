@@ -2,9 +2,9 @@ from hashids import Hashids
 from . import roles
 
 sample_form_user_salt = "user"
-sample_form_supervisor_salt = "supervisor"
-sample_form_analyst_salt = "analyst"
-sample_form_verifier_salt = "verifier"
+sample_form_supervisor_salt = "common"
+sample_form_analyst_salt = "common"
+sample_form_verifier_salt = "common"
 
 def generateEncodeIdforSampleForm(original_id,salt):
     hashids = Hashids(salt=salt, min_length=6)
@@ -37,12 +37,7 @@ def generateDecodeIdforSampleForm(encoded_id,user):
 
     elif user.role == roles.VERIFIER:
         hashids = Hashids(salt=sample_form_verifier_salt,min_length=6)
-    # elif user.role == roles.SUPERVISOR:
-    #     hashids = Hashids(salt="supervisor")
-    # elif user.role == roles.ANALYST:
-    #     hashids = Hashids(salt="analyst")
-    # elif user.role == roles.VERIFIER:
-    #     hashids = Hashids(salt="verifier")
+        
     else:
         return encoded_id
     
@@ -64,12 +59,7 @@ def generateDecodeIdByRoleforSampleForm(encoded_id,role):
 
     elif role == roles.VERIFIER:
         hashids = Hashids(salt=sample_form_verifier_salt,min_length=6)
-    # elif user.role == roles.SUPERVISOR:
-    #     hashids = Hashids(salt="supervisor")
-    # elif user.role == roles.ANALYST:
-    #     hashids = Hashids(salt="analyst")
-    # elif user.role == roles.VERIFIER:
-    #     hashids = Hashids(salt="verifier")
+
     else:
         return encoded_id
     

@@ -20,7 +20,7 @@ class FinalSampleFormHasVerifiedAPIView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
   
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['id','name','owner_user','status','form_available','commodity__name','user_encode_id','supervisor_encode_id','analyst_encode_id','verifier_encode_id']
+    search_fields = ['id','name','owner_user','status','form_available','commodity__name']
     ordering_fields = ['name','id']
     
     filterset_fields = {
@@ -37,18 +37,24 @@ class FinalSampleFormHasVerifiedAPIView(generics.ListAPIView):
         user = self.request.user
   
         if user.role == roles.USER:
-            query = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True) & Q(owner_user=user.email))
+            query = SampleForm.objects.filter(Q(verifier__is_sent=True , verifier__is_verified=True , owner_user=user.email , status="completed") | Q(status="rejected"))
         elif user.role == roles.SUPERVISOR:
-            query = SampleForm.objects.filter(supervisor_user=user).filter(Q(status="completed") | Q(status="not_verified")).filter(verifier__is_sent=True)
+            raise PermissionDenied("You do not have permission to access this resource.")
+            query = SampleForm.objects.filter(Q(status="completed") | Q(status="not_verified")).filter(verifier__is_sent=True).filter(supervisor_sample_form__supervisor_user = user)
 
         elif user.role == roles.SMU:
-            query = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True))
+            query = SampleForm.objects.filter(Q(verifier__is_sent=True, verifier__is_verified=True) | Q(status="rejected") | Q(status="recheck"))
         elif user.role == roles.SUPERADMIN:
-            query = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True))
+            query = SampleForm.objects.filter(Q(verifier__is_sent=True, verifier__is_verified=True) | Q(status="rejected"))
+        elif user.role == roles.ADMIN:
+            query = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True) & Q(status="completed"))
         elif user.role == roles.ANALYST:
-            query = SampleForm.objects.filter(Q(sample_has_parameter_analyst__status='completed') & Q(sample_has_parameter_analyst__analyst_user=user) & Q(sample_has_parameter_analyst__is_supervisor_sent=True))
+            # query = SampleForm.objects.filter(sample_has_parameter_analyst__analyst_user=user).filter(Q(sample_has_parameter_analyst__status='verified',sample_has_parameter_analyst__is_supervisor_sent=True) | Q(status="rejected"))
+            query = SampleForm.objects.filter(sample_has_parameter_analyst__analyst_user=user).filter(Q(status = "completed") | Q(status="rejected"))
+            print(query)
         elif user.role == roles.VERIFIER:
-            query = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True))
+            query = SampleForm.objects.filter(verifier__is_sent=True)
+            query = query.filter(Q(status="rejected") | Q(verifier__is_verified = True))
         else:
             raise PermissionDenied("You do not have permission to access this resource.")
         return query.order_by("-created_date")

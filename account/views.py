@@ -8,7 +8,7 @@ from .serializers import LoginSerializer
 from django.contrib.auth.models import Group, Permission
 from account.models import CustomUser
 from rest_framework import viewsets
-from .serializers import CustomUserSerializer, GroupSerializer, PermissionSerializer,RoleSerializer,departmentTypeSerializer
+from .serializers import CustomUserReadSerializer,CustomUserSerializer, GroupSerializer, PermissionSerializer,RoleSerializer,departmentTypeSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken,TokenError
@@ -22,18 +22,20 @@ from .custompermission import Account
 from . import department_type
 from websocket.handle_notification import NotificationHandler
 from django.http import HttpResponse
+from django.db.models import Q
 
 class CustomUserSerializerViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     # permission_classes = [Account]
-    serializer_class = CustomUserSerializer
+    serializer_class = CustomUserReadSerializer
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['id','email','username','first_name','last_name','is_verified']
+    search_fields = ['id','email','username','first_name','last_name','is_verified','phone']
     ordering_fields = ['username','id']
     filterset_fields = {
         'email': ['exact', 'icontains'],
         'username': ['exact'],
         'is_verified': ['exact'],
+        'is_reject': ['exact'],
         'role': ['exact'],
         'client_category_id': ['exact'],
         'created_date': ['date__gte', 'date__lte']  # Date filtering
@@ -51,6 +53,11 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
             # For other actions, no authentication is required
             return []
     
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return CustomUserSerializer
+        return super().get_serializer_class()
+    
     def get_queryset(self):
         user = self.request.user
         print(user)
@@ -59,13 +66,17 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
             query = CustomUser.objects.none()
         elif user.role == roles.SMU:
             # Regular user can see SampleForm instances with form_available='user'
-            query = CustomUser.objects.filter(is_active = True)        
+            query = CustomUser.objects.filter(is_active = True)    
+                
         elif user.role == roles.SUPERADMIN:
             # Regular user can see SampleForm instances with form_available='user'
             query = CustomUser.objects.filter(is_active = True)           
+        elif user.role == roles.ADMIN:
+            # Regular user can see SampleForm instances with form_available='user'
+            query = CustomUser.objects.filter(is_active = True)    
         elif user.role == roles.SUPERVISOR:
             # Regular user can see SampleForm instances with form_available='user'
-            query = CustomUser.objects.filter(is_active = True)            
+            query = CustomUser.objects.filter(is_active = True).filter(Q(role=roles.ANALYST) | Q(email = user.email))          
         else:
             query = CustomUser.objects.filter(email=user.email,is_active = True)
             # raise PermissionDenied("You do not have permission to access this resource.")
@@ -83,6 +94,12 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
             "message": "User Account created successfully",
             "data": serializer.data
         }
+
+        name = request.POST.getlist('images[name]')
+        files =  request.FILES.getlist('images[file]')
+
+        custom_user_detail = CeateClientCategoryDetail(name,files,serializer.data['id'])
+
         NotificationHandler(serializer.instance,request,'create',"CustomUser")
        
         # Return the custom response
@@ -102,6 +119,12 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
             "message": "User Account updated successfully",
             "data": serializer.data
         }
+
+        name = request.POST.getlist('images[name]')
+        files =  request.FILES.getlist('images[file]')
+
+        custom_user_detail = CeateClientCategoryDetail(name,files,serializer.data['id'])
+        
         NotificationHandler(serializer.instance,request,'update','CustomUser')
         # Return the custom response
         return Response(response_data)
@@ -141,8 +164,8 @@ class RoleViewSet(APIView):
         serializer = RoleSerializer(data=my_tuple,many=True)
         serializer.is_valid()
         serialized_data = serializer.data
-        authentication_classes = [JWTAuthentication]
-        permission_classes = [IsAuthenticated]
+        # authentication_classes = [JWTAuthentication]
+        # permission_classes = [IsAuthenticated]
         return Response({"roles": serialized_data},status=status.HTTP_200_OK)
 
 class DepartmentTypesViewSet(APIView):    
@@ -266,7 +289,7 @@ class LoginView(APIView):
                 return Response({'error': 'Your Account is inactive'}, status=status.HTTP_401_UNAUTHORIZED)
             login(request, user)
             refresh = RefreshToken.for_user(user)
-            user_obj = CustomUserSerializer(request.user) 
+            user_obj = CustomUserSerializer(request.user,context={'request': request}) 
             return Response({
                 'access': str(refresh.access_token),
                 'refresh': str(refresh),
@@ -282,4 +305,38 @@ class LoginView(APIView):
                 return Response({'error': 'Invalid password'}, status=status.HTTP_401_UNAUTHORIZED)
             else:
                 return Response({'error': 'Invalid username/email'}, status=status.HTTP_401_UNAUTHORIZED)
+
+def CeateClientCategoryDetail(names,files,user_id):
+    
+    from . serializers import CustomUserImageSerializer
+
+
+    image_data = []
+
+
+    for name, file in zip(names, files):
+       print("name:",name," file:",file)
+       dict_data = {
+           'user':user_id,
+           'name':name,
+           'file':file,
+       }
+       image_data.append(dict_data)
+    
+    print(image_data)
         
+
+    image_serializer = CustomUserImageSerializer(many=True,data=image_data)
+    image_serializer.is_valid(raise_exception=True)
+    print("validate..",image_serializer.data)
+    image_serializer.save()
+    print("validate..",image_serializer.data)
+    # print(image_serializer.data)
+
+    # print(image_data,image_serializer.data)
+    
+    return True
+   
+
+
+             

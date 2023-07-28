@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from .serializers import ClientCategorySerializer, SampleFormWriteSerializer,SampleFormReadSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer
-from .models import ClientCategory, SampleForm, Commodity, CommodityCategory,TestResult, Payment
+from .serializers import MicroObservationTableSerializer,MicroParameterSerializer,ClientCategorySerializer, SampleFormWriteSerializer,SampleFormReadSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer,SuperVisorSampleFormReadSerializer,SuperVisorSampleFormWriteSerializer
+from .models import ClientCategory, SampleForm, Commodity, CommodityCategory,TestResult, Payment,SuperVisorSampleForm,MicroParameter,MicroObservationTable
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -73,12 +73,152 @@ class ClientCategoryViewSet(viewsets.ModelViewSet):
 
         # Return the custom response
         return Response(response_data)
+
+class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
+    queryset = SuperVisorSampleForm.objects.all()
+    serializer_class = SuperVisorSampleFormReadSerializer
+    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    search_fields = ['id']
+    ordering_fields = ['id']
+    filterset_fields = {
+        'supervisor_user': ['exact'],
+        'status': ['exact'],       
+        'created_date': ['date__gte', 'date__lte']  # Date filtering
+    }
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated,SampleFormViewSetPermission]
+    pagination_class = MyLimitOffsetPagination
+
+
+    def get_queryset(self):
+        user = self.request.user
+        action = self.action
+
+        print(action)
+        if action == 'list':
+            query = SuperVisorSampleForm.objects.filter(supervisor_user=user.id,status = "not_assigned")
+        elif action == 'retrieve':
+            query = SuperVisorSampleForm.objects.filter(supervisor_user=user.id)
+        else:
+            query = SuperVisorSampleForm.objects.filter(supervisor_user=user.id)
+
+            
+        if user.role == roles.SUPERVISOR:
+            query =  query.filter(supervisor_user = user.id)
+            # query =  SuperVisorSampleForm.objects.filter(supervisor_user = user.id)
+        else:
+            raise PermissionDenied("You do not have permission to access thais resource.")
+        
+        return query.order_by("-created_date")
+        
+        
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return SuperVisorSampleFormWriteSerializer
+        return super().get_serializer_class()
+    
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, *args, **kwargs)
+    
+        return response
+
+    def retrieve(self, request, *args, **kwargs):
+        response = super().retrieve(request, *args, **kwargs)
+        
+        # Add extra response data for retrieve action
+        extra_data = {
+            "extra_field": "Extra value for retrieve",
+            "another_field": "Another value for retrieve"
+        }
+        # response.data.update(extra_data)
+        return response
+    
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # Save the new object to the database
+        self.perform_create(serializer)
+
+        # this is for redirect for angular
+        created_data = serializer.data
+
+        sample_form_id = created_data['sample_form']
+        sample_form_obj = SampleForm.objects.get(id=sample_form_id)
+        all_parameters = sample_form_obj.parameters.all()
+
+        all_supervisor_parameters = TestResult.objects.filter(supervisor_has_parameter__sample_form_id=sample_form_id)
+
+        if all_parameters.count() == all_supervisor_parameters.count():
+            total_assiged = True
+        else:
+            total_assiged = False
+
+        # print(all_parameters.count(),"::",all_supervisor_parameters.count())
+        # Create a custom response
+        response_data = {
+            "message": "submitted successfully",
+            "data": serializer.data,
+            "total_assiged" : total_assiged
+        }
+
+        # Return the custom response
+        return Response(response_data, status=status.HTTP_201_CREATED)
+    
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+
+        # Save the updated object to the database
+        self.perform_update(serializer)
+
+        # Create a custom response
+        response_data = {
+            "message": "updated successfully",
+            "data": serializer.data
+        }
+
+        # Return the custom response
+        return Response(response_data)
+
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+
+        # Save the updated object to the database
+        self.perform_update(serializer)
+
+        # Create a custom response
+        response_data = {
+            "message": "partially updated successfully",
+            "data": serializer.data
+        }
+
+        # Return the custom response
+        return Response(response_data, status=status.HTTP_200_OK)
+    
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        # Perform the default delete logic
+        self.perform_destroy(instance)
+
+        # Create a custom response
+        response_data = {
+            "message": "deleted successfully"
+        }
+
+        # Return the custom response
+        return Response(response_data)
     
 class SampleFormViewSet(viewsets.ModelViewSet):
     queryset = SampleForm.objects.all()
     serializer_class = SampleFormReadSerializer
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['id','name','owner_user','status','form_available','commodity__name','user_encode_id','supervisor_encode_id','analyst_encode_id','verifier_encode_id']
+    search_fields = ['id','name','owner_user','status','form_available','commodity__name','refrence_number','sample_lab_id']
     ordering_fields = ['name','id']
     filterset_fields = {
         'name': ['exact', 'icontains'],
@@ -109,15 +249,18 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         user = self.request.user
 
         if user.role == roles.USER:         
-            query =  SampleForm.objects.filter(Q(owner_user = user.email) & ~Q(status="completed") )
+            # query =  SampleForm.objects.filter(Q(owner_user = user.email) & ~Q(status="completed") & ~Q(status="rejected") )
+            query =  SampleForm.objects.filter(Q(owner_user = user.email)).filter(~Q(status="completed")).filter(~Q(status="rejected") )
         elif user.role == roles.SUPERVISOR:
             query =  SampleForm.objects.filter(supervisor_user=user,status="not_assigned")
             if self.request.method == "PATCH":
                 query =  SampleForm.objects.filter(supervisor_user=user)
         elif user.role == roles.SMU:
-            query = SampleForm.objects.filter(form_available = 'smu')
+            query = SampleForm.objects.filter(Q(form_available = 'smu') or Q(status = "not_assigned")).filter(~Q(status = "rejected")).filter(~Q(status = "recheck"))
         elif user.role == roles.SUPERADMIN:
-            query = SampleForm.objects.filter(form_available = 'smu')
+            query = SampleForm.objects.filter(Q(form_available = 'smu') or Q(status = "not_assigned")).filter(~Q(status = "rejected"))
+        elif user.role == roles.ADMIN:
+            query = SampleForm.objects.filter(status = "not_approved")
         else:
             raise PermissionDenied("You do not have permission to access this resource.")
         
@@ -146,20 +289,49 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         return response
     
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
 
-        # Save the new object to the database
-        self.perform_create(serializer)
+        name = request.POST.getlist('images[name]')
+        files =  request.FILES.getlist('images[file]')
+        client_sub_category = request.data.get('client_sub_category')
+     
+        client_category = request.data.get('client_category')
 
-        # Create a custom response
-        response_data = {
-            "message": "Sample submitted successfully",
-            "data": serializer.data
-        }
+        # print(name,files,"\n name and files...")
+        create_client,client_category_detail = CeateClientCategoryDetail(name,files,client_category,client_sub_category)
+        
+        if create_client:
+            from django.http import QueryDict
+            
+            mutable_data = QueryDict(mutable=True)
+            mutable_data.update(request.data)
 
-        # Return the custom response
-        return Response(response_data, status=status.HTTP_201_CREATED)
+
+            # Set the client_category_detail_id in the mutable data
+            mutable_data['client_category_detail'] = client_category_detail
+
+
+            serializer = self.get_serializer(data=mutable_data)
+            serializer.is_valid(raise_exception=True)
+
+            # Save the new object to the database
+            self.perform_create(serializer)
+
+            # Create a custom response
+            response_data = {
+                "message": "Sample submitted successfully",
+                "data": serializer.data
+            }
+
+            # Return the custom response
+            return Response(response_data, status=status.HTTP_201_CREATED)
+        else:
+            esponse_data = {
+                "message": " can not create ",
+            }
+
+            # Return the custom response
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+
     
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
@@ -214,14 +386,25 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     
 class CommodityViewSet(viewsets.ModelViewSet):
     queryset = Commodity.objects.all()
+
     serializer_class = CommoditySerializer   
+
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    ordering_fields = ['name','id']
-    search_fields = ['name']
-    filterset_fields = ['name','category_id']
+    search_fields = ['id','name','test_result__name']
+    ordering_fields = ['name','id','category__name']
+    filterset_fields = {
+        'name': ['exact', 'icontains'],
+        'category_id': ['exact'],
+    }
+
     # authentication_classes = [JWTAuthentication]
     permission_classes = [CommodityViewSetPermission]
     pagination_class = MyLimitOffsetPagination
+    
+    def get_queryset(self):
+        query = Commodity.objects.all()
+        return query
+    
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -385,6 +568,7 @@ class TestResultViewSet(viewsets.ModelViewSet):
         return Response(response_data)
 
 class PaymentViewSet(viewsets.ModelViewSet):
+    from rest_framework.parsers import MultiPartParser, FormParser
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
     filter_backends = [SearchFilter]
@@ -392,21 +576,40 @@ class PaymentViewSet(viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated,PaymentViewSetPermission]
     pagination_class = MyLimitOffsetPagination
+    
+    parser_classes = [MultiPartParser, FormParser]
+
+
+    
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        payment_dict = {}
+        for key, value in request.data.items():
+            if key.startswith('payments'):
+                start_index = key.index('[')
+                end_index = key.index(']')
+                index = key[start_index + 1:end_index]
+                field = key[end_index + 2:-1]  # Adjust the index according to the key format
 
-        # Save the new object to the database
-        self.perform_create(serializer)
+                if index not in payment_dict:
+                    payment_dict[index] = {}
 
-        # Create a custom response
+                payment_dict[index][field] = value
+
+        payment_data = []
+
+        for index, payment_data_dict in payment_dict.items():
+            serializer = PaymentSerializer(data=payment_data_dict)
+            serializer.is_valid(raise_exception=True)
+            payment_obj = serializer.save()
+            payment_data.append(serializer.data)
+
         response_data = {
-            "message": "payment successfully",
-            "data": serializer.data
+            "message": "Payments created successfully",
+            "data": payment_data
         }
 
-        # Return the custom response
         return Response(response_data, status=status.HTTP_201_CREATED)
+
     
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
@@ -440,6 +643,130 @@ class PaymentViewSet(viewsets.ModelViewSet):
         # Return the custom response
         return Response(response_data)
 
+class MicroparameterViewset(viewsets.ModelViewSet):
+    queryset = MicroParameter.objects.all()
+    serializer_class = MicroParameterSerializer   
+    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    ordering_fields = ['id']
+    search_fields = ['id']
+    filterset_fields = ['id']
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated,CommodityViewSetPermission]
+    pagination_class = MyLimitOffsetPagination
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # Save the new object to the database
+        self.perform_create(serializer)
+
+        # Create a custom response
+        response_data = {
+            "message": "MicroparameterViewset created successfully",
+            "data": serializer.data
+        }
+
+        # Return the custom response
+        return Response(response_data, status=status.HTTP_201_CREATED)
+    
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+
+        # Save the updated object to the database
+        self.perform_update(serializer)
+
+        # Create a custom response
+        response_data = {
+            "message": "MicroparameterViewset updated successfully",
+            "data": serializer.data
+        }
+
+        # Return the custom response
+        return Response(response_data)
+    
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        # Perform the default delete logic
+        self.perform_destroy(instance)
+
+        # Create a custom response
+        response_data = {
+            "message": "MicroparameterViewset deleted successfully"
+        }
+
+        # Return the custom response
+        return Response(response_data)
+    
+class MicroObservationTableViewSet(viewsets.ModelViewSet):
+    queryset = MicroObservationTable.objects.all()
+    serializer_class = MicroObservationTableSerializer   
+    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    ordering_fields = ['id']
+    search_fields = ['id']
+    filterset_fields = ['id']
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated,CommodityViewSetPermission]
+    pagination_class = MyLimitOffsetPagination
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data,many=True)
+        serializer.is_valid(raise_exception=True)
+
+        # Save the new object to the database
+        self.perform_create(serializer)
+
+        # Create a custom response
+        response_data = {
+            "message": "MicroObservationTable created successfully",
+            "data": serializer.data
+        }
+
+        # Return the custom response
+        return Response(response_data, status=status.HTTP_201_CREATED)
+    
+    def update(self, request, *args, **kwargs):
+        
+        data = request.data
+        
+        response_data = {}
+        for dat in data:
+            print(dat)
+            # update_url_id = dat.ids
+            print(dat)
+            partial = kwargs.pop('partial', False)
+            instance = MicroObservationTable.objects.get(id = dat['id'])
+            serializer = self.get_serializer(instance, data=dat, partial=partial)
+            serializer.is_valid(raise_exception=True)
+
+            # Save the updated object to the database
+            self.perform_update(serializer)
+
+        # Create a custom response
+            response_data = {
+                "message": "MicroObservationTable updated successfully",
+                "data": serializer.data
+            }
+
+        # Return the custom response
+        return Response(response_data)
+    
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        # Perform the default delete logic
+        self.perform_destroy(instance)
+
+        # Create a custom response
+        response_data = {
+            "message": "MicroObservationTable deleted successfully"
+        }
+
+        # Return the custom response
+        return Response(response_data)
+
     
 def Home(request):
     from account.models import CustomUser
@@ -449,6 +776,45 @@ def Home(request):
     user.client_category = clien_category
     user.save()
     return HttpResponse(user)
+
+def CeateClientCategoryDetail(names,files,client_category,client_sub_category):
+    
+    from . client_category_serializers import ClientCategorySerializer,ClientCategoryDetailImagesSerializer
+    data = {
+        'client_category':client_category,
+        'client_sub_category':client_sub_category,
+    }
+    serializer = ClientCategorySerializer(data=data)
+   
+    serializer.is_valid(raise_exception=True)
+    #create client category detail
+    serializer.save()
+
+    image_data = []
+
+
+    for name, file in zip(names, files):
+       print("name:",name," file:",file,int(serializer.data['id']))
+       dict_data = {
+           'client_category_detail':int(serializer.data['id']),
+           'name':name,
+           'file':file,
+       }
+       image_data.append(dict_data)
+    
+    print(image_data)
+        
+
+    image_serializer = ClientCategoryDetailImagesSerializer(many=True,data=image_data)
+    image_serializer.is_valid(raise_exception=True)
+    print("validate..",image_serializer.data)
+    image_serializer.save()
+    print("validate..",image_serializer.data)
+    # print(image_serializer.data)
+
+    # print(image_data,image_serializer.data)
+    
+    return True,int(serializer.data['id'])
    
 
 
