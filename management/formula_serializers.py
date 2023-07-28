@@ -30,7 +30,7 @@ class FormulaApiCalculateSaveSerializer(serializers.Serializer):
     result = serializers.CharField()
     formula_variable_fields_value = serializers.CharField()
     # remarks = formula_variable_fields_value = serializers.CharField()
-    analyst_remarks = serializers.CharField()
+    analyst_remarks = serializers.CharField(null = True, blank = True)
     converted_result = serializers.CharField()
     decimal_place = serializers.CharField()
 
