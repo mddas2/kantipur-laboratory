@@ -582,6 +582,7 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
                 parameter['status'] = formula_calculate.status
                 parameter['remarks'] = formula_calculate.remarks
                 parameter['analyst_remarks'] = formula_calculate.analyst_remarks
+                parameter['converted_result'] = formula_calculate.converted_result
                 parameter['is_locked'] = formula_calculate.is_locked
             else:
                 parameter['result'] = ""     
