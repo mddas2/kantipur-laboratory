@@ -690,7 +690,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                 # raise serializers.ValidationError(' checking completed on date.',completed_date)
 
                 
-                generateRawData(id,remarks) #  if sent to supervisor then generate logs
+                generateRawData(id,remarks,completed_date) #  if sent to supervisor then generate logs
                 return attrs
         
         elif len(attrs) == 3 and action == 'partial_update' and 'started_date' and 'sample_received_date' and 'additional_info' in attrs:

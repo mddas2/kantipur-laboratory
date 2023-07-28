@@ -13,7 +13,7 @@ from . encode_decode import generateDecodeIdforSampleForm
 from django.http import HttpResponse
 from management.models import MicroParameter
 
-def generateRawData(sample_form_has_parameter_id,remarks):
+def generateRawData(sample_form_has_parameter_id,remarks,completed_date):
     print(sample_form_has_parameter_id)
     
     obj = SampleFormHasParameter.objects.get(id=sample_form_has_parameter_id)
@@ -28,10 +28,16 @@ def generateRawData(sample_form_has_parameter_id,remarks):
     test_type2 = obj.parameter.all().first().test_type
 
     print("data generating test type ",test_type2)
-    # print(obj.completed_date," completed date..")
+    print(obj,"::",obj.completed_date," completed date..")
+    if obj.completed_date == None:
+        completed_date = completed_date
+    else:
+        completed_date  = obj.completed_date
 
-    raw_data_sheet_instance = RawDataSheet(super_visor_sample_form_id = super_visor_sample_form_id ,sample_form_id=sample_form_id,sample_form_has_parameter_id = obj.id,remarks=remarks,status="not_verified",analyst_user=obj.analyst_user,supervisor_remarks=supervisor_remarks,test_type = test_type2,started_date = obj.started_date,completed_date=obj.completed_date,sample_received_date = obj.sample_received_date,additional_info=obj.additional_info)
+    raw_data_sheet_instance = RawDataSheet(super_visor_sample_form_id = super_visor_sample_form_id ,sample_form_id=sample_form_id,sample_form_has_parameter_id = obj.id,remarks=remarks,status="not_verified",analyst_user=obj.analyst_user,supervisor_remarks=supervisor_remarks,test_type = test_type2,started_date = obj.started_date,completed_date=completed_date,sample_received_date = obj.sample_received_date,additional_info=obj.additional_info)
+    print(raw_data_sheet_instance," raw data instance")
     raw_data_sheet_instance.save()
+    print(raw_data_sheet_instance," raw data instance")
     
     print(formula_calculate_parameters)
     for param in formula_calculate_parameters:
