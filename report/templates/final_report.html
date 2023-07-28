@@ -403,7 +403,7 @@
                     <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">{{param.parameter.units}}</h1>
                 </td>
                 <td style="width: 12.5%; border: 1px solid black; ">
-                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">{{param.result}}</h1>
+                    <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">{% if param.analyst_remarks != '' %} {{param.analyst_remarks}} {% else %} {{param.result}} {% endif %}</h1>
                 </td>
                 <td style="width: 12.5%; border: 1px solid black; ">
                     <h1 style=" font-weight: 400;   font-size:11px; line-height: 1.2;  margin: 5px 0; text-align:center; padding:2px 0;">{{param.parameter.mandatory_standard}}</h1>
