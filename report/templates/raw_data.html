@@ -26,9 +26,7 @@
       
     }
 
-
-   
-    
+ 
     </style>
 
 </head>
@@ -114,6 +112,8 @@
                                         {% endif %}
                                     {% endfor %}
                                     <h3 style="font-size: 12px; line-height: 0; margin: 0 0 5px; padding: 0 0 10px; ">Result = <span> {%if result.parameter.formula != 'nan' %} {{result.parameter.formula}} {% endif %}</span>  {%if result.parameter.formula != 'nan' %} = {% endif %} {{result.result}} </h3>
+                                
+                                    <h3 style="font-size: 12px; line-height: 0; margin: 0 0 5px; padding: 0 0 10px; ">Final Result = <span> {{result.converted_result}} </span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Qualitative Analysis = <span> {% if result.analyst_remarks != '' %}{{result.analyst_remarks}} {% else %} N/A {% endif %} </span></h3>
                                 </div>
 
                                 <hr color="#d2d2d2">

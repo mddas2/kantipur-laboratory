@@ -186,6 +186,7 @@
                             {% endif %}
                         {% endfor %}
                         <h3 style="font-size: 12px; line-height: 0; margin: 0 0 5px; padding: 0 0 10px; ">Result = <span> {%if param.parameter.formula != 'nan' %} {{param.parameter.formula}} {% endif %}</span>  {%if param.parameter.formula != 'nan' %} = {% endif %} {{param.result}} </h3>
+                        <h3 style="font-size: 12px; line-height: 0; margin: 0 0 5px; padding: 0 0 10px; ">Final Result = <span> {{param.converted_result}} </span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Qualitative Analysis = <span> {% if param.analyst_remarks != '' %}{{param.analyst_remarks}} {% else %} N/A {% endif %} </span></h3>
                     </div>
 
                 </td>           
