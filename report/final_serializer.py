@@ -1,12 +1,25 @@
 from management.models import SampleForm, Commodity,SampleFormHasParameter
 from rest_framework import serializers
 
-from management.models import SampleForm, Commodity,SampleFormHasParameter,SuperVisorSampleForm
+from management.models import SampleForm, Commodity,SampleFormHasParameter,SuperVisorSampleForm,ClientCategoryDetail
 from account.models import CustomUser
 from rest_framework import serializers
 from management import roles
 from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
 from management.status_naming import over_all_status
+
+# class ClientCategoryDetailImagesSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         ref_name = "ClientCategoryDetailImagesSerializer"
+#         model = ClientCategoryDetailImages
+#         fields = '__all__'
+
+class ClientCategoryDetailSerializer(serializers.ModelSerializer):
+    # ClientCategoryDetail = ClientCategoryDetailImagesSerializer(many=True,read_only=True)
+    class Meta:
+        ref_name = "ClientCategoryDetailSerializer"
+        model = ClientCategoryDetail
+        fields = '__all__'
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -70,11 +83,11 @@ class AssignedSampleForSmuSuperAdminSerializer(serializers.ModelSerializer):
     sample_has_parameter_analyst = SampleFormHasParameterReadSerializer(many=True,read_only=True)
     commodity = CommoditySerializer(read_only = True)
     supervisor_sample_form = SupervisorSampleFormSerializer(many = True,read_only=True)
-    
+    client_category_detail = ClientCategoryDetailSerializer(read_only = True)
     class Meta:
         name = "AssignedSampleForSmuSuperAdminSerializer"
         model = SampleForm
-        fields = ['id','supervisor_sample_form','name','sample_has_parameter_analyst','commodity','status','created_date','refrence_number','sample_lab_id']
+        fields = ['id','supervisor_sample_form','name','sample_has_parameter_analyst','commodity','status','created_date','refrence_number','sample_lab_id','client_category_detail']
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
