@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from .serializers import MicroObservationTableSerializer,MicroParameterSerializer,ClientCategorySerializer, SampleFormWriteSerializer,SampleFormReadSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer,SuperVisorSampleFormReadSerializer,SuperVisorSampleFormWriteSerializer
+from .serializers import TestResultWriteSerializer,MicroObservationTableSerializer,MicroParameterSerializer,ClientCategorySerializer, SampleFormWriteSerializer,SampleFormReadSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer,SuperVisorSampleFormReadSerializer,SuperVisorSampleFormWriteSerializer
 from .models import ClientCategory,Units,MandatoryStandard,TestMethod, SampleForm, Commodity, CommodityCategory,TestResult, Payment,SuperVisorSampleForm,MicroParameter,MicroObservationTable
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -520,6 +520,12 @@ class TestResultViewSet(viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated,TestResultViewSetPermission]
     pagination_class = MyLimitOffsetPagination
+    
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return TestResultWriteSerializer
+        return super().get_serializer_class()
+    
     def create(self, request, *args, **kwargs):
         units = request.data.get('units')
         data = additionalOperation(request.data)
@@ -826,17 +832,17 @@ def additionalOperation(data):
   
     units = data.get('units')
     ref_test_method = data.get('test_method')
-    mandatory_standards = data.get('mandatory_standards')
+    mandatory_standard = data.get('mandatory_standard')
 
     units = createOrUpdateUnits(units)
     ref_test_method = createOrUpdateRefTestMethod(ref_test_method)
-    mandatory_standards = createOrUpdateMandatoryStandards(mandatory_standards)
+    mandatory_standard = createOrUpdateMandatoryStandards(mandatory_standard)
 
 
   
     data['units'] = units
     data['test_method'] = ref_test_method
-    data['mandatory_standards'] = mandatory_standards
+    data['mandatory_standard'] = mandatory_standard
 
     return data
 

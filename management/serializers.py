@@ -60,6 +60,12 @@ class TestResultSerializer(serializers.ModelSerializer):
         model = TestResult
         fields = '__all__'
 
+class TestResultWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TestResult
+        fields = '__all__'
+
+
 
 class CommoditySerializer(serializers.ModelSerializer):
     test_result = TestResultSerializer(many=True,read_only=True)
