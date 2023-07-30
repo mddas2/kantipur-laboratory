@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from .serializers import MicroObservationTableSerializer,MicroParameterSerializer,ClientCategorySerializer, SampleFormWriteSerializer,SampleFormReadSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer,SuperVisorSampleFormReadSerializer,SuperVisorSampleFormWriteSerializer
-from .models import ClientCategory, SampleForm, Commodity, CommodityCategory,TestResult, Payment,SuperVisorSampleForm,MicroParameter,MicroObservationTable
+from .serializers import TestResultWriteSerializer,MicroObservationTableSerializer,MicroParameterSerializer,ClientCategorySerializer, SampleFormWriteSerializer,SampleFormReadSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer,SuperVisorSampleFormReadSerializer,SuperVisorSampleFormWriteSerializer
+from .models import ClientCategory,Units,MandatoryStandard,TestMethod, SampleForm, Commodity, CommodityCategory,TestResult, Payment,SuperVisorSampleForm,MicroParameter,MicroObservationTable
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -520,7 +520,17 @@ class TestResultViewSet(viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated,TestResultViewSetPermission]
     pagination_class = MyLimitOffsetPagination
+    
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return TestResultWriteSerializer
+        return super().get_serializer_class()
+    
     def create(self, request, *args, **kwargs):
+        units = request.data.get('units')
+        data = additionalOperation(request.data)
+        print(data," return data from function...")
+        # return HttpResponse(data)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -817,6 +827,60 @@ def CeateClientCategoryDetail(names,files,client_category,client_sub_category):
     
     return True,int(serializer.data['id'])
    
+def additionalOperation(data):
+    from django.http import QueryDict
+  
+    units = data.get('units')
+    ref_test_method = data.get('test_method')
+    mandatory_standard = data.get('mandatory_standard')
+
+    units = createOrUpdateUnits(units)
+    ref_test_method = createOrUpdateRefTestMethod(ref_test_method)
+    mandatory_standard = createOrUpdateMandatoryStandards(mandatory_standard)
 
 
+  
+    data['units'] = units
+    data['test_method'] = ref_test_method
+    data['mandatory_standard'] = mandatory_standard
+
+    return data
+
+def createOrUpdateUnits(units):
+    units_ids = []
+    for unit in units:
+        unit_data = {
+            'units_nepali':unit['units_nepali']
+        }
+        create_unit_obj,create = Units.objects.update_or_create(units = unit['units_english'],defaults=unit_data)
+        # print(create_unit_obj,"::" , "created unit ")
+        units_ids.append(create_unit_obj.id)
+
+    print(units_ids," created units id...")
+    return units_ids
+
+def createOrUpdateRefTestMethod(test_methods):
+    test_methods_ids = []
+    for test_method in test_methods:
+        # test_method_data = {
+        #     'ref_test_method_nepali':test_method['ref_test_method_nepali']
+        # }
+        test_methods_obj,create = TestMethod.objects.update_or_create(ref_test_method = test_method['ref_test_method'],defaults=None)
+        # print(create_unit_obj,"::" , "created unit ")
+        test_methods_ids.append(test_methods_obj.id)
+
+    print(test_methods_ids," created test_methods_ids id...")
+    return test_methods_ids
+def createOrUpdateMandatoryStandards(mandatory_standards):
+    mandatory_standards_ids = []
+    for mandatory_standard in mandatory_standards:
+        mandatory_standard_data = {
+            'mandatory_standard_nepali':mandatory_standard['mandatory_standard_nepali']
+        }
+        mandatory_standards_obj,create = MandatoryStandard.objects.update_or_create(mandatory_standard = mandatory_standard['mandatory_standard'],defaults=mandatory_standard_data)
+        # print(create_unit_obj,"::" , "created unit ")
+        mandatory_standards_ids.append(mandatory_standards_obj.id)
+
+    print(mandatory_standards_ids," created mandatory_standards_ids id...")
+    return mandatory_standards_ids
              

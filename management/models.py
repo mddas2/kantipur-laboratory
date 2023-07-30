@@ -24,7 +24,19 @@ class Commodity(models.Model):
     test_duration = models.CharField(max_length=255,null=True)
     units = models.CharField(max_length=255,null=True)
     price = models.IntegerField(null=True)    
+
+class Units(models.Model):
+    units = models.CharField(max_length=100,null=True)
+    units_nepali = models.CharField(max_length=100,null=True)
+
+class MandatoryStandard(models.Model):
+    mandatory_standard = models.CharField(max_length=500,null=True)
+    mandatory_standard_nepali = models.CharField(max_length=500,null=True)
     
+class TestMethod(models.Model):
+    ref_test_method = models.CharField(max_length=255,null=True)
+    
+
 class TestResult(models.Model):
     commodity = models.ForeignKey(Commodity,related_name="test_result",on_delete=models.CASCADE,null=True)
     formula = models.CharField(max_length=255, null=True)
@@ -33,13 +45,14 @@ class TestResult(models.Model):
     name_nepali = models.CharField(max_length=255,null=True) #parameter name
     test_type = models.CharField(choices=(('Chemical','Chemical'),('Instrumental','Instrumental'),('Microbiological','Microbiological')), default=None, max_length=155,null=True)
     test_type_nepali = models.CharField(max_length=255,null=True)
-    ref_test_method = models.CharField(max_length=255,null=True)
-    units = models.CharField(max_length=100,null=True)
-    units_nepali = models.CharField(max_length=100,null=True)
+    
     price = models.IntegerField(null=True)
     results = models.CharField(max_length=100,null=True)
-    mandatory_standard = models.CharField(max_length=500,null=True)
-    mandatory_standard_nepali = models.CharField(max_length=500,null=True)
+    
+    units = models.ManyToManyField(Units, related_name="test_result",blank=True)
+    mandatory_standard = models.ManyToManyField(MandatoryStandard, related_name="test_result",blank=True)
+    test_method = models.ManyToManyField(TestMethod, related_name="test_result",blank=True)   
+
 
     remarks = models.TextField(max_length=500,null=True)    
 
