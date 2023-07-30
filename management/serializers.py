@@ -1,4 +1,4 @@
-from .models import MicroObservationTable,ClientCategory,SuperVisorSampleForm,ClientCategoryDetailImages, SampleForm, Commodity, CommodityCategory, MicroParameter , TestResult ,SampleFormHasParameter,Payment,SampleFormParameterFormulaCalculate,ClientCategoryDetail
+from .models import Units,MandatoryStandard,TestMethod,MicroObservationTable,ClientCategory,SuperVisorSampleForm,ClientCategoryDetailImages, SampleForm, Commodity, CommodityCategory, MicroParameter , TestResult ,SampleFormHasParameter,Payment,SampleFormParameterFormulaCalculate,ClientCategoryDetail
 from rest_framework import serializers
 from account.models import CustomUser
 from . import roles
@@ -31,8 +31,31 @@ class CommodityReadSerializer(serializers.ModelSerializer):
         model = Commodity
         fields = ['id','name','name_nepali']
 
+class UnitsReadSerializer(serializers.ModelSerializer):
+    class Meta:
+        ref_name = "UnitsReadSerializer"
+        model = Units
+        fields = '__all__'
+        
+class MandatoryStandardReadSerializer(serializers.ModelSerializer):
+    class Meta:
+        ref_name = "MandatoryStandardReadSerializer"
+        model = MandatoryStandard
+        fields = '__all__'
+
+class TestMethodReadSerializer(serializers.ModelSerializer):
+    class Meta:
+        ref_name = "TestMethodReadSerializer"
+        model = TestMethod
+        fields = '__all__'
+
 class TestResultSerializer(serializers.ModelSerializer):
     commodity = CommodityReadSerializer(many=False,read_only = True)
+
+    units = UnitsReadSerializer(many=True,read_only = True)
+    mandatory_standard = MandatoryStandardReadSerializer(many=True,read_only = True)
+    test_method = TestMethodReadSerializer(many=True,read_only = True)
+
     class Meta:
         model = TestResult
         fields = '__all__'
