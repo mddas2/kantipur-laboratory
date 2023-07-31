@@ -289,6 +289,10 @@ class SampleFormParameterFormulaCalculate(models.Model):
     analyst_remarks = models.CharField(max_length=200,null=True)
     decimal_place = models.CharField(max_length=200,null=True)
 
+    units = models.CharField(max_length=200,null=True)
+    mandatory_standard = models.CharField(max_length=200,null=True)
+    test_method = models.CharField(max_length=200,null=True)
+
     status_choices = (
         ('pending', 'pending'),
         ('rejected', 'rejected'),
@@ -365,6 +369,10 @@ class RawDataSheetDetail(models.Model):
     converted_result = models.CharField(max_length=200,null=True)
     analyst_remarks = models.CharField(max_length=200,null=True)
     decimal_place = models.CharField(max_length=200,null=True)
+
+    units = models.CharField(max_length=200,null=True)
+    mandatory_standard = models.CharField(max_length=200,null=True)
+    test_method = models.CharField(max_length=200,null=True)
 
 
 class MicroObservationTable(models.Model):
