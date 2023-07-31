@@ -60,11 +60,18 @@ class TestResultSerializer(serializers.ModelSerializer):
         model = TestResult
         fields = '__all__'
 
+class TestResultLimitedSerializer(serializers.ModelSerializer):
+    commodity = CommodityReadSerializer(many=False,read_only = True)
+
+    class Meta:
+        model = TestResult
+        exclude = ['units', 'mandatory_standard', 'test_method','formula','price']
+        
+
 class TestResultWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = TestResult
         fields = '__all__'
-
 
 
 class CommoditySerializer(serializers.ModelSerializer):
@@ -494,10 +501,11 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
 class SuperVisorSampleFormReadSerializer(serializers.ModelSerializer):  
     sample_form = SampleFormReadAnalystSerializer(read_only=True)
     commodity = CommodityWriteSerializer(read_only=True,many=True)
-    parameters = TestResultSerializer(many=True,read_only=True)
+    parameters = TestResultLimitedSerializer(many=True,read_only=True)
     class Meta:
         model = SuperVisorSampleForm
         fields = '__all__'
+       
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -530,6 +538,11 @@ class SuperVisorSampleFormReadSerializer(serializers.ModelSerializer):
                 if formula_obj_result.count()>0:
                     parameter_data['status'] = over_all_status[formula_obj_result.first().status]
                     parameter_data['result'] = formula_obj_result.first().result
+
+                    parameter_data['units'] = formula_obj_result.first().units
+                    parameter_data['mandatory_standard'] = formula_obj_result.first().mandatory_standard
+                    parameter_data['test_method'] = formula_obj_result.first().test_method
+                    
                 else:
                     parameter_data['status'] = over_all_status['processing']
                     parameter_data['result'] = '-'
@@ -613,6 +626,11 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
                 parameter['analyst_remarks'] = formula_calculate.analyst_remarks
                 parameter['converted_result'] = formula_calculate.converted_result
                 parameter['is_locked'] = formula_calculate.is_locked
+
+                parameter['units_selected'] = formula_calculate.units
+                parameter['mandatory_standard_selected'] = formula_calculate.mandatory_standard
+                parameter['test_method_selected'] = formula_calculate.test_method
+                
             else:
                 parameter['result'] = ""     
              

@@ -549,6 +549,14 @@ class TestResultViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
+        
+        print(request.data," paayload before \n \n ...")
+        data = additionalOperation(request.data)
+        # print(data," return data from function...")
+        print(request.data," return data from function...")
+        # return HttpResponse(data)
+        serializer = self.get_serializer(data=request.data)
+
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
 
@@ -852,7 +860,7 @@ def createOrUpdateUnits(units):
         unit_data = {
             'units_nepali':unit['units_nepali']
         }
-        create_unit_obj,create = Units.objects.update_or_create(units = unit['units_english'],defaults=unit_data)
+        create_unit_obj,create = Units.objects.update_or_create(units = unit['units'],defaults=unit_data)
         # print(create_unit_obj,"::" , "created unit ")
         units_ids.append(create_unit_obj.id)
 

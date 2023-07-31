@@ -280,6 +280,11 @@ class FormulaApiCalculateSave(APIView):
         # remarks =  serializer.validated_data['remarks']
         formula_variable_fields_value = serializer.validated_data['formula_variable_fields_value']
         result = serializer.validated_data['result']
+
+        units = serializer.validated_data['units']
+        mandatory_standard = serializer.validated_data['mandatory_standard']
+        test_method = serializer.validated_data['test_method']
+
         print(formula_variable_fields_value, " formula_variable_fields_value")
 
         converted_result = serializer.validated_data['converted_result']
@@ -313,7 +318,10 @@ class FormulaApiCalculateSave(APIView):
             'converted_result':converted_result,
             'analyst_remarks':analyst_remarks,
             'decimal_place':decimal_place,
-
+            
+            "units": units,
+            "mandatory_standard":mandatory_standard,
+            "test_method":test_method,
         }
 
         data,created = SampleFormParameterFormulaCalculate.objects.update_or_create(sample_form_id = sample_form_id, parameter_id =parameter_id, commodity_id = commodity_id,sample_form_has_parameter_id=sample_form_has_parameter_id,defaults=data)

@@ -34,6 +34,10 @@ class FormulaApiCalculateSaveSerializer(serializers.Serializer):
     converted_result = serializers.CharField()
     decimal_place = serializers.CharField()
 
+    units = serializers.CharField()
+    mandatory_standard = serializers.CharField()
+    test_method = serializers.CharField()
+
     
     def to_internal_value(self, data):
         user = self.context['request'].user

@@ -62,6 +62,10 @@ def generateRawData(sample_form_has_parameter_id,remarks,completed_date):
                 'analyst_remarks':param.analyst_remarks,
                 'decimal_place':param.decimal_place,
 
+                 "units":param.units,
+                 "mandatory_standard":param.mandatory_standard,
+                 "test_method":param.test_method,
+
             }
         else:
             data = {
@@ -76,6 +80,11 @@ def generateRawData(sample_form_has_parameter_id,remarks,completed_date):
                 'converted_result':param.converted_result,
                 'analyst_remarks':param.analyst_remarks,
                 'decimal_place':param.decimal_place,
+
+                "units":param.units,
+                "mandatory_standard":param.mandatory_standard,
+                "test_method":param.test_method,
+                
             }
         RawDataSheetDetail.objects.update_or_create(**data)
     return True

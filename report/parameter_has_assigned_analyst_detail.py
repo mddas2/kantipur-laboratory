@@ -43,6 +43,15 @@ class ParameterSerializer(serializers.ModelSerializer):
         model = TestResult
         fields = '__all__'
 
+class TestResultLimitedSerializer(serializers.ModelSerializer):
+    # commodity = CommodityReadSerializer(many=False,read_only = True)
+
+    class Meta:
+        model = TestResult
+        ref_name = "TestResultLimitedSerializer"
+        exclude = ['units', 'mandatory_standard', 'test_method','price']
+
+
 class DetailSampleFormHasParameterAnalystSerializer(serializers.ModelSerializer):
     commodity = CommoditySerializer(read_only = True)
     parameters = ParameterSerializer(read_only = True, many = True)
@@ -121,7 +130,9 @@ class DetailSampleFormHasParameterAnalystSerializer(serializers.ModelSerializer)
 
 class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.ModelSerializer):
     commodity = CommoditySerializer(read_only = True)
-    parameters = ParameterSerializer(read_only = True, many = True)
+    
+    parameters = TestResultLimitedSerializer(read_only = True, many = True)
+    
     owner_user = serializers.SerializerMethodField()
     verified_by = CustomUserSerializer(read_only = True)
     approved_by = CustomUserSerializer(read_only = True)
@@ -202,6 +213,11 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
                 if formula_obj_result.count()>0:
                     parameter_data['status'] = formula_obj_result.first().status
                     parameter_data['result'] = formula_obj_result.first().result
+                    
+                    parameter_data['units'] = formula_obj_result.first().units
+                    parameter_data['mandatory_standard'] = formula_obj_result.first().mandatory_standard
+                    parameter_data['test_method'] = formula_obj_result.first().test_method
+
                 else:
                     parameter_data['status'] = "processing"
                     parameter_data['result'] = '-'
