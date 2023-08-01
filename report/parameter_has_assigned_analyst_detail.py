@@ -216,9 +216,9 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
                     parameter_data['status'] = formula_obj_result.first().status
                     parameter_data['result'] = formula_obj_result.first().result
                     
-                    parameter_data['units'] = "umesh units" #formula_obj_result.first().units
-                    parameter_data['mandatory_standard'] = "umesh mandatory_standard"  #formula_obj_result.first().mandatory_standard
-                    parameter_data['test_method'] = "umesh test_method" #formula_obj_result.first().test_method
+                    parameter_data['units'] = formula_obj_result.first().units
+                    parameter_data['mandatory_standard'] = formula_obj_result.first().mandatory_standard
+                    parameter_data['test_method'] = formula_obj_result.first().test_method
 
                 else:
                     parameter_data['status'] = "processing"

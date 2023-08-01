@@ -34,7 +34,7 @@ class SupervisorFinalReportSerializer(serializers.ModelSerializer):
 
         sample_form_id = representation.get('sample_form')['id']
       
-        # Add extra response data for parameters field
+        # Add extra response data for parameters fieldo
         parameters_data = representation.get('parameters', [])
         stat = "processing"
         for parameter_data in parameters_data:
@@ -58,6 +58,11 @@ class SupervisorFinalReportSerializer(serializers.ModelSerializer):
                     stat = "completed"
                     parameter_data['status'] = "completed"
                     parameter_data['result'] = formula_obj_result.first().result
+                    parameter_data['analyst_remarks'] = formula_obj_result.first().analyst_remarks #formula_obj_result.first().test_method
+
+                    parameter_data['units'] = "umesh units" #formula_obj_result.first().units
+                    parameter_data['mandatory_standard'] = "umesh mandatory_standard"  #formula_obj_result.first().mandatory_standard
+                    parameter_data['test_method'] = "umesh test_method" #formula_obj_result.first().test_method
                 else:
                     stat = "processing"
                     parameter_data['status'] = "processing"
