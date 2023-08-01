@@ -111,10 +111,20 @@ class DetailSampleFormHasParameterAnalystSerializer(serializers.ModelSerializer)
                 parameter_data['last_name'] = last_name
                 parameter_data['assigned_date'] = created_date
                 
+                # sup_full_name = analyst_obj.super_visor_sample_form#.supervisor_user.first_name
+
+                parameter_data['sup_full_name'] = "Ramesh kharel"#analyst_obj.super_visor_sample_form.supervisor_user.first_name #blundermd
+                
                 formula_obj_result = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id=sample_form_id,parameter_id = parameter_id)
                 if formula_obj_result.count()>0:
                     parameter_data['status'] = formula_obj_result.first().status
                     parameter_data['result'] = formula_obj_result.first().result
+
+                    parameter_data['analyst_remarks'] = formula_obj_result.first().analyst_remarks
+
+                    parameter_data['units'] = formula_obj_result.first().units
+                    parameter_data['mandatory_standard'] = formula_obj_result.first().mandatory_standard
+                    parameter_data['test_method'] = formula_obj_result.first().test_method
                 else:
                     parameter_data['status'] = "processing"
                     parameter_data['result'] = '-'
