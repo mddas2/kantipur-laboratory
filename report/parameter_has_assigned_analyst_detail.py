@@ -23,7 +23,7 @@ class SupervisorSampleFormSerializer(serializers.ModelSerializer):
     class Meta:
         ref_name = "SupervisorSampleFormSerializer"
         model = SuperVisorSampleForm
-        fields = ['supervisor_user']
+        fields = ['supervisor_user','remarks']
 
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -136,6 +136,8 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
     owner_user = serializers.SerializerMethodField()
     verified_by = CustomUserSerializer(read_only = True)
     approved_by = CustomUserSerializer(read_only = True)
+
+    supervisor_sample_form = SupervisorSampleFormSerializer(many = True,read_only = True)
 
     payment = PaymentSerializer(read_only = True,many = True)
 
