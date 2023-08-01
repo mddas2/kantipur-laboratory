@@ -189,7 +189,7 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
             parameter_id = parameter_data.get('id')
             # Check if the parameter exists in SampleFormHasParameter model
             # print(parameter_id)
-            if user.role == roles.SMU or user.role == roles.SUPERADMIN:
+            if user.role == roles.SMU or user.role == roles.SUPERADMIN or user.role == roles.VERIFIER or user.role == roles.ADMIN:
                 sample_form_has_supervisor_obj = SuperVisorSampleForm.objects.filter(parameters=parameter_id, sample_form = sample_form_id)
                 exists_sup = sample_form_has_supervisor_obj.exists()
                 if exists_sup:
@@ -216,9 +216,9 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
                     parameter_data['status'] = formula_obj_result.first().status
                     parameter_data['result'] = formula_obj_result.first().result
                     
-                    parameter_data['units'] = formula_obj_result.first().units
-                    parameter_data['mandatory_standard'] = formula_obj_result.first().mandatory_standard
-                    parameter_data['test_method'] = formula_obj_result.first().test_method
+                    parameter_data['units'] = "umesh units" #formula_obj_result.first().units
+                    parameter_data['mandatory_standard'] = "umesh mandatory_standard"  #formula_obj_result.first().mandatory_standard
+                    parameter_data['test_method'] = "umesh test_method" #formula_obj_result.first().test_method
 
                 else:
                     parameter_data['status'] = "processing"
