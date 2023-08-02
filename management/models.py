@@ -124,6 +124,7 @@ class SampleForm(models.Model):#ClientRequest
 
 
     verified_by = models.ForeignKey(CustomUser, related_name="sample_form_verified_by",on_delete=models.SET_NULL,null=True) #verifier
+    verified_date = models.DateTimeField(null=True)
 
     client_category_detail = models.ForeignKey(ClientCategoryDetail, related_name="sample_form",default=None,on_delete=models.SET_NULL,null=True)
 
