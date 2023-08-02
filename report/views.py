@@ -21,7 +21,7 @@ from management.pagination import MyLimitOffsetPagination
 from django.db.models import Q
 from management import roles
 from rest_framework import generics
-from .report_download import ReportAdminList,ReportParameter,ReportCommodity,ReportUserSampleForm,ReportUserList,ReportSampleForm,ReportUserRequest,ReportComodityCategory,FinalReport,rawDataSheetAnalystReport
+from .report_download import TestReport,ReportAdminList,ReportParameter,ReportCommodity,ReportUserSampleForm,ReportUserList,ReportSampleForm,ReportUserRequest,ReportComodityCategory,FinalReport,rawDataSheetAnalystReport
 from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm,generateDecodeIdByRoleforSampleForm
 #report_type:['pdf','excel','csv']
 #report_name:['admin-list','users-list','user-with-sample-form','sample-form','commodity','parameter']
@@ -217,10 +217,16 @@ class ReportDownload(views.APIView):
         elif report_name == "parameter":
             response = ReportParameter(report_type,report_lang,id)
             return response
+        
+        elif report_name == "test-report-sheet":
+            sample_form_id =id
+            response = TestReport(request,report_type,report_lang,sample_form_id,role)
+            return response
                 
         if report_name == "final-report":
             response = FinalReport(request,report_type,report_lang,id,role)
             return response
+        
         else:
             data = {
                 'error':"not match"

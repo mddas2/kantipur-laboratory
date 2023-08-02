@@ -8,6 +8,7 @@ from management import roles
 from datetime import date
 from django.template.loader import get_template
 from xhtml2pdf import pisa
+from management.models import SampleFormParameterFormulaCalculate
 from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm,generateDecodeIdByRoleforSampleForm
 # https://limsserver.kantipurinfotech.com.np/api/report/get-report/report_name/report_type/report_lang/
 def ReportAdminList(report_type,report_lang,id=None):
@@ -417,6 +418,49 @@ def rawDataSheetAnalystReport(request,download_print,sample_form_has_param):
         response['Content-Disposition'] = 'attachment; filename="output.pdf"'
     else:
         response['Content-Disposition'] = 'inline; filename="output.pdf"'
+
+    # Generate the PDF from the HTML content
+    pisa.CreatePDF(html, dest=response)
+
+    return response
+
+def TestReport(request,report_type,report_lang,sample_form_id,role):
+    from rest_framework.response import Response
+    
+    
+    id = generateDecodeIdByRoleforSampleForm(sample_form_id,role)
+
+    if id == None:
+        return Response({'error':"please provide http://127.0.0.1:8000/api/report/get-report/final-report/pdf/eng/id/ or unvalid id","statu":400})
+    try:
+        query = SampleForm.objects.get(id = id)
+    except:
+        return HttpResponse("You are trying to access with sample form with other id")
+
+    try:
+        if query.verifier.is_verified == False:
+            return Response({'error':"Sample Form have not verified","statu":400})
+    except:
+        return Response({'error':"Sample Form have not verified","statu":400})
+
+    # return HttpResponse(query)
+    parameters = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id = query.id)
+    print(parameters)
+        
+    template = get_template('testreportsheet.html')
+    context = {
+            'sample_form':query,
+            'parameters':parameters,
+        }
+
+    
+    html = template.render(context)
+
+    # Create a PDF object
+    response = HttpResponse(content_type='application/pdf')
+
+    response['Content-Disposition'] = 'inline; filename="output.pdf"'
+  
 
     # Generate the PDF from the HTML content
     pisa.CreatePDF(html, dest=response)
