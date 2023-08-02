@@ -424,33 +424,37 @@ def rawDataSheetAnalystReport(request,download_print,sample_form_has_param):
 
     return response
 
-def TestReport(request,report_type,report_lang,sample_form_id,role):
+def TestReport(request,report_type,report_lang,sample_form_has_param,role):
     from rest_framework.response import Response
     
     
-    id = generateDecodeIdByRoleforSampleForm(sample_form_id,role)
+    # id = generateDecodeIdByRoleforSampleForm(sample_form_id,role)
+    id =  sample_form_has_param
 
     if id == None:
         return Response({'error':"please provide http://127.0.0.1:8000/api/report/get-report/final-report/pdf/eng/id/ or unvalid id","statu":400})
     try:
-        query = SampleForm.objects.get(id = id)
+        query = SampleFormHasParameter.objects.get(id = id)
     except:
         return HttpResponse("You are trying to access with sample form with other id")
 
-    try:
-        if query.verifier.is_verified == False:
-            return Response({'error':"Sample Form have not verified","statu":400})
-    except:
-        return Response({'error':"Sample Form have not verified","statu":400})
+    sample_form = query.sample_form
+    # return HttpResponse(sample_form)
+    # try:
+    #     if query.verifier.is_verified == False:
+    #         return Response({'error':"Sample Form have not verified","statu":400})
+    # except:
+    #     return Response({'error':"Sample Form have not verified","statu":400})
 
     # return HttpResponse(query)
-    parameters = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id = query.id)
+    parameters = SampleFormParameterFormulaCalculate.objects.filter(sample_form_has_parameter = query.id)
     print(parameters)
         
     template = get_template('testreportsheet.html')
     context = {
-            'sample_form':query,
+            'sample_form':sample_form,
             'parameters':parameters,
+            'sample_form_has_parameter':query
         }
 
     
