@@ -5,9 +5,10 @@ import os
 from rest_framework.response import Response
 import pandas as pd
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from .serializers import TestResultSerializer
-from .models import Commodity,CommodityCategory,TestResult,SampleForm
+from .models import Commodity,CommodityCategory,TestResult,SampleForm,Units,MandatoryStandard,TestMethod
+from django.contrib import messages
 
 def ImportExcel(request):
     # CommodityCategory.objects.all().delete()
@@ -22,8 +23,10 @@ def ImportExcel(request):
     file_path = file
  
     df = pd.read_excel(file_path)
+    total_rows = df.shape[0]
+    already_exists_parameters = 0
     for index, row in df.iterrows():
-        
+        print(index)
         commodity_category = row['commodity_category']
         commodity_category_nepali = row['commodity_cat_nepali']
 
@@ -118,18 +121,59 @@ def ImportExcel(request):
         param_update_or_create = TestResult.objects.filter(commodity_id = commodity_id ,name = parameters_name)
         if param_update_or_create.exists():
             print("already exists..")
+            already_exists_parameters = already_exists_parameters + 1
             pass
         else:
             serializer = TestResultSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             print("parameter created successfully")
-            
 
-    top_10 = df.head(10)
-    # print(top_10)
-    data = top_10.to_json(orient='records')
-    return JsonResponse(data, safe=False)
+    messages.success(request, 'Data imported successfully.')
+    total_create = total_rows-already_exists_parameters
+    # return render(request, 'excel_import.html',data)
+    return redirect('ResubmissionPrevent',total_rows,already_exists_parameters,total_create)
 
 def multipleUnitsMandatoryRefTestMethod(unit,unit_nepali,ref_test_method,mandatory_standard,mandatory_standard_nepali):
-    return [1],[1],[1]
+    unit_data = {
+        'units_nepali':unit_nepali,
+    }
+    unit_create_obj,unit_create = Units.objects.update_or_create(units = unit, defaults = unit_data)
+
+    test_method_data = {
+        'ref_test_method':ref_test_method
+    }
+    test_method_data_obj,test_method_create = TestMethod.objects.update_or_create(ref_test_method = ref_test_method, defaults = test_method_data)
+
+
+    mandatory_standard_data = {
+            'mandatory_standard_nepali':mandatory_standard_nepali
+        }
+    mandatory_standards_obj,mandatory_standard_data_create = MandatoryStandard.objects.update_or_create(mandatory_standard = mandatory_standard,defaults=mandatory_standard_data)
+
+
+    if unit_create:
+        unit_create_ids =  [unit_create_obj.id]
+    else:
+        unit_create_ids = []
+
+    if test_method_create:
+        test_method_create_ids =  [test_method_data_obj.id]
+    else:
+        test_method_create_ids = []
+
+    if mandatory_standard_data_create:
+        mandatory_standard_data_create_ids =  [mandatory_standards_obj.id]
+    else:
+        mandatory_standard_data_create_ids = []
+    
+    return unit_create_ids,test_method_create_ids,mandatory_standard_data_create_ids
+
+def ResubmissionPrevent(request,total_rows,already_exists_parameters,total_create):
+    data = {
+        'total_rows':total_rows,
+        'already_exists_parameters':already_exists_parameters,
+        'total_create':total_create
+    }
+    return render(request, 'excel_import.html',data)
+  
