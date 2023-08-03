@@ -6,7 +6,7 @@ from rest_framework.response import Response
 import pandas as pd
 from django.http import JsonResponse
 from django.shortcuts import render
-
+from .serializers import TestResultSerializer
 from .models import Commodity,CommodityCategory,TestResult,SampleForm
 
 def ImportExcel(request):
@@ -103,21 +103,28 @@ def ImportExcel(request):
             'commodity_id' : commodity_id,
             'name' : parameters_name,
             'name_nepali' : parameters_nepali,
-            'ref_test_method' : ref_test_method,
-            'units' : unit,
-            'units_nepali' : unit_nepali,
+            'test_method' : multiple_ref_test_method,
+            'units' : multiple_units,
             'price' : parameter_price,
-            'mandatory_standard' : mandatory_standard,
-            'mandatory_standard_nepali' : mandatory_standard_nepali,
+            'mandatory_standard' : multiple_mandatory_standard,
             'remarks' : remarks,
             'test_type' : test_type,
             'test_type_nepali' : test_type_nepali,
             'formula_notation' : notation,
             'formula' : formula,
         }
-        testresult_obj,create_test_result = TestResult.objects.update_or_create(commodity_id = commodity_id ,name = parameters_name, defaults = test_result)
-        if create_test_result:
+        print(test_result)
+
+        param_update_or_create = TestResult.objects.filter(commodity_id = commodity_id ,name = parameters_name)
+        if param_update_or_create.exists():
+            print("already exists..")
+            pass
+        else:
+            serializer = TestResultSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
             print("parameter created successfully")
+            
 
     top_10 = df.head(10)
     # print(top_10)
@@ -125,4 +132,4 @@ def ImportExcel(request):
     return JsonResponse(data, safe=False)
 
 def multipleUnitsMandatoryRefTestMethod(unit,unit_nepali,ref_test_method,mandatory_standard,mandatory_standard_nepali):
-    return [],[],[]
+    return [1],[1],[1]
