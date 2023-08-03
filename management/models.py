@@ -348,7 +348,7 @@ class MicroParameter(models.Model):
     sample_form = models.ForeignKey(SampleForm,related_name="micro_detail",on_delete=models.CASCADE,default=None)
     physical_condition_of_sample = models.CharField(max_length=500,null=True)
     media_used = models.CharField(max_length=500,null=True)
-    prepared_dilution = models.CharField(max_length=500,null=True)
+    prepared_dilution = models.CharField(max_length=500,null=True,blank=True)
     diluent_used = models.CharField(max_length=500,null=True)
     positive_control_used = models.CharField(max_length=500,null=True)
     negative_control_used = models.CharField(max_length=500,null=True)
