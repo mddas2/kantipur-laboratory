@@ -357,6 +357,10 @@ class MicroParameter(models.Model):
     status = models.CharField(max_length=2000,null=True)
     is_original = models.BooleanField(default=True)
 
+    first_exponent = models.CharField(max_length=500,default=None)
+    second_exponent = models.CharField(max_length=500,default=None)
+    third_exponent = models.CharField(max_length=500,default=None)
+
 class RawDataSheetDetail(models.Model):
     raw_data = models.ForeignKey(RawDataSheet, on_delete=models.CASCADE,related_name="raw_data",null=True)
     parameter = models.ForeignKey(TestResult, on_delete=models.CASCADE,null=True)

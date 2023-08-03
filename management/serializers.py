@@ -110,7 +110,9 @@ class MicroObservationTableSerializer(serializers.ModelSerializer):
 
 class MicroParameterSerializer(serializers.ModelSerializer):
     def to_internal_value(self, data):
-        if 'sample_form' in data:
+        action = self.context['view'].action
+        print("action .... ", action)
+        if 'sample_form' in data and action != "update":
             sample_form_id = data['sample_form'] 
             decoded_sample_form_id = generateDecodeIdforSampleForm(sample_form_id,self.context['request'].user)#smart_text(urlsafe_base64_decode(data['sample_form']))
             data['sample_form'] = decoded_sample_form_id
