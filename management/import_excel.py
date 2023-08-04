@@ -26,7 +26,7 @@ def ImportExcel(request):
     total_rows = df.shape[0]
     already_exists_parameters = 0
     for index, row in df.iterrows():
-        print(index)
+        # print(index)
         commodity_category = row['commodity_category']
         commodity_category_nepali = row['commodity_cat_nepali']
 
@@ -116,7 +116,7 @@ def ImportExcel(request):
             'formula_notation' : notation,
             'formula' : formula,
         }
-        print(test_result)
+        # print(test_result)
 
         param_update_or_create = TestResult.objects.filter(commodity_id = commodity_id ,name = parameters_name)
         if param_update_or_create.exists():
