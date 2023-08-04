@@ -516,7 +516,7 @@ class TestResultViewSet(viewsets.ModelViewSet):
     queryset = TestResult.objects.all()
     serializer_class = TestResultSerializer
     filter_backends = [SearchFilter]
-    search_fields = ['name','formula']
+    search_fields = ['id','name','formula','commodity__name']
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated,TestResultViewSetPermission]
     pagination_class = MyLimitOffsetPagination
