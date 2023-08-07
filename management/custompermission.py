@@ -70,7 +70,7 @@ class CommodityCategoryViewSetPermission(BasePermission):
         elif method_name == 'partial_update':
             return True
         elif method_name == 'destroy':
-            return True
+            return False
         else:
             return False
         

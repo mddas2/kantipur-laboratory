@@ -139,39 +139,65 @@ def ImportExcel(request):
     return redirect('ResubmissionPrevent',total_rows,already_exists_parameters,total_create)
 
 def multipleUnitsMandatoryRefTestMethod(unit,unit_nepali,ref_test_method,mandatory_standard,mandatory_standard_nepali):
-    print(ref_test_method," :: ref test method ")
-    unit_data = {
-        'units_nepali':unit_nepali,
-    }
-    unit_create_obj,unit_create = Units.objects.update_or_create(units = unit, defaults = unit_data)
-
-    test_method_data = {
-        'ref_test_method':ref_test_method
-    }
-    test_method_data_obj,test_method_create = TestMethod.objects.update_or_create(ref_test_method = ref_test_method, defaults = test_method_data)
-    print(test_method_data_obj," crete orobject test method obj..")
-
-    mandatory_standard_data = {
-            'mandatory_standard_nepali':mandatory_standard_nepali
-        }
-    mandatory_standards_obj,mandatory_standard_data_create = MandatoryStandard.objects.update_or_create(mandatory_standard = mandatory_standard,defaults=mandatory_standard_data)
-
-
-    if unit_create:
-        unit_create_ids =  [unit_create_obj.id]
+    unit_create_ids = []
+    test_method_create_ids = []
+    mandatory_standard_data_create_ids = []
+    if '@' in unit:
+        unit = unit.split("@")
     else:
-        unit_create_ids = [unit_create_obj.id]
+        unit = [unit]
 
-    if test_method_create:
-        test_method_create_ids =  [test_method_data_obj.id]
+    if '@' in unit_nepali:
+        unit_nepali = unit_nepali.split("@")
     else:
-        test_method_create_ids = [test_method_data_obj.id]
+        unit_nepali = [unit_nepali]
+    # print(unit,unit_nepali," unit nepalai split check")
+    # return [],[],[]
+    if '@' in ref_test_method:
+        ref_test_method = ref_test_method.split("@")
+    else:
+        ref_test_method = [ref_test_method]
 
-    if mandatory_standard_data_create:
-        mandatory_standard_data_create_ids =  [mandatory_standards_obj.id]
+    if 'nan' in str(mandatory_standard):
+        pass
     else:
-        mandatory_standard_data_create_ids = [mandatory_standards_obj.id]
+        if '@' in str(mandatory_standard):
+            mandatory_standard = mandatory_standard.split("@")
+        else:
+            mandatory_standard = [mandatory_standard]
+        if '@' in str(mandatory_standard_nepali):
+            mandatory_standard_nepali = mandatory_standard_nepali.split("@")
+        else:
+            mandatory_standard_nepali = [mandatory_standard_nepali]
+
     
+    for un,un_nepali in zip(unit,unit_nepali):        
+        unit_data = {
+            'units_nepali':un_nepali,
+        }
+        unit_create_obj,unit_create = Units.objects.update_or_create(units = un, defaults = unit_data)
+        unit_create_ids.append(unit_create_obj.id)
+
+    if 'nan' != str(mandatory_standard):
+        for md,md_nepali in zip(mandatory_standard,mandatory_standard_nepali):
+            mandatory_standard_data = {
+                'mandatory_standard_nepali':md_nepali
+                }
+            mandatory_standards_obj,mandatory_standard_data_create = MandatoryStandard.objects.update_or_create(mandatory_standard = md,defaults=mandatory_standard_data)
+            mandatory_standard_data_create_ids.append(mandatory_standards_obj.id)
+            
+
+    for ref_test_m in ref_test_method:
+        test_method_data = {
+            'ref_test_method':ref_test_method
+        }
+        test_method_data_obj,test_method_create = TestMethod.objects.update_or_create(ref_test_method = ref_test_method, defaults = test_method_data)
+        test_method_create_ids.append(test_method_data_obj.id)
+        
+    # print("ids of units::",unit_create_ids)
+    # print("ids of mandatory standard::",mandatory_standard_data_create_ids)
+    # print("ids of test method::",test_method_create_ids)
+
     return unit_create_ids,mandatory_standard_data_create_ids,test_method_create_ids
 
 def ResubmissionPrevent(request,total_rows,already_exists_parameters,total_create):
