@@ -34,9 +34,11 @@ def ImportExcel(request):
         commodity_name_nepali = row['commodity_name_nepali']
 
         test_type = row['test_type']
+        test_type = test_type.replace(" ", "")
         test_type_nepali = row['test_type_nepali']
 
         parameters_name = row['parameters']
+      
         try:
             parameters_nepali = row['parameter_nepali']
         except:
