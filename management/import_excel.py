@@ -104,7 +104,7 @@ def ImportExcel(request):
         multiple_units,multiple_mandatory_standard,multiple_ref_test_method = multipleUnitsMandatoryRefTestMethod(str(unit),str(unit_nepali),str(ref_test_method),str(mandatory_standard),str(mandatory_standard_nepali))
 
         commodity_id = Commodity.objects.get(name=commodity_name).id
-        print(commodity_id," commodity obj")
+     
         test_result = { #parameter
             'commodity' : commodity_id,
             'name' : parameters_name,
@@ -122,7 +122,7 @@ def ImportExcel(request):
         # print(test_result)
 
         param_update_or_create = TestResult.objects.filter(commodity_id = commodity_id ,name = parameters_name)
-        print(multiple_ref_test_method," multiple_ref_test_method update or create. ")
+       
         if param_update_or_create.exists():
             print("already exists..")
             already_exists_parameters = already_exists_parameters + 1
@@ -131,7 +131,7 @@ def ImportExcel(request):
             serializer = TestResultWriteSerializer(data=test_result)
             serializer.is_valid(raise_exception=True)
             serializer.save()
-            print(parameters_name," :: parameter created successfully")
+           
 
     messages.success(request, 'Data imported successfully.')
     total_create = total_rows-already_exists_parameters
