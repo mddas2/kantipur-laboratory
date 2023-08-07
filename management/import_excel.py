@@ -116,7 +116,7 @@ def ImportExcel(request):
             'formula_notation' : notation,
             'formula' : formula,
         }
-        # print(test_result)
+        # print(test_result)/ss
 
         param_update_or_create = TestResult.objects.filter(commodity_id = commodity_id ,name = parameters_name)
         if param_update_or_create.exists():
@@ -124,10 +124,10 @@ def ImportExcel(request):
             already_exists_parameters = already_exists_parameters + 1
             pass
         else:
-            serializer = TestResultSerializer(data=request.data)
+            serializer = TestResultSerializer(data=test_result)
             serializer.is_valid(raise_exception=True)
             serializer.save()
-            print("parameter created successfully")
+            print(parameters_name," :: parameter created successfully")
 
     messages.success(request, 'Data imported successfully.')
     total_create = total_rows-already_exists_parameters

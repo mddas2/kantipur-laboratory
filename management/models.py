@@ -39,8 +39,8 @@ class TestMethod(models.Model):
 
 class TestResult(models.Model):
     commodity = models.ForeignKey(Commodity,related_name="test_result",on_delete=models.CASCADE,null=True)
-    formula = models.CharField(max_length=255, null=True)
-    formula_notation = models.TextField(max_length=1000,null=True)
+    formula = models.CharField(max_length=255, null=True,blank=True)
+    formula_notation = models.TextField(max_length=1000,null=True,blank=True)
     name = models.CharField(max_length=255,null=False) #parameter name
     name_nepali = models.CharField(max_length=255,null=True) #parameter name
     test_type = models.CharField(choices=(('Chemical','Chemical'),('Instrumental','Instrumental'),('Microbiological','Microbiological')), default=None, max_length=155,null=True)
