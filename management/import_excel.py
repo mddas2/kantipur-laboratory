@@ -6,7 +6,7 @@ from rest_framework.response import Response
 import pandas as pd
 from django.http import JsonResponse
 from django.shortcuts import render,redirect
-from .serializers import TestResultSerializer
+from .serializers import TestResultWriteSerializer
 from .models import Commodity,CommodityCategory,TestResult,SampleForm,Units,MandatoryStandard,TestMethod
 from django.contrib import messages
 
@@ -102,8 +102,9 @@ def ImportExcel(request):
         multiple_units,multiple_mandatory_standard,multiple_ref_test_method = multipleUnitsMandatoryRefTestMethod(unit,unit_nepali,ref_test_method,mandatory_standard,mandatory_standard_nepali)
 
         commodity_id = Commodity.objects.get(name=commodity_name).id
+        print(commodity_id," commodity obj")
         test_result = { #parameter
-            'commodity_id' : commodity_id,
+            'commodity' : commodity_id,
             'name' : parameters_name,
             'name_nepali' : parameters_nepali,
             'test_method' : multiple_ref_test_method,
@@ -116,15 +117,16 @@ def ImportExcel(request):
             'formula_notation' : notation,
             'formula' : formula,
         }
-        # print(test_result)/ss
+        # print(test_result)
 
         param_update_or_create = TestResult.objects.filter(commodity_id = commodity_id ,name = parameters_name)
+        print(multiple_ref_test_method," multiple_ref_test_method update or create. ")
         if param_update_or_create.exists():
             print("already exists..")
             already_exists_parameters = already_exists_parameters + 1
             pass
         else:
-            serializer = TestResultSerializer(data=test_result)
+            serializer = TestResultWriteSerializer(data=test_result)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             print(parameters_name," :: parameter created successfully")
@@ -135,6 +137,7 @@ def ImportExcel(request):
     return redirect('ResubmissionPrevent',total_rows,already_exists_parameters,total_create)
 
 def multipleUnitsMandatoryRefTestMethod(unit,unit_nepali,ref_test_method,mandatory_standard,mandatory_standard_nepali):
+    print(ref_test_method," :: ref test method ")
     unit_data = {
         'units_nepali':unit_nepali,
     }
@@ -144,7 +147,7 @@ def multipleUnitsMandatoryRefTestMethod(unit,unit_nepali,ref_test_method,mandato
         'ref_test_method':ref_test_method
     }
     test_method_data_obj,test_method_create = TestMethod.objects.update_or_create(ref_test_method = ref_test_method, defaults = test_method_data)
-
+    print(test_method_data_obj," crete orobject test method obj..")
 
     mandatory_standard_data = {
             'mandatory_standard_nepali':mandatory_standard_nepali
@@ -155,19 +158,19 @@ def multipleUnitsMandatoryRefTestMethod(unit,unit_nepali,ref_test_method,mandato
     if unit_create:
         unit_create_ids =  [unit_create_obj.id]
     else:
-        unit_create_ids = []
+        unit_create_ids = [unit_create_obj.id]
 
     if test_method_create:
         test_method_create_ids =  [test_method_data_obj.id]
     else:
-        test_method_create_ids = []
+        test_method_create_ids = [test_method_data_obj.id]
 
     if mandatory_standard_data_create:
         mandatory_standard_data_create_ids =  [mandatory_standards_obj.id]
     else:
-        mandatory_standard_data_create_ids = []
+        mandatory_standard_data_create_ids = [mandatory_standards_obj.id]
     
-    return unit_create_ids,test_method_create_ids,mandatory_standard_data_create_ids
+    return unit_create_ids,mandatory_standard_data_create_ids,test_method_create_ids
 
 def ResubmissionPrevent(request,total_rows,already_exists_parameters,total_create):
     data = {
