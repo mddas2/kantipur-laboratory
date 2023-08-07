@@ -101,7 +101,7 @@ def ImportExcel(request):
         if create:
             print("commodity created")
 
-        multiple_units,multiple_mandatory_standard,multiple_ref_test_method = multipleUnitsMandatoryRefTestMethod(unit,unit_nepali,ref_test_method,mandatory_standard,mandatory_standard_nepali)
+        multiple_units,multiple_mandatory_standard,multiple_ref_test_method = multipleUnitsMandatoryRefTestMethod(str(unit),str(unit_nepali),str(ref_test_method),str(mandatory_standard),str(mandatory_standard_nepali))
 
         commodity_id = Commodity.objects.get(name=commodity_name).id
         print(commodity_id," commodity obj")
