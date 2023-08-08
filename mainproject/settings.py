@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-z9jqz!rnkg1bew73i#s_#6(u+!tjr$kc)p&236oxy=!sz6c)d%
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['limsserver.kantipurinfotech.com.np','127.0.0.1','192.168.1.179','192.168.1.100','192.168.1.73','192.168.1.179','192.168.1.88']
+ALLOWED_HOSTS = ['limsserver.kantipurinfotech.com.np','127.0.0.1','192.168.1.179','192.168.1.100','192.168.1.73','192.168.1.179','192.168.1.88','192.168.1.101']
 
 # Application definition
 
@@ -85,16 +85,17 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = True #this block all
 
-CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_CREDENTIALS = True 
 
 CORS_ORIGIN_WHITELIST = [
-    'http://192.168.1.150:4200',
+    'https://dev-lims.netlify.app',
+    'http://192.168.1.181:4200',
 
     # Add other allowed origins as needed
 ]
-CSRF_TRUSTED_ORIGINS = ['http://192.168.1.150:4200']
+CSRF_TRUSTED_ORIGINS = ['https://dev-lims.netlify.app','http://192.168.1.181:4200']
 
 
 ROOT_URLCONF = 'mainproject.urls'
