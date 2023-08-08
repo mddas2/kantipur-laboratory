@@ -46,9 +46,10 @@ class Formula:
         return False
     
     def getFormulaVariable(self,formula):
-        variables =  re.findall(r'[A-Za-z]+', formula)
+        print(formula," :: formulas")
+        variables =  re.findall(r'[A-Za-z]+', formula) #re.findall(r'\b[A-Za-z_][A-Za-z0-9_]*\b', formula) #re.findall(r'[A-Za-z]+', formula) 
         variables = list(set(variables))
-        print(variables)
+        print(variables, " print vaariables \n")
         return variables
 
     
@@ -75,6 +76,7 @@ class Formula:
             formula =  query_obj.formula
             variables = self.getFormulaVariable(formula)
             response = self.MakeProperResponse(variables,notations)
+            print(response," get formula response \n")
             return response
         else:
             response = {
