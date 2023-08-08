@@ -8,7 +8,7 @@ from .serializers import LoginSerializer
 from django.contrib.auth.models import Group, Permission
 from account.models import CustomUser
 from rest_framework import viewsets
-from .serializers import CustomUserReadSerializer,CustomUserSerializer, GroupSerializer, PermissionSerializer,RoleSerializer,departmentTypeSerializer
+from .serializers import CustomUserReadSerializer,CustomUserSerializer, GroupSerializer, PermissionSerializer,RoleSerializer,departmentTypeSerializer,CustomUserReadLimitedSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken,TokenError
@@ -23,6 +23,7 @@ from . import department_type
 from websocket.handle_notification import NotificationHandler
 from django.http import HttpResponse
 from django.db.models import Q
+from rest_framework import generics
 
 class CustomUserSerializerViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
@@ -336,7 +337,32 @@ def CeateClientCategoryDetail(names,files,user_id):
     # print(image_data,image_serializer.data)
     
     return True
-   
+
+class userLimitedData(generics.ListAPIView):
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated]
+
+    filter_backends  = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    search_fields = ['id']
+    ordering_fields = ['id']
+    
+    def get_queryset(self):
+        users = CustomUser.objects.filter(role = roles.USER)
+        return users
+
+    def get_serializer_class(self):
+        return CustomUserReadLimitedSerializer
+        
+    def list(self, request, *args, **kwargs):
+        from rest_framework.response import Response
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        data = serializer.data
+
+        return Response(data)
+    
+    # def get(self, request, *args, **kwargs):
+    #     return self.list(request, *args, **kwargs)
 
 
              

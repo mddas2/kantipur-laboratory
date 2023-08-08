@@ -66,8 +66,13 @@ class TestResultLimitedSerializer(serializers.ModelSerializer):
     class Meta:
         model = TestResult
         exclude = ['units', 'mandatory_standard', 'test_method','formula','price']
-        
 
+class TestResultOnlySerializerRead(serializers.ModelSerializer):
+    class Meta:
+        ref_name = "TestResultOnlySerializerRead"
+        model = TestResult
+        fields = ['id','name','price']
+    
 class TestResultWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = TestResult
@@ -93,6 +98,20 @@ class ClientCategoryDetailSerializer(serializers.ModelSerializer):
         ref_name = "ClientCategoryDetailSerializer"
         model = ClientCategoryDetail
         fields = '__all__'
+
+
+class limitedCommidityCategoryreadSerializer(serializers.ModelSerializer):
+    class Meta:
+        ref_name = "limitedCommidityCategoryreadSerializer"
+        model = CommodityCategory
+        fields = ['id','name']
+
+class limitedCommidityreadSerializer(serializers.ModelSerializer):
+    test_result = TestResultOnlySerializerRead(many=True,read_only=True)
+    class Meta:
+        ref_name = "limitedCommidityreadSerializer"
+        model = Commodity
+        fields = ['id','name','price','test_result']
         
 
 class MicroObservationTableSerializer(serializers.ModelSerializer):

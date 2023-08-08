@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from .serializers import TestResultWriteSerializer,MicroObservationTableSerializer,MicroParameterSerializer,ClientCategorySerializer, SampleFormWriteSerializer,SampleFormReadSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer,SuperVisorSampleFormReadSerializer,SuperVisorSampleFormWriteSerializer
+from .serializers import limitedCommidityCategoryreadSerializer,limitedCommidityreadSerializer,TestResultWriteSerializer,MicroObservationTableSerializer,MicroParameterSerializer,ClientCategorySerializer, SampleFormWriteSerializer,SampleFormReadSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer,SuperVisorSampleFormReadSerializer,SuperVisorSampleFormWriteSerializer
 from .models import ClientCategory,Units,MandatoryStandard,TestMethod, SampleForm, Commodity, CommodityCategory,TestResult, Payment,SuperVisorSampleForm,MicroParameter,MicroObservationTable
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -16,7 +16,7 @@ from rest_framework.exceptions import PermissionDenied
 from django.db.models import Q
 from django.http import Http404
 from . encode_decode import generateDecodeIdforSampleForm
-
+from rest_framework import generics
 
 class ClientCategoryViewSet(viewsets.ModelViewSet):
     queryset = ClientCategory.objects.all()
@@ -453,6 +453,52 @@ class CommodityViewSet(viewsets.ModelViewSet):
 
         # Return the custom response
         return Response(response_data)
+    
+class commodityLimitedData(generics.ListAPIView):
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated]
+
+    filter_backends  = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    search_fields = ['id']
+    ordering_fields = ['id']
+    
+    def get_queryset(self):
+        commodity = Commodity.objects.all()
+        return commodity
+
+    def get_serializer_class(self):
+        return limitedCommidityreadSerializer
+        
+    def list(self, request, *args, **kwargs):
+        from rest_framework.response import Response
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        data = serializer.data
+
+        return Response(data)
+
+class commodityCategoryLimitedData(generics.ListAPIView):
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated]
+
+    filter_backends  = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    search_fields = ['id']
+    ordering_fields = ['id']
+    
+    def get_queryset(self):
+        commodity = CommodityCategory.objects.all()
+        return commodity
+
+    def get_serializer_class(self):
+        return limitedCommidityCategoryreadSerializer
+        
+    def list(self, request, *args, **kwargs):
+        from rest_framework.response import Response
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        data = serializer.data
+
+        return Response(data)
     
 class CommodityCategoryViewSet(viewsets.ModelViewSet):
 

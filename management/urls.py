@@ -44,5 +44,9 @@ urlpatterns = [
 
     path('import-excel-bulk/<str:total_rows>/<str:already_exists_parameters>/<str:total_create>/',import_excel.ResubmissionPrevent,name="ResubmissionPrevent"),
 
+    path('get-commodity-data-with-parameters/', views.commodityLimitedData.as_view(), name='commodityLimitedData'),
+
+    path('get-commodity-category-only/', views.commodityCategoryLimitedData.as_view(), name='commodityCategoryLimitedData'),
+
     
 ]
