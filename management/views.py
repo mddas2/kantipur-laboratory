@@ -457,11 +457,12 @@ class CommodityViewSet(viewsets.ModelViewSet):
 class commodityLimitedData(generics.ListAPIView):
     # authentication_classes = [JWTAuthentication]
     # permission_classes = [IsAuthenticated]
-
+    
     filter_backends  = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     search_fields = ['id']
     ordering_fields = ['id']
-    
+    pagination_class = [MyLimitOffsetPagination]
+
     def get_queryset(self):
         commodity = Commodity.objects.all()
         return commodity
@@ -484,7 +485,9 @@ class commodityCategoryLimitedData(generics.ListAPIView):
     filter_backends  = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     search_fields = ['id']
     ordering_fields = ['id']
-    
+
+    pagination_class = MyLimitOffsetPagination
+
     def get_queryset(self):
         commodity = CommodityCategory.objects.all()
         return commodity
