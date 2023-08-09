@@ -47,7 +47,7 @@ class Formula:
     
     def getFormulaVariable(self,formula):
         print(formula," :: formulas")
-        variables =  re.findall(r'[A-Za-z]+', formula) #re.findall(r'\b[A-Za-z_][A-Za-z0-9_]*\b', formula) #re.findall(r'[A-Za-z]+', formula) 
+        variables =  re.findall(r'\b[A-Za-z_][A-Za-z0-9_]*\b', formula) #re.findall(r'[A-Za-z]+', formula) 
         variables = list(set(variables))
         print(variables, " print vaariables \n")
         return variables
