@@ -429,7 +429,7 @@ class MicroObservationTable(models.Model):
 
 # class MicroObservationTableRawData(models.Model):
 class MicroObservationTableRawData(models.Model):
-    micro_parameter_table_raw_data = models.ForeignKey(MicroParameterRawData,related_name="micro_observation_table_raw_data",on_delete=models.CASCADE,null=True,default=None)
+    micro_parameter_table_raw_data = models.ForeignKey(MicroParameterRawData,related_name="micro_observation_table_raw_data",on_delete=models.CASCADE,default=None)
     parameter = models.ForeignKey(TestResult, on_delete=models.CASCADE,null=True)
     sample_form = models.ForeignKey(SampleForm,related_name="micro_observation_table_raw_data",on_delete=models.CASCADE,null=True,default=None)
     

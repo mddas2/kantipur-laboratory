@@ -12,6 +12,8 @@ from .raw_data_serializer import rawDataSerializer,rawDataTestTypeSerializer,raw
 from . encode_decode import generateDecodeIdforSampleForm
 from django.http import HttpResponse
 from management.models import MicroParameter
+from rest_framework import serializers
+from .models  import MicroParameterRawData,MicroObservationTableRawData
 
 def generateRawData(sample_form_has_parameter_id,remarks,completed_date):
     print(sample_form_has_parameter_id)
@@ -27,19 +29,16 @@ def generateRawData(sample_form_has_parameter_id,remarks,completed_date):
 
     test_type2 = obj.parameter.all().first().test_type
 
-    print("data generating test type ",test_type2)
-    print(obj,"::",obj.completed_date," completed date..")
+   
     if obj.completed_date == None:
         completed_date = completed_date
     else:
         completed_date  = obj.completed_date
 
     raw_data_sheet_instance = RawDataSheet(super_visor_sample_form_id = super_visor_sample_form_id ,sample_form_id=sample_form_id,sample_form_has_parameter_id = obj.id,remarks=remarks,status="not_verified",analyst_user=obj.analyst_user,supervisor_remarks=supervisor_remarks,test_type = test_type2,started_date = obj.started_date,completed_date=completed_date,sample_received_date = obj.sample_received_date,additional_info=obj.additional_info)
-    print(raw_data_sheet_instance," raw data instance")
     raw_data_sheet_instance.save()
-    print(raw_data_sheet_instance," raw data instance")
     
-    print(formula_calculate_parameters)
+   
     for param in formula_calculate_parameters:
         print(param,"::",param.parameter.test_type)
 
@@ -47,6 +46,8 @@ def generateRawData(sample_form_has_parameter_id,remarks,completed_date):
 
         if test_type == "Microbiological":
             micro_table = MicroParameter.objects.filter(parameter = param.parameter_id,sample_form=sample_form_id,sample_form_has_parameter = obj.id,is_original = True).last()
+            generate_micro_raw_data = generateMicroRawData(micro_table)
+            
             # print(micro_table," micro table")
             data = {
                 'raw_data_id':raw_data_sheet_instance.id,
@@ -56,7 +57,7 @@ def generateRawData(sample_form_has_parameter_id,remarks,completed_date):
                 'input_fields_value':param.input_fields_value,
                 'auto_calculate_result':param.auto_calculate_result,
                 'remark':param.remarks,
-                'micro_table' : micro_table,
+                'micro_table_id' : generate_micro_raw_data,
 
                 'converted_result':param.converted_result,
                 'analyst_remarks':param.analyst_remarks,
@@ -88,6 +89,62 @@ def generateRawData(sample_form_has_parameter_id,remarks,completed_date):
             }
         RawDataSheetDetail.objects.update_or_create(**data)
     return True
+
+class MicroParameterRawDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MicroParameterRawData
+        fields = '__all__'
+
+class MicroObservationTableRawDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MicroObservationTableRawData
+        fields = '__all__'
+
+
+def generateMicroRawData(micro_table):
+
+    micro_table_raw_data_serializer_data = MicroParameterRawDataSerializer(micro_table)
+    micro_table_raw_data_serializer = MicroParameterRawDataSerializer(data=micro_table_raw_data_serializer_data.data)
+
+    if micro_table_raw_data_serializer.is_valid():
+        micro_raw_data_saved_obj = micro_table_raw_data_serializer.save()
+        pass
+        # print(micro_table_raw_data_serializer.data, "serializer")
+    else:
+        print(micro_table_raw_data_serializer.data)
+        print("not valid")
+        return HttpResponse("not valid...")
+
+    micro_observation_table = micro_table.micro_observation_table.all()
+    for micro_observation in micro_observation_table:
+        micro_observation_table_raw_data_serializer_get = MicroObservationTableRawDataSerializer(micro_observation)
+        data_to_save = micro_observation_table_raw_data_serializer_get.data
+        data_to_save['micro_parameter_table_raw_data'] = micro_raw_data_saved_obj.id  # Corrected this line
+        print(data_to_save,'::data to save')
+        print("\n\n",micro_raw_data_saved_obj.id)
+        micro_observation_table_raw_data_serializer_save = MicroObservationTableRawDataSerializer(data=data_to_save)
+        if micro_observation_table_raw_data_serializer_save.is_valid():
+            micro_observation_table_raw_data_serializer_save.save()
+            print(micro_observation_table_raw_data_serializer_save.data)
+        else:
+            print(micro_observation_table_raw_data_serializer_save.errors)
+
+    return micro_raw_data_saved_obj.id
+
+
+
+    # for item in micro_table_raw_data_serializer.data:
+    #     destination_data.append({
+    #         'field1': item['field1'],
+    #         'field2': item['field2'],
+    #     })
+    
+    # destination_serializer = DestinationModelSerializer(data=destination_data, many=True)
+    # if destination_serializer.is_valid():
+    #     destination_serializer.save()
+    #     return Response({'message': 'Data copied successfully'}, status=status.HTTP_201_CREATED)
+    # else:
+    #     return Response(destination_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 def UpdategenerateRawData(supervisor_table_id,remarks):
    raw_data_sheet_supervisor =  RawDataSheet.objects.filter(super_visor_sample_form_id = supervisor_table_id)
@@ -190,6 +247,7 @@ class rawDataForSampleFormTestType(generics.ListAPIView):
     
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
+
 
     
 class rawDataForSampleFormGlobal(generics.ListAPIView):

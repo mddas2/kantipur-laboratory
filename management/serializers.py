@@ -761,6 +761,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
 
                 
                 generateRawData(id,remarks,completed_date) #  if sent to supervisor then generate logs
+                # raise serializers.ValidationError('Fixing micro raw data ...')
                 return attrs
         
         elif len(attrs) == 3 and action == 'partial_update' and 'started_date' and 'sample_received_date' and 'additional_info' in attrs:
