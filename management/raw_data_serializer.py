@@ -1,4 +1,4 @@
-from .models import RawDataSheet,SampleForm,RawDataSheetDetail,TestResult,MicroParameter,MicroObservationTable
+from .models import MicroObservationTableRawData,MicroParameterRawData,RawDataSheet,SampleForm,RawDataSheetDetail,TestResult,MicroParameter,MicroObservationTable
 from account.models import CustomUser
 from rest_framework import serializers
 from . encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
@@ -29,9 +29,22 @@ class MicroTableSerializer(serializers.ModelSerializer):
         model = MicroParameter
         fields = '__all__'
 
+class MicroObservationRawDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        ref_name = "management.raw_data_serializer.MicroObservationSerializer"
+        model = MicroObservationTableRawData
+        fields = '__all__'
+
+class MicroTableRawDataSerializer(serializers.ModelSerializer):
+    micro_observation_table_raw_data = MicroObservationRawDataSerializer(read_only = True,many=True)
+    class Meta:
+        ref_name = "management.raw_data_serializer.micro_table"
+        model = MicroParameterRawData
+        fields = '__all__'
+
 class rawDataSheetDetailSerializer(serializers.ModelSerializer):
     parameter = TestResultSerializer(read_only = True)
-    micro_table = MicroTableSerializer(read_only = True)
+    micro_table = MicroTableRawDataSerializer(read_only = True) 
     class Meta:
         model = RawDataSheetDetail
         fields = '__all__'
