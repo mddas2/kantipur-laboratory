@@ -660,11 +660,15 @@ class PaymentViewSet(viewsets.ModelViewSet):
 
                 if index not in payment_dict:
                     payment_dict[index] = {}
-
-                payment_dict[index][field] = value
+               
+                if value == "undefined" and field == "payment_receipt":
+                   
+                    pass
+                else:
+                    payment_dict[index][field] = value
 
         payment_data = []
-
+   
         for index, payment_data_dict in payment_dict.items():
             serializer = PaymentSerializer(data=payment_data_dict)
             serializer.is_valid(raise_exception=True)
