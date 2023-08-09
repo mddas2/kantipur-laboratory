@@ -340,8 +340,6 @@ class RawDataSheet(models.Model):
     completed_date = models.DateTimeField(null=True) #raw data generated
     sample_received_date = models.DateTimeField(null=True) # sample received date.
 
-    
-
 class MicroParameter(models.Model):
     sample_form_has_parameter = models.ForeignKey(SampleFormHasParameter,related_name="micro_detail_sample_form_has_parameter",on_delete=models.CASCADE,null=True,default=None)
     parameter = models.ForeignKey(TestResult, on_delete=models.CASCADE,null=True)
@@ -361,10 +359,29 @@ class MicroParameter(models.Model):
     second_exponent = models.CharField(max_length=500,default=None)
     third_exponent = models.CharField(max_length=500,default=None)
 
+class MicroParameterRawData(models.Model):
+    sample_form_has_parameter = models.ForeignKey(SampleFormHasParameter,related_name="micro_detail_raw_data",on_delete=models.CASCADE,null=True,default=None)
+    parameter = models.ForeignKey(TestResult, on_delete=models.CASCADE,null=True)
+    sample_form = models.ForeignKey(SampleForm,related_name="micro_detail_raw_data",on_delete=models.CASCADE,default=None)
+    physical_condition_of_sample = models.CharField(max_length=500,null=True)
+    media_used = models.CharField(max_length=500,null=True)
+    prepared_dilution = models.CharField(max_length=500,null=True,blank=True)
+    diluent_used = models.CharField(max_length=500,null=True)
+    positive_control_used = models.CharField(max_length=500,null=True)
+    negative_control_used = models.CharField(max_length=500,null=True)
+    date_of_incubation = models.DateTimeField(null=True)
+    required_temperature = models.CharField(max_length=500,null=True)
+    status = models.CharField(max_length=2000,null=True)
+    is_original = models.BooleanField(default=True)
+
+    first_exponent = models.CharField(max_length=500,default=None)
+    second_exponent = models.CharField(max_length=500,default=None)
+    third_exponent = models.CharField(max_length=500,default=None)
+
 class RawDataSheetDetail(models.Model):
     raw_data = models.ForeignKey(RawDataSheet, on_delete=models.CASCADE,related_name="raw_data",null=True)
     parameter = models.ForeignKey(TestResult, on_delete=models.CASCADE,null=True)
-    micro_table = models.ForeignKey(MicroParameter,related_name="raw_data", on_delete=models.CASCADE,null=True,default=None,blank=True)
+    micro_table = models.ForeignKey(MicroParameterRawData,related_name="raw_data", on_delete=models.CASCADE,null=True,default=None,blank=True)
     result =  models.FloatField(null=True)
     is_verified = models.BooleanField(default=False)
     input_fields_value = models.CharField(max_length=2000,null=True)
@@ -407,44 +424,34 @@ class MicroObservationTable(models.Model):
     negative_control = models.CharField(max_length=500,null=True,blank=True)
     positive_control = models.CharField(max_length=500,null=True,blank=True)
 
-# class MicroParameterRawData(models.Model):
-#     sample_form_has_parameter = models.ForeignKey(SampleFormHasParameter,related_name="micro_detail_sample_form_has_parameter_rawdata",on_delete=models.CASCADE,null=True,default=None)
-#     parameter = models.ForeignKey(TestResult, on_delete=models.CASCADE,null=True)
-#     sample_form = models.ForeignKey(SampleForm,related_name="micro_detail_rawdata",on_delete=models.CASCADE,null=True,default=None)
-#     physical_condition_of_sample = models.CharField(max_length=500,null=True)
-#     media_used = models.CharField(max_length=500,null=True)
-#     prepared_dilution = models.CharField(max_length=500,null=True)
-#     diluent_used = models.CharField(max_length=500,null=True)
-#     positive_control_used = models.CharField(max_length=500,null=True)
-#     negative_control_used = models.CharField(max_length=500,null=True)
-#     date_of_incubation = models.DateTimeField(null=True)
-#     required_temperature = models.CharField(max_length=500,null=True)
+
+
 
 # class MicroObservationTableRawData(models.Model):
-#     micro_parameter_table = models.ForeignKey(MicroParameter,related_name="micro_observation_table_rawdata",on_delete=models.CASCADE,null=True,default=None)
-#     parameter = models.ForeignKey(TestResult, on_delete=models.CASCADE,null=True)
-#     sample_form = models.ForeignKey(SampleForm,related_name="micro_observation_table_rawdata",on_delete=models.CASCADE,null=True,default=None)
+class MicroObservationTableRawData(models.Model):
+    micro_parameter_table_raw_data = models.ForeignKey(MicroParameterRawData,related_name="micro_observation_table_raw_data",on_delete=models.CASCADE,null=True,default=None)
+    parameter = models.ForeignKey(TestResult, on_delete=models.CASCADE,null=True)
+    sample_form = models.ForeignKey(SampleForm,related_name="micro_observation_table_raw_data",on_delete=models.CASCADE,null=True,default=None)
     
-#     observation_number = models.CharField(max_length=500,null=True,blank=True)
-#     observation_time = models.CharField(max_length=500,null=True,blank=True)
-#     temperature = models.CharField(max_length=500,null=True,blank=True)
-#     time = models.CharField(max_length=500,null=True,blank=True)
+    observation_number = models.CharField(max_length=500,null=True,blank=True)
+    observation_time = models.CharField(max_length=500,null=True,blank=True)
+    temperature = models.CharField(max_length=500,null=True,blank=True)
+    time = models.CharField(max_length=500,null=True,blank=True)
 
-#     first_exponent = models.CharField(max_length=500,null=True,blank=True)
-#     first_exponent_a = models.CharField(max_length=500,null=True,blank=True)
-#     first_exponent_b = models.CharField(max_length=500,null=True,blank=True)
+    first_exponent = models.CharField(max_length=500,null=True,blank=True)
+    first_exponent_a = models.CharField(max_length=500,null=True,blank=True)
+    first_exponent_b = models.CharField(max_length=500,null=True,blank=True)
 
-#     second_exponent = models.CharField(max_length=500,null=True,blank=True)
-#     second_exponent_a = models.CharField(max_length=500,null=True,blank=True)
-#     second_exponent_b = models.CharField(max_length=500,null=True,blank=True)
+    second_exponent = models.CharField(max_length=500,null=True,blank=True)
+    second_exponent_a = models.CharField(max_length=500,null=True,blank=True)
+    second_exponent_b = models.CharField(max_length=500,null=True,blank=True)
 
-#     third_exponent = models.CharField(max_length=500,null=True,blank=True)
-#     third_exponent_a = models.CharField(max_length=500,null=True,blank=True)
-#     third_exponent_b = models.CharField(max_length=500,null=True,blank=True)
+    third_exponent = models.CharField(max_length=500,null=True,blank=True)
+    third_exponent_a = models.CharField(max_length=500,null=True,blank=True)
+    third_exponent_b = models.CharField(max_length=500,null=True,blank=True)
 
-#     negative_control = models.CharField(max_length=500,null=True,blank=True)
-#     positive_control = models.CharField(max_length=500,null=True,blank=True)
-
+    negative_control = models.CharField(max_length=500,null=True,blank=True)
+    positive_control = models.CharField(max_length=500,null=True,blank=True)
 
 class ClientCategoryDetailImages(models.Model):
     client_category_detail = models.ForeignKey(ClientCategoryDetail,related_name="ClientCategoryDetail",on_delete=models.CASCADE,null=True,default=None)
