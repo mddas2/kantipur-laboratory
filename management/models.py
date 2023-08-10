@@ -294,7 +294,7 @@ class SampleFormParameterFormulaCalculate(models.Model):
     mandatory_standard = models.CharField(max_length=200,null=True)
     test_method = models.CharField(max_length=200,null=True)
 
-    # additional_info = models.CharField(max_length=200,null=True)
+    additional_info = models.CharField(max_length=100, blank=True, null=True)
 
     status_choices = (
         ('pending', 'pending'),
