@@ -15,7 +15,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 
-site_f  = "https://dev-lims.netlify.app"#"https://lims.dftqc.gov.np"
+site_f  = "http://localhost:4200"#"https://dev-lims.netlify.app"#"https://lims.dftqc.gov.np"
 
 class EmailCheckView(generics.GenericAPIView):
     serializer_class = EmailSerializer
@@ -70,7 +70,7 @@ class EmailVerificationConfirmView(APIView):
         serializer.is_valid(raise_exception=True)
         
         return response.Response(
-            {"message": "Email Verified Complete"},
+            {"message": "Email Verified Complete",'verified':True},
             status=status.HTTP_200_OK,
         )
 
