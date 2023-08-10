@@ -35,11 +35,14 @@ class CustomPasswordResetSerializer(serializers.Serializer):
         user.save()
         return data
     
-class CustomEmailVerifySerializer(serializers.Serializer):        
+class CustomEmailVerifySerializer(serializers.Serializer):     
+    encoded_pk = serializers.CharField()   
+    token = serializers.CharField()   
+
     def validate(self, data):
-        token = self.context.get("kwargs").get("token")
-        encoded_pk = self.context.get("kwargs").get("encoded_pk")
-        
+        token = data.get("token")
+        encoded_pk = data.get("encoded_pk")
+        # print(token,encoded_pk)
         if token is None or encoded_pk is None:
             raise serializers.ValidationError("missing data")
         
