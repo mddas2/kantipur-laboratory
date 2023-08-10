@@ -599,11 +599,9 @@ class TestResultViewSet(viewsets.ModelViewSet):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         
-        print(request.data," paayload before \n \n ...")
+
         data = additionalOperation(request.data)
-        # print(data," return data from function...")
-        print(request.data," return data from function...")
-        # return HttpResponse(data)
+        
         serializer = self.get_serializer(data=request.data)
 
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
