@@ -15,7 +15,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 
-site_f  = "https://lims.dftqc.gov.np"
+site_f  = "https://dev-lims.netlify.app"#"https://lims.dftqc.gov.np"
 
 class EmailCheckView(generics.GenericAPIView):
     serializer_class = EmailSerializer
