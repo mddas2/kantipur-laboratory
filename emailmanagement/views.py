@@ -74,9 +74,10 @@ class EmailVerificationConfirmView(APIView):
             status=status.HTTP_200_OK,
         )
 
-def SendEmailVerificationLink(APIView):
-    import uuid
+class SendEmailVerificationLink(APIView):
+    
     def post(self, request, *args, **kwargs):
+        import uuid
         email = request.data.get('email')
         user = CustomUser.objects.filter(email=email).first()
 

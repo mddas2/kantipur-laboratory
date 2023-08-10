@@ -35,8 +35,8 @@ class CustomUser(AbstractUser):
     approved_date = models.DateField(null=True)
 
     is_recheck = models.BooleanField(default=False)
-
     is_reject = models.BooleanField(default=False)
+    is_email_verified =  models.BooleanField(default=False) #for email verification.
 
     client_category = models.ForeignKey("management.ClientCategory",related_name="user",on_delete=models.CASCADE,null=True) 
 
