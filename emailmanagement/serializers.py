@@ -34,3 +34,21 @@ class CustomPasswordResetSerializer(serializers.Serializer):
         user.set_password(password)
         user.save()
         return data
+    
+class CustomEmailVerifySerializer(serializers.Serializer):        
+    def validate(self, data):
+        token = self.context.get("kwargs").get("token")
+        encoded_pk = self.context.get("kwargs").get("encoded_pk")
+        
+        if token is None or encoded_pk is None:
+            raise serializers.ValidationError("missing data")
+        
+        pk = urlsafe_base64_decode(encoded_pk).decode()
+        user = CustomUser.objects.get(pk=pk)
+        
+        if not PasswordResetTokenGenerator().check_token(user, token):
+            raise serializers.ValidationError("The email verify token is invalid")
+        
+        user.is_email_verified = True
+        user.save()
+        return data
