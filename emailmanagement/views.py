@@ -97,7 +97,7 @@ class SendEmailVerificationLink(APIView):
         # Send the token via email
         subject = 'Email Verification Token'
         message = f'Your email verification token is: {verification_token}'
-        verify_url = f"{site_f}/email-verification?pk={encoded_pk}&token={token}"
+        verify_url = f"{site_f}/user-verification-success?pk={encoded_pk}&token={token}"
         subject = 'Email Verification Link '
         sendMail(email,verify_url,subject)
 
