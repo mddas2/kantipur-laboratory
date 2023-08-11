@@ -18,12 +18,12 @@ from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from management import roles
 from rest_framework.exceptions import PermissionDenied
-from .custompermission import Account
 from . import department_type
 from websocket.handle_notification import NotificationHandler
 from django.http import HttpResponse
 from django.db.models import Q
 from rest_framework import generics
+from .custompermission import AccountPermission
 
 class CustomUserSerializerViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
@@ -44,6 +44,7 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
 
     authentication_classes = [JWTAuthentication]
     # permission_classes = [IsAuthenticated]
+    permission_classes = [AccountPermission]
 
     def get_permissions(self):
         if self.action == 'list':
