@@ -397,6 +397,7 @@ class RawDataSheetDetail(models.Model):
     units = models.CharField(max_length=200,null=True)
     mandatory_standard = models.CharField(max_length=200,null=True)
     test_method = models.CharField(max_length=200,null=True)
+    additional_info = models.CharField(max_length=100, blank=True, null=True)
 
 
 class MicroObservationTable(models.Model):

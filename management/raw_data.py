@@ -66,6 +66,7 @@ def generateRawData(sample_form_has_parameter_id,remarks,completed_date):
                  "units":param.units,
                  "mandatory_standard":param.mandatory_standard,
                  "test_method":param.test_method,
+                 "additional_info":param.additional_info,
 
             }
         else:
@@ -85,6 +86,7 @@ def generateRawData(sample_form_has_parameter_id,remarks,completed_date):
                 "units":param.units,
                 "mandatory_standard":param.mandatory_standard,
                 "test_method":param.test_method,
+                "additional_info":param.additional_info,
                 
             }
         RawDataSheetDetail.objects.update_or_create(**data)
