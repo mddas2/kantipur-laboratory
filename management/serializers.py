@@ -651,6 +651,7 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
                 parameter['units_selected'] = formula_calculate.units
                 parameter['mandatory_standard_selected'] = formula_calculate.mandatory_standard
                 parameter['test_method_selected'] = formula_calculate.test_method
+                parameter['additional_info'] = formula_calculate.additional_info
                 
             else:
                 parameter['result'] = ""     
