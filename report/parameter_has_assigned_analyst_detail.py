@@ -49,7 +49,7 @@ class TestResultLimitedSerializer(serializers.ModelSerializer):
     class Meta:
         model = TestResult
         ref_name = "TestResultLimitedSerializer"
-        exclude = ['units', 'mandatory_standard', 'test_method','price']
+        exclude = ['units', 'mandatory_standard', 'test_method']
 
 
 class DetailSampleFormHasParameterAnalystSerializer(serializers.ModelSerializer):
