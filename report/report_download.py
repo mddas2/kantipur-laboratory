@@ -386,7 +386,7 @@ def rawDataSheetAnalystReport(request,download_print,sample_form_has_param):
 
 
     raw_data = RawDataSheet.objects.filter(id = sample_form_has_param)
-
+    # print(raw_data," raw data...\n")
     test_type = raw_data.first().test_type
 
     print(raw_data," generating report pdf as microbiology...")

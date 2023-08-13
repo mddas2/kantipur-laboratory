@@ -57,8 +57,13 @@ class SupervisorFinalReportSerializer(serializers.ModelSerializer):
                 if formula_obj_result.count()>0:
                     stat = "completed"
                     parameter_data['status'] = "completed"
-                    parameter_data['result'] = formula_obj_result.first().result
                     parameter_data['analyst_remarks'] = formula_obj_result.first().analyst_remarks #formula_obj_result.first().test_method
+
+                    analyst_remarks = formula_obj_result.first().analyst_remarks
+                    if analyst_remarks:
+                        parameter_data['result'] = formula_obj_result.first().analyst_remarks
+                    else:
+                        parameter_data['result'] = formula_obj_result.first().result
 
                     parameter_data['units'] = "umesh units" #formula_obj_result.first().units
                     parameter_data['mandatory_standard'] = "umesh mandatory_standard"  #formula_obj_result.first().mandatory_standard

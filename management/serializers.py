@@ -558,7 +558,12 @@ class SuperVisorSampleFormReadSerializer(serializers.ModelSerializer):
                 formula_obj_result = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id=sample_form_id,parameter_id = parameter_id)
                 if formula_obj_result.count()>0:
                     parameter_data['status'] = over_all_status[formula_obj_result.first().status]
-                    parameter_data['result'] = formula_obj_result.first().result
+                    
+                    analyst_remarks = formula_obj_result.first().analyst_remarks
+                    if analyst_remarks:
+                        parameter_data['result'] = formula_obj_result.first().analyst_remarks
+                    else:
+                        parameter_data['result'] = formula_obj_result.first().result
 
                     parameter_data['units'] = formula_obj_result.first().units
                     parameter_data['mandatory_standard'] = formula_obj_result.first().mandatory_standard
