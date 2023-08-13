@@ -286,7 +286,7 @@ class FormulaApiCalculateSave(APIView):
         units = serializer.validated_data.get('units')
         mandatory_standard = serializer.validated_data.get('mandatory_standard')
         test_method = serializer.validated_data.get('test_method')
-        additional_info = serializer.validated_data.get('test_method')
+        additional_info = serializer.validated_data.get('additional_info')
 
         # serializer.validated_data.get('mandatory_standard')
 
