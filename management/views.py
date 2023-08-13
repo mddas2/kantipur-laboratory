@@ -17,6 +17,7 @@ from django.db.models import Q
 from django.http import Http404
 from . encode_decode import generateDecodeIdforSampleForm
 from rest_framework import generics
+from django.core.cache import cache
 
 class ClientCategoryViewSet(viewsets.ModelViewSet):
     queryset = ClientCategory.objects.all()
@@ -406,6 +407,31 @@ class CommodityViewSet(viewsets.ModelViewSet):
         query = Commodity.objects.all()
         return query
     
+    
+    def list(self, request, *args, **kwargs):
+        # Try to get cached data
+        cached_data = cache.get('CommodityViewSet')
+
+        if cached_data is None:
+            # Cache is empty, fetch data from the database
+            queryset = self.filter_queryset(self.get_queryset())
+            
+            # Use pagination to get a page of data
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = self.get_serializer(page, many=True)
+                data = self.get_paginated_response(serializer.data).data
+            else:
+                data = []
+
+            # Store data in the cache for 5 minutes (300 seconds)
+            cache.set('CommodityViewSet', data, 300)
+        else:
+            data = cached_data
+        
+        return Response(data)
+
+    
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -496,11 +522,20 @@ class commodityCategoryLimitedData(generics.ListAPIView):
         return limitedCommidityCategoryreadSerializer
         
     def list(self, request, *args, **kwargs):
-        from rest_framework.response import Response
-        queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
-        data = serializer.data
+        # Try to get cached data
+        cached_data = cache.get('commodityCategoryLimitedData')
 
+        if cached_data is None:
+            # Cache is empty, fetch data from the database
+            queryset = self.filter_queryset(self.get_queryset())
+            serializer = self.get_serializer(queryset, many=True)
+            data = serializer.data
+
+            # Store data in the cache for 5 minutes (300 seconds)
+            cache.set('commodityCategoryLimitedData', data, 300)
+        else:
+            data = cached_data
+        
         return Response(data)
     
 class CommodityCategoryViewSet(viewsets.ModelViewSet):
@@ -513,6 +548,30 @@ class CommodityCategoryViewSet(viewsets.ModelViewSet):
     # authentication_classes = [JWTAuthentication]
     permission_classes = [CommodityCategoryViewSetPermission]
     pagination_class = MyLimitOffsetPagination
+
+    def list(self, request, *args, **kwargs):
+        # Try to get cached data
+        cached_data = cache.get('CommodityCategoryViewSet')
+
+        if cached_data is None:
+            # Cache is empty, fetch data from the database
+            queryset = self.filter_queryset(self.get_queryset())
+            
+            # Use pagination to get a page of data
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = self.get_serializer(page, many=True)
+                data = self.get_paginated_response(serializer.data).data
+            else:
+                data = []
+
+            # Store data in the cache for 5 minutes (300 seconds)
+            cache.set('CommodityCategoryViewSet', data, 300)
+        else:
+            data = cached_data
+        
+        return Response(data)
+    
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -574,6 +633,29 @@ class TestResultViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'partial_update']:
             return TestResultWriteSerializer
         return super().get_serializer_class()
+    
+    def list(self, request, *args, **kwargs):
+        # Try to get cached data
+        cached_data = cache.get('TestResultViewSet')
+
+        if cached_data is None:
+            # Cache is empty, fetch data from the database
+            queryset = self.filter_queryset(self.get_queryset())
+            
+            # Use pagination to get a page of data
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = self.get_serializer(page, many=True)
+                data = self.get_paginated_response(serializer.data).data
+            else:
+                data = []
+
+            # Store data in the cache for 5 minutes (300 seconds)
+            cache.set('TestResultViewSet', data, 300)
+        else:
+            data = cached_data
+        
+        return Response(data)
     
     def create(self, request, *args, **kwargs):
         units = request.data.get('units')
