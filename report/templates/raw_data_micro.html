@@ -144,7 +144,7 @@
                             <td colspan="2"><h2 style="text-align: center; font-size:12px; font-weight:400; line-height:0; padding:0; margin:0;"></h2></td>
                         </tr>
 
-                        {% for observation in param.micro_table.micro_observation_table.all %}
+                        {% for observation in param.micro_table.micro_observation_table_raw_data.all %}
                         <tr style="border: 1px solid black; padding:0; margin:0;">
                             <td colspan="3"><h2 style="text-align: center; font-size:12px; font-weight:400; line-height:0; padding:0; margin:0;">{{observation.observation_number}}</h2></td>
                             <td colspan="2"><h2 style="text-align: center; font-size:12px; font-weight:400; line-height:0; padding:0; margin:0;">{{observation.temperature}}</h2></td>
