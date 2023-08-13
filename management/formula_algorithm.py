@@ -286,6 +286,7 @@ class FormulaApiCalculateSave(APIView):
         units = serializer.validated_data.get('units')
         mandatory_standard = serializer.validated_data.get('mandatory_standard')
         test_method = serializer.validated_data.get('test_method')
+        additional_info = serializer.validated_data.get('test_method')
 
         # serializer.validated_data.get('mandatory_standard')
 
@@ -326,6 +327,8 @@ class FormulaApiCalculateSave(APIView):
             "units": units,
             "mandatory_standard":mandatory_standard,
             "test_method":test_method,
+
+            "additional_info":additional_info,
         }
 
         data,created = SampleFormParameterFormulaCalculate.objects.update_or_create(sample_form_id = sample_form_id, parameter_id =parameter_id, commodity_id = commodity_id,sample_form_has_parameter_id=sample_form_has_parameter_id,defaults=data)
