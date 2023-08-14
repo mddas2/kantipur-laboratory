@@ -111,7 +111,7 @@ class limitedCommidityreadSerializer(serializers.ModelSerializer):
     class Meta:
         ref_name = "limitedCommidityreadSerializer"
         model = Commodity
-        fields = ['id','name','price','test_result','test_duration']
+        fields = ['id','name','price','test_result','test_duration','name_nepali']
         
 
 class MicroObservationTableSerializer(serializers.ModelSerializer):
