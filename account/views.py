@@ -39,7 +39,8 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
         'is_reject': ['exact'],
         'role': ['exact'],
         'client_category_id': ['exact'],
-        'created_date': ['date__gte', 'date__lte']  # Date filtering
+        'created_date': ['date__gte', 'date__lte'],  # Date filtering
+        'is_active':['exact'],
     }
 
     authentication_classes = [JWTAuthentication]
@@ -344,12 +345,23 @@ class userLimitedData(generics.ListAPIView):
     # authentication_classes = [JWTAuthentication]
     # permission_classes = [IsAuthenticated]
 
-    filter_backends  = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['id']
-    ordering_fields = ['id']
+
+    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    search_fields = ['id','email','username','first_name','last_name','is_verified','phone']
+    ordering_fields = ['username','id']
+    filterset_fields = {
+        'email': ['exact', 'icontains'],
+        'username': ['exact'],
+        'is_verified': ['exact'],
+        'is_reject': ['exact'],
+        'role': ['exact'],
+        'client_category_id': ['exact'],
+        'created_date': ['date__gte', 'date__lte'],  # Date filtering
+        'is_active':['exact'],
+    }
     
     def get_queryset(self):
-        users = CustomUser.objects.filter(role = roles.USER)
+        users = CustomUser.objects.filter(role = roles.USER,is_active = True)
         return users
 
     def get_serializer_class(self):
