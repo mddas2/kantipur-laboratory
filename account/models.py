@@ -87,6 +87,7 @@ class CustomUser(AbstractUser):
             self.is_active = True
 
             if self.test_types != None:
+                super().save(*args, **kwargs)
                 self.test_type.set(self.test_types)
                 
         else:
@@ -104,8 +105,9 @@ class CustomUser(AbstractUser):
                 # print("when update it's default pass True as is_actives")
                 # is_active is not being updated, set a default value if it hasn't been set already
                 self.is_active = True
+            super().save(*args, **kwargs)
 
-        return super().save(*args, **kwargs)
+        return self
 
 
 class CustomUserImages(models.Model):
