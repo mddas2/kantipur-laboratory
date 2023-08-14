@@ -41,6 +41,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
     
     def validate_test_types(self,value):#field level validation
         action = self.context['view'].action   
+        
         if action == "update":
             if value != None:
                 try:            
@@ -62,6 +63,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         else:
             if value != None:
                 string = [int(id) for id in value.split(',')]
+                
                 return string
                 # raise serializers.ValidationError('Test type allowed for only analyst and supervisor.')
 
