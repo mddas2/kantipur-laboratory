@@ -67,7 +67,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
                 return string
                 # raise serializers.ValidationError('Test type allowed for only analyst and supervisor.')
 
-        return string
+        return value
       
     def validate_role(self,value):#field level validation
         user = self.context['request'].user
