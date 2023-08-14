@@ -86,8 +86,8 @@ class CustomUser(AbstractUser):
             # New instance, set is_active to False by default
             self.is_active = True
 
+            super().save(*args, **kwargs)
             if self.test_types != None:
-                super().save(*args, **kwargs)
                 self.test_type.set(self.test_types)
                 
         else:
