@@ -497,26 +497,11 @@ class commodityLimitedData(generics.ListAPIView):
         return limitedCommidityreadSerializer
         
     def list(self, request, *args, **kwargs):
-        # Try to get cached data
-        cached_data = cache.get('commodityLimitedData')
+        from rest_framework.response import Response
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        data = serializer.data
 
-        if cached_data is None:
-            # Cache is empty, fetch data from the database
-            queryset = self.filter_queryset(self.get_queryset())
-            
-            # Use pagination to get a page of data
-            page = self.paginate_queryset(queryset)
-            if page is not None:
-                serializer = self.get_serializer(page, many=True)
-                data = self.get_paginated_response(serializer.data).data
-            else:
-                data = []
-
-            # Store data in the cache for 5 minutes (300 seconds)
-            cache.set('commodityLimitedData', data, 300)
-        else:
-            data = cached_data
-        
         return Response(data)
 
 class commodityCategoryLimitedData(generics.ListAPIView):
