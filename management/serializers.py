@@ -564,6 +564,8 @@ class SuperVisorSampleFormReadSerializer(serializers.ModelSerializer):
                         parameter_data['result'] = formula_obj_result.first().analyst_remarks
                     else:
                         parameter_data['result'] = formula_obj_result.first().result
+                        parameter_data['result'] = formula_obj_result.first().converted_result
+                        
 
                     parameter_data['units'] = formula_obj_result.first().units
                     parameter_data['mandatory_standard'] = formula_obj_result.first().mandatory_standard
