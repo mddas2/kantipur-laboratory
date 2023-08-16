@@ -61,7 +61,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
             
                 return string
         else:
-            if value != None:
+            if value != None: #multiple test type not alowed' md blunder
                 string = [int(id) for id in value.split(',')]
                 
                 return string

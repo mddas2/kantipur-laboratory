@@ -121,6 +121,10 @@ class SampleForm(models.Model):#ClientRequest
     admin_remarks = models.CharField(max_length=1000,null=True)
     verifier_remarks = models.CharField(max_length=1000,null=True)
 
+    sample_symbol_number = models.CharField(max_length=255, null=True) #latest
+    analysis_fee = models.CharField(max_length=255, null=True) #latest
+    voucher_number = models.CharField(max_length=255, null=True) #latest
+    voucher_date =  models.DateTimeField(null=True) #latest
 
 
     verified_by = models.ForeignKey(CustomUser, related_name="sample_form_verified_by",on_delete=models.SET_NULL,null=True) #verifier
@@ -408,7 +412,7 @@ class MicroObservationTable(models.Model):
     observation_number = models.CharField(max_length=500,null=True,blank=True)
     observation_time = models.CharField(max_length=500,null=True,blank=True)
     temperature = models.CharField(max_length=500,null=True,blank=True)
-    time = models.CharField(max_length=500,null=True,blank=True)
+    time = models.DateTimeField(null=True,blank=True)
 
     first_exponent = models.CharField(max_length=500,null=True,blank=True)
     first_exponent_a = models.CharField(max_length=500,null=True,blank=True)
@@ -437,7 +441,7 @@ class MicroObservationTableRawData(models.Model):
     observation_number = models.CharField(max_length=500,null=True,blank=True)
     observation_time = models.CharField(max_length=500,null=True,blank=True)
     temperature = models.CharField(max_length=500,null=True,blank=True)
-    time = models.CharField(max_length=500,null=True,blank=True)
+    time = models.DateTimeField(null=True,blank=True)
 
     first_exponent = models.CharField(max_length=500,null=True,blank=True)
     first_exponent_a = models.CharField(max_length=500,null=True,blank=True)
