@@ -104,7 +104,9 @@ class CustomUser(AbstractUser):
             else:
                 # print("when update it's default pass True as is_actives")
                 # is_active is not being updated, set a default value if it hasn't been set already
-                self.is_active = True
+                print("\n self is active ::",self.is_active)
+                #self.is_active = True
+
             super().save(*args, **kwargs)
 
         return self

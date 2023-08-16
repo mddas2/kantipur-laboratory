@@ -115,7 +115,10 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
 
-        # Save the updated object to the database
+        if 'is_active' not in request.data:
+            serializer.validated_data['is_active'] = instance.is_active
+
+        # Save the updated object to the database   
         self.perform_update(serializer)
 
         # Create a custom response
