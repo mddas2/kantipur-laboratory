@@ -78,7 +78,7 @@ class SampleForm(models.Model):#ClientRequest
     condition = models.CharField(max_length=255)
     mfd = models.DateField()
 
-    dfb = models.DateField(null=True)
+    dfb = models.DateField(null=True,blank=True)
 
     days_dfb = models.CharField(max_length=255,null=True,blank=True)
     dfb_duration = models.CharField(choices=(('days','days'),('month','month'),('year','year'),('','')), default=None, max_length=155,null=True)
