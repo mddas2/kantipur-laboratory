@@ -563,7 +563,7 @@ class SuperVisorSampleFormReadSerializer(serializers.ModelSerializer):
                     if analyst_remarks:
                         parameter_data['result'] = formula_obj_result.first().analyst_remarks
                     else:
-                        parameter_data['result'] = formula_obj_result.first().result
+                        # parameter_data['result'] = formula_obj_result.first().result
                         parameter_data['result'] = formula_obj_result.first().converted_result
                         
 
