@@ -75,7 +75,7 @@ class ClientCategoryDetail(models.Model): #DFTQC
 class SampleForm(models.Model):#ClientRequest
     owner_user = models.EmailField(max_length=100,null=False,default=None)
     name = models.CharField(max_length=255, null=True)
-    condition = models.CharField(max_length=255)
+    condition = models.CharField(max_length=255,null=True)
     mfd = models.DateField()
 
     dfb = models.DateField(null=True,blank=True)
@@ -85,8 +85,8 @@ class SampleForm(models.Model):#ClientRequest
     dfb_type = models.CharField(choices=(('days','days'),('date','date'),('','')), default=None, max_length=155,null=True)
 
     batch = models.CharField(max_length=155,null=True)
-    brand = models.CharField(max_length=255)
-    purpose = models.CharField(max_length=255)
+    brand = models.CharField(max_length=255,null=True)
+    purpose = models.CharField(max_length=255,null=True)
     requested_export = models.CharField(max_length=155,null=True)
     report_date = models.DateField(null=True)
     amendments = models.CharField(max_length=255,null=True,blank=True)
