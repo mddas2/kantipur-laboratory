@@ -39,6 +39,10 @@ class CustomUser(AbstractUser):
     is_email_verified =  models.BooleanField(default=False) #for email verification.
 
     client_category = models.ForeignKey("management.ClientCategory",related_name="user",on_delete=models.CASCADE,null=True) 
+    importer_name = models.CharField(max_length=255,null=True) 
+    importer_address = models.CharField(max_length=255,null=True) 
+    other_detail = models.CharField(max_length=255,null=True) 
+
 
     created_by = models.IntegerField(null=True)
     remarks = models.CharField(max_length=200,null=True)
