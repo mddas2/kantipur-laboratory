@@ -11,6 +11,7 @@ from django.db.models.signals import m2m_changed
 from django.utils import timezone
 from websocket.handle_notification import sampleFormNotificationHandler
 from django.db.models import Q
+from . import additional_data
 
 @receiver(post_save, sender=SampleFormParameterFormulaCalculate)
 def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwargs):
@@ -28,6 +29,17 @@ def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwarg
 def handle_sampleform_presave(sender, instance, **kwargs):
     original_sample_form_status = None
     if not instance.pk:
+        client_category = instance.client_category_detail.client_category.id
+        client_sub_caategory = instance.client_category_detail.client_sub_category
+
+        if client_category == additional_data.dftqc_section:
+            if client_sub_caategory in additional_data.client_sub_category_choices:
+                count_data = SampleForm.objects.filter(client_category_detail__client_sub_category = client_sub_caategory).count()
+                encoded_data = additional_data.client_sub_category_dict[client_sub_caategory]
+                full_encoded = encoded_data.upper() + "-" +str(count_data)
+                instance.sample_symbol_number = full_encoded
+                instance.name = full_encoded
+            
         sampleFormNotificationHandler(instance,"new_sample_form")
     if instance.id:
         original_sample_form_status = SampleForm.objects.get(pk=instance.id).supervisor_user

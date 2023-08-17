@@ -263,7 +263,7 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
             return super().to_internal_value(data)
         
     def validate(self, data):
-    
+        # raise serializers.ValidationError('testing sample form dftqc')
         action = self.context['view'].action
         if action == "create" or action=="update":
             parameters = data.get('parameters')
