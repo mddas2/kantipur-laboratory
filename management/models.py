@@ -167,6 +167,8 @@ class SampleForm(models.Model):#ClientRequest
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
 
+    analysis_pricing = models.BooleanField(default=False) #if parameter not select then auto select parameter.this insure that commodity select or parameter.umesh sir
+
     def save(self, *args, **kwargs):
         create = False
         if not self.pk:
