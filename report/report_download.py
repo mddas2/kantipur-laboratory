@@ -246,6 +246,7 @@ def FinalReport(request,report_type,report_lang,id=None,role=None):
 
         # Define the context data
         sample_form_name = query.name
+        symbol_number = ''
         mfd = query.mfd
         batch = query.batch
         remarks = query.remarks
@@ -260,7 +261,17 @@ def FinalReport(request,report_type,report_lang,id=None,role=None):
             owner_name = user_obj.department_name #
         except:
             owner_name = query.owner_user
-            
+
+        client_categoty = query.client_category_detail.client_category
+        if str(client_categoty.id) == "11":
+            owner_name = "Liscensing and Inspection section  </br> Food and Feet Sanitation and Quality Control Division </br> Food Technology and Quality Control Department </br> Babarmahal,Kathmandu"
+            department_address = ""
+            symbol_number = "</br>"+sample_form_name
+            sample_form_name = query.commodity.name
+        
+                       
+
+
         sample_registration_date = query.created_date.date()
         sample_code = query.refrence_number
         analysis_starting_date = query.created_date.date()
@@ -271,6 +282,7 @@ def FinalReport(request,report_type,report_lang,id=None,role=None):
         # print(parameters)
 
         context = {
+           'symbol_number':symbol_number,
            'sample_form_name' : sample_form_name,
            'remarks':remarks,
            'department_address' : department_address,

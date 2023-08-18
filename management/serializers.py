@@ -279,11 +279,6 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
                 data['parameters'] = commodity_parameters
                 data['price'] = commodity_price
             else:
-                # commodity_parameter_len =  commodity_parameters.count()
-                # parameter_len = len(parameters)
-                # if commodity_parameter_len == parameter_len:
-                #     data['price'] = commodity_price
-                # else:
                 price = 0
                 for paramet in parameters:
                     price = paramet.price + price
