@@ -1,4 +1,4 @@
-from management.models import SampleForm, Commodity,SampleFormHasParameter,TestResult,SampleFormParameterFormulaCalculate,Payment
+from management.models import ClientCategoryDetail,SampleForm, Commodity,SampleFormHasParameter,TestResult,SampleFormParameterFormulaCalculate,Payment
 from rest_framework import serializers
 
 from management.models import SampleForm, Commodity,SampleFormHasParameter,SuperVisorSampleForm
@@ -246,12 +246,20 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
         return representation
 
 
+
+class ClientCategoryDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        ref_name = "ClientCategoryDetailSerializer"
+        model = ClientCategoryDetail
+        fields = '__all__'
+
 class FinalReportNepaliAnalystSerializer(serializers.ModelSerializer):
     commodity = CommoditySerializer(read_only = True)
     parameters = TestResultLimitedSerializer(read_only = True, many = True)
     owner_user = serializers.SerializerMethodField()
     supervisor_user = CustomUserSerializer(read_only = True)
     verified_by = CustomUserSerializer(read_only = True)
+    client_category_detail = ClientCategoryDetailSerializer(read_only = True,many=False)
     
     
     class Meta:
