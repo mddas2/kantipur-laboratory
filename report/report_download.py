@@ -10,6 +10,16 @@ from django.template.loader import get_template
 from xhtml2pdf import pisa
 from management.models import SampleFormParameterFormulaCalculate
 from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm,generateDecodeIdByRoleforSampleForm
+
+from account.department_type import department_code
+from rest_framework.response import Response
+from management.models import RawDataSheet
+
+import qrcode
+import os
+from django.shortcuts import render
+from django.conf import settings
+from django.templatetags.static import static
 # https://limsserver.kantipurinfotech.com.np/api/report/get-report/report_name/report_type/report_lang/
 def ReportAdminList(report_type,report_lang,id=None):
     query = CustomUser.objects.all()
@@ -279,9 +289,9 @@ def FinalReport(request,report_type,report_lang,id=None,role=None):
 
         parameters = query.result.all()
 
-        # print(parameters)
-
+        qr_code_image_url = generateQrcode(query.id)
         context = {
+           'qr_code_image_url':qr_code_image_url,
            'symbol_number':symbol_number,
            'sample_form_name' : sample_form_name,
            'remarks':remarks,
@@ -303,87 +313,12 @@ def FinalReport(request,report_type,report_lang,id=None,role=None):
 
         # Create a PDF object
         response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="output.pdf"'
+        response['Content-Disposition'] = 'inline; filename="output.pdf"'
 
-        # Generate the PDF from the HTML content
+        # Generate the PDF from the HTML contents
         pisa.CreatePDF(html, dest=response)
-
-        from reportlab.lib.pagesizes import letter
-        from reportlab.pdfgen import canvas
-        from io import BytesIO
-        import tempfile
-        from PyPDF2 import PdfReader, PdfWriter
-        from PIL import Image
-
-        import qrcode
-        pdf_buffer = response.content
-
-        # Load the generated PDF using PyPDF2
-        pdf_reader = PdfReader(BytesIO(pdf_buffer))
-
-        # Create a BytesIO object to hold the final PDF data
-        final_pdf_buffer = BytesIO()
-
-        # Create a PDF writer object
-        pdf_writer = PdfWriter()
-
-        # Iterate over each page in the original PDF and add it to the writer
-        for page_number in range(len(pdf_reader.pages)):
-            page = pdf_reader.pages[page_number]
-
-            # Add the QR code to the first page
-            if page_number == 0:
-                qr = qrcode.QRCode(
-                    version=1,
-                    error_correction=qrcode.constants.ERROR_CORRECT_L,
-                    box_size=2,
-                    border=3,
-                )
-                qr.add_data(f"https://limsserver.kantipurinfotech.com.np/api/report/get-single-report/final-report/pdf/en/{encoded_id}/{role}/")  # Modify the data as needed
-                qr.make(fit=True)
-                qr_image = qr.make_image(fill_color="black", back_color="white")
-
-                # Convert the QR code image to a PIL Image
-                qr_pil_image = qr_image.convert('RGBA')
-
-                # Get the dimensions of the first page
-                page_width = page.mediabox [2]
-                page_height = page.mediabox [3]
-
-                # Create a blank image with the same size as the first page
-                blank_image = Image.new('RGB', (int(page_width), int(page_height)), (255, 255, 255, 0))
-
-                # Paste the QR code onto the blank image
-                blank_image.paste(qr_pil_image, (470, 690))  # w,h: Adjust the position as needed
-
-                # Convert the image back to a PDF page
-                qr_page = BytesIO()
-                blank_image.save(qr_page, 'PDF')
-                qr_page.seek(0)
-
-                # Merge the QR code page with the first page
-                merged_page = PdfReader(qr_page).pages[0]
-                merged_page.merge_page(page)
-                pdf_writer.add_page(merged_page)
-            else:
-                pdf_writer.add_page(page)
-
-        # Write the modified PDF to the final PDF buffer
-        pdf_writer.write(final_pdf_buffer)
-        final_pdf_buffer.seek(0)
-
-        # Set the response headers for the PDF file
-        response = HttpResponse(content_type='application/pdf')
-        # response['Content-Disposition'] = 'attachment; filename="output.pdf"'
-
-        # Get the final PDF content from the BytesIO buffer and write it to the response
-        response.write(final_pdf_buffer.getvalue())
-
         return response
 
-
-    
-from account.department_type import department_code
 
 def getDepartmentValue(key):
     for code, k_value in department_code:
@@ -393,9 +328,7 @@ def getDepartmentValue(key):
     return key
 
 def rawDataSheetAnalystReport(request,download_print,sample_form_has_param):
-    from rest_framework.response import Response
-    from management.models import RawDataSheet
-
+    
 
     raw_data = RawDataSheet.objects.filter(id = sample_form_has_param)
     # print(raw_data," raw data...\n")
@@ -482,3 +415,31 @@ def TestReport(request,report_type,report_lang,sample_form_has_param,role):
     pisa.CreatePDF(html, dest=response)
 
     return response
+
+def generateQrcode(id):
+  
+    data = "https://www.example.com"  # Your URL or data
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(data)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+
+    # Save the image to the media directory with dynamic name
+    image_name = f"{id}.png"
+    image_path = os.path.join(settings.MEDIA_ROOT, "qr_codes", image_name)
+
+    if not os.path.exists(os.path.dirname(image_path)):
+        os.makedirs(os.path.dirname(image_path))
+    try:
+        img.save(image_path)
+    except Exception as e:
+        print("Error saving image:", e)
+
+    image_url = f"media/qr_codes/{image_name}"
+
+    return image_url
