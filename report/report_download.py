@@ -289,7 +289,7 @@ def FinalReport(request,report_type,report_lang,id=None,role=None):
 
         parameters = query.result.all()
 
-        qr_code_image_url = generateQrcode(query.id)
+        qr_code_image_url = generateQrcode(query.id,request)
         context = {
            'qr_code_image_url':qr_code_image_url,
            'symbol_number':symbol_number,
@@ -416,9 +416,8 @@ def TestReport(request,report_type,report_lang,sample_form_has_param,role):
 
     return response
 
-def generateQrcode(id):
-  
-    data = "https://www.example.com"  # Your URL or data
+def generateQrcode(id,request):
+    data = request.build_absolute_uri() 
     qr = qrcode.QRCode(
         version=1,
         error_correction=qrcode.constants.ERROR_CORRECT_L,
