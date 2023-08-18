@@ -272,9 +272,10 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
             # raise serializers.ValidationError('testing sample form client category...')
             #id = data.get('id')
             commodity = data.get('commodity')
+
             commodity_parameters = TestResult.objects.filter(commodity=commodity)
             commodity_price = Commodity.objects.get(id = commodity.id).price
-            if len(parameters) == 0:        
+            if len(parameters) == 0 or data.get('analysis_pricing') == False:        
                 data['parameters'] = commodity_parameters
                 data['price'] = commodity_price
             else:
