@@ -248,7 +248,7 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
 
 class FinalReportNepaliAnalystSerializer(serializers.ModelSerializer):
     commodity = CommoditySerializer(read_only = True)
-    parameters = ParameterSerializer(read_only = True, many = True)
+    parameters = TestResultLimitedSerializer(read_only = True, many = True)
     owner_user = serializers.SerializerMethodField()
     supervisor_user = CustomUserSerializer(read_only = True)
     verified_by = CustomUserSerializer(read_only = True)
@@ -296,6 +296,10 @@ class FinalReportNepaliAnalystSerializer(serializers.ModelSerializer):
                 if formula_obj_result.count()>0:
                     parameter_data['status'] = formula_obj_result.first().status
                     parameter_data['result'] = formula_obj_result.first().result
+
+                    parameter_data['units_selected'] = formula_obj_result.first().units
+                    parameter_data['mandatory_standard_selected'] = formula_obj_result.first().mandatory_standard
+                    parameter_data['test_method_selected'] = formula_obj_result.first().test_method
                 else:
                     parameter_data['status'] = "processing"
                     parameter_data['result'] = '-'
