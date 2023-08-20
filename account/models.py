@@ -95,21 +95,12 @@ class CustomUser(AbstractUser):
                 self.test_type.set(self.test_types)
                 
         else:
-            print("login")
             if self.test_types != None:
                 try:
                     self.test_type.set(self.test_types)
                     print("blunder error account")
                 except:
                     pass                
-
-            if self.delete == "delete":
-               pass
-            else:
-                # print("when update it's default pass True as is_actives")
-                # is_active is not being updated, set a default value if it hasn't been set already
-                print("\n self is active ::",self.is_active)
-                #self.is_active = True
 
             super().save(*args, **kwargs)
 

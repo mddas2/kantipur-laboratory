@@ -118,6 +118,9 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
         if 'is_active' not in request.data:
             serializer.validated_data['is_active'] = instance.is_active
 
+        if 'is_email_verified' not in request.data:
+            serializer.validated_data['is_email_verified'] = instance.is_email_verified
+
         # Save the updated object to the database   
         self.perform_update(serializer)
 
