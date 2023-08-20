@@ -35,7 +35,7 @@ def handle_sampleform_presave(sender, instance, **kwargs):
 
         if client_category == additional_data.dftqc_section:
             if client_sub_caategory in additional_data.client_sub_category_choices:
-                count_data = SampleForm.objects.filter(client_category_detail__client_sub_category = client_sub_caategory).count()
+                count_data = SampleForm.objects.filter(client_category_detail__client_sub_category = client_sub_caategory).count()+1000
                 encoded_data = additional_data.client_sub_category_dict[client_sub_caategory]
                 full_encoded = encoded_data.upper() + "-" +str(count_data)
                 instance.sample_symbol_number = full_encoded
