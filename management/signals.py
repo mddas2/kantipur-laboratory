@@ -12,6 +12,7 @@ from django.utils import timezone
 from websocket.handle_notification import sampleFormNotificationHandler
 from django.db.models import Q
 from . import additional_data
+from emailmanagement.sendmail_final_report import sendFinalreport
 
 @receiver(post_save, sender=SampleFormParameterFormulaCalculate)
 def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwargs):
@@ -47,7 +48,11 @@ def handle_sampleform_presave(sender, instance, **kwargs):
         raw_data_obj = RawDataSheet.objects.filter(sample_form_id = instance.id).filter(~Q(status="recheck") or ~Q(status="re-assign"))
         raw_data_obj.update(status = instance.status)
             
-             
+@receiver(post_save, sender=SampleForm)
+def handle_sampleform_presave(sender, instance ,created , **kwargs):
+    if instance.status == "completed":
+        sendFinalreport(instance)
+        #send mail
 
 @receiver(m2m_changed, sender=SampleFormHasParameter.parameter.through)
 def sample_form_has_parameter_m2m_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
@@ -79,7 +84,6 @@ def sample_form_has_parameter_m2m_changed(sender, instance, action, reverse, mod
 
     super_visor_sample_form_obj.status = status   
     super_visor_sample_form_obj.is_analyst_test = is_analyst_test
-    print(is_analyst_test," is anaa")
     super_visor_sample_form_obj.save()
 
 @receiver(post_save, sender=SampleFormHasParameter)
@@ -115,7 +119,6 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
             SuperVisorSampleForm.objects.filter(id=super_visor_sample_form_obj.id).update(is_analyst_test = is_analyst_test_param,status=sample_form_status,is_supervisor_sent = False)
         else:
             SuperVisorSampleForm.objects.filter(id=super_visor_sample_form_obj.id).update(is_analyst_test = is_analyst_test_param,status=sample_form_status)
-        print(SuperVisorSampleForm.objects.filter(id=super_visor_sample_form_obj.id).first().is_analyst_test," hlo md")
         if is_analyst_test_param == True:
             supervisor_objs = SuperVisorSampleForm.objects.filter(sample_form = instance.sample_form.id)
             sup_is_analyst_test = False
@@ -184,22 +187,18 @@ def SupervisorHaveParameterAfterSave(sender, instance ,created , **kwargs):
         supervisor_param = 0
         for supervisor_obj in supervisor_objs: # if all supervisor analyst_test is True then update in sample form is_analyst_test = True
             param = supervisor_obj.parameters.all().count()
-            supervisor_param = supervisor_param + param
-            
+            supervisor_param = supervisor_param + param            
             check = supervisor_obj.is_supervisor_sent
-            print(check,"::check","::",supervisor_obj.is_supervisor_sent)
             if check == True:
                 sup_is_analyst_test = True
                 sup_status = "not_verified"
-                print(sup_is_analyst_test,"::",supervisor_obj.id)
             else:
                 sup_is_analyst_test = False
                 sup_status = "processing"
-                print(sup_is_analyst_test,"::",supervisor_obj.id)
                 break
         
         sample_obj_param = instance.sample_form.parameters.all().count()
-        print(sample_obj_param,"::",supervisor_param,"::",sup_is_analyst_test)
+       
 
         if sup_is_analyst_test == True and sample_obj_param == supervisor_param:
             data = {
