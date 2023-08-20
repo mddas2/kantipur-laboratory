@@ -29,11 +29,7 @@ class EmailCheckView(generics.GenericAPIView):
             encoded_pk = urlsafe_base64_encode(force_bytes(user.pk))
             token = PasswordResetTokenGenerator().make_token(user)
             
-            # reset_url = reverse(
-            #     "reset-password",
-            #     kwargs={"encoded_pk":encoded_pk, "token":token}
-            # )
-            reset_url = f"Click the link to reset your password: {site_f}/password-reset?pk={encoded_pk}&token={token}"
+            reset_url = f"{site_f}/password-reset?pk={encoded_pk}&token={token}"
             email = user.email
             subject = 'Password Reset Link'
             reset_verification = "reset_password"
@@ -103,28 +99,27 @@ class SendEmailVerificationLink(APIView):
             'detail': 'Email verificatio'})
 
 def sendMail(email, reset_url,subject,reset_verification):
-    message = reset_url
     if reset_verification == "verification":
-        body = """<div class="sent-message">
+        body = f"""<div class="sent-message">
                 <div class="sent-message-box">
                     <img src="../image/sent.gif" alt="">
                     <div class="success-message">
                         <h4>Please verify your email</h4>
                         <p>Check your email and click the link to activate your account.</p>
                         <h6 class="mt-5 mb-3">Didn't receive an email ?</h6>
-                        <p><a class="badge" href="#"  style="text-decoration: none; background: #0B53A7; color: #FFFFFF; padding: 10px 20px; border-radius: 3px; display: inline-block; margin-top: 15px;">Verify Email</a></p>
+                        <p><a class="badge" href="{reset_url}"  style="text-decoration: none; background: #0B53A7; color: #FFFFFF; padding: 10px 20px; border-radius: 3px; display: inline-block; margin-top: 15px;">Verify Email</a></p>
                     </div>
                 </div>
             </div></html>"""
     else:
-        body = """<body><div class="sent-message">
+        body = f"""<body><div class="sent-message">
                 <div class="sent-message-box">
                     <img src="../image/sent.gif" alt="">
                     <div class="success-message">
                         <h4>Please change your Password</h4>
                         <p>Check your email and click the link to change your account.</p>
                         <h6 class="mt-5 mb-3">click here ?</h6>
-                        <p><a class="badge" href="#"  style="text-decoration: none; background: #0B53A7; color: #FFFFFF; padding: 10px 20px; border-radius: 3px; display: inline-block; margin-top: 15px;">Change your Password</a></p>
+                        <p><a class="badge" href="{reset_url}"  style="text-decoration: none; background: #0B53A7; color: #FFFFFF; padding: 10px 20px; border-radius: 3px; display: inline-block; margin-top: 15px;">Change your Password</a></p>
                     </div>
                 </div>
             </div></body></html>"""
@@ -197,5 +192,6 @@ def sendMail(email, reset_url,subject,reset_verification):
     
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [email]
-    send_mail(subject, message, email_from, recipient_list)
+    plain_message = ""
+    send_mail(subject, plain_message, email_from, recipient_list,html_message=html_contents)
     
