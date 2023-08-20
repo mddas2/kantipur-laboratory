@@ -320,7 +320,6 @@ def CeateClientCategoryDetail(names,files,user_id):
     
     from . serializers import CustomUserImageSerializer
 
-
     image_data = []
 
 
