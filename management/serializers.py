@@ -275,14 +275,16 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
 
             commodity_parameters = TestResult.objects.filter(commodity=commodity)
             commodity_price = Commodity.objects.get(id = commodity.id).price
-            if len(parameters) == 0 or data.get('analysis_pricing') == False:        
+        
+            if len(parameters) == 0:  
                 data['parameters'] = commodity_parameters
+            
+            if data.get('analysis_pricing') == False:      
                 data['price'] = commodity_price
             else:
                 price = 0
-                for paramet in parameters:
+                for paramet in data.get('parameters'):
                     price = paramet.price + price
-                print(price)
                 data['price'] = price
                 
             return data

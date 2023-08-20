@@ -104,7 +104,7 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
 
         custom_user_detail = CeateClientCategoryDetail(name,files,serializer.data['id'])
 
-        NotificationHandler(serializer.instance,request,'create',"CustomUser")
+        #NotificationHandler(serializer.instance,request,'create',"CustomUser")
        
         # Return the custom response
         return Response(response_data, status=status.HTTP_201_CREATED)
@@ -325,26 +325,16 @@ def CeateClientCategoryDetail(names,files,user_id):
 
 
     for name, file in zip(names, files):
-       print("name:",name," file:",file)
        dict_data = {
            'user':user_id,
            'name':name,
            'file':file,
        }
        image_data.append(dict_data)
-    
-    print(image_data)
-        
 
     image_serializer = CustomUserImageSerializer(many=True,data=image_data)
     image_serializer.is_valid(raise_exception=True)
-    print("validate..",image_serializer.data)
-    image_serializer.save()
-    print("validate..",image_serializer.data)
-    # print(image_serializer.data)
-
-    # print(image_data,image_serializer.data)
-    
+    image_serializer.save()    
     return True
 
 class userLimitedData(generics.ListAPIView):
