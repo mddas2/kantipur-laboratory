@@ -36,7 +36,8 @@ class EmailCheckView(generics.GenericAPIView):
             reset_url = f"Click the link to reset your password: {site_f}/password-reset?pk={encoded_pk}&token={token}"
             email = user.email
             subject = 'Password Reset Link'
-            sendMail(email, reset_url,subject)
+            reset_verification = "reset_password"
+            sendMail(email, reset_url,subject,reset_verification)
             
             return response.Response(
                 {
@@ -91,21 +92,109 @@ class SendEmailVerificationLink(APIView):
         encoded_pk = urlsafe_base64_encode(force_bytes(user.pk))
         token = PasswordResetTokenGenerator().make_token(user)
 
-        # Generate a unique verification token
-        verification_token = str(uuid.uuid4())
-
         # Send the token via email
         subject = 'Email Verification Token'
-        message = f'Your email verification token is: {verification_token}'
         verify_url = f"{site_f}/user-verification-success?pk={encoded_pk}&token={token}"
         subject = 'Email Verification Link '
-        sendMail(email,verify_url,subject)
+        reset_verification = "verification"
+        sendMail(email,verify_url,subject,reset_verification)
 
         return Response({
             'detail': 'Email verificatio'})
 
-def sendMail(email, reset_url,subject):
+def sendMail(email, reset_url,subject,reset_verification):
     message = reset_url
+    if reset_verification == "verification":
+        body = """<div class="sent-message">
+                <div class="sent-message-box">
+                    <img src="../image/sent.gif" alt="">
+                    <div class="success-message">
+                        <h4>Please verify your email</h4>
+                        <p>Check your email and click the link to activate your account.</p>
+                        <h6 class="mt-5 mb-3">Didn't receive an email ?</h6>
+                        <p><a class="badge" href="#"  style="text-decoration: none; background: #0B53A7; color: #FFFFFF; padding: 10px 20px; border-radius: 3px; display: inline-block; margin-top: 15px;">Verify Email</a></p>
+                    </div>
+                </div>
+            </div></html>"""
+    else:
+        body = """<body><div class="sent-message">
+                <div class="sent-message-box">
+                    <img src="../image/sent.gif" alt="">
+                    <div class="success-message">
+                        <h4>Please change your Password</h4>
+                        <p>Check your email and click the link to change your account.</p>
+                        <h6 class="mt-5 mb-3">click here ?</h6>
+                        <p><a class="badge" href="#"  style="text-decoration: none; background: #0B53A7; color: #FFFFFF; padding: 10px 20px; border-radius: 3px; display: inline-block; margin-top: 15px;">Change your Password</a></p>
+                    </div>
+                </div>
+            </div></body></html>"""
+    html_contents = """<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=\, initial-scale=1.0">
+            <title>Verification Mail</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+                integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+            <style>
+                @import url(https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap);
+
+                .sent-message {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    font-family: Poppins;
+                    height: 100vh;
+                }
+
+                .sent-message-box {
+                    background: #ffffff;
+                    padding: 40px;
+                    border-radius: 8px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    border: 1px solid whitesmoke;
+                }
+
+                .success-message {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                }
+
+                .success-message h4 {
+                    color: #2460b9;
+                    font-weight: 600;
+                }
+
+                .sent-message-box img {
+                    height: 100px;
+                    width: 100px;
+                    margin-bottom: 20px;
+                }
+
+                .badge {
+                    background: #2460b9;
+                    font-family: Poppins;
+                    font-weight: 500;
+                    font-size: 13px;
+                    color: #141414;
+                    padding: 14px 20px;
+                    text-decoration: none;
+                    color: #ffffff;
+                    border-radius: 3px;
+                }
+
+                .badge:hover {
+                    background: #0d6efd;
+                    color: #ffffff;
+                }
+            </style>
+        </head>""" + body
+    
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [email]
     send_mail(subject, message, email_from, recipient_list)
