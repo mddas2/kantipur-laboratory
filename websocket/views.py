@@ -9,6 +9,8 @@ from .pagination import MyLimitOffsetPagination
 from rest_framework.response import Response
 from . serializer import NotificationWriteSerializer
 from django_filters.rest_framework import DjangoFilterBackend
+from management import roles
+from django.db.models import Q
 
 # Create your views here.
 class NotificationViewSet(viewsets.ModelViewSet):
@@ -19,11 +21,19 @@ class NotificationViewSet(viewsets.ModelViewSet):
     filterset_fields = ['id']
     search_fields = ['id']
 
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
     pagination_class = MyLimitOffsetPagination
 
+    
+    def get_queryset(self):
+        user = self.request.user
+        query = Notification.objects.filter(to_notification = user)      
+        print(query)  
+        return query.order_by("-created_date")
+    
     def list(self, request, *args, **kwargs):
-        authentication_classes = [JWTAuthentication]
-        permission_classes = [IsAuthenticated]
         response = super().list(request, *args, **kwargs)
         return response
     

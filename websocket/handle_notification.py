@@ -5,17 +5,21 @@ from rest_framework import status
 from . import frontend_setting
 from . import mapping_notification_type
 from emailmanagement.email_sender import ESendMail
+from management import roles
+from django.db.models import Q
 
 def NotificationHandler(instance, request,method,model_name):
+    to_notification = CustomUser.objects.filter(Q(role = roles.SMU) | Q(id = instance.id))
+    
+    to_notification = to_notification.values_list('id',flat=True)
+    print(to_notification)
     if method == "update":
         notification_message = str(instance.username) + " has been modified"
         particular_message = "Your aaccount has been modified"
-        to_notification = [instance.id]
     if method == "create":
-        notification_message=str(instance.username) + " is arrived"
-        particular_message = "Welcome Here"
-        to_notification = [instance.id]
-    path = frontend_setting.user_request
+        notification_message= f"New user ({str(instance.username)}) has registered an account."
+        particular_message = "Your account has been created successfully"
+    path = frontend_setting.particular_user + instance.id
     try:
         from_notification = request.user.id
     except:
@@ -52,7 +56,7 @@ def NotificationHandler(instance, request,method,model_name):
         "data": serializer.data
     }
 
-    to_email = CustomUser.objects.values_list('email', flat=True)
+    # to_email = CustomUser.objects.values_list('email', flat=True)
     # ESendMail(notification_message,to_email)
     return response_data, status.HTTP_201_CREATED
 
