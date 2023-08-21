@@ -51,7 +51,9 @@ def handle_sampleform_presave(sender, instance, **kwargs):
 @receiver(post_save, sender=SampleForm)
 def handle_sampleform_presave(sender, instance ,created , **kwargs):
     if instance.status == "completed":
+        sampleFormNotificationHandler(instance,"approved_sample_form")
         sendFinalreport(instance)
+        
         #send mail
 
 @receiver(m2m_changed, sender=SampleFormHasParameter.parameter.through)
@@ -112,9 +114,7 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
            
     
         sample_form_status = "processing"
-        print(" well ", well)
-
-        print("is_analyst_test :" , is_analyst_test_param)
+ 
         if is_analyst_test_param == False:
             SuperVisorSampleForm.objects.filter(id=super_visor_sample_form_obj.id).update(is_analyst_test = is_analyst_test_param,status=sample_form_status,is_supervisor_sent = False)
         else:
@@ -177,6 +177,9 @@ def supervisor_sample_form_has_parameter_m2m_changed(sender, instance, action, r
 
 @receiver(post_save, sender=SuperVisorSampleForm)
 def SupervisorHaveParameterAfterSave(sender, instance ,created , **kwargs):
+    
+    if created:
+        sampleFormNotificationHandler(instance,"assigned_supervisor")
 
     if instance.is_supervisor_sent == True:      
      
@@ -221,8 +224,6 @@ def SupervisorHaveParameterAfterSave(sender, instance ,created , **kwargs):
                 form_available = "smu"
             SampleForm.objects.filter(id=instance.sample_form.id).update(is_analyst_test = False,status=status,form_available = form_available)
 
-    
-
 @receiver(pre_save, sender=SampleFormHasParameter)
 def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
     if not instance.pk:
@@ -237,6 +238,7 @@ def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
         sample_form_obj.form_available = "verifier"
         sample_form_obj.status = "not_verified"
         sample_form_obj.save()
+        sampleFormNotificationHandler(instance,"assigned_verifier")
     else:        
         if instance.is_verified == True:
             sample_form_has_parameter_obj = sample_form_obj.sample_has_parameter_analyst
@@ -251,6 +253,8 @@ def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
 
             sample_form_obj.remarks = instance.remarks
             sample_form_obj.save()
+
+            sampleFormNotificationHandler(instance,"assigned_admin")
 
             
 
