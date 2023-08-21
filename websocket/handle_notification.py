@@ -19,7 +19,7 @@ def NotificationHandler(instance, request,method,model_name):
     if method == "create":
         notification_message= f"New user ({str(instance.username)}) has registered an account."
         particular_message = "Your account has been created successfully"
-    path = frontend_setting.particular_user + instance.id
+    path = frontend_setting.particular_user + str(instance.id)
     try:
         from_notification = request.user.id
     except:
