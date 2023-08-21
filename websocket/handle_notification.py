@@ -73,21 +73,24 @@ def sampleFormNotificationHandler(instance,notification_type):
     from_notification = ','.join(from_notification)
 
     if notification_type == "new_sample_form":
-        to_notification = CustomUser.objects.values_list('id', flat=True)
+        to_notification = CustomUser.objects.filter(Q(role = roles.SMU) | Q(id = instance.id))
+        to_notification = to_notification.values_list('id', flat=True)
     elif notification_type == "assigned_supervisor":
-        to_notification = CustomUser.objects.values_list('id', flat=True)
+        to_notification = instance.supervisor_user_id  # here instance is supervisoruser
     elif notification_type == "assigned_analyst":
-        to_notification = CustomUser.objects.values_list('id', flat=True)
+        to_notification = instance.analyst_user_id # here instance is sampleformhasparameter
     elif notification_type == "assigned_verifier":
-        to_notification = CustomUser.objects.values_list('id', flat=True)
+        to_notification = CustomUser.objects.filter(role = roles.VERIFIER)
+        to_notification = to_notification.values_list('id', flat=True)
     elif notification_type == "assigned_admin":
-        to_notification = CustomUser.objects.values_list('id', flat=True)
+        to_notification = CustomUser.objects.filter(role = roles.ADMIN)
+        to_notification = to_notification.values_list('id', flat=True)
     elif notification_type == "approved_sample_form":
-        to_notification = CustomUser.objects.values_list('id', flat=True)
-
+        to_notification = CustomUser.objects.filter(Q(role = roles.SMU) | Q(role = roles.ADMIN) | Q(owner_user = instance.owner_user))
+        to_notification = to_notification.values_list('id', flat=True)
     is_read = False
 
-
+    # particular_message = particular_message.format(n)
    
     # Create notification data
     notification_data = {
