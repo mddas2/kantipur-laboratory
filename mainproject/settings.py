@@ -153,7 +153,7 @@ TEMPLATES = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'lims_new',
+        'NAME': 'lims_new_main',
         'USER': 'root',
         'PASSWORD':'',
         'HOST':'localhost',
