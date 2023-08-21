@@ -12,7 +12,6 @@ def NotificationHandler(instance, request,method,model_name):
     to_notification = CustomUser.objects.filter(Q(role = roles.SMU) | Q(id = instance.id))
     
     to_notification = to_notification.values_list('id',flat=True)
-    print(to_notification)
     if method == "update":
         notification_message = str(instance.username) + " has been modified"
         particular_message = "Your aaccount has been modified"
@@ -70,11 +69,21 @@ def sampleFormNotificationHandler(instance,notification_type):
     group_notification = mapping_notification_type.mapping[notification_type]['to_users']
     group_notification = ','.join(group_notification)
 
-
     from_notification = mapping_notification_type.mapping[notification_type]['from_user']
     from_notification = ','.join(from_notification)
 
-    to_notification = CustomUser.objects.values_list('id', flat=True) #mapping_notification_type.mapping['new_sample_form']['from_user']
+    if notification_type == "new_sample_form":
+        to_notification = CustomUser.objects.values_list('id', flat=True)
+    elif notification_type == "assigned_supervisor":
+        to_notification = CustomUser.objects.values_list('id', flat=True)
+    elif notification_type == "assigned_analyst":
+        to_notification = CustomUser.objects.values_list('id', flat=True)
+    elif notification_type == "assigned_verifier":
+        to_notification = CustomUser.objects.values_list('id', flat=True)
+    elif notification_type == "assigned_admin":
+        to_notification = CustomUser.objects.values_list('id', flat=True)
+    elif notification_type == "approved_sample_form":
+        to_notification = CustomUser.objects.values_list('id', flat=True)
 
     is_read = False
 
