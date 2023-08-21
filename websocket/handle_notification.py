@@ -61,11 +61,7 @@ def NotificationHandler(instance, request,method,model_name):
 
 def sampleFormNotificationHandler(instance,notification_type):
 
-    notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
-    particular_message = mapping_notification_type.mapping[notification_type]['user_message']
-    model_name = mapping_notification_type.mapping[notification_type]['model_name']
-    path = mapping_notification_type.mapping[notification_type]['path']
-
+    
     group_notification = mapping_notification_type.mapping[notification_type]['to_users']
     group_notification = ','.join(group_notification)
 
@@ -73,21 +69,65 @@ def sampleFormNotificationHandler(instance,notification_type):
     from_notification = ','.join(from_notification)
 
     if notification_type == "new_sample_form":
+        notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
+        particular_message = mapping_notification_type.mapping[notification_type]['user_message']
+        model_name = mapping_notification_type.mapping[notification_type]['model_name']
+        path = mapping_notification_type.mapping[notification_type]['path']
+
+        notification_message =  notification_message.format(sample_id = instance.id,username = instance.owner_user)
+
         to_notification = CustomUser.objects.filter(Q(role = roles.SMU) | Q(id = instance.id))
         to_notification = to_notification.values_list('id', flat=True)
     elif notification_type == "assigned_supervisor":
+        notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
+        particular_message = mapping_notification_type.mapping[notification_type]['user_message']
+        model_name = mapping_notification_type.mapping[notification_type]['model_name']
+        path = mapping_notification_type.mapping[notification_type]['path']
+
+        notification_message = notification_message.format(sample_lab_id = instance.sample_form.sample_lab_id)
+
         to_notification = instance.supervisor_user_id  # here instance is supervisoruser
     elif notification_type == "assigned_analyst":
+        notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
+        particular_message = mapping_notification_type.mapping[notification_type]['user_message']
+        model_name = mapping_notification_type.mapping[notification_type]['model_name']
+        path = mapping_notification_type.mapping[notification_type]['path']
+
+        notification_message = notification_message.format(sample_lab_id = instance.sample_form.sample_lab_id)
+
         to_notification = instance.analyst_user_id # here instance is sampleformhasparameter
     elif notification_type == "assigned_verifier":
+        notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
+        particular_message = mapping_notification_type.mapping[notification_type]['user_message']
+        model_name = mapping_notification_type.mapping[notification_type]['model_name']
+        path = mapping_notification_type.mapping[notification_type]['path']
+
+        notification_message = notification_message.format(sample_lab_id = instance.sample_form.sample_lab_id)
+
         to_notification = CustomUser.objects.filter(role = roles.VERIFIER)
         to_notification = to_notification.values_list('id', flat=True)
     elif notification_type == "assigned_admin":
+        notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
+        particular_message = mapping_notification_type.mapping[notification_type]['user_message']
+        model_name = mapping_notification_type.mapping[notification_type]['model_name']
+        path = mapping_notification_type.mapping[notification_type]['path']
+
+        notification_message = notification_message.format(sample_lab_id = instance.sample_lab_id)
+
         to_notification = CustomUser.objects.filter(role = roles.ADMIN)
         to_notification = to_notification.values_list('id', flat=True)
     elif notification_type == "approved_sample_form":
+        notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
+        particular_message = mapping_notification_type.mapping[notification_type]['user_message']
+        model_name = mapping_notification_type.mapping[notification_type]['model_name']
+        path = mapping_notification_type.mapping[notification_type]['path']
+
+
+        notification_message = notification_message.format(sample_lab_id = instance.sample_form.sample_lab_id)
+
         to_notification = CustomUser.objects.filter(Q(role = roles.SMU) | Q(role = roles.ADMIN) | Q(owner_user = instance.owner_user))
         to_notification = to_notification.values_list('id', flat=True)
+        
     is_read = False
 
     # particular_message = particular_message.format(n)
