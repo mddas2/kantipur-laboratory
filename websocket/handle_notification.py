@@ -127,12 +127,10 @@ def sampleFormNotificationHandler(instance,notification_type):
 
         to_notification = CustomUser.objects.filter(Q(role = roles.SMU) | Q(role = roles.ADMIN) | Q(owner_user = instance.owner_user))
         to_notification = to_notification.values_list('id', flat=True)
-        
+
     is_read = False
 
-    # particular_message = particular_message.format(n)
-   
-    # Create notification data
+
     notification_data = {
         "notification_message": notification_message,
         'particular_message':particular_message,
