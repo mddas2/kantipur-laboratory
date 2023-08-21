@@ -13,7 +13,7 @@ def NotificationHandler(instance, request,method,model_name):
     
     to_notification = to_notification.values_list('id',flat=True)
     if method == "update":
-        notification_message = str(instance.username) + " has been modified"
+        notification_message = "User "+str(instance.username) + " has been modified"
         particular_message = "Your aaccount has been modified"
     if method == "create":
         notification_message= f"New user ({str(instance.username)}) has registered an account."
