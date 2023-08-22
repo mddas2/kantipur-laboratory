@@ -1,4 +1,4 @@
-from management.models import ClientCategoryDetail,SampleForm, Commodity,SampleFormHasParameter,TestResult,SampleFormParameterFormulaCalculate,Payment
+from management.models import Units,MandatoryStandard,ClientCategoryDetail,SampleForm, Commodity,SampleFormHasParameter,TestResult,SampleFormParameterFormulaCalculate,Payment
 from rest_framework import serializers
 
 from management.models import SampleForm, Commodity,SampleFormHasParameter,SuperVisorSampleForm
@@ -303,10 +303,25 @@ class FinalReportNepaliAnalystSerializer(serializers.ModelSerializer):
                 formula_obj_result = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id=sample_form_id,parameter_id = parameter_id)
                 if formula_obj_result.count()>0:
                     parameter_data['status'] = formula_obj_result.first().status
-                    parameter_data['result'] = formula_obj_result.first().result
 
-                    parameter_data['units_selected'] = formula_obj_result.first().units
-                    parameter_data['mandatory_standard_selected'] = formula_obj_result.first().mandatory_standard
+                    analyst_remarks = formula_obj_result.first().analyst_remarks
+                    if analyst_remarks:
+                        parameter_data['result'] = formula_obj_result.first().analyst_remarks
+                    else:
+                        parameter_data['result'] = formula_obj_result.first().result
+
+                    unit_obj = Units.objects.filter(units = formula_obj_result.first().units)
+                    if unit_obj.count()>0:
+                        parameter_data['units_selected'] = unit_obj.first().units_nepali
+                    else:
+                        parameter_data['units_selected'] = formula_obj_result.first().units
+                    
+                    mandatory_obj = MandatoryStandard.objects.filter(mandatory_standard = formula_obj_result.first().units)
+                    if mandatory_obj.count()>0:
+                        parameter_data['mandatory_standard_selected'] = mandatory_obj.first().mandatory_standard_nepali
+                    else:
+                        parameter_data['mandatory_standard_selected'] = formula_obj_result.first().mandatory_standard
+
                     parameter_data['test_method_selected'] = formula_obj_result.first().test_method
                 else:
                     parameter_data['status'] = "processing"
