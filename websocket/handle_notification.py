@@ -95,7 +95,7 @@ def sampleFormNotificationHandler(instance,notification_type):
 
         notification_message = notification_message.format(sample_lab_id = instance.sample_form.sample_lab_id)
 
-        to_notification = instance.analyst_user_id # here instance is sampleformhasparameter
+        to_notification = [instance.analyst_user_id] # here instance is sampleformhasparameter
     elif notification_type == "assigned_verifier":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']
