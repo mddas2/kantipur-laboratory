@@ -316,7 +316,7 @@ class FinalReportNepaliAnalystSerializer(serializers.ModelSerializer):
                     else:
                         parameter_data['units_selected'] = formula_obj_result.first().units
                     
-                    mandatory_obj = MandatoryStandard.objects.filter(mandatory_standard = formula_obj_result.first().units)
+                    mandatory_obj = MandatoryStandard.objects.filter(mandatory_standard = formula_obj_result.first().mandatory_standard)
                     if mandatory_obj.count()>0:
                         parameter_data['mandatory_standard_selected'] = mandatory_obj.first().mandatory_standard_nepali
                     else:
