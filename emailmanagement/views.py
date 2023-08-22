@@ -100,93 +100,49 @@ class SendEmailVerificationLink(APIView):
 
 def sendMail(email, reset_url,subject,reset_verification):
     if reset_verification == "verification":
-        body = f"""<div class="sent-message">
-                <div class="sent-message-box">
-                    <img src="../image/sent.gif" alt="">
-                    <div class="success-message">
-                        <h4>Please verify your email</h4>
-                        <p>Check your email and click the link to activate your account.</p>
-                        <h6 class="mt-5 mb-3">Didn't receive an email ?</h6>
-                        <p><a class="badge" href="{reset_url}"  style="text-decoration: none; background: #0B53A7; color: #FFFFFF; padding: 10px 20px; border-radius: 3px; display: inline-block; margin-top: 15px;">Verify Email</a></p>
-                    </div>
-                </div>
-            </div></html>"""
+        body = f"""<body>
+            <table align="center" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width: 600px; font-family: Poppins; background: whitesmoke; padding: 20px; border-radius: 6px;">
+                <tr>
+                    <td align="center" bgcolor="#FFFFFF" style="padding: 20px;">
+                        <img src="http://lims.dftqc.gov.np/assets/nepal-government.png" alt="" width="132" style="display: block; margin: 0 auto;">
+                        <p style="color: #0B53A7; font-weight: 600; font-size: 18px; margin-top: 20px;">Labrotary Information Management System (LIMS)</p>
+                        <p style="color: #0B53A7; font-weight: 600; font-size: 18px; margin-top: 20px;">Please verify your account</p>
+                        <p style="text-align: center; font-weight: 400;">Click the button below to verify your account.</p>
+                        <a href="{reset_url}" style="text-decoration: none; background: #0B53A7; color: #FFFFFF; padding: 10px 20px; border-radius: 3px; display: inline-block; margin-top: 15px;">Verify Your Account</a>
+                        <p style="text-align: center; margin-top: 20px;">Please visit <a href="http://lims.dftqc.gov.np" style="text-decoration: none; color: #0B53A7; font-weight: 600;">www.lims.dftqc.gov.np</a> for any enquiries.</p>
+                        <p style="margin: 0; text-align: center;"><span style="font-weight: 600;">Tel:</span> 977-1-4262369, 4262430, 4240016, 4262739</p>
+                        <p style="margin: 0; text-align: center; text-decoration: none;"><span style="font-weight: 600;">Fax:</span> 977-1-4262337 <span style="font-weight: 600; margin-left: 10px;">E-mail:</span> info@dftqc.gov.np</p>
+                    </td>
+                </tr>
+            </table>
+        </body>
+        </html>"""
     else:
-        body = f"""<body><div class="sent-message">
-                <div class="sent-message-box">
-                    <img src="../image/sent.gif" alt="">
-                    <div class="success-message">
-                        <h4>Please change your Password</h4>
-                        <p>Check your email and click the link to change your account.</p>
-                        <h6 class="mt-5 mb-3">click here ?</h6>
-                        <p><a class="badge" href="{reset_url}"  style="text-decoration: none; background: #0B53A7; color: #FFFFFF; padding: 10px 20px; border-radius: 3px; display: inline-block; margin-top: 15px;">Change your Password</a></p>
-                    </div>
-                </div>
-            </div></body></html>"""
+        body = f"""<body>
+            <table align="center" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width: 600px; font-family: Poppins; background: whitesmoke; padding: 20px; border-radius: 6px;">
+                <tr>
+                    <td align="center" bgcolor="#FFFFFF" style="padding: 20px;">
+                        <img src="http://lims.dftqc.gov.np/assets/nepal-government.png" alt="" width="132" style="display: block; margin: 0 auto;">
+                        <p style="color: #0B53A7; font-weight: 600; font-size: 18px; margin-top: 20px;">Labrotary Information Management System (LIMS)</p>
+                        <p style="color: #0B53A7; font-weight: 600; font-size: 18px; margin-top: 20px;">Please change your Password</p>
+                        <p style="text-align: center; font-weight: 400;">Click the button below to change the password of your account.</p>
+                        <a href="{reset_url}" style="text-decoration: none; background: #0B53A7; color: #FFFFFF; padding: 10px 20px; border-radius: 3px; display: inline-block; margin-top: 15px;">Change Password</a>
+                        <p style="text-align: center; margin-top: 20px;">Please visit <a href="http://lims.dftqc.gov.np" style="text-decoration: none; color: #0B53A7; font-weight: 600;">www.lims.dftqc.gov.np</a> for any enquiries.</p>
+                        <p style="margin: 0; text-align: center;"><span style="font-weight: 600;">Tel:</span> 977-1-4262369, 4262430, 4240016, 4262739</p>
+                        <p style="margin: 0; text-align: center; text-decoration: none;"><span style="font-weight: 600;">Fax:</span> 977-1-4262337 <span style="font-weight: 600; margin-left: 10px;">E-mail:</span> info@dftqc.gov.np</p>
+                    </td>
+                </tr>
+            </table>
+        </body>
+        </html>"""
     html_contents = """<!DOCTYPE html>
         <html lang="en">
         <head>
             <meta charset="UTF-8">
-            <meta name="viewport" content="width=\, initial-scale=1.0">
-            <title>Verification Mail</title>
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
-                integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Email Template</title>
             <style>
-                @import url(https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap);
-
-                .sent-message {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    font-family: Poppins;
-                    height: 100vh;
-                }
-
-                .sent-message-box {
-                    background: #ffffff;
-                    padding: 40px;
-                    border-radius: 8px;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-                    border: 1px solid whitesmoke;
-                }
-
-                .success-message {
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-                }
-
-                .success-message h4 {
-                    color: #2460b9;
-                    font-weight: 600;
-                }
-
-                .sent-message-box img {
-                    height: 100px;
-                    width: 100px;
-                    margin-bottom: 20px;
-                }
-
-                .badge {
-                    background: #2460b9;
-                    font-family: Poppins;
-                    font-weight: 500;
-                    font-size: 13px;
-                    color: #141414;
-                    padding: 14px 20px;
-                    text-decoration: none;
-                    color: #ffffff;
-                    border-radius: 3px;
-                }
-
-                .badge:hover {
-                    background: #0d6efd;
-                    color: #ffffff;
-                }
+                @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
             </style>
         </head>""" + body
     
