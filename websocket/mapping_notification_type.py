@@ -6,7 +6,7 @@ mapping = {
         "to_users":['admin','user'],
         "admin_message":"A new sample ({sample_id}) has been requested for testing by user ({username})",
         "path":frontend_setting.sample_request,
-        "user_message":"Your sample has been submitted successfully",
+        "user_message":"Your sample ({sample_lab_id}) has been submitted successfully",
     },
     "assigned_supervisor":{
         "model_name":"SampleForm",

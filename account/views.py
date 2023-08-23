@@ -80,7 +80,10 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
             query = CustomUser.objects.filter(is_active = True)    
         elif user.role == roles.SUPERVISOR:
             # Regular user can see SampleForm instances with form_available='user'
-            query = CustomUser.objects.filter(is_active = True).filter(Q(role=roles.ANALYST) | Q(email = user.email))          
+            query = CustomUser.objects.filter(is_active = True).filter(Q(role=roles.ANALYST) | Q(email = user.email))   
+        elif user.role == roles.VERIFIER:
+            # Regular user can see SampleForm instances with form_available='user'
+            query = CustomUser.objects.filter(is_active = True).filter(role=roles.USER)        
         else:
             query = CustomUser.objects.filter(email=user.email,is_active = True)
             # raise PermissionDenied("You do not have permission to access this resource.")

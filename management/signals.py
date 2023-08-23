@@ -40,8 +40,7 @@ def handle_sampleform_presave(sender, instance, **kwargs):
                 full_encoded = encoded_data.upper() + "-" +str(count_data)
                 instance.sample_symbol_number = full_encoded
                 instance.name = full_encoded
-            
-        sampleFormNotificationHandler(instance,"new_sample_form")
+        
     if instance.id:
         original_sample_form_status = SampleForm.objects.get(pk=instance.id).supervisor_user
     if instance.status != original_sample_form_status: # dynamic rawdata sheet status changing
@@ -53,6 +52,8 @@ def handle_sampleform_presave(sender, instance ,created , **kwargs):
     if instance.status == "completed":
         sampleFormNotificationHandler(instance,"approved_sample_form")
         sendFinalreport(instance)
+    if created:
+        sampleFormNotificationHandler(instance,"new_sample_form")
         
         #send mail
 

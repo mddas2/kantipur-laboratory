@@ -32,8 +32,6 @@ class SampleFormWriteVerifierSerilizer(serializers.ModelSerializer):
                 request = self.context.get('request')
                 sample_form_obj.verified_by = request.user                
                 sample_form_obj.save()
-
-        
         return data
     
 

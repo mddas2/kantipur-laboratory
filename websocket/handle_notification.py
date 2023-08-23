@@ -75,9 +75,11 @@ def sampleFormNotificationHandler(instance,notification_type):
         path = mapping_notification_type.mapping[notification_type]['path']
 
         notification_message =  notification_message.format(sample_id = instance.id,username = instance.owner_user)
-
-        to_notification = CustomUser.objects.filter(Q(role = roles.SMU) | Q(id = instance.id))
+        particular_message =  particular_message.format(sample_lab_id = instance.sample_lab_id)
+        
+        to_notification = CustomUser.objects.filter(Q(role = roles.SMU) | Q(id = instance.id) | Q(email = instance.owner_user))
         to_notification = to_notification.values_list('id', flat=True)
+   
     elif notification_type == "assigned_supervisor":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']

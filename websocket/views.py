@@ -7,7 +7,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .pagination import MyLimitOffsetPagination
 from rest_framework.response import Response
-from . serializer import NotificationWriteSerializer
+from . serializer import NotificationWriteSerializer,NotificationReadSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from management import roles
 from django.db.models import Q
@@ -16,7 +16,7 @@ from django.db.models import Q
 class NotificationViewSet(viewsets.ModelViewSet):
 
     queryset = Notification.objects.all().order_by("-created_date")
-    serializer_class = NotificationWriteSerializer
+    serializer_class = NotificationReadSerializer
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     filterset_fields = ['id']
     search_fields = ['id']
@@ -32,6 +32,11 @@ class NotificationViewSet(viewsets.ModelViewSet):
         query = Notification.objects.filter(to_notification = user)      
         print(query)  
         return query.order_by("-created_date")
+    
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return NotificationWriteSerializer
+        return super().get_serializer_class()
     
     def list(self, request, *args, **kwargs):
         response = super().list(request, *args, **kwargs)
