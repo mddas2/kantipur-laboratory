@@ -8,6 +8,7 @@ from emailmanagement.email_sender import ESendMail
 from management import roles
 from django.db.models import Q
 from management import encode_decode
+from management.models import SuperVisorSampleForm
 
 def NotificationHandler(instance, request,method,model_name):
     to_notification = CustomUser.objects.filter(Q(role = roles.SMU) | Q(id = instance.id))
@@ -90,16 +91,17 @@ def sampleFormNotificationHandler(instance,notification_type):
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']
         model_name = mapping_notification_type.mapping[notification_type]['model_name']
-        path = mapping_notification_type.mapping[notification_type]['path']
+        path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.id)
 
         notification_message = notification_message.format(sample_lab_id = instance.sample_form.sample_lab_id)
+        to_notification = [instance.supervisor_user_id]  # here instance is supervisoruser
+ 
 
-        to_notification = instance.supervisor_user_id  # here instance is supervisoruser
     elif notification_type == "assigned_analyst":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']
         model_name = mapping_notification_type.mapping[notification_type]['model_name']
-        path = mapping_notification_type.mapping[notification_type]['path']
+        path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.id)
 
         notification_message = notification_message.format(sample_lab_id = instance.sample_form.sample_lab_id)
 

@@ -91,6 +91,8 @@ def sample_form_has_parameter_m2m_changed(sender, instance, action, reverse, mod
 
 @receiver(post_save, sender=SampleFormHasParameter)
 def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
+    if created:
+        sampleFormNotificationHandler(instance,"assigned_analyst")
     if instance.is_supervisor_sent == True:
         super_visor_sample_form_obj = instance.super_visor_sample_form
         sample_form_has_parameter_obj = SampleFormHasParameter.objects.filter(sample_form = instance.sample_form.id) 
@@ -178,9 +180,10 @@ def supervisor_sample_form_has_parameter_m2m_changed(sender, instance, action, r
 
 @receiver(post_save, sender=SuperVisorSampleForm)
 def SupervisorHaveParameterAfterSave(sender, instance ,created , **kwargs):
-    
+   
     if created:
         sampleFormNotificationHandler(instance,"assigned_supervisor")
+
 
     if instance.is_supervisor_sent == True:      
      
@@ -229,7 +232,7 @@ def SupervisorHaveParameterAfterSave(sender, instance ,created , **kwargs):
 def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
     if not instance.pk:
         instance.status = "pending"
-        sampleFormNotificationHandler(instance,"assigned_analyst")
+        # sampleFormNotificationHandler(instance,"assigned_analyst")
         
    
 @receiver(pre_save, sender=SampleFormVerifier)
