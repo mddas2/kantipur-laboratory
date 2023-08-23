@@ -234,7 +234,11 @@ def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
         instance.status = "pending"
         # sampleFormNotificationHandler(instance,"assigned_analyst")
         
-   
+@receiver(post_save, sender=SampleFormVerifier)
+def SampleFormHasVerifierPostSave(sender, instance ,created , **kwargs):
+    if created:
+        sampleFormNotificationHandler(instance,"assigned_verifier")
+
 @receiver(pre_save, sender=SampleFormVerifier)
 def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
     sample_form_obj = instance.sample_form
@@ -242,7 +246,6 @@ def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
         sample_form_obj.form_available = "verifier"
         sample_form_obj.status = "not_verified"
         sample_form_obj.save()
-        sampleFormNotificationHandler(instance,"assigned_verifier")
     else:        
         if instance.is_verified == True:
             sample_form_has_parameter_obj = sample_form_obj.sample_has_parameter_analyst

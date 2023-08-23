@@ -15,5 +15,5 @@ user_my_sample = "/dashboard/sample-details/"
 
 smu_sample_request_details ="/dashboard/sample-request-details/"
 supervisor_sample_request_details ="/dashboard/lab-sample-details/"
-analyst_sample_request_details = "/dashboard/test-request-details/"
-
+analyst_sample_request_details = "/dashboard/test-request-details/" 
+verifier_sample_request_details = "/dashboard/verify-sample-report/"

@@ -28,7 +28,7 @@ mapping = {
         "model_name":"SampleFormVerifier",
         "from_user":['supervisor'],
         "to_users":['verifier'],
-        "path":frontend_setting.sample_request,
+        "path":frontend_setting.verifier_sample_request_details,
         "admin_message":"A sample report of  ({sample_lab_id}) has been submitted for verification. Please Verify",
         "user_message":"None",
     },
