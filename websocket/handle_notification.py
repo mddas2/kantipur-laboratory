@@ -120,7 +120,7 @@ def sampleFormNotificationHandler(instance,notification_type):
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']
         model_name = mapping_notification_type.mapping[notification_type]['model_name']
-        path = mapping_notification_type.mapping[notification_type]['path']
+        path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.sample_form.id)
 
         notification_message = notification_message.format(sample_lab_id = instance.sample_form.sample_lab_id)
 

@@ -36,8 +36,8 @@ mapping = {
         "model_name":"SampleFormVerifier",
         "from_user":['verifier'],
         "to_users":['user','smu','admin','supervisor','analyst'],
-        "path":frontend_setting.sample_request,
-        "admin_message":"A sample report of  ({sample_lab_id}) has been submitted for verification. Please Verify",
+        "path":frontend_setting.admin_sample_request_details,
+        "admin_message":"A sample report of  ({sample_lab_id}) has been submitted for approve",
         "user_message":"this sample form verified",
     },
     "approved_sample_form":{
