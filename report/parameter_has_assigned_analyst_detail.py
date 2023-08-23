@@ -313,12 +313,14 @@ class FinalReportNepaliAnalystSerializer(serializers.ModelSerializer):
                     unit_obj = Units.objects.filter(units = formula_obj_result.first().units)
                     if unit_obj.count()>0:
                         parameter_data['units_selected'] = unit_obj.first().units_nepali
+                        parameter_data['units_selected_en'] = formula_obj_result.first().units
                     else:
                         parameter_data['units_selected'] = formula_obj_result.first().units
                     
                     mandatory_obj = MandatoryStandard.objects.filter(mandatory_standard = formula_obj_result.first().mandatory_standard)
                     if mandatory_obj.count()>0:
                         parameter_data['mandatory_standard_selected'] = mandatory_obj.first().mandatory_standard_nepali
+                        parameter_data['mandatory_standard_selected_en'] = formula_obj_result.first().mandatory_standard
                     else:
                         parameter_data['mandatory_standard_selected'] = formula_obj_result.first().mandatory_standard
 
