@@ -11,3 +11,6 @@ commodity_category = "/dashboard/settings/commodity-category"
 parameter = "/dashboard/commodities-parameter"
 my_account = "/dashboard/my-account"
 particular_user = "/dashboard/user-details/"
+user_my_sample = "/dashboard/sample-details/"
+
+smu_sample_request_details ="/dashboard/sample-request-details/"

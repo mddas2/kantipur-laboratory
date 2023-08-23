@@ -10,7 +10,8 @@ class Notification(models.Model):
     from_notification = models.CharField(max_length=200,null=True)
     path = models.CharField(max_length=1000,null=True)
     model_name = models.CharField(max_length=200,null=True)
-    isinstance_id = models.CharField(max_length=200,null=True)
+    notification_type = models.CharField(max_length=200,null=True)
+    instance_id = models.CharField(max_length=200,null=True)
     to_notification = models.ManyToManyField(CustomUser,related_name="notification")
     is_read = models.BooleanField(default=False)
 

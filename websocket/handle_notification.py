@@ -7,15 +7,19 @@ from . import mapping_notification_type
 from emailmanagement.email_sender import ESendMail
 from management import roles
 from django.db.models import Q
+from management import encode_decode
 
 def NotificationHandler(instance, request,method,model_name):
     to_notification = CustomUser.objects.filter(Q(role = roles.SMU) | Q(id = instance.id))
     
     to_notification = to_notification.values_list('id',flat=True)
+    notification_type = ""
     if method == "update":
+        notification_type = "customuser_update"
         notification_message = "User "+str(instance.username) + " has been modified"
         particular_message = "Your aaccount has been modified"
-    if method == "create":
+    elif method == "create":
+        notification_type = "customuser_create"
         notification_message= f"New user ({str(instance.username)}) has registered an account."
         particular_message = "Your account has been created successfully"
     path = frontend_setting.particular_user + str(instance.id)
@@ -39,7 +43,8 @@ def NotificationHandler(instance, request,method,model_name):
         "is_read": is_read,
         "group_notification": 'USER_ADMIN',
         "to_notification": to_notification,
-        'isinstance_id':instance.id
+        'instance_id':instance.id,
+        'notification_type':notification_type
     }
 
     # Serialize the notification data
@@ -72,11 +77,12 @@ def sampleFormNotificationHandler(instance,notification_type):
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']
         model_name = mapping_notification_type.mapping[notification_type]['model_name']
-        path = mapping_notification_type.mapping[notification_type]['path']
+        path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.id)
 
         notification_message =  notification_message.format(sample_id = instance.id,username = instance.owner_user)
-        particular_message =  particular_message.format(sample_lab_id = instance.sample_lab_id)
-        
+        refrence_number = encode_decode.generateEncodeIdforSampleForm(instance.id, "user")
+        particular_message =  particular_message.format(refrence_number = refrence_number)
+
         to_notification = CustomUser.objects.filter(Q(role = roles.SMU) | Q(id = instance.id) | Q(email = instance.owner_user))
         to_notification = to_notification.values_list('id', flat=True)
    
@@ -142,7 +148,8 @@ def sampleFormNotificationHandler(instance,notification_type):
         "is_read": is_read,
         "group_notification": 'USER_ADMIN',
         "to_notification": to_notification,
-        'isinstance_id':instance.id
+        'instance_id':instance.id,
+        'notification_type':notification_type,
     }
 
     # Serialize the notification data
