@@ -487,7 +487,7 @@ class commodityLimitedData(generics.ListAPIView):
     filter_backends  = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     search_fields = ['id']
     ordering_fields = ['id']
-    pagination_class = [MyLimitOffsetPagination]
+    pagination_class = MyLimitOffsetPagination
 
     def get_queryset(self):
         commodity = Commodity.objects.all()
