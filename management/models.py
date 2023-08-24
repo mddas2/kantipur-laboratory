@@ -361,9 +361,9 @@ class MicroParameter(models.Model):
     status = models.CharField(max_length=2000,null=True)
     is_original = models.BooleanField(default=True)
 
-    first_exponent = models.CharField(max_length=500,default=None)
-    second_exponent = models.CharField(max_length=500,default=None)
-    third_exponent = models.CharField(max_length=500,default=None)
+    first_exponent = models.CharField(max_length=500,default=None,blank=True,null=True)
+    second_exponent = models.CharField(max_length=500,default=None,blank=True,null=True)
+    third_exponent = models.CharField(max_length=500,default=None,blank=True,null=True)
 
 class MicroParameterRawData(models.Model):
     sample_form_has_parameter = models.ForeignKey(SampleFormHasParameter,related_name="micro_detail_raw_data",on_delete=models.CASCADE,null=True,default=None)
@@ -380,9 +380,9 @@ class MicroParameterRawData(models.Model):
     status = models.CharField(max_length=2000,null=True)
     is_original = models.BooleanField(default=True)
 
-    first_exponent = models.CharField(max_length=500,default=None)
-    second_exponent = models.CharField(max_length=500,default=None)
-    third_exponent = models.CharField(max_length=500,default=None)
+    first_exponent = models.CharField(max_length=500,default=None,blank=True,null=True)
+    second_exponent = models.CharField(max_length=500,default=None,blank=True,null=True)
+    third_exponent = models.CharField(max_length=500,default=None,blank=True,null=True)
 
 class RawDataSheetDetail(models.Model):
     raw_data = models.ForeignKey(RawDataSheet, on_delete=models.CASCADE,related_name="raw_data",null=True)
