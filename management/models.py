@@ -169,6 +169,8 @@ class SampleForm(models.Model):#ClientRequest
 
     analysis_pricing = models.BooleanField(default=False) #if parameter not select then auto select parameter.this insure that commodity select or parameter.umesh sir
     fiscal_year = models.CharField(max_length=55, null=True)
+    namuna_code = models.CharField(max_length=55, null=True)
+    code = models.IntegerField(max_length=30,null=True)
 
     def save(self, *args, **kwargs):
         create = False
@@ -181,8 +183,12 @@ class SampleForm(models.Model):#ClientRequest
             self.refrence_number = encode_decode.generateEncodeIdforSampleForm(self.pk, "user")
             self.sample_lab_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "common")
 
-            self.fiscal_year = FiscalYear.objects.last()
-           
+            self.fiscal_year = FiscalYear.objects.last().fiscal_year
+            total_fiscal_year_data = SampleForm.objects.filter(fiscal_year = self.fiscal_year).count()
+            total_fiscal_year_data = total_fiscal_year_data + 10000
+            self.code = total_fiscal_year_data
+            self.namuna_code = self.fiscal_year +  "/NFFRL/" + str(total_fiscal_year_data)
+
             self.save()
 
 class SuperVisorSampleForm(models.Model):#sample form has parameter and parameter for each parameter each suspervisor
