@@ -168,6 +168,7 @@ class SampleForm(models.Model):#ClientRequest
     updated_date = models.DateTimeField(default=timezone.now)
 
     analysis_pricing = models.BooleanField(default=False) #if parameter not select then auto select parameter.this insure that commodity select or parameter.umesh sir
+    fiscal_year = models.CharField(max_length=55, null=True)
 
     def save(self, *args, **kwargs):
         create = False
@@ -179,6 +180,8 @@ class SampleForm(models.Model):#ClientRequest
         if create == True:
             self.refrence_number = encode_decode.generateEncodeIdforSampleForm(self.pk, "user")
             self.sample_lab_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "common")
+
+            self.fiscal_year = FiscalYear.objects.last()
            
             self.save()
 
