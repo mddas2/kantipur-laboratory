@@ -1,4 +1,5 @@
 from rest_framework.permissions import BasePermission
+from . import roles
 
 class SampleFormViewSetPermission(BasePermission):
     def has_permission(self, request, view):
@@ -33,6 +34,27 @@ class CommodityViewSetPermission(BasePermission):
             return True
         elif method_name == 'partial_update':
             return True
+        elif method_name == 'destroy':
+            return False
+        else:
+            return False
+        
+class FiscalYearPermission(BasePermission):
+    def has_permission(self, request, view):
+        method_name = view.action
+        if request.user.role != roles.SUPERADMIN:
+            return False
+
+        if method_name == 'list':
+            return True
+        elif method_name == 'create':
+            return True
+        elif method_name == 'retrieve':
+            return True
+        elif method_name == 'update':
+            return True
+        elif method_name == 'partial_update':
+            return False
         elif method_name == 'destroy':
             return False
         else:
