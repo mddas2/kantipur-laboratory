@@ -1,4 +1,4 @@
-from .models import Units,MandatoryStandard,TestMethod,MicroObservationTable,ClientCategory,SuperVisorSampleForm,ClientCategoryDetailImages, SampleForm, Commodity, CommodityCategory, MicroParameter , TestResult ,SampleFormHasParameter,Payment,SampleFormParameterFormulaCalculate,ClientCategoryDetail
+from .models import FiscalYear,Units,MandatoryStandard,TestMethod,MicroObservationTable,ClientCategory,SuperVisorSampleForm,ClientCategoryDetailImages, SampleForm, Commodity, CommodityCategory, MicroParameter , TestResult ,SampleFormHasParameter,Payment,SampleFormParameterFormulaCalculate,ClientCategoryDetail
 from rest_framework import serializers
 from account.models import CustomUser
 from . import roles
@@ -7,6 +7,11 @@ from . raw_data import generateRawData,UpdategenerateRawData
 from .status_naming import over_all_status
 from django.utils import timezone
 
+class FiscalYearSerializer(serializers.ModelSerializer):
+    class Meta:
+        ref_name = "FiscalYearSerializer"
+        model = FiscalYear
+        fields = '__all__'
 
 class ApprovedBySerializer(serializers.ModelSerializer):
      class Meta:

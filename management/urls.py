@@ -7,6 +7,7 @@ router = DefaultRouter()
 router.register('client-category', views.ClientCategoryViewSet, basename="apis/client_category")
 router.register('sample-form', views.SampleFormViewSet, basename="sample_form")
 router.register('commodity', views.CommodityViewSet, basename="commodity")
+router.register('fiscal-year', views.FiscalyearViewSet, basename="FiscalyearViewSet")
 router.register('supervisors-have-parameter', views.SuperVisorSampleFormViewset, basename="SuperVisorHaveParameter")
 
 router.register('microparameter', views.MicroparameterViewset, basename="microparameter")

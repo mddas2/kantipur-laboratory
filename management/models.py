@@ -465,6 +465,9 @@ class ClientCategoryDetailImages(models.Model):
     file = models.FileField(upload_to='uploads/clientcategorydetailimages',null=True)
     name = models.CharField(max_length=500,null=True,blank=True)
 
+class FiscalYear(models.Model):
+    fiscal_year = models.CharField(max_length=500,null=True,blank=True)
+
 
     
  
