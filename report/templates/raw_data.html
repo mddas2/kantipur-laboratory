@@ -1,4 +1,5 @@
 {% load json_custom_tag %}
+
 <!doctype html>
 <html lang="en">
 
@@ -11,30 +12,21 @@
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <title>Raw  Data sheets</title>
     <style type="text/css">
-    @page  {
-        margin: 20pt;
-        size: letter portrait;
-        @frame header_frame {           /* Static frame */
-            -pdf-frame-content: parent;         
-            left: 80pt;
-            right: 20pt;
-                /* width: 300pt; */
-                top: 255pt;
-                /* height: 62pt; */
-                /* border: 1;  */
+        @page {
+        size: A4;
+        margin: 20mm;
         }
-      
-    }
 
- 
+        .page-break {
+        page-break-before: always;
+        }
+
     </style>
 
 </head>
     <body>
     <body>
-
-       
-    {% for data in raw_data %}
+        {% for data in raw_data %}
         <table>
                 <tr >
                     <td style="width:11%; padding: 6px; border: 1px solid black;">
@@ -106,29 +98,31 @@
                                     <h2 style="font-size: 12px;  line-height: 0;  padding:0 0 10px;margin: 0;   vertical-align: top; ">{{result.parameter.name}}</h2>
                                     <!-- {{result.input_fields_value}} -->
         
-                                    {% for key,value in result.input_fields_value|json_to_dict %}
-                                        {%if key != 'nan' %}
-                                            <p style="font-size: 12px; line-height:0 ; margin: 0; padding: 0 0 10px; "> {{key}} = <span>{{value}}</span></p>
-                                        {% endif %}
-                                    {% endfor %}
+                                        <p style="font-size: 12px; line-height:0 ; margin: 0; padding: 0 0 10px; "> {% for key,value in result.input_fields_value|json_to_dict %} {%if key != 'nan' %} {{key}} = <span>{{value}}</span> ,  {% endif %}{% endfor %}</p>
+                                   
                                     <h3 style="font-size: 12px; line-height: 0; margin: 0 0 5px; padding: 0 0 10px; ">Result = <span> {%if result.parameter.formula != 'nan' %} {{result.parameter.formula}} {% endif %}</span>  {%if result.parameter.formula != 'nan' %} = {% endif %} {{result.result}} </h3>
                                 
                                     <h3 style="font-size: 12px; line-height: 0; margin: 0 0 5px; padding: 0 0 10px; ">Final Result = <span> {{result.converted_result}} </span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Qualitative Analysis = <span> {% if result.analyst_remarks != '' %}{{result.analyst_remarks}} {% else %} N/A {% endif %} </span></h3>
                                 </div>
 
                                 <hr color="#d2d2d2">
+                                
                             {% endfor %}
+                            
+                      
+                            
                         </div>
                     </td>
                 </tr>
-        
+                
                 <tr style="border: 1px solid black; padding: 0; margin: 0; ">
                     <td style="text-align: center;">6</td>
                     <td colspan="5" style="border-right: 0;"><h2 style="font-size: 12px; line-height: 0; text-align: top; padding: 10px 3px;margin: 0;">Name and Signature of analyst:{{data.analyst_user.username}}  </h2></td>
                     <td colspan="4" style="border-left: 0;"><h2 style="font-size: 12px; line-height: 0; text-align: top; padding: 10px 3px;margin: 0;">Verified by:  </h2></td>
                 </tr>
+                
         <!-- Content for Static Frame 'header_frame' -->
-                <tr style="border: 1px solid black; padding: 0; margin: 0; " >
+                <tr style="border: 1px solid black; padding: 0; margin: 0;" >
                     
                     <td style="text-align: center;">7</td>
                     <td colspan="5" style="border-right: 0;"><h2 style="font-size: 12px; line-height: 0; text-align: top; padding: 10px 3px;margin: 0;">Remarks (If any): {{data.remarks}} </h2></td>
@@ -136,17 +130,14 @@
                 
                 </tr>
             </table>
-            <!-- <pdf:nextpage /> for next data-->
-    {% endfor %}
-
-
-
+            </table>
+         
 <!----for extra next page -->
 
 
      
 <!----for extra next page end -->
 
-    
+{% endfor %}
     </body>
     </html>

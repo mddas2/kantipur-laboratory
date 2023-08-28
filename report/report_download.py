@@ -331,12 +331,10 @@ def rawDataSheetAnalystReport(request,download_print,sample_form_has_param):
     
 
     raw_data = RawDataSheet.objects.filter(id = sample_form_has_param)
-    # print(raw_data," raw data...\n")
     test_type = raw_data.first().test_type
 
-    print(raw_data," generating report pdf as microbiology...")
+
     if test_type == "Microbiological":
-        print(raw_data," generating report pdf as microbiology...")
         template = get_template('raw_data_micro.html')
         context = {
             'raw_data':raw_data.first(),
@@ -349,8 +347,6 @@ def rawDataSheetAnalystReport(request,download_print,sample_form_has_param):
             'sample_form':raw_data.first().sample_form
         }
 
-
-    print(raw_data.first().test_type, "raw data ...")
     # Render the template with the context
     html = template.render(context)
 
