@@ -14,6 +14,7 @@ from django.http import HttpResponse
 from management.models import MicroParameter
 from rest_framework import serializers
 from .models  import MicroParameterRawData,MicroObservationTableRawData
+from rest_framework.response import Response
 
 def generateRawData(sample_form_has_parameter_id,remarks,completed_date):
     print(sample_form_has_parameter_id)
@@ -229,7 +230,6 @@ class rawDataForSampleFormTestType(generics.ListAPIView):
         return rawDataTestTypeSerializer
         
     def list(self, request, *args, **kwargs):
-        from rest_framework.response import Response
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
         data = serializer.data
