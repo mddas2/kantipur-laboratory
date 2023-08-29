@@ -76,9 +76,9 @@ class SampleForm(models.Model):#ClientRequest
     owner_user = models.EmailField(max_length=100,null=False,default=None)
     name = models.CharField(max_length=255, null=True)
     condition = models.CharField(max_length=255,null=True)
-    mfd = models.DateField()
+    mfd = models.CharField(max_length=255,null=True)
 
-    dfb = models.DateField(null=True,blank=True)
+    dfb = models.CharField(max_length=255,null=True)
 
     days_dfb = models.CharField(max_length=255,null=True,blank=True)
     dfb_duration = models.CharField(choices=(('days','days'),('month','month'),('year','year'),('','')), default=None, max_length=155,null=True)
@@ -124,7 +124,7 @@ class SampleForm(models.Model):#ClientRequest
     sample_symbol_number = models.CharField(max_length=255, null=True) #latest
     analysis_fee = models.CharField(max_length=255, null=True) #latest
     voucher_number = models.CharField(max_length=255, null=True) #latest
-    voucher_date =  models.DateTimeField(null=True) #latest
+    voucher_date =  models.CharField(max_length=255,null=True) #latest
 
 
     verified_by = models.ForeignKey(CustomUser, related_name="sample_form_verified_by",on_delete=models.SET_NULL,null=True) #verifier
