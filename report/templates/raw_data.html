@@ -48,9 +48,9 @@
             <table id="header_content" >
                 <tr style="border: 1px solid black;">
                     <th style="text-align: center; " ><h2 style="font-size: 12px; line-height: 0; padding: 10px 3px;">S.N.</h2></th>
-                    <th  colspan="5"><h2 style="font-size: 12px; line-height: 0; text-align: left; padding: 10px 3px;"> Name of Laboratory:</h2></th>
-                    <th   colspan="4"><h2 style="font-size: 12px; line-height: 0; text-align: left; padding: 10px 3px;">  Reported date: N/A </h2></th>
-                </tr>
+                    <th  colspan="5"><h2 style="font-size: 12px; line-height: 0; text-align: left; padding: 10px 3px;"> Name of Laboratory: {{data.raw_data.first.parameter.commodity.name}}</h2></th>
+                    <th   colspan="4"><h2 style="font-size: 12px; line-height: 0; text-align: left; padding: 10px 3px;">  Reported date:   .... </h2></th>
+                </tr> 
                 <tr style="border: 1px solid black; padding: 0; margin: 0;">
                     <td  style="margin:0; padding:0; text-align: center;">1</td>
                     <td colspan="3"style="margin:0; padding:0;">
@@ -65,7 +65,7 @@
                 </tr>
                 <tr style="border: 1px solid black; padding: 0; margin: 0;">
                     <td style="text-align: center;">2</td>
-                    <td colspan="3"><h2 style="font-size: 12px; line-height: 0; text-align: top; padding: 10px 3px;margin: 0;"> Due Date:N/A</h2></td>
+                    <td colspan="3"><h2 style="font-size: 12px; line-height: 0; text-align: top; padding: 10px 3px;margin: 0;"> Due Date:   ....</h2></td>
                     <td colspan="3"><h2 style="font-size: 12px; line-height: 0; text-align: top; padding: 10px 3px;margin: 0;">Started on:{{data.started_date.date}}</h2></td>
                     <td colspan="3"><h2 style="font-size: 12px; line-height: 0; text-align: top; padding: 10px 3px;margin: 0;">Completed on:{{data.completed_date.date}}</h2></td>
                 </tr>
@@ -102,7 +102,7 @@
                                    
                                     <h3 style="font-size: 12px; line-height: 0; margin: 0 0 5px; padding: 0 0 10px; ">Result = <span> {%if result.parameter.formula != 'nan' %} {{result.parameter.formula}} {% endif %}</span>  {%if result.parameter.formula != 'nan' %} = {% endif %} {{result.result}} </h3>
                                 
-                                    <h3 style="font-size: 12px; line-height: 0; margin: 0 0 5px; padding: 0 0 10px; ">Final Result = <span> {{result.converted_result}} </span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Qualitative Analysis = <span> {% if result.analyst_remarks != '' %}{{result.analyst_remarks}} {% else %} N/A {% endif %} </span></h3>
+                                    <h3 style="font-size: 12px; line-height: 0; margin: 0 0 5px; padding: 0 0 10px; ">Final Result = <span> {{result.converted_result}}  {{result.units}} </span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{% if result.analyst_remarks != '' %} Qualitative Analysis = <span> {{result.analyst_remarks}} {% endif %} </span></h3>
                                 </div>
 
                                 <hr color="#d2d2d2">
