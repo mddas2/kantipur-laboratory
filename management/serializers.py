@@ -346,6 +346,16 @@ class SampleFormReadAnalystSerializer(serializers.ModelSerializer):
         model = SampleForm
         fields = '__all__'
 
+class CommodityCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CommodityCategory
+        fields = '__all__'
+
+class CommodityAllReadSerializer(serializers.ModelSerializer):
+    category = CommodityCategorySerializer(serializers.ModelSerializer)
+    class Meta:
+        model = Commodity
+        fields = '__all__'
 
 class CommodityWriteSerializer(serializers.ModelSerializer):
     class Meta:
@@ -627,7 +637,7 @@ class SuperVisorSampleFormReadSerializer(serializers.ModelSerializer):
 
 class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
     sample_form = SampleFormReadAnalystSerializer(read_only=True)
-    # commodity = CommodityWriteSerializer(read_only=True,many=True)
+    commodity = CommodityAllReadSerializer(read_only=True)
     parameter = TestResultSerializer(many=True,read_only=True)
     assigned_by = serializers.SerializerMethodField()
     class Meta:

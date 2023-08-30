@@ -259,3 +259,11 @@ class rawDataReportDownload(views.APIView):
         
         response = rawDataSheetAnalystReport(request,download_print,sample_form_has_parameter)
         return response
+
+class rawDataReportApi(views.APIView):
+    def get(self, request,download_print=None,report_lang=None,sample_form_has_parameter=None):
+        
+        # query = 
+        # data = RawDataSerializerApi()
+        # response = Response(data.data)
+        return 2
