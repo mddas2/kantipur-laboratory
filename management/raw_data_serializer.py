@@ -1,4 +1,4 @@
-from .models import MicroObservationTableRawData,MicroParameterRawData,RawDataSheet,SampleForm,RawDataSheetDetail,TestResult,MicroParameter,MicroObservationTable
+from .models import MicroObservationTableRawData,MicroParameterRawData,RawDataSheet,SampleForm,RawDataSheetDetail,TestResult,MicroParameter,MicroObservationTable,SampleFormHasParameter
 from account.models import CustomUser
 from rest_framework import serializers
 from . encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
@@ -54,6 +54,11 @@ class SampleFormSerializer(serializers.ModelSerializer):
         model = SampleForm
         fields = ['id', 'name','created_date','remarks']
 
+class SampleFormHasParameterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SampleFormHasParameter
+        fields = ['created_date']
+
 class rawDataSerializer(serializers.ModelSerializer):
 
     # def get_sample_form(self, obj):
@@ -61,6 +66,7 @@ class rawDataSerializer(serializers.ModelSerializer):
     #     return generateAutoEncodeIdforSampleForm(obj.id,user)
     raw_data = rawDataSheetDetailSerializer(read_only = True,many=True)
     analyst_user = ApprovedBySerializer(read_only = True,many=False)
+    sample_form_has_parameter = SampleFormHasParameterSerializer(read_only = True)
     # sample_form = SampleFormSerializer(read_only=True, many=True)
     class Meta:
         model = RawDataSheet

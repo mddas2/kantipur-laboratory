@@ -171,7 +171,6 @@ class rawDataDetail(generics.ListAPIView):
 
         sample_form_has_parameter_id = self.kwargs.get('sample_form_has_parameter')
         query = RawDataSheet.objects.filter(sample_form_has_parameter_id=sample_form_has_parameter_id)
-        print(query)
     
         return query
     
