@@ -52,7 +52,7 @@ class rawDataSheetDetailSerializer(serializers.ModelSerializer):
 class SampleFormSerializer(serializers.ModelSerializer):
     class Meta:
         model = SampleForm
-        fields = ['id', 'name','created_date','remarks']
+        fields = ['id', 'name','created_date','remarks','namuna_code']
 
 class CommodityCategorySerializer(serializers.ModelSerializer):
     class Meta:
