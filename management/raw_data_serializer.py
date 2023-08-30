@@ -57,7 +57,7 @@ class SampleFormSerializer(serializers.ModelSerializer):
 class CommodityCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = CommodityCategory
-        fields = ['category']
+        fields = ['name']
 
 class CommoditySerializer(serializers.ModelSerializer):
     category = CommodityCategorySerializer(read_only = True)
