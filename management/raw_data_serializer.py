@@ -1,4 +1,4 @@
-from .models import MicroObservationTableRawData,MicroParameterRawData,RawDataSheet,SampleForm,RawDataSheetDetail,TestResult,MicroParameter,MicroObservationTable,SampleFormHasParameter
+from .models import CommodityCategory,Commodity,MicroObservationTableRawData,MicroParameterRawData,RawDataSheet,SampleForm,RawDataSheetDetail,TestResult,MicroParameter,MicroObservationTable,SampleFormHasParameter
 from account.models import CustomUser
 from rest_framework import serializers
 from . encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
@@ -54,10 +54,21 @@ class SampleFormSerializer(serializers.ModelSerializer):
         model = SampleForm
         fields = ['id', 'name','created_date','remarks']
 
+class CommodityCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CommodityCategory
+        fields = ['category']
+
+class CommoditySerializer(serializers.ModelSerializer):
+    category = CommodityCategorySerializer(read_only = True)
+    class Meta:
+        model = Commodity
+        fields = ['category']
+
 class SampleFormHasParameterSerializer(serializers.ModelSerializer):
     class Meta:
         model = SampleFormHasParameter
-        fields = ['created_date']
+        fields = ['created_date','commodity']
 
 class rawDataSerializer(serializers.ModelSerializer):
 
