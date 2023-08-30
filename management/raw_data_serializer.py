@@ -66,6 +66,7 @@ class CommoditySerializer(serializers.ModelSerializer):
         fields = ['category']
 
 class SampleFormHasParameterSerializer(serializers.ModelSerializer):
+    commodity = CommoditySerializer(read_only = True)
     class Meta:
         model = SampleFormHasParameter
         fields = ['created_date','commodity']
