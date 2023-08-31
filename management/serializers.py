@@ -568,6 +568,8 @@ class SuperVisorSampleFormReadSerializer(serializers.ModelSerializer):
                 parameter_data['last_name'] = last_name
                 parameter_data['sample_form_has_parameter'] = smple_frm_exist.first().id
                 parameter_data['assigned_date'] = created_date
+                parameter_data['completed_date'] = smple_frm_exist.completed_date
+                parameter_data['started_date'] = smple_frm_exist.started_date
                 
                 formula_obj_result = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id=sample_form_id,parameter_id = parameter_id)
                 if formula_obj_result.count()>0:
