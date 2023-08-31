@@ -10,6 +10,7 @@ from django.template.loader import get_template
 from xhtml2pdf import pisa
 from management.models import SampleFormParameterFormulaCalculate
 from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm,generateDecodeIdByRoleforSampleForm
+from management.raw_data_serializer import rawDataTestTypeGlobalSerializer
 
 from account.department_type import department_code
 from rest_framework.response import Response
@@ -341,6 +342,8 @@ def rawDataSheetAnalystReport(request,download_print,sample_form_has_param):
             'sample_form':raw_data.first().sample_form
         }
     else:
+        serializer_data = rawDataTestTypeGlobalSerializer(raw_data,many=True)
+        return Response(serializer_data.data)
         template = get_template('raw_data.html')
         context = {
             'raw_data':raw_data,

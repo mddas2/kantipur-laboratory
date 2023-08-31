@@ -23,8 +23,8 @@ from management import roles
 from rest_framework import generics
 from .report_download import TestReport,ReportAdminList,ReportParameter,ReportCommodity,ReportUserSampleForm,ReportUserList,ReportSampleForm,ReportUserRequest,ReportComodityCategory,FinalReport,rawDataSheetAnalystReport
 from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm,generateDecodeIdByRoleforSampleForm
-from management.models import RawDataSheet
-from management.raw_data_serializer import rawDataTestTypeGlobalSerializer
+
+
 #report_type:['pdf','excel','csv']
 #report_name:['admin-list','users-list','user-with-sample-form','sample-form','commodity','parameter']
 #['sample-request','user-request','client-category','commodity-with-parameter','commodity-category','commodity','parameter']
@@ -265,7 +265,5 @@ class rawDataReportDownload(views.APIView):
 class rawDataReportApi(views.APIView):
     def get(self, request,download_print=None,report_lang=None,sample_form_has_parameter=None):
         
-        # query = RawDataSheet.objects.filter(sample_form_has_parameter = )
-        # data = rawDataTestTypeGlobalSerializer()
-        # # response = Response(data.data)
-        return 2
+        response = rawDataSheetAnalystReport(request,download_print,sample_form_has_parameter)
+        return response
