@@ -348,6 +348,7 @@ class SampleFormReadAnalystSerializer(serializers.ModelSerializer):
 
 class CommodityCategorySerializer(serializers.ModelSerializer):
     class Meta:
+        ref_name = "CommodityCategorySerializerm"
         model = CommodityCategory
         fields = '__all__'
 

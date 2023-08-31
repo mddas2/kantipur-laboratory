@@ -265,7 +265,7 @@ class rawDataReportDownload(views.APIView):
 class rawDataReportApi(views.APIView):
     def get(self, request,download_print=None,report_lang=None,sample_form_has_parameter=None):
         
-        # query = RawDataSheet.objects.filter(id = )
+        # query = RawDataSheet.objects.filter(sample_form_has_parameter = )
         # data = rawDataTestTypeGlobalSerializer()
         # # response = Response(data.data)
         return 2
