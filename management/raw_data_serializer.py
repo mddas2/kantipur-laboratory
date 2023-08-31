@@ -97,6 +97,7 @@ class rawDataTestTypeSerializer(serializers.ModelSerializer):
 
     raw_data = rawDataSheetDetailSerializer(read_only = True,many=True)
     analyst_user = ApprovedBySerializer(read_only = True,many=False)
+    sample_form_has_parameter = SampleFormHasParameterSerializer(read_only = True)
     # sample_form = SampleFormSerializer(read_only=True, many=True)
     class Meta:
         model = RawDataSheet
@@ -120,6 +121,7 @@ class rawDataTestTypeGlobalSerializer(serializers.ModelSerializer):
     raw_data = rawDataSheetDetailSerializer(read_only = True,many=True)
     analyst_user = ApprovedBySerializer(read_only = True,many=False)
     supervisor_by = serializers.SerializerMethodField()
+    sample_form_has_parameter = SampleFormHasParameterSerializer(read_only = True)
     # sample_form = SampleFormSerializer(read_only=True, many=True)
     class Meta:
         model = RawDataSheet
