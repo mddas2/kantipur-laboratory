@@ -5,7 +5,7 @@ from rest_framework import views
 try:
     import npttf2utf
 except:
-    print("Please install npttf2utf")
+    #print("Please install npttf2utf")
     
 from django.conf import settings
 

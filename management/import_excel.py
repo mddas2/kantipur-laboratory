@@ -87,7 +87,7 @@ def ImportExcel(request):
         try:
             commodity_category_obj = CommodityCategory.objects.create(**commodity_category_data)
         except:
-            print("can not create")
+            #print("can not create")
         commodity_category_id = CommodityCategory.objects.get(name=commodity_category).id
         commodity_data = {
             'category_id' : commodity_category_id,
@@ -99,7 +99,7 @@ def ImportExcel(request):
         }
         commodity_obj,create = Commodity.objects.update_or_create(name = commodity_name, defaults= commodity_data)
         if create:
-            print("commodity created")
+            #print("commodity created")
 
         multiple_units,multiple_mandatory_standard,multiple_ref_test_method = multipleUnitsMandatoryRefTestMethod(str(unit),str(unit_nepali),str(ref_test_method),str(mandatory_standard),str(mandatory_standard_nepali))
 
@@ -124,7 +124,7 @@ def ImportExcel(request):
         param_update_or_create = TestResult.objects.filter(commodity_id = commodity_id ,name = parameters_name)
        
         if param_update_or_create.exists():
-            print("already exists..")
+            #print("already exists..")
             already_exists_parameters = already_exists_parameters + 1
             pass
         else:
@@ -194,9 +194,9 @@ def multipleUnitsMandatoryRefTestMethod(unit,unit_nepali,ref_test_method,mandato
         test_method_data_obj,test_method_create = TestMethod.objects.update_or_create(ref_test_method = ref_test_method, defaults = test_method_data)
         test_method_create_ids.append(test_method_data_obj.id)
         
-    # print("ids of units::",unit_create_ids)
-    # print("ids of mandatory standard::",mandatory_standard_data_create_ids)
-    # print("ids of test method::",test_method_create_ids)
+    # #print("ids of units::",unit_create_ids)
+    # #print("ids of mandatory standard::",mandatory_standard_data_create_ids)
+    # #print("ids of test method::",test_method_create_ids)
 
     return unit_create_ids,mandatory_standard_data_create_ids,test_method_create_ids
 

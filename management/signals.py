@@ -143,7 +143,7 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
                 #SampleForm.objects.filter(id=instance.sample_form.id).update(is_analyst_test = sup_is_analyst_test,status=sup_status)
                     
         else:
-            print("all parameter has not assigned...")
+            #print("all parameter has not assigned...")
 
     if instance.is_supervisor_sent == False:
         SampleForm.objects.filter(id=instance.sample_form.id).update(is_analyst_test = False,status="processing")
@@ -215,7 +215,7 @@ def SupervisorHaveParameterAfterSave(sender, instance ,created , **kwargs):
             verifier_obj,created = SampleFormVerifier.objects.update_or_create(sample_form_id = instance.sample_form_id,defaults=data)
             print(verifier_obj,created)
             if created or verifier_obj != None:
-                print("reached to verifier")
+                #print("reached to verifier")
                 SampleForm.objects.filter(id=instance.sample_form.id).update(is_analyst_test = sup_is_analyst_test,status=sup_status)
                 
 

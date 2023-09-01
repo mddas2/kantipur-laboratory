@@ -87,7 +87,7 @@ def ImportExcel(request):
         try:
             commodity_category_obj = CommodityCategory.objects.create(**commodity_category_data)
         except:
-            print("can not create")
+            #print("can not create")
         commodity_category_id = CommodityCategory.objects.get(name=commodity_category).id
         commodity_data = {
             'category_id' : commodity_category_id,
@@ -99,7 +99,7 @@ def ImportExcel(request):
         }
         commodity_obj,create = Commodity.objects.update_or_create(name = commodity_name, defaults= commodity_data)
         if create:
-            print("commodity created")
+            #print("commodity created")
 
         multiple_units,multiple_mandatory_standard,multiple_ref_test_method = multipleUnitsMandatoryRefTestMethod(unit,unit_nepali,ref_test_method,mandatory_standard,mandatory_standard_nepali)
 
@@ -124,7 +124,7 @@ def ImportExcel(request):
         param_update_or_create = TestResult.objects.filter(commodity_id = commodity_id ,name = parameters_name)
         print(multiple_ref_test_method," multiple_ref_test_method update or create. ")
         if param_update_or_create.exists():
-            print("already exists..")
+            #print("already exists..")
             already_exists_parameters = already_exists_parameters + 1
             pass
         else:

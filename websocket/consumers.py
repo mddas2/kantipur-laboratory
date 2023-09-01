@@ -4,14 +4,14 @@ from channels.exceptions import StopConsumer
 class MySyncConsumer(SyncConsumer):
     
     def websocket_connect(self,event): #this handler is called when client initially opens a connection and is about to finish handshake.
-        print("websocket connected",event)
+        #print("websocket connected",event)
         self.send({
             'type' : 'websocket.accept'
         })
 
     def websocket_receive(self,event): #this handler is called when data is received  from client
-        print("websocket Received...",event) 
-        print("message is ", event['text'])
+        #print("websocket Received...",event) 
+        #print("message is ", event['text'])
     
     def websocket_send(self,message):
         self.send({
@@ -20,7 +20,7 @@ class MySyncConsumer(SyncConsumer):
         })
     
     def websocket_disconnect(self,event): #this handler is called when either connection to the client is lost , either from client closing the connection , the server closing the connection or connection lost.
-        print("websocket disconnecte...",event)
+        #print("websocket disconnecte...",event)
         raise StopConsumer()
 
 
@@ -33,7 +33,7 @@ class MyAyncConsumer(AsyncConsumer):
     #     self.email = None
     
     async def websocket_connect(self,event): #this handler is called when client initially opens a connection and is about to finish handshake.
-        print("websocket connected",event)
+        #print("websocket connected",event)
         self.email = self.scope['url_route']['kwargs'].get('email')  # Retrieve email from URL route parameters
         print(f"WebSocket connected for email: {self.email}")
 
@@ -50,12 +50,12 @@ class MyAyncConsumer(AsyncConsumer):
         })
 
     async def websocket_receive(self,event): #this handler is called when data is received  from client
-        print("websocket Received...",event) 
-        print("message is ", event['text'])
+        #print("websocket Received...",event) 
+        #print("message is ", event['text'])
         await self.send_message_to_group('admin',self.email+":message to all group")
     
     async def websocket_disconnect(self,event): #this handler is called when either connection to the client is lost , either from client closing the connection , the server closing the connection or connection lost.
-        print("websocket disconnecte...",event)
+        #print("websocket disconnecte...",event)
         raise StopConsumer()
     
     async def send_message_to_group(self, group_name, message):

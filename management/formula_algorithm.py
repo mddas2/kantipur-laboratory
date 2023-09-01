@@ -84,7 +84,7 @@ class Formula:
                     'status':status.HTTP_404_NOT_FOUND                    
                 }
             # return Response(response, status=status.HTTP_404_NOT_FOUND)
-            print("parameter or commidity id not related to sample form id.")
+            #print("parameter or commidity id not related to sample form id.")
 
         return response
 

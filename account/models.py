@@ -98,7 +98,7 @@ class CustomUser(AbstractUser):
             if self.test_types != None:
                 try:
                     self.test_type.set(self.test_types)
-                    print("blunder error account")
+                    #print("blunder error account")
                 except:
                     pass                
 

@@ -945,7 +945,7 @@ def CeateClientCategoryDetail(names,files,client_category,client_sub_category):
 
 
     for name, file in zip(names, files):
-       print("name:",name," file:",file,int(serializer.data['id']))
+       #print("name:",name," file:",file,int(serializer.data['id']))
        dict_data = {
            'client_category_detail':int(serializer.data['id']),
            'name':name,
@@ -958,9 +958,9 @@ def CeateClientCategoryDetail(names,files,client_category,client_sub_category):
 
     image_serializer = ClientCategoryDetailImagesSerializer(many=True,data=image_data)
     image_serializer.is_valid(raise_exception=True)
-    print("validate..",image_serializer.data)
+    #print("validate..",image_serializer.data)
     image_serializer.save()
-    print("validate..",image_serializer.data)
+    #print("validate..",image_serializer.data)
     # print(image_serializer.data)
 
     # print(image_data,image_serializer.data)

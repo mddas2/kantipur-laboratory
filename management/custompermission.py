@@ -14,7 +14,7 @@ class SampleFormViewSetPermission(BasePermission):
         elif method_name == 'update':
             return True
         elif method_name == 'partial_update':
-            print("SDasd asd")
+            #print("SDasd asd")
             return True
         elif method_name == 'destroy':
             return False

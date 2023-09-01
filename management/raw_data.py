@@ -115,7 +115,7 @@ def generateMicroRawData(micro_table):
         # print(micro_table_raw_data_serializer.data, "serializer")
     else:
         print(micro_table_raw_data_serializer.data)
-        print("not valid")
+        #print("not valid")
         return HttpResponse("not valid...")
 
     micro_observation_table = micro_table.micro_observation_table.all()
@@ -124,7 +124,7 @@ def generateMicroRawData(micro_table):
         data_to_save = micro_observation_table_raw_data_serializer_get.data
         data_to_save['micro_parameter_table_raw_data'] = micro_raw_data_saved_obj.id  # Corrected this line
         print(data_to_save,'::data to save')
-        print("\n\n",micro_raw_data_saved_obj.id)
+        #print("\n\n",micro_raw_data_saved_obj.id)
         micro_observation_table_raw_data_serializer_save = MicroObservationTableRawDataSerializer(data=data_to_save)
         if micro_observation_table_raw_data_serializer_save.is_valid():
             micro_observation_table_raw_data_serializer_save.save()
@@ -152,7 +152,7 @@ def generateMicroRawData(micro_table):
 def UpdategenerateRawData(supervisor_table_id,remarks):
    raw_data_sheet_supervisor =  RawDataSheet.objects.filter(super_visor_sample_form_id = supervisor_table_id)
    raw_data_sheet_supervisor.update(supervisor_remarks = remarks)
-   print("remarks added to supervisor")
+   #print("remarks added to supervisor")
    
 
 

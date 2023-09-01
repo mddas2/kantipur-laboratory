@@ -39,7 +39,7 @@ def ReportAdminList(report_type,report_lang,id=None):
         return response
     
     elif report_type == "pdf":
-        # print("pdf")
+        # #print("pdf")
         return HttpResponse("<html><body> this is report admin list pdf download </body></html>")
 
 
@@ -60,7 +60,7 @@ def ReportUserList(report_type,report_lang,id=None):
         return response
     
     elif report_type == "pdf":
-        # print("pdf")
+        # #print("pdf")
         return HttpResponse("<html><body> this is report user  list pdf download </body></html>")
 
 def ReportUserRequest(report_type,report_lang,id=None):
@@ -80,7 +80,7 @@ def ReportUserRequest(report_type,report_lang,id=None):
         return response
     
     elif report_type == "pdf":
-        # print("pdf")
+        # #print("pdf")
         return HttpResponse("<html><body> this is report user  request pdf download </body></html>")
     
 
@@ -102,7 +102,7 @@ def ReportUserSampleForm(report_type,report_lang,id=None):
         return response
     
     elif report_type == "pdf":
-        # print("pdf")
+        # #print("pdf")
         return HttpResponse("<html><body> this is report user has sample form pdf download </body></html>")
 
 def ClientCategory(report_type,report_lang,id=None):
@@ -123,7 +123,7 @@ def ClientCategory(report_type,report_lang,id=None):
         return response
     
     elif report_type == "pdf":
-        # print("pdf")
+        # #print("pdf")
         return HttpResponse("<html><body> this is report client category form pdf download </body></html>")
 
 
@@ -145,7 +145,7 @@ def ReportSampleForm(report_type,report_lang,id=None):
         return response
     
     elif report_type == "pdf":
-        # print("pdf")
+        # #print("pdf")
         return HttpResponse("<html><body> this is report sample form pdf download </body></html>")
 
 def ReportCommodity(report_type,report_lang,id=None):
@@ -166,7 +166,7 @@ def ReportCommodity(report_type,report_lang,id=None):
         return response
     
     elif report_type == "pdf":
-        # print("pdf")
+        # #print("pdf")
         return HttpResponse("<html><body> this is report commodity pdf download </body></html>")
 
 def ReportComodityCategory(report_type,report_lang,id=None):
@@ -187,7 +187,7 @@ def ReportComodityCategory(report_type,report_lang,id=None):
         return response
     
     elif report_type == "pdf":
-        # print("pdf")
+        # #print("pdf")
         return HttpResponse("<html><body> this is report commodity category pdf download </body></html>")
 
 
@@ -208,7 +208,7 @@ def ReportParameter(report_type,report_lang,id=None):
         return response
     
     elif report_type == "pdf":
-        # print("pdf")
+        # #print("pdf")
         return HttpResponse("<html><body> this is report admin list pdf download </body></html>")
 
 
@@ -436,7 +436,7 @@ def generateQrcode(id,request):
     try:
         img.save(image_path)
     except Exception as e:
-        print("Error saving image:", e)
+        #print("Error saving image:", e)
 
     image_url = f"media/qr_codes/{image_name}"
 

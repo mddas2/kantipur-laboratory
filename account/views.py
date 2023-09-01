@@ -63,7 +63,6 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         user = self.request.user
-        print(user)
         if not user.is_authenticated:
             # Return an empty queryset or a default response
             query = CustomUser.objects.none()

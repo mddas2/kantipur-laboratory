@@ -15,7 +15,6 @@ class AccountPermission(BasePermission):
             #check update role , if  role is user then only can updte there own account. for update all role must be ADMIN
             return True
         elif method_name == 'partial_update':
-            print("SDasd asd")
             return True
         elif method_name == 'destroy':
             return False
