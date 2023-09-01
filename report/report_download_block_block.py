@@ -303,7 +303,6 @@ from account.department_type import department_code
 
 def getDepartmentValue(key):
     for code, k_value in department_code:
-        print(code,k_value)
         if code == key:
             return k_value
     return key

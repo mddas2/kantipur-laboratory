@@ -30,7 +30,6 @@ class NotificationViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         query = Notification.objects.filter(to_notification = user)      
-        print(query)  
         return query.order_by("-created_date")
     
     def get_serializer_class(self):

@@ -4,7 +4,6 @@ from . import roles
 class SampleFormViewSetPermission(BasePermission):
     def has_permission(self, request, view):
         method_name = view.action
-        print(method_name)
         if method_name == 'list':
             return True
         elif method_name == 'create':

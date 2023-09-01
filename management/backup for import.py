@@ -131,7 +131,6 @@ def ImportExcel(request):
             serializer = TestResultWriteSerializer(data=test_result)
             serializer.is_valid(raise_exception=True)
             serializer.save()
-            print(parameters_name," :: parameter created successfully")
 
     messages.success(request, 'Data imported successfully.')
     total_create = total_rows-already_exists_parameters
@@ -139,7 +138,6 @@ def ImportExcel(request):
     return redirect('ResubmissionPrevent',total_rows,already_exists_parameters,total_create)
 
 def multipleUnitsMandatoryRefTestMethod(unit,unit_nepali,ref_test_method,mandatory_standard,mandatory_standard_nepali):
-    print(ref_test_method," :: ref test method ")
     unit_data = {
         'units_nepali':unit_nepali,
     }

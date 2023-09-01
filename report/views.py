@@ -147,7 +147,6 @@ class SampleFormTrackbyAnalyst(views.APIView):
     def get(self, request, sample_form_id, format=None):
         sample_form_id = generateDecodeIdforSampleForm(sample_form_id,request.user)
         queryset = SampleFormHasParameter.objects.filter(sample_form_id=sample_form_id)
-        print(queryset," sample fom has analasadasad")
         serializer = SampleFormTrackbyAnalystSerializer(queryset,many = True)
         return Response(serializer.data)
 

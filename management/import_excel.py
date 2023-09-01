@@ -87,6 +87,7 @@ def ImportExcel(request):
         try:
             commodity_category_obj = CommodityCategory.objects.create(**commodity_category_data)
         except:
+            pass
             #print("can not create")
         commodity_category_id = CommodityCategory.objects.get(name=commodity_category).id
         commodity_data = {
@@ -99,6 +100,7 @@ def ImportExcel(request):
         }
         commodity_obj,create = Commodity.objects.update_or_create(name = commodity_name, defaults= commodity_data)
         if create:
+            pass
             #print("commodity created")
 
         multiple_units,multiple_mandatory_standard,multiple_ref_test_method = multipleUnitsMandatoryRefTestMethod(str(unit),str(unit_nepali),str(ref_test_method),str(mandatory_standard),str(mandatory_standard_nepali))

@@ -10,6 +10,7 @@ class MySyncConsumer(SyncConsumer):
         })
 
     def websocket_receive(self,event): #this handler is called when data is received  from client
+        pass
         #print("websocket Received...",event) 
         #print("message is ", event['text'])
     
@@ -35,10 +36,6 @@ class MyAyncConsumer(AsyncConsumer):
     async def websocket_connect(self,event): #this handler is called when client initially opens a connection and is about to finish handshake.
         #print("websocket connected",event)
         self.email = self.scope['url_route']['kwargs'].get('email')  # Retrieve email from URL route parameters
-        print(f"WebSocket connected for email: {self.email}")
-
-
-        print(self.email)
         group_name = "admin"      
         # Add the user to the group
         await self.channel_layer.group_add(
@@ -68,8 +65,6 @@ class MyAyncConsumer(AsyncConsumer):
         )
     
     async def group_message(self, event):
-
-        print(event['message'])
         message = event['message']
         await self.send({
             'type': 'websocket.send',

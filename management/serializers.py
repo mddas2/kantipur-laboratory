@@ -125,7 +125,6 @@ class MicroObservationTableSerializer(serializers.ModelSerializer):
             sample_form_id = data['sample_form'] 
             decoded_sample_form_id = generateDecodeIdforSampleForm(sample_form_id,self.context['request'].user)#smart_text(urlsafe_base64_decode(data['sample_form']))
             data['sample_form'] = decoded_sample_form_id
-            print(data['sample_form'])
         return super().to_internal_value(data)
     
     class Meta:
@@ -140,7 +139,6 @@ class MicroParameterSerializer(serializers.ModelSerializer):
             sample_form_id = data['sample_form'] 
             decoded_sample_form_id = generateDecodeIdforSampleForm(sample_form_id,self.context['request'].user)#smart_text(urlsafe_base64_decode(data['sample_form']))
             data['sample_form'] = decoded_sample_form_id
-            print(data['sample_form'])
         return super().to_internal_value(data)
     micro_observation_table = MicroObservationTableSerializer(many = True,read_only = True)
     class Meta:
@@ -388,13 +386,11 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
     
     def validate(self, attrs):
         sample_form = attrs.get('sample_form')
-        print(sample_form," not  printing this...")
         supervisor_user = attrs.get('supervisor_user')
         parameters = attrs.get('parameters')
 
         action = self.context['view'].action
         
-        print(parameters, " supervisor paaraameters")
         if len(attrs) == 3 and action == 'partial_update' and 'is_supervisor_sent' and 'status' and 'remarks' in attrs:
             if attrs.get('is_supervisor_sent') == True:
                 id=self.context['view'].kwargs.get('pk')
@@ -449,15 +445,11 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
         test_type = validated_data['test_type']
         
         re_assign = validated_data.get('re_assign', False)    
-        
-        print(re_assign)
-        
+
         if re_assign == True:
             
             obj = SuperVisorSampleForm.objects.filter(sample_form=sample_form, parameters=parameters[0]).first()
-            print(obj)
-            print(obj.parameters.all())
-            
+                 
             if len(obj.parameters.all())>1:
                 
                 obj.parameters.remove(*parameters) #revoke parameter from existence obj
@@ -481,8 +473,6 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
                   
                     return instance
                 else:
-                    print(supervisor_user,obj.sample_form_id,parameters)
-                    print(3)
                     samp = SuperVisorSampleForm.objects.create(supervisor_user=supervisor_user,status="processing",sample_form_id=obj.sample_form_id,test_type = test_type)
                     samp.parameters.set(parameters)
                     samp.save()
@@ -490,13 +480,10 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
                     return obj
             else:
                 if obj.supervisor_user == supervisor_user:
-                    print(4)
                     return obj
                 else:
                     # raise serializers.ValidationError('remove from and re-assigning. i am fixing right now')
-                    print(5)
                     instance = SuperVisorSampleForm.objects.filter(sample_form=sample_form, supervisor_user=supervisor_user)
-                    print(instance," sadmd")
                     if instance.exists():
                         #print("exists")
                         instance = instance.first()
@@ -507,8 +494,6 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
                         obj.delete()
                         return instance
                     elif obj.parameters.all().first() == parameters[0]:
-                        print(6)
-                        print(obj.parameters.all(),'::',parameters)
                         obj.supervisor_user = supervisor_user
                         obj.parameters.add(*parameters)
                         obj.save()
@@ -518,9 +503,8 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
                     
                     return obj
             # raise serializers.ValidationError('remove from and re-assigning. i am fixing right now')
-        print(sample_form," muk samaple ")
+
         eventOnSampleform(sample_form,parameters)
-        print(6)
         if SuperVisorSampleForm.objects.filter(sample_form=sample_form, supervisor_user=supervisor_user).exists():
             #print("testing ok append parameter")
             instance = SuperVisorSampleForm.objects.get(sample_form=sample_form, supervisor_user=supervisor_user)
@@ -704,12 +688,10 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
                 break     
                 
         total_len = len(parameter_data)
-        print(completed_done,"md",total_len)
         if completed_done == 0:
             completed_done = str(total_len)
         elif completed_done == total_len:
             completed_done = ''
-            print(analyst_status)
         else:
             try:
                 completed_done = str(completed_done) + "/" +str(total_len)                
@@ -733,7 +715,6 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
         parameter,analyst_status,total_completed = self.get_parameter(instance)
         representation['parameter'] = parameter
 
-        print(instance.sample_form)
         if analyst_status == "completed" and instance.is_supervisor_sent == True:
             representation['status'] = over_all_status[instance.status]
         else:
@@ -754,12 +735,10 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
             sample_form_id = data['sample_form'] 
             decoded_sample_form_id = generateDecodeIdforSampleForm(sample_form_id,self.context['request'].user)#smart_text(urlsafe_base64_decode(data['sample_form']))
             data['sample_form'] = decoded_sample_form_id
-            print(data['sample_form'])
         return super().to_internal_value(data)
     
     def validate(self, attrs):
         sample_form = attrs.get('sample_form')
-        print(attrs.get('super_visor_sample_form')," not  printing this...")
         super_visor_sample_form_table = attrs.get('super_visor_sample_form')
         analyst_user = attrs.get('analyst_user')
         parameter = attrs.get('parameter')
@@ -780,7 +759,6 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
 
                 completed_date =   timezone.now() #if analyst generate raw data sheet then add completed date
                 attrs['completed_date'] = completed_date
-                print(completed_date)
                 # raise serializers.ValidationError(' checking completed on date.',completed_date)
 
                 
@@ -801,7 +779,6 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                     raise serializers.ValidationError('A SampleFormHasParameter with the same sample_form and parameter already exists(create)')
         elif action == "create" and len(parameter) == 1:
             for param in parameter:
-                print(sample_form,param," re-assign debug")
                 if SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=param).exists():
                     attrs['re_assign'] = True                          
             
@@ -830,17 +807,14 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
        
         sample_form = validated_data['sample_form']
         analyst_user = validated_data['analyst_user']
-        parameter = validated_data['parameter']
-        
+        parameter = validated_data['parameter']        
         re_assign = validated_data.get('re_assign', False)    
         
-        print(re_assign,sample_form," sampl s")
         if re_assign == True:
             
             obj = SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=parameter[0]).first()
             
             if len(obj.parameter.all())>1:
-                print(1)
                 obj.parameter.remove(*parameter) #revoke parameter from existence obj
                 obj.is_supervisor_sent = False
                 AlterRawDataStatus(obj)
@@ -889,6 +863,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
 
                         return instance
                     else:
+                        pass
                         # obj.analyst_user = analyst_user
                         # flushFormulaCalculate(obj,parameter)
                         # AlterRawDataStatus(obj)
@@ -911,10 +886,11 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
 def flushFormulaCalculate(obj,parameter):
     formula_calculate_obj = obj.formula_calculate.all().filter(parameter_id = parameter[0])
     formula_calculate_obj.delete()
-    print(formula_calculate_obj)
+    # print(formula_calculate_obj)
     #print("flushing formula calculate")
 
 def flushsupervisorprameterCalculate(obj,parameter):
+    pass
     # formula_calculate_obj = obj.formula_calculate.all().filter(parameter_id = parameter[0])
     # formula_calculate_obj.delete()
     # print(formula_calculate_obj)
@@ -925,6 +901,7 @@ def AlterRawDataStatus(obj):
     raw_data_obj = obj.raw_datasheet.all().last()
     print(raw_data_obj," obj none")
     if raw_data_obj == None:
+        pass
         #print("this sample form has parameter haave not raw data sheet")
     else:
         raw_data_obj.status = "re-assign"

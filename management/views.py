@@ -354,7 +354,6 @@ class SampleFormViewSet(viewsets.ModelViewSet):
 
     def partial_update(self, request, *args, **kwargs):
         instance = self.get_object()
-        print(instance.id)
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
 
@@ -884,9 +883,6 @@ class MicroObservationTableViewSet(viewsets.ModelViewSet):
         
         response_data = {}
         for dat in data:
-            print(dat)
-            # update_url_id = dat.ids
-            print(dat)
             partial = kwargs.pop('partial', False)
             instance = MicroObservationTable.objects.get(id = dat['id'])
             serializer = self.get_serializer(instance, data=dat, partial=partial)
@@ -952,9 +948,7 @@ def CeateClientCategoryDetail(names,files,client_category,client_sub_category):
            'file':file,
        }
        image_data.append(dict_data)
-    
-    print(image_data)
-        
+
 
     image_serializer = ClientCategoryDetailImagesSerializer(many=True,data=image_data)
     image_serializer.is_valid(raise_exception=True)
@@ -996,7 +990,6 @@ def createOrUpdateUnits(units):
         # print(create_unit_obj,"::" , "created unit ")
         units_ids.append(create_unit_obj.id)
 
-    print(units_ids," created units id...")
     return units_ids
 
 def createOrUpdateRefTestMethod(test_methods):
@@ -1009,7 +1002,6 @@ def createOrUpdateRefTestMethod(test_methods):
         # print(create_unit_obj,"::" , "created unit ")
         test_methods_ids.append(test_methods_obj.id)
 
-    print(test_methods_ids," created test_methods_ids id...")
     return test_methods_ids
 def createOrUpdateMandatoryStandards(mandatory_standards):
     mandatory_standards_ids = []
@@ -1021,7 +1013,6 @@ def createOrUpdateMandatoryStandards(mandatory_standards):
         # print(create_unit_obj,"::" , "created unit ")
         mandatory_standards_ids.append(mandatory_standards_obj.id)
 
-    print(mandatory_standards_ids," created mandatory_standards_ids id...")
     return mandatory_standards_ids
              
 class FiscalyearViewSet(viewsets.ModelViewSet):

@@ -111,9 +111,8 @@ def CustomPermissionInsert(request):
 
         obj, created = Permission.objects.update_or_create(id=id, defaults=data)
         if created:
-            print(obj)
-
-
+            pass
+            # print(obj)
 
 
     from django.http import HttpResponse

@@ -3,7 +3,7 @@ from rest_framework.permissions import BasePermission
 class AccountPermission(BasePermission):
     def has_permission(self, request, view):
         method_name = view.action
-        print(method_name)
+        # print(method_name)
         if method_name == 'list':
             return True
         elif method_name == 'create':

@@ -62,7 +62,6 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer(serializers.ModelSeria
         request = self.context.get('request')
         user = request.user if request else None
 
-        print(user)
         filtered_parameters_data = []
         for parameter_data in parameters_data:
             parameter_id = parameter_data.get('id')

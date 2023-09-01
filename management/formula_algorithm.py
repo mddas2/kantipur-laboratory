@@ -46,10 +46,8 @@ class Formula:
         return False
     
     def getFormulaVariable(self,formula):
-        print(formula," :: formulas")
         variables =  re.findall(r'\b[A-Za-z_][A-Za-z0-9_]*\b', formula) #re.findall(r'[A-Za-z]+', formula) 
         variables = list(set(variables))
-        print(variables, " print vaariables \n")
         return variables
 
     
@@ -76,7 +74,6 @@ class Formula:
             formula =  query_obj.formula
             variables = self.getFormulaVariable(formula)
             response = self.MakeProperResponse(variables,notations)
-            print(response," get formula response \n")
             return response
         else:
             response = {
@@ -160,7 +157,6 @@ class FormulaApiCalculate(APIView):
                 response_status = error['status']
             else:
                 result = formula_obj.Save(result,formula_variable_fields_value)
-                print(result)
                 if result or result == 0:
                     response_data = {
                         'message': " formula calculate !!!",
@@ -294,7 +290,6 @@ class FormulaApiCalculateSave(APIView):
 
         converted_result = serializer.validated_data['converted_result']
         analyst_remarks = request.data.get('analyst_remarks')
-        print(analyst_remarks," analys t remarks baby")
         decimal_place = serializer.validated_data['decimal_place']
 
         # Locking parameter
@@ -359,7 +354,6 @@ class ParameterHasResultRecheck(APIView):
         sample_form_has_parameter_id = serializer.validated_data['sample_form_has_parameter']
        
         formula_recheck_obj = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id = sample_form_id, parameter_id =parameter_id,sample_form_has_parameter_id=sample_form_has_parameter_id)
-        print(formula_recheck_obj," recheck")
         if formula_recheck_obj.exists():
             formula_recheck_obj = formula_recheck_obj.first()
             formula_recheck_obj.status = "recheck"
@@ -421,7 +415,6 @@ class SampleFormResultRecheck(APIView):
         
     
         sample_form_recheck_obj = SampleForm.objects.filter(id = sample_form_id)
-        print(sample_form_recheck_obj," recheck")
         if sample_form_recheck_obj.exists():
            sample_form_recheck_obj.update(status  = "recheck",remarks=remarks)
         else:
@@ -457,7 +450,6 @@ class SampleFormReject(APIView):
         serializer.is_valid(raise_exception=True)
 
         sample_form_id = serializer.validated_data['sample_form']
-        print(sample_form_id,"reject sample form id")
         remarks = serializer.validated_data['remarks']
         
        

@@ -323,7 +323,6 @@ def FinalReport(request,report_type,report_lang,id=None,role=None):
 
 def getDepartmentValue(key):
     for code, k_value in department_code:
-        print(code,k_value)
         if code == key:
             return k_value
     return key
@@ -383,16 +382,8 @@ def TestReport(request,report_type,report_lang,sample_form_has_param,role):
         return HttpResponse("You are trying to access with sample form with other id")
 
     sample_form = query.sample_form
-    # return HttpResponse(sample_form)
-    # try:
-    #     if query.verifier.is_verified == False:
-    #         return Response({'error':"Sample Form have not verified","statu":400})
-    # except:
-    #     return Response({'error':"Sample Form have not verified","statu":400})
-
-    # return HttpResponse(query)
+  
     parameters = SampleFormParameterFormulaCalculate.objects.filter(sample_form_has_parameter = query.id)
-    print(parameters)
         
     template = get_template('testreportsheet.html')
     context = {
@@ -436,6 +427,7 @@ def generateQrcode(id,request):
     try:
         img.save(image_path)
     except Exception as e:
+        pass
         #print("Error saving image:", e)
 
     image_url = f"media/qr_codes/{image_name}"

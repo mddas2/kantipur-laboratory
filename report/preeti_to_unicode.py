@@ -5,6 +5,7 @@ from rest_framework import views
 try:
     import npttf2utf
 except:
+    pass
     #print("Please install npttf2utf")
     
 from django.conf import settings
@@ -13,7 +14,6 @@ file_path = os.path.join(settings.STATIC_ROOT, "preeti_unicode_map/map.json")
 
 class PreetiToUniCode(views.APIView):
     def get(self, request):        
-        print(file_path)
         mapper = npttf2utf.FontMapper(file_path)
         unicode = mapper.map_to_unicode(';"gf}nf] sfkL pBf]u', from_font="Preeti", unescape_html_input=False, escape_html_output=False)
         # बकमानजवप            

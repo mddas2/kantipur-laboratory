@@ -17,7 +17,6 @@ from .models  import MicroParameterRawData,MicroObservationTableRawData
 from rest_framework.response import Response
 
 def generateRawData(sample_form_has_parameter_id,remarks,completed_date):
-    print(sample_form_has_parameter_id)
     
     obj = SampleFormHasParameter.objects.get(id=sample_form_has_parameter_id)
    
@@ -41,8 +40,6 @@ def generateRawData(sample_form_has_parameter_id,remarks,completed_date):
     
    
     for param in formula_calculate_parameters:
-        print(param,"::",param.parameter.test_type)
-
         test_type = param.parameter.test_type
 
         if test_type == "Microbiological":
@@ -114,7 +111,6 @@ def generateMicroRawData(micro_table):
         pass
         # print(micro_table_raw_data_serializer.data, "serializer")
     else:
-        print(micro_table_raw_data_serializer.data)
         #print("not valid")
         return HttpResponse("not valid...")
 
@@ -123,14 +119,13 @@ def generateMicroRawData(micro_table):
         micro_observation_table_raw_data_serializer_get = MicroObservationTableRawDataSerializer(micro_observation)
         data_to_save = micro_observation_table_raw_data_serializer_get.data
         data_to_save['micro_parameter_table_raw_data'] = micro_raw_data_saved_obj.id  # Corrected this line
-        print(data_to_save,'::data to save')
         #print("\n\n",micro_raw_data_saved_obj.id)
         micro_observation_table_raw_data_serializer_save = MicroObservationTableRawDataSerializer(data=data_to_save)
         if micro_observation_table_raw_data_serializer_save.is_valid():
             micro_observation_table_raw_data_serializer_save.save()
-            print(micro_observation_table_raw_data_serializer_save.data)
         else:
-            print(micro_observation_table_raw_data_serializer_save.errors)
+            pass
+            # print(micro_observation_table_raw_data_serializer_save.errors)
 
     return micro_raw_data_saved_obj.id
 
@@ -195,10 +190,8 @@ class rawDataForSampleForm(generics.ListAPIView):
     def get_queryset(self):
 
         sample_form_id = self.kwargs.get('sample_form')
-        print(sample_form_id)
         user = self.request.user
         sample_form_id = generateDecodeIdforSampleForm(sample_form_id,user) 
-        print(sample_form_id)
         query = RawDataSheet.objects.filter(sample_form_id=sample_form_id)
     
         return query
