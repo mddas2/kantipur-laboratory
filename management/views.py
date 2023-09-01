@@ -95,7 +95,6 @@ class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
         user = self.request.user
         action = self.action
 
-        print(action)
         if action == 'list':
             query = SuperVisorSampleForm.objects.filter(supervisor_user=user.id,status = "not_assigned")
         elif action == 'retrieve':
