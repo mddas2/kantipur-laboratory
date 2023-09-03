@@ -962,8 +962,7 @@ def CeateClientCategoryDetail(names,files,client_category,client_sub_category):
     return True,int(serializer.data['id'])
    
 def additionalOperation(data):
-    from django.http import QueryDict
-  
+ 
     units = data.get('units')
     ref_test_method = data.get('test_method')
     mandatory_standard = data.get('mandatory_standard')
