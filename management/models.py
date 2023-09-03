@@ -210,7 +210,7 @@ class SuperVisorSampleForm(models.Model):#sample form has parameter and paramete
         ('rejected', 'rejected'),
         ('not_verified','not_verified'),
         ('not_approved','not_approved'),
-        ('tested','tested'),
+        ('Test Completed','Test Completed'),
         ('verified','verified'),
     )
     status = models.CharField(choices=status_choices,default="not_assigned" , blank=True, null=True, max_length=155)

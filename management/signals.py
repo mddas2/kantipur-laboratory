@@ -95,11 +95,9 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
         sampleFormNotificationHandler(instance,"assigned_analyst")
     if instance.is_supervisor_sent == True:
         super_visor_sample_form_obj = instance.super_visor_sample_form
-        sample_form_has_parameter_obj = SampleFormHasParameter.objects.filter(sample_form = instance.sample_form.id) 
         
         is_analyst_test_param = False
     
-        well = 0
         sample_form_status = "processing"
         for parame in super_visor_sample_form_obj.parameters.all():
             sample_form_has_parame_obj =  SampleFormHasParameter.objects.filter(sample_form = instance.sample_form.id,parameter=parame)
@@ -107,7 +105,7 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
             if sample_form_has_parame_obj.exists():
                 if sample_form_has_parame_obj.first().is_supervisor_sent == True:
                     is_analyst_test_param = True
-                    sample_form_status = "completed"
+                    sample_form_status = "Test Completed"
                 else:
                     is_analyst_test_param = False
                     sample_form_status = "processing"
@@ -116,7 +114,7 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
                 break
            
     
-        sample_form_status = "processing"
+        # sample_form_status = "processing"
  
         if is_analyst_test_param == False:
             SuperVisorSampleForm.objects.filter(id=super_visor_sample_form_obj.id).update(is_analyst_test = is_analyst_test_param,status=sample_form_status,is_supervisor_sent = False)

@@ -10,5 +10,6 @@ over_all_status = {
     'completed':"completed",
     'rejected' : 'rejected',
     'reject'  : 'rejected',
-    'tested' : 'tested',
+    'tested' : 'Test Completed',
+    'Test Completed' : 'Test Completed',
 }

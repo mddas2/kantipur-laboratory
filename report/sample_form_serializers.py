@@ -5,7 +5,7 @@ from management import roles
 from management.models import SampleForm, Commodity,SampleFormHasParameter,SuperVisorSampleForm
 from account.models import CustomUser
 from rest_framework import serializers
-
+from management.status_naming import over_all_status
 from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -47,9 +47,11 @@ class SampleFormHasSupervisorParameterSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
     
         request = self.context.get('request')
-   
+
+        representation['status'] = over_all_status[instance.status]
+
         if request.user.role == roles.SUPERVISOR:
-            is_analyst_test = representation.get('is_analyst_test')
+            # is_analyst_test = representation.get('is_analyst_test')
             # if is_analyst_test == True:
             #     stat = "completed"
             #     representation['status'] = stat
