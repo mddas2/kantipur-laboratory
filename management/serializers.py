@@ -437,8 +437,7 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
         return attrs
     
     def create(self, validated_data):
-        #print(" create tes md f sadsd s")
-       
+            
         sample_form = validated_data['sample_form']
         supervisor_user = validated_data['supervisor_user']
         parameters = validated_data['parameters']
@@ -457,15 +456,11 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
                 # AlterRawDataStatus(obj)  # supervisor doesnot need alter status
                 obj.save()
 
-
-                
                 # flushsupervisorprameterCalculate(obj,parameters) # supervisor doesnot need flush analyst data
-            
 
                 instance = SuperVisorSampleForm.objects.filter(sample_form=sample_form, supervisor_user=supervisor_user)
-                print(instance, " sdasd")
+    
                 if instance.exists():
-                    print(2)
                     instance = instance.first()
                     #AlterRawDataStatus(instance)
                     instance.parameters.add(*parameters) #if particular supervisor already exist then add parameter to that analysts re-asign
