@@ -423,7 +423,6 @@ class CommodityViewSet(viewsets.ModelViewSet):
             else:
                 data = []
 
-            # Store data in the cache for 5 minutes (300 seconds)
             cache.set('CommodityViewSet', data, cache_time)
         else:
             data = cached_data
