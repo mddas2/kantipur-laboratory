@@ -18,6 +18,7 @@ from django.http import Http404
 from . encode_decode import generateDecodeIdforSampleForm
 from rest_framework import generics
 from django.core.cache import cache
+cache_time = 300 # 300 is 5 minute
 
 class ClientCategoryViewSet(viewsets.ModelViewSet):
     queryset = ClientCategory.objects.all()
@@ -423,7 +424,7 @@ class CommodityViewSet(viewsets.ModelViewSet):
                 data = []
 
             # Store data in the cache for 5 minutes (300 seconds)
-            cache.set('CommodityViewSet', data, 300)
+            cache.set('CommodityViewSet', data, cache_time)
         else:
             data = cached_data
         
@@ -530,7 +531,7 @@ class commodityCategoryLimitedData(generics.ListAPIView):
             data = serializer.data
 
             # Store data in the cache for 5 minutes (300 seconds)
-            cache.set('commodityCategoryLimitedData', data, 300)
+            cache.set('commodityCategoryLimitedData', data, cache_time)
         else:
             data = cached_data
         
@@ -564,7 +565,7 @@ class CommodityCategoryViewSet(viewsets.ModelViewSet):
                 data = []
 
             # Store data in the cache for 5 minutes (300 seconds)
-            cache.set('CommodityCategoryViewSet', data, 300)
+            cache.set('CommodityCategoryViewSet', data, cache_time)
         else:
             data = cached_data
         
@@ -649,7 +650,7 @@ class TestResultViewSet(viewsets.ModelViewSet):
                 data = []
 
             # Store data in the cache for 5 minutes (300 seconds)
-            cache.set('TestResultViewSet', data, 300)
+            cache.set('TestResultViewSet', data, cache_time)
         else:
             data = cached_data
         
