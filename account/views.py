@@ -91,39 +91,39 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
             # raise PermissionDenied("You do not have permission to access this resource.")
         return query.order_by("-created_date")
      
-    # def list(self, request, *args, **kwargs):
-    #     # Try to get cached data
-    #     cached_data = cache.get('Users')
+    def list(self, request, *args, **kwargs):
+        # Try to get cached data
+        cached_data = cache.get('Users')
 
-    #     if cached_data is None:
-    #         queryset = self.filter_queryset(self.get_queryset())
-    #         serializer = self.get_serializer(queryset, many=True)
-    #         data = serializer.data
+        if cached_data is None:
+            queryset = self.filter_queryset(self.get_queryset())
+            serializer = self.get_serializer(queryset, many=True)
+            data = serializer.data
 
-    #         # Store data in the cache for 5 minutes (300 seconds)
-    #         cache.set('Users', data, cache_time)
-    #     else:
-    #         data = cached_data        
-    #     return Response(data)
+            # Store data in the cache for 5 minutes (300 seconds)
+            cache.set('Users', data, cache_time)
+        else:
+            data = cached_data        
+        return Response(data)
     
-    # def retrieve(self, request, pk=None):
-    #     try:
-    #         cache_key = f'user_{pk}'
-    #         cached_data = cache.get(cache_key)
+    def retrieve(self, request, pk=None):
+        try:
+            cache_key = f'user_{pk}'
+            cached_data = cache.get(cache_key)
 
-    #         if cached_data is None:
-    #             queryset = self.get_queryset()  # Call get_queryset to retrieve the queryset
-    #             user = queryset.get(pk=pk)  # Retrieve the user from the queryset
-    #             # Use the serializer class associated with the viewset
-    #             serializer = self.get_serializer(user)
-    #             data = serializer.data
-    #             cache.set(cache_key , data, cache_time)
-    #         else:
-    #             data = cached_data
+            if cached_data is None:
+                queryset = self.get_queryset()  # Call get_queryset to retrieve the queryset
+                user = queryset.get(pk=pk)  # Retrieve the user from the queryset
+                # Use the serializer class associated with the viewset
+                serializer = self.get_serializer(user)
+                data = serializer.data
+                cache.set(cache_key , data, cache_time)
+            else:
+                data = cached_data
 
-    #         return Response(data)
-    #     except:
-    #         return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(data)
+        except:
+            return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
      
     def create(self, request, *args, **kwargs):

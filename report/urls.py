@@ -1,9 +1,8 @@
 from . import views,preeti_to_unicode,preeti_to_pdf,dashboard
 from . import final_report,track,status,assigned_sample_for_smu_superadmin
-from report.admin_folders import supervisor
 
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
+
     
 
 
