@@ -25,9 +25,6 @@ from .report_download import TestReport,ReportAdminList,ReportParameter,ReportCo
 from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm,generateDecodeIdByRoleforSampleForm
 
 
-#report_type:['pdf','excel','csv']
-#report_name:['admin-list','users-list','user-with-sample-form','sample-form','commodity','parameter']
-#['sample-request','user-request','client-category','commodity-with-parameter','commodity-category','commodity','parameter']
 class SampleFormHasAnalystAPIView(generics.ListAPIView):
     
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
