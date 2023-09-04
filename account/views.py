@@ -94,7 +94,7 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         # Try to get cached data
         cached_data = cache.get('Users')
-
+      
         if cached_data is None:
             queryset = self.filter_queryset(self.get_queryset())
             serializer = self.get_serializer(queryset, many=True)
@@ -145,8 +145,10 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
         custom_user_detail = CeateClientCategoryDetail(name,files,serializer.data['id'])
 
         #NotificationHandler(serializer.instance,request,'create',"CustomUser")
-       
-        # Return the custom response
+
+        cache.delete('Users')
+        cache.delete('UsersuserLimitedData')
+    
         return Response(response_data, status=status.HTTP_201_CREATED)
     
     def update(self, request, *args, **kwargs):
@@ -177,6 +179,9 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
         
         NotificationHandler(serializer.instance,request,'update','CustomUser')
         # Return the custom response
+        cache.delete('Users')
+        cache.delete('UsersuserLimitedData')
+        
         return Response(response_data)
     
     
@@ -401,17 +406,23 @@ class userLimitedData(generics.ListAPIView):
 
     def get_serializer_class(self):
         return CustomUserReadLimitedSerializer
-        
+    
     def list(self, request, *args, **kwargs):
-        from rest_framework.response import Response
-        queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
-        data = serializer.data
+        # Try to get cached data
+        cached_data = cache.get('UsersuserLimitedData')
 
+        if cached_data is None:
+            queryset = self.filter_queryset(self.get_queryset())
+            serializer = self.get_serializer(queryset, many=True)
+            data = serializer.data
+
+            # Store data in the cache for 5 minutes (300 seconds)
+            cache.set('UsersuserLimitedData', data, cache_time)
+        else:
+            data = cached_data        
         return Response(data)
     
-    # def get(self, request, *args, **kwargs):
-    #     return self.list(request, *args, **kwargs)
-
+   
+    
 
              
