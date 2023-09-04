@@ -443,6 +443,7 @@ class CommodityViewSet(viewsets.ModelViewSet):
             "data": serializer.data
         }
 
+        cache.delete('CommodityViewSet')
         # Return the custom response
         return Response(response_data, status=status.HTTP_201_CREATED)
     
@@ -462,6 +463,7 @@ class CommodityViewSet(viewsets.ModelViewSet):
         }
 
         # Return the custom response
+        cache.delete('CommodityViewSet')
         return Response(response_data)
     
     def destroy(self, request, *args, **kwargs):
@@ -584,6 +586,9 @@ class CommodityCategoryViewSet(viewsets.ModelViewSet):
         }
 
         # Return the custom response
+        
+        cache.delete("CommodityCategoryViewSet")
+        cache.delete("commodityCategoryLimitedData")
         return Response(response_data, status=status.HTTP_201_CREATED)
     
     def update(self, request, *args, **kwargs):
@@ -602,6 +607,8 @@ class CommodityCategoryViewSet(viewsets.ModelViewSet):
         }
 
         # Return the custom response
+        cache.delete("CommodityCategoryViewSet")
+        cache.delete("commodityCategoryLimitedData")
         return Response(response_data)
     
     def destroy(self, request, *args, **kwargs):
@@ -616,6 +623,8 @@ class CommodityCategoryViewSet(viewsets.ModelViewSet):
         }
 
         # Return the custom response
+        cache.delete("CommodityCategoryViewSet")
+        cache.delete("commodityCategoryLimitedData")
         return Response(response_data)
 
 class TestResultViewSet(viewsets.ModelViewSet):
@@ -673,6 +682,8 @@ class TestResultViewSet(viewsets.ModelViewSet):
         }
 
         # Return the custom response
+
+        cache.delete("TestResultViewSet")
         return Response(response_data, status=status.HTTP_201_CREATED)
     
     def update(self, request, *args, **kwargs):
@@ -697,6 +708,7 @@ class TestResultViewSet(viewsets.ModelViewSet):
         }
 
         # Return the custom response
+        cache.delete("TestResultViewSet")
         return Response(response_data)
     
     def destroy(self, request, *args, **kwargs):
@@ -711,6 +723,7 @@ class TestResultViewSet(viewsets.ModelViewSet):
         }
 
         # Return the custom response
+        cache.delete("TestResultViewSet")
         return Response(response_data)
 
 class PaymentViewSet(viewsets.ModelViewSet):
