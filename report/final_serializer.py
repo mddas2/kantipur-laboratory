@@ -89,7 +89,7 @@ class AssignedSampleForSmuSuperAdminSerializer(serializers.ModelSerializer):
     class Meta:
         name = "AssignedSampleForSmuSuperAdminSerializer"
         model = SampleForm
-        fields = ['id','supervisor_sample_form','name','sample_has_parameter_analyst','commodity','status','created_date','refrence_number','sample_lab_id','client_category_detail']
+        fields = ['id','supervisor_sample_form','name','sample_has_parameter_analyst','commodity','status','created_date','refrence_number','sample_lab_id','namuna_code','client_category_detail']
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
