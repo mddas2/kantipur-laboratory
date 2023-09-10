@@ -66,12 +66,21 @@ CHANNEL_LAYERS = {
     }
 }
 
+#CACHES = {
+#    "default": {
+#        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+#        "LOCATION": "redis://127.0.0.1:6379",
+#    }
+#}
+
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
         "LOCATION": "unique-snowflake",
     }
 }
+
+
 
 AUTH_USER_MODEL = "account.CustomUser" 
 
