@@ -16,7 +16,7 @@ class FiscalYearSerializer(serializers.ModelSerializer):
 class ApprovedBySerializer(serializers.ModelSerializer):
      class Meta:
         model = CustomUser
-        fields = ['first_name','last_name','email','id'] 
+        fields = ['first_name','last_name','email','id','department_name'] 
 
 class ClientCategorySerializer(serializers.ModelSerializer):
     class Meta:
