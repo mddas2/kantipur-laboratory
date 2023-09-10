@@ -6,6 +6,7 @@ from . encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdfo
 from . raw_data import generateRawData,UpdategenerateRawData
 from .status_naming import over_all_status
 from django.utils import timezone
+import ast
 
 class FiscalYearSerializer(serializers.ModelSerializer):
     class Meta:
@@ -253,7 +254,6 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
     def to_internal_value(self, data):
         action = self.context['view'].action
         if action != "partial_update":
-            import ast
             # Create a mutable copy of the QueryDict and convert it to a regular dictionary
             mutable_data = data.dict()
             parameters = mutable_data['parameters']        

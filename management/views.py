@@ -263,6 +263,8 @@ class SampleFormViewSet(viewsets.ModelViewSet):
             query = SampleForm.objects.filter(Q(form_available = 'smu') or Q(status = "not_assigned")).filter(~Q(status = "rejected"))
         elif user.role == roles.ADMIN:
             query = SampleForm.objects.filter(status = "not_approved")
+        elif user.role == roles.VERIFIER:
+            query = SampleForm.objects.filter(status = "not_verified")
         else:
             raise PermissionDenied("You do not have permission to access this resource.")
         
