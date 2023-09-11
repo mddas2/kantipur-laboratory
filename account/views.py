@@ -66,44 +66,45 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         user = self.request.user
+        
+        queryset = cache.get('Users')      
+        if queryset is None:
+            queryset = CustomUser.objects.all()
+            cache.set('Users', queryset, cache_time)
+        else:
+            queryset = queryset   
+    
         if not user.is_authenticated:
             # Return an empty queryset or a default response
             query = CustomUser.objects.none()
-        elif user.role == roles.SMU:
-            # Regular user can see SampleForm instances with form_available='user'
-            # query = CustomUser.objects.filter(is_active = True)    
-            query = CustomUser.objects.all()       
+        elif user.role == roles.SMU:  
+            # query = queryset.objects.all()   
+            query = queryset 
         elif user.role == roles.SUPERADMIN:
-            # Regular user can see SampleForm instances with form_available='user'
-            # query = CustomUser.objects.filter(is_active = True) 
-            query = CustomUser.objects.all()          
+            # query = CustomUser.objects.all()    
+            query = queryset       
         elif user.role == roles.ADMIN:
             # Regular user can see SampleForm instances with form_available='user'
-            query = CustomUser.objects.filter(is_active = True)    
+            # query = CustomUser.objects.filter(is_active = True)    
+            query = queryset.filter(is_active = True)
         elif user.role == roles.SUPERVISOR:
             # Regular user can see SampleForm instances with form_available='user'
-            query = CustomUser.objects.filter(is_active = True).filter(Q(role=roles.ANALYST) | Q(email = user.email))   
+            # query = CustomUser.objects.filter(is_active = True).filter(Q(role=roles.ANALYST) | Q(email = user.email))   
+            query = queryset.filter(is_active = True).filter(Q(role=roles.ANALYST) | Q(email = user.email))
         elif user.role == roles.VERIFIER:
             # Regular user can see SampleForm instances with form_available='user'
-            query = CustomUser.objects.filter(is_active = True).filter(role=roles.USER)        
+            # query = CustomUser.objects.filter(is_active = True).filter(role=roles.USER)   
+            query = queryset.filter(is_active = True).filter(role=roles.USER)      
         else:
-            query = CustomUser.objects.filter(email=user.email,is_active = True)
+            # query = CustomUser.objects.filter(email=user.email,is_active = True)
+            query = queryset.filter(email=user.email,is_active = True)
             # raise PermissionDenied("You do not have permission to access this resource.")
         return query.order_by("-created_date")
      
     def list(self, request, *args, **kwargs):
-        # Try to get cached data
-        cached_data = cache.get('Users')
-      
-        if cached_data is None:
-            queryset = self.filter_queryset(self.get_queryset())
-            serializer = self.get_serializer(queryset, many=True)
-            data = serializer.data
-
-            # Store data in the cache for 5 minutes (300 seconds)
-            cache.set('Users', data, cache_time)
-        else:
-            data = cached_data        
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        data = serializer.data
         return Response(data)
     
     def retrieve(self, request, pk=None):
