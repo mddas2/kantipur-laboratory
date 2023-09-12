@@ -374,6 +374,8 @@ class MicroParameter(models.Model):
     second_exponent = models.CharField(max_length=500,default=None,blank=True,null=True)
     third_exponent = models.CharField(max_length=500,default=None,blank=True,null=True)
 
+    duration_of_incubation = models.CharField(max_length=2000,null=True)
+
 class MicroParameterRawData(models.Model):
     sample_form_has_parameter = models.ForeignKey(SampleFormHasParameter,related_name="micro_detail_raw_data",on_delete=models.CASCADE,null=True,default=None)
     parameter = models.ForeignKey(TestResult, on_delete=models.CASCADE,null=True)
@@ -392,6 +394,8 @@ class MicroParameterRawData(models.Model):
     first_exponent = models.CharField(max_length=500,default=None,blank=True,null=True)
     second_exponent = models.CharField(max_length=500,default=None,blank=True,null=True)
     third_exponent = models.CharField(max_length=500,default=None,blank=True,null=True)
+
+    duration_of_incubation = models.CharField(max_length=2000,null=True)
 
 class RawDataSheetDetail(models.Model):
     raw_data = models.ForeignKey(RawDataSheet, on_delete=models.CASCADE,related_name="raw_data",null=True)
