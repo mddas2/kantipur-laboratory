@@ -33,5 +33,5 @@ class CompletedSampleFormHasVerifierSerializer(serializers.ModelSerializer):
         return generateAutoEncodeIdforSampleForm(obj.id,user)
     class Meta:
         model = SampleForm
-        fields = ['id','name','sample_has_parameter_analyst','commodity','status','created_date','sample_lab_id']
+        fields = ['id','name','sample_has_parameter_analyst','commodity','status','created_date','sample_lab_id','namuna_code']
         ref_name = "verifier_CompletedSampleFormHasVerifierSerialize"

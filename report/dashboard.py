@@ -161,7 +161,7 @@ class reportStatus(views.APIView):
             pending = not_verified
 
             verified = total_sample_forms_obj.filter(is_verified=True).count()
-            completed = SampleForm.objects.all(status = "completed")
+            completed = SampleForm.objects.filter(status = "completed").count()
 
             try:
                 reject = total_sample_forms_obj.filter(status = "rejected").count()

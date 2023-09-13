@@ -61,7 +61,7 @@ class CompletedSampleFormHasVerifierSerializer(serializers.ModelSerializer):
     class Meta:
         name = "CompletedSampleFormHasVerifierSerializer_report_"
         model = SampleForm
-        fields = ['id','supervisor_sample_form','name','supervisor_user','sample_has_parameter_analyst','commodity','status','created_date','completed_date','client_category_detail'] #user access
+        fields = ['id','supervisor_sample_form','name','supervisor_user','sample_has_parameter_analyst','commodity','status','created_date','completed_date','client_category_detail','namuna_code'] #user access
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)

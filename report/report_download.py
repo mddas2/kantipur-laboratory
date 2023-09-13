@@ -333,21 +333,11 @@ def rawDataSheetAnalystReport(request,download_print,sample_form_has_param):
     raw_data = RawDataSheet.objects.filter(id = sample_form_has_param)
     test_type = raw_data.first().test_type
 
-    from report.templatetags.custom_tags import get_NepaliDate
-    # Example usage of nepali_datetime
-    import nepali_datetime
-
-    # Get the current Nepali date
-    current_nepali_date = nepali_datetime.date.today()
-    print(current_nepali_date)
-
-
     if test_type == "Microbiological":
         template = get_template('raw_data_micro.html')
         context = {
             'raw_data':raw_data.first(),
             'sample_form':raw_data.first().sample_form,
-            'completed_on':get_NepaliDate(raw_data.first().completed_date)
         }
     else:
         serializer_data = rawDataTestTypeGlobalSerializer(raw_data,many=True)
