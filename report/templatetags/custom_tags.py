@@ -1,6 +1,7 @@
 import datetime
 import nepali_datetime
 from django.template.defaulttags import register
+import json
 
 @register.filter
 def get_NepaliDate(date):
@@ -11,3 +12,13 @@ def get_NepaliDate(date):
         # return nepali_date.strftime('%K-%n-%D (%k %N %G)')   
     except:
         return date
+
+@register.filter
+def json_to_dict(value):
+    try:
+        json_value = json.loads(value)
+        if isinstance(json_value, dict):
+            return json_value.items()
+    except (ValueError, TypeError):
+        pass
+    return {}
