@@ -65,9 +65,9 @@ class SupervisorFinalReportSerializer(serializers.ModelSerializer):
                     else:
                         parameter_data['result'] = formula_obj_result.first().result
 
-                    parameter_data['units'] = "umesh units" #formula_obj_result.first().units
-                    parameter_data['mandatory_standard'] = "umesh mandatory_standard"  #formula_obj_result.first().mandatory_standard
-                    parameter_data['test_method'] = "umesh test_method" #formula_obj_result.first().test_method
+                    parameter_data['units'] = formula_obj_result.first().units
+                    parameter_data['mandatory_standard'] = formula_obj_result.first().mandatory_standard
+                    parameter_data['test_method'] = formula_obj_result.first().test_method
                 else:
                     stat = "processing"
                     parameter_data['status'] = "processing"
