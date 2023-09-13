@@ -329,9 +329,12 @@ def getDepartmentValue(key):
 
 def rawDataSheetAnalystReport(request,download_print,sample_form_has_param):
     
-
-    raw_data = RawDataSheet.objects.filter(id = sample_form_has_param)
-    test_type = raw_data.first().test_type
+    try:
+        raw_data = RawDataSheet.objects.filter(id = sample_form_has_param)
+        test_type = raw_data.first().test_type
+    except:
+        raw_data = RawDataSheet.objects.filter(sample_form_has_parameter_id = sample_form_has_param)
+        test_type = raw_data.first().test_type
 
     if test_type == "Microbiological":
         template = get_template('raw_data_micro.html')
