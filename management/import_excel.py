@@ -57,10 +57,8 @@ def ImportExcel(request):
 
         formula = row['formula']
 
-        try:
-            notation = row['abbreviation']
-        except:
-            notation = ""
+    
+        notation = row['abbreviation']
 
         remarks = row['remarks']
 
@@ -121,12 +119,16 @@ def ImportExcel(request):
             'formula_notation' : notation,
             'formula' : formula,
         }
-        # print(test_result)
 
-        param_update_or_create = TestResult.objects.filter(commodity_id = commodity_id ,name = parameters_name)
+        param_update_or_create = TestResult.objects.filter(commodity_id=commodity_id, name__exact=parameters_name)
+    
        
         if param_update_or_create.exists():
-            #print("already exists..")
+
+            obj = param_update_or_create.first()
+            obj.formula_notation = notation
+            obj.save()
+            # print(f"[{obj.id}]",parameters_name,"::",obj.formula_notation)
             already_exists_parameters = already_exists_parameters + 1
             pass
         else:
