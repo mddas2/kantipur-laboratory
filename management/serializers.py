@@ -761,7 +761,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                 # raise serializers.ValidationError('Fixing micro raw data ...')
                 return attrs
         
-        elif len(attrs) == 3 and action == 'partial_update' and 'started_date' and 'sample_received_date' and 'additional_info' in attrs:
+        elif len(attrs) == 4 and action == 'partial_update' and 'started_date' and 'sample_received_date' and 'additional_info' and 'sample_receipt_condition' in attrs:
             return attrs
             
         elif action == 'partial_update':

@@ -261,6 +261,7 @@ class SampleFormHasParameter(models.Model):#sample form has parameter and parame
 
     created_date = models.DateTimeField(default=timezone.now) #reported date
     started_date = models.CharField(max_length=30,null=True) #started date
+    sample_receipt_condition = models.CharField(max_length=100, blank=True, null=True)
     additional_info = models.CharField(max_length=100, blank=True, null=True)
     completed_date = models.DateTimeField(null=True) #raw data generated
     sample_received_date = models.CharField(max_length=30,null=True) # sample received date.
@@ -354,6 +355,7 @@ class RawDataSheet(models.Model):
     started_date = models.CharField(max_length=30,null=True) #started date
     completed_date = models.DateTimeField(null=True) #raw data generated
     sample_received_date = models.CharField(max_length=30,null=True) # sample received date.
+    sample_receipt_condition = models.CharField(max_length=100, blank=True, null=True)
 
 class MicroParameter(models.Model):
     sample_form_has_parameter = models.ForeignKey(SampleFormHasParameter,related_name="micro_detail_sample_form_has_parameter",on_delete=models.CASCADE,null=True,default=None)
