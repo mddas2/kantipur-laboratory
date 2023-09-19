@@ -34,7 +34,7 @@ class FormulaApiCalculateSaveSerializer(serializers.Serializer):
     converted_result = serializers.CharField()
     decimal_place = serializers.CharField()
 
-    units = serializers.CharField(allow_null = True,required=False)
+    units = serializers.CharField(allow_null = True,required=False,allow_blank=True,)
     mandatory_standard = serializers.CharField(allow_null = True,required=False)
     test_method = serializers.CharField(allow_null = True,required=False)
     additional_info = serializers.CharField(allow_null = True,required=False)
