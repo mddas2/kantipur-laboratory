@@ -113,7 +113,7 @@ class DetailSampleFormHasParameterAnalystSerializer(serializers.ModelSerializer)
                 
                 # sup_full_name = analyst_obj.super_visor_sample_form#.supervisor_user.first_name
 
-                parameter_data['sup_full_name'] = str(sample_form_has_assigned_analyst_obj.super_visor_sample_form.supervisor_user.first_name)+" "+ str(analyst_obj.super_visor_sample_form.supervisor_user.last_name)#blundermd
+                parameter_data['sup_full_name'] = str(sample_form_has_assigned_analyst_obj.super_visor_sample_form.supervisor_user.first_name)+" "+ str(sample_form_has_assigned_analyst_obj.super_visor_sample_form.supervisor_user.last_name)#blundermd
                 
                 formula_obj_result = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id=sample_form_id,parameter_id = parameter_id)
                 if formula_obj_result.count()>0:
