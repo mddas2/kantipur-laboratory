@@ -332,8 +332,9 @@ class SampleFormReadAnalystSerializer(serializers.ModelSerializer):
             return data
     def to_representation(self, instance): #if dftqc then sample name as commodity category else do no things
         representation = super().to_representation(instance)
-        sample_name = representation.get('name', '')
-        representation['name'] = "error md fix" #sample_name
+        client_category_detail = instance.client_category_detail.client_category.id
+        if client_category_detail == "11":
+            representation['name'] = instance.commodity.category.name #"error md fix" #sample_name
         return representation
         
     def get_owner_user(self, obj):
