@@ -35,9 +35,9 @@ class FormulaApiCalculateSaveSerializer(serializers.Serializer):
     decimal_place = serializers.CharField()
 
     units = serializers.CharField(allow_null = True,required=False,allow_blank=True,)
-    mandatory_standard = serializers.CharField(allow_null = True,required=False)
-    test_method = serializers.CharField(allow_null = True,required=False)
-    additional_info = serializers.CharField(allow_null = True,required=False)
+    mandatory_standard = serializers.CharField(allow_null = True,required=False,allow_blank=True)
+    test_method = serializers.CharField(allow_null = True,required=False,allow_blank=True)
+    additional_info = serializers.CharField(allow_null = True,required=False,allow_blank=True)
 
     
     def to_internal_value(self, data):
