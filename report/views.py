@@ -28,7 +28,7 @@ from management.encode_decode import generateDecodeIdforSampleForm,generateAutoE
 class SampleFormHasAnalystAPIView(generics.ListAPIView):
     
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['id']
+    search_fields = ['id','sample_form__code','sample_form__namuna_code']
     ordering_fields = ['id']
     filterset_fields = {
         'created_date': ['date__gte', 'date__lte']  # Date filtering
