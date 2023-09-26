@@ -330,6 +330,11 @@ class SampleFormReadAnalystSerializer(serializers.ModelSerializer):
             return data
         else:
             return data
+    def to_representation(self, instance): #if dftqc then sample name as commodity category else do no things
+        representation = super().to_representation(instance)
+        sample_name = representation.get('name', '')
+        representation['name'] = "error md fix" #sample_name
+        return representation
         
     def get_owner_user(self, obj):
         email = obj.owner_user
@@ -703,7 +708,7 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
        
             
         return parameter_data,analyst_status,completed_done
-    
+ 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         # print(instance.parameter.first().id)
