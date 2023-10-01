@@ -389,7 +389,7 @@ class MicroParameterRawData(models.Model):
     diluent_used = models.CharField(max_length=500,null=True,blank=True)
     positive_control_used = models.CharField(max_length=500,null=True)
     negative_control_used = models.CharField(max_length=500,null=True)
-    date_of_incubation = models.DateTimeField(null=True)
+    date_of_incubation = models.CharField(max_length=500,null=True)
     time_of_incubation = models.CharField(max_length=500,null=True)
     required_temperature = models.CharField(max_length=500,null=True)
     status = models.CharField(max_length=2000,null=True)
