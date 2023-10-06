@@ -2,7 +2,7 @@ from rest_framework import serializers
 from management.models import ClientCategoryDetail,ClientCategoryDetailImages
 
 
-class ClientCategorySerializer(serializers.ModelSerializer):
+class ClientCategoryDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClientCategoryDetail
         fields = '__all__'

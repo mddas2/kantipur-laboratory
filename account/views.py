@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login
 from django.views.decorators.csrf import csrf_exempt
 from .serializers import LoginSerializer
 from django.contrib.auth.models import Group, Permission
-from account.models import CustomUser
+from account.models import CustomUser,CustomUserImages
 from rest_framework import viewsets
 from .serializers import CustomUserReadSerializer,CustomUserSerializer, GroupSerializer, PermissionSerializer,RoleSerializer,departmentTypeSerializer,CustomUserReadLimitedSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -24,6 +24,7 @@ from django.http import HttpResponse
 from django.db.models import Q
 from rest_framework import generics
 from .custompermission import AccountPermission
+from . serializers import CustomUserImageSerializer
 
 from django.core.cache import cache
 cache_time = 300 # 300 is 5 minute
@@ -143,7 +144,7 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
         name = request.POST.getlist('images[name]')
         files =  request.FILES.getlist('images[file]')
 
-        custom_user_detail = CeateClientCategoryDetail(name,files,serializer.data['id'])
+        custom_user_detail = CeateClientCategoryDetail(name,files,serializer.data['id'],"create")
 
         #NotificationHandler(serializer.instance,request,'create',"CustomUser")
 
@@ -176,7 +177,7 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
         name = request.POST.getlist('images[name]')
         files =  request.FILES.getlist('images[file]')
 
-        custom_user_detail = CeateClientCategoryDetail(name,files,serializer.data['id'])
+        custom_user_detail = CeateClientCategoryDetail(name,files,serializer.data['id'],"update")
         
         NotificationHandler(serializer.instance,request,'update','CustomUser')
         # Return the custom response
@@ -362,12 +363,9 @@ class LoginView(APIView):
             else:
                 return Response({'error': 'Invalid username/email'}, status=status.HTTP_401_UNAUTHORIZED)
 
-def CeateClientCategoryDetail(names,files,user_id):
-    
-    from . serializers import CustomUserImageSerializer
+def CeateClientCategoryDetail(names,files,user_id,action):
 
     image_data = []
-
 
     for name, file in zip(names, files):
        dict_data = {
@@ -376,10 +374,10 @@ def CeateClientCategoryDetail(names,files,user_id):
            'file':file,
        }
        image_data.append(dict_data)
-
-    image_serializer = CustomUserImageSerializer(many=True,data=image_data)
-    image_serializer.is_valid(raise_exception=True)
-    image_serializer.save()    
+    if len(image_data)>0:        
+        image_serializer = CustomUserImageSerializer(many=True,data=image_data)
+        image_serializer.is_valid(raise_exception=True)
+        image_serializer.save()    
     return True
 
 class userLimitedData(generics.ListAPIView):

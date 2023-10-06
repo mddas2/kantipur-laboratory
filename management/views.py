@@ -1,12 +1,13 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from .serializers import FiscalYearSerializer,limitedCommidityCategoryreadSerializer,limitedCommidityreadSerializer,TestResultWriteSerializer,MicroObservationTableSerializer,MicroParameterSerializer,ClientCategorySerializer, SampleFormWriteSerializer,SampleFormReadSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer,SuperVisorSampleFormReadSerializer,SuperVisorSampleFormWriteSerializer
-from .models import FiscalYear,ClientCategory,Units,MandatoryStandard,TestMethod, SampleForm, Commodity, CommodityCategory,TestResult, Payment,SuperVisorSampleForm,MicroParameter,MicroObservationTable
+from .models import FiscalYear,ClientCategory,Units,MandatoryStandard,TestMethod, SampleForm, Commodity, CommodityCategory,TestResult, Payment,SuperVisorSampleForm,MicroParameter,MicroObservationTable,ClientCategoryDetail
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .pagination import MyLimitOffsetPagination
 from rest_framework.response import Response
+from . client_category_serializers import ClientCategoryDetailSerializer,ClientCategoryDetailImagesSerializer
 from .custompermission import FiscalYearPermission,ClientCategoryPermission,SampleFormViewSetPermission,CommodityViewSetPermission,CommodityCategoryViewSetPermission,TestResultViewSetPermission,PaymentViewSetPermission
 from rest_framework import status
 from rest_framework.filters import SearchFilter,OrderingFilter
@@ -300,7 +301,6 @@ class SampleFormViewSet(viewsets.ModelViewSet):
      
         client_category = request.data.get('client_category')
 
-        # print(name,files,"\n name and files...")
         create_client,client_category_detail = CeateClientCategoryDetail(name,files,client_category,client_sub_category)
         
         if create_client:
@@ -313,8 +313,9 @@ class SampleFormViewSet(viewsets.ModelViewSet):
             # Set the client_category_detail_id in the mutable data
             mutable_data['client_category_detail'] = client_category_detail
 
-
             serializer = self.get_serializer(data=mutable_data)
+            if serializer.is_valid() == False:
+                ClientCategoryDetail.objects.get(id = client_category_detail).delete()
             serializer.is_valid(raise_exception=True)
 
             # Save the new object to the database
@@ -963,50 +964,33 @@ def Home(request):
 
 def CeateClientCategoryDetail(names,files,client_category,client_sub_category):
     
-    from . client_category_serializers import ClientCategorySerializer,ClientCategoryDetailImagesSerializer
     data = {
         'client_category':client_category,
         'client_sub_category':client_sub_category,
     }
-    serializer = ClientCategorySerializer(data=data)
-   
+    
+    serializer = ClientCategoryDetailSerializer(data=data)
     serializer.is_valid(raise_exception=True)
-    #create client category detail
     serializer.save()
-
+    
     image_data = []
 
 
     for name, file in zip(names, files):
        #print("name:",name," file:",file,int(serializer.data['id']))
-       dict_data = [
-           {
-           'client_category_detail':int(serializer.data['id']),
-           'name':name,
-           'file':file,
-       },
-         {
-           'client_category_detail':int(serializer.data['id']),
-           'name':name,
-           'file':file,
-       },
-         {
-           'client_category_detail':int(serializer.data['id']),
-           'name':name,
-           'file':file,
-       },
-       ]
+       dict_data = {
+                'client_category_detail':int(serializer.data['id']),
+                'name':name,
+                'file':file,
+            }
        image_data.append(dict_data)
 
-
     image_serializer = ClientCategoryDetailImagesSerializer(many=True,data=image_data)
-    image_serializer.is_valid(raise_exception=True)
-    #print("validate..",image_serializer.data)
-    image_serializer.save()
-    #print("validate..",image_serializer.data)
-    # print(image_serializer.data)
+    if image_serializer.is_valid() == False:
+        ClientCategoryDetail.objects.get(id = int(serializer.data['id'])).delete()
 
-    # print(image_data,image_serializer.data)
+    image_serializer.is_valid(raise_exception=True)
+    image_serializer.save()
     
     return True,int(serializer.data['id'])
    
