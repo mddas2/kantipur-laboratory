@@ -264,10 +264,28 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
             return super().to_internal_value(mutable_data)
         else:
             return super().to_internal_value(data)
+    
+    def validate_price(self,value):#field level validation
+        raise serializers.ValidationError('price can not be modified error')
         
     def validate(self, data):
         # raise serializers.ValidationError('testing sample form dftqc')
         action = self.context['view'].action
+
+        if action == "update" or "partial_update":
+            request = self.context.get('request')
+            parameters = data.get('parameters')
+            form_available = self.instance.form_available
+            if form_available == "smu":
+                pass
+            elif request.user.role == roles.USER:
+                raise serializers.ValidationError('You have not permission to update')
+            else:
+                if len(parameters) >=1:
+                    raise serializers.ValidationError('You have not permission to update parameters ')
+
+            
+
         if action == "create" or action=="update":
             parameters = data.get('parameters')
 
