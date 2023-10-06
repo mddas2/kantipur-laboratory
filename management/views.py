@@ -979,11 +979,23 @@ def CeateClientCategoryDetail(names,files,client_category,client_sub_category):
 
     for name, file in zip(names, files):
        #print("name:",name," file:",file,int(serializer.data['id']))
-       dict_data = {
+       dict_data = [
+           {
            'client_category_detail':int(serializer.data['id']),
            'name':name,
            'file':file,
-       }
+       },
+         {
+           'client_category_detail':int(serializer.data['id']),
+           'name':name,
+           'file':file,
+       },
+         {
+           'client_category_detail':int(serializer.data['id']),
+           'name':name,
+           'file':file,
+       },
+       ]
        image_data.append(dict_data)
 
 

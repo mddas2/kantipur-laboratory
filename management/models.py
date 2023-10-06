@@ -431,7 +431,7 @@ class MicroObservationTable(models.Model):
     observation_number = models.CharField(max_length=500,null=True,blank=True)
     observation_time = models.CharField(max_length=500,null=True,blank=True)
     temperature = models.CharField(max_length=500,null=True,blank=True)
-    time = models.DateTimeField(null=True,blank=True)
+    time = models.CharField(max_length=500,null=True,blank=True)
 
     first_exponent = models.CharField(max_length=500,null=True,blank=True)
     first_exponent_a = models.CharField(max_length=500,null=True,blank=True)
@@ -460,7 +460,7 @@ class MicroObservationTableRawData(models.Model):
     observation_number = models.CharField(max_length=500,null=True,blank=True)
     observation_time = models.CharField(max_length=500,null=True,blank=True)
     temperature = models.CharField(max_length=500,null=True,blank=True)
-    time = models.DateTimeField(null=True,blank=True)
+    time = models.CharField(max_length=500,null=True,blank=True)
 
     first_exponent = models.CharField(max_length=500,null=True,blank=True)
     first_exponent_a = models.CharField(max_length=500,null=True,blank=True)
