@@ -272,7 +272,7 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
         # raise serializers.ValidationError('testing sample form dftqc')
         action = self.context['view'].action
 
-        if action == "update" or "partial_update":
+        if action == "update" or action == "partial_update":
             request = self.context.get('request')
             parameters = data.get('parameters')
             form_available = self.instance.form_available
