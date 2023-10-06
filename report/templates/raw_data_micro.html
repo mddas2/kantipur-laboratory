@@ -137,21 +137,22 @@
                         </tr>
 
                         <tr style="border: 1px solid black; padding:0; margin:0;">
-                            {% if(param.commodity.category_id == 5688 and "E.coli" in param.name) or (param.commodity.category_id == 5688 and  "Coliform" in param.name) %}
-                                <td colspan="2"><h2 style="text-align: center; font-size:12px; font-weight:400; line-height:0; padding:0; margin:0;">+Ve</h2></td>
-                                <td colspan="2"><h2 style="text-align: center; font-size:12px; font-weight:400; line-height:0; padding:0; margin:0;">-Ve</h2></td>
-                                <td colspan="2"><h2 style="text-align: center; font-size:12px; font-weight:400; line-height:0; padding:0; margin:0;">+Ve</h2></td>
-                                <td colspan="2"><h2 style="text-align: center; font-size:12px; font-weight:400; line-height:0; padding:0; margin:0;">-Ve</h2></td>
-                                <td colspan="2"><h2 style="text-align: center; font-size:12px; font-weight:400; line-height:0; padding:0; margin:0;">+Ve</h2></td>
-                                <td colspan="2"><h2 style="text-align: center; font-size:12px; font-weight:400; line-height:0; padding:0; margin:0;">-Ve</h2></td>
+                            {% if (param.commodity.category_id == 5688 and "E.coli" in param.name) or (param.commodity.category_id == 5688 and "Coliform" in param.name) %}
+                            <td colspan="2"><h2 style="text-align: center; font-size:12px; font-weight:400; line-height:0; padding:0; margin:0;">+Ve</h2></td>
+                            <td colspan="2"><h2 style="text-align: center; font-size:12px; font-weight:400; line-height:0; padding:0; margin:0;">-Ve</h2></td>
+                            <td colspan="2"><h2 style="text-align: center; font-size:12px; font-weight:400; line-height:0; padding:0; margin:0;">+Ve</h2></td>
+                            <td colspan="2"><h2 style="text-align: center; font-size:12px; font-weight:400; line-height:0; padding:0; margin:0;">-Ve</h2></td>
+                            <td colspan="2"><h2 style="text-align: center; font-size:12px; font-weight:400; line-height:0; padding:0; margin:0;">+Ve</h2></td>
+                            <td colspan="2"><h2 style="text-align: center; font-size:12px; font-weight:400; line-height:0; padding:0; margin:0;">-Ve</h2></td>
                             {% else %}
-                                <td colspan="2"><h2 style="text-align: center; font-size:12px; font-weight:400; line-height:0; padding:0; margin:0;">A</h2></td>
-                                <td colspan="2"><h2 style="text-align: center; font-size:12px; font-weight:400; line-height:0; padding:0; margin:0;">B</h2></td>
-                                <td colspan="2"><h2 style="text-align: center; font-size:12px; font-weight:400; line-height:0; padding:0; margin:0;">A</h2></td>
-                                <td colspan="2"><h2 style="text-align: center; font-size:12px; font-weight:400; line-height:0; padding:0; margin:0;">B</h2></td>
-                                <td colspan="2"><h2 style="text-align: center; font-size:12px; font-weight:400; line-height:0; padding:0; margin:0;">A</h2></td>
-                                <td colspan="2"><h2 style="text-align: center; font-size:12px; font-weight:400; line-height:0; padding:0; margin:0;">B</h2></td>
+                            <td colspan="2"><h2 style="text-align: center; font-size:12px; font-weight:400; line-height:0; padding:0; margin:0;">A</h2></td>
+                            <td colspan="2"><h2 style="text-align: center; font-size:12px; font-weight:400; line-height:0; padding:0; margin:0;">B</h2></td>
+                            <td colspan="2"><h2 style="text-align: center; font-size:12px; font-weight:400; line-height:0; padding:0; margin:0;">A</h2></td>
+                            <td colspan="2"><h2 style="text-align: center; font-size:12px; font-weight:400; line-height:0; padding:0; margin:0;">B</h2></td>
+                            <td colspan="2"><h2 style="text-align: center; font-size:12px; font-weight:400; line-height:0; padding:0; margin:0;">A</h2></td>
+                            <td colspan="2"><h2 style="text-align: center; font-size:12px; font-weight:400; line-height:0; padding:0; margin:0;">B</h2></td>
                             {% endif %}
+                        
                         </tr>
 
                         {% for observation in param.micro_table.micro_observation_table_raw_data.all %}
