@@ -44,6 +44,13 @@ class CompletedSampleFormHasAnalystSerializer(serializers.ModelSerializer):
     class Meta:
         model = SampleForm
         fields = ['id','name','supervisor_user','sample_has_parameter_analyst','commodity','status','created_date','namuna_code']
+    
+    def to_representation(self,instance):
+        representation = super().to_representation(instance)
+        client_category_detail = instance.client_category_detail.client_category.id
+        if client_category_detail == 11:
+            representation['name'] = instance.commodity.name #"error md fix" #sample_name
+        return representation
 
 class DetailSampleFormHasParameterRoleAsAnalystSerializer(serializers.ModelSerializer):
     commodity = CommoditySerializer(read_only=True)
