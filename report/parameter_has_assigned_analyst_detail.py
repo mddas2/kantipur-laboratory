@@ -294,7 +294,7 @@ class FinalReportNepaliAnalystSerializer(serializers.ModelSerializer):
         for parameter_data in parameters_data:
             parameter_id = parameter_data.get('id')
             # Check if the parameter exists in SampleFormHasParameter model
-            # print(parameter_id)
+            # print(parameter_id) 
             sample_form_has_assigned_analyst_obj = SampleFormHasParameter.objects.filter(parameter=parameter_id, sample_form = sample_form_id)
             exists = sample_form_has_assigned_analyst_obj.exists()
             if exists:
@@ -345,4 +345,9 @@ class FinalReportNepaliAnalystSerializer(serializers.ModelSerializer):
         representation['parameters'] = parameters_data
         representation['analysis_completed_date'] = instance.verifier.created_date
         representation['analysis_started_date'] = instance.result.all().first().created_date
+
+        client_category_detail = instance.client_category_detail.client_category.id
+        if client_category_detail == 11:
+            representation['name'] = instance.commodity.name #"error md fix" #sample_name
+            
         return representation
