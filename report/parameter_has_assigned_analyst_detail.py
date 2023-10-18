@@ -135,6 +135,12 @@ class DetailSampleFormHasParameterAnalystSerializer(serializers.ModelSerializer)
 
         representation['parameters'] = parameters_data
         representation['sample_form_has_param_id'] = sample_form_has_param_id
+
+        client_category_detail = instance.client_category_detail.client_category.id
+        if client_category_detail == 11:
+            representation['name'] = instance.commodity.name #"error md fix" #sample_name
+        representation['client_category'] = client_category_detail
+
         return representation
 
 
@@ -251,6 +257,12 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
             representation['analysis_started_date'] = instance.result.all().first().created_date
         except:
             representation['analysis_started_date'] = '-'
+        
+        client_category_detail = instance.client_category_detail.client_category.id
+        if client_category_detail == 11:
+            representation['name'] = instance.commodity.name #"error md fix" #sample_name
+        representation['client_category'] = client_category_detail
+
         return representation
 
 
