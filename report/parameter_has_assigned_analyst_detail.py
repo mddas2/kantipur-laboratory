@@ -249,12 +249,11 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
             parameter_data['exist'] = exists
 
         representation['parameters'] = parameters_data
+    
+        representation['analysis_completed_date'] = instance.verified_date
+        
         try:
-            representation['analysis_completed_date'] = instance.verifier.created_date
-        except:
-            representation['analysis_completed_date'] = '-'
-        try:
-            representation['analysis_started_date'] = instance.result.all().first().created_date
+            representation['analysis_started_date'] = instance.result.all().first().started_date
         except:
             representation['analysis_started_date'] = '-'
         

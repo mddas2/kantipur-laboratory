@@ -337,8 +337,8 @@ class SampleFormVerifier(models.Model):
     )
     status = models.CharField(choices=status_choices, default="processing", max_length=155)
 
-    created_date = models.DateTimeField(default=timezone.now)
-    updated_date = models.DateTimeField(default=timezone.now)
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
 
 class RawDataSheet(models.Model):
     sample_form = models.ForeignKey(SampleForm,related_name="raw_datasheet",on_delete=models.CASCADE,default=None)
