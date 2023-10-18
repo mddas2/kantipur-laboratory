@@ -252,10 +252,10 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
     
         representation['analysis_completed_date'] = instance.verified_date
         
-        try:
-            representation['analysis_started_date'] = instance.result.all().order_by(id).first().sample_form_has_parameter.started_date
-        except:
-            representation['analysis_started_date'] = '-'
+        # try:
+        representation['analysis_started_date'] = instance.result.all().order_by(id).first().sample_form_has_parameter.started_date
+        # except:
+        #     representation['analysis_started_date'] = '-'
         
         client_category_detail = instance.client_category_detail.client_category.id
         if client_category_detail == 11:
