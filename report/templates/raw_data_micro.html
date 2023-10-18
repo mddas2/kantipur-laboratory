@@ -103,6 +103,7 @@
                     <p style="font-size: 12px; line-height: 0; text-align: top; padding:0px 0px 3px;margin: 0;">c) Prepared Dilution: <span>{{param.micro_table.first_exponent}},{{param.micro_table.second_exponent}},{{param.micro_table.third_exponent}} {{param.micro_table.prepared_dilution}}</span> </p>
                     <p style="font-size: 12px; line-height: 0; text-align: top; padding:0px 0px 3px;margin: 0;">e) Positive Control Used: <span><i>{{param.micro_table.positive_control_used}}</i></span> </p>
                     <p style="font-size: 12px; line-height: 0; text-align: top; padding:0px 0px 3px;margin: 0;">g) Date And Time: <span>{{param.micro_table.date_of_incubation}} {{param.micro_table.time_of_incubation}}</span> </p>
+                    <p style="font-size: 12px; line-height: 0; text-align: top; padding:0px 0px 3px;margin: 0;">i) Duration of Incubation: <span>{{param.micro_table.duration_of_incubation}} {{param.micro_table.duration_of_incubation}}</span> </p>
                 </td>
                 <td colspan="5" style="border: 0; padding: 0 0 5px;">
                     <p style="font-size: 12px; line-height: 0; text-align: top; padding:0px 0px 3px;margin: 0;">b) Media Used: <span>{{param.micro_table.media_used}}</span> </p>
@@ -197,7 +198,7 @@
                             {% endif %}
                         {% endfor %}
                         <h3 style="font-size: 12px; line-height: 0; margin: 0 0 5px; padding: 0 0 10px; ">Result = <span> {%if param.parameter.formula != 'nan' %} {{param.parameter.formula}} {% endif %}</span>  {%if param.parameter.formula != 'nan' %} = {% endif %} {{param.result}} </h3>
-                        <h3 style="font-size: 12px; line-height: 0; margin: 0 0 5px; padding: 0 0 10px; ">Final Result = <span> {{param.converted_result}} </span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Qualitative Analysis = <span> {% if param.analyst_remarks != '' %}{{param.analyst_remarks|safe}} {% else %} N/A {% endif %} </span></h3>
+                        <h3 style="font-size: 12px; line-height: 0; margin: 0 0 5px; padding: 0 0 10px; ">Final Result = <span> {{param.converted_result}} </span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Qualitative Analysis = <span> {% if param.analyst_remarks != '' %}{{param.analyst_remarks|safe}} {% else %} N/A {% endif %} </span>{% if param.additional_info != '' %} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Additional info = <span> {{param.additional_info|safe}} {% endif %} </span></h3>
                         <!-- <h3 style="font-size: 12px; line-height: 0; margin: 0 0 5px; padding: 0 0 10px; ">Additional Info = <span> {{param.converted_result}} </span> </h3> -->
                     </div>
 
