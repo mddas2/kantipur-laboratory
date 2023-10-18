@@ -281,8 +281,12 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
             elif request.user.role == roles.USER:
                 raise serializers.ValidationError('You have not permission to update')
             else:
-                if len(parameters) >=1:
+                if parameters:
                     raise serializers.ValidationError('You have not permission to update parameters ')
+                else:
+                    raise serializers.ValidationError('good  parameter  is none ',parameters)
+                # if len(parameters) >=1:
+                #     raise serializers.ValidationError('You have not permission to update parameters ')
 
             
 
