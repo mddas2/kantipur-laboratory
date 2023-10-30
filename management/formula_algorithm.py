@@ -276,8 +276,8 @@ class FormulaApiCalculateSave(APIView):
         sample_form_id = serializer.validated_data['sample_form']
         sample_form_has_parameter_id = serializer.validated_data['sample_form_has_parameter']
         # remarks =  serializer.validated_data['remarks']
-        formula_variable_fields_value = serializer.validated_data['formula_variable_fields_value']
-        result = serializer.validated_data['result']
+        formula_variable_fields_value = serializer.validated_data.get('formula_variable_fields_value')
+        result = serializer.validated_data.get('result')
 
         units = serializer.validated_data.get('units')
         mandatory_standard = serializer.validated_data.get('mandatory_standard')
@@ -288,9 +288,9 @@ class FormulaApiCalculateSave(APIView):
 
         # print(formula_variable_fields_value, " formula_variable_fields_value")
 
-        converted_result = serializer.validated_data['converted_result']
+        converted_result = serializer.validated_data.get('converted_result')
         analyst_remarks = request.data.get('analyst_remarks')
-        decimal_place = serializer.validated_data['decimal_place']
+        decimal_place = serializer.validated_data.get('decimal_place')
 
         # Locking parameter
         is_locked = False
