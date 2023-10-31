@@ -60,8 +60,11 @@ class SupervisorFinalReportSerializer(serializers.ModelSerializer):
                     parameter_data['analyst_remarks'] = formula_obj_result.first().analyst_remarks #formula_obj_result.first().test_method
 
                     analyst_remarks = formula_obj_result.first().analyst_remarks
+                    
                     if analyst_remarks:
                         parameter_data['result'] = formula_obj_result.first().analyst_remarks
+                    elif formula_obj_result.first().converted_result:
+                        parameter_data['result'] = formula_obj_result.first().converted_result
                     else:
                         parameter_data['result'] = formula_obj_result.first().result
 

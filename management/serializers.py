@@ -580,11 +580,13 @@ class SuperVisorSampleFormReadSerializer(serializers.ModelSerializer):
                     parameter_data['status'] = over_all_status[formula_obj_result.first().status]
                     
                     analyst_remarks = formula_obj_result.first().analyst_remarks
+                    
                     if analyst_remarks:
                         parameter_data['result'] = formula_obj_result.first().analyst_remarks
-                    else:
-                        # parameter_data['result'] = formula_obj_result.first().result
+                    elif formula_obj_result.first().converted_result:
                         parameter_data['result'] = formula_obj_result.first().converted_result
+                    else:
+                        parameter_data['result'] = formula_obj_result.first().result
                         
 
                     parameter_data['units'] = formula_obj_result.first().units
