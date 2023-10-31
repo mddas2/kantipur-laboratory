@@ -439,7 +439,7 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
                         attrs['re_assign'] = True 
                     else:                         
                         #print("True mk")
-                        raise serializers.ValidationError('Umesh sir You cant do this ...ammm, reasign karna band karo')
+                        raise serializers.ValidationError('You can not re-assign.')
             
         
         elif action == 'update' or action == 'partial_update':            

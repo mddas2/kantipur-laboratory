@@ -48,6 +48,18 @@ class rawDataSheetDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = RawDataSheetDetail
         fields = '__all__'
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        analyst_remarks = instance.analyst_remarks
+        if analyst_remarks:
+            representation['final_result'] = instance.analyst_remarks
+        else:
+            representation['final_result'] = instance.result
+            
+        return representation
+           
 
 class SampleFormSerializer(serializers.ModelSerializer):
     class Meta:
