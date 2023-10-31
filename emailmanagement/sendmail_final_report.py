@@ -32,5 +32,5 @@ def sendFinalreport(instance):
     recipient_list = [instance.owner_user]
     plain_message = ""
     subject = f"Test report for {instance.name} (Refrence Number:{instance.refrence_number})"
-    send_mail(subject, plain_message, email_from, recipient_list,html_message=message)
+    # send_mail(subject, plain_message, email_from, recipient_list,html_message=message)
     
