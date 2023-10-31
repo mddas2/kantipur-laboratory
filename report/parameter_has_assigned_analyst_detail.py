@@ -249,8 +249,11 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
             parameter_data['exist'] = exists
 
         representation['parameters'] = parameters_data
-    
-        representation['analysis_completed_date'] = instance.verified_date
+
+        try:
+            representation['analysis_completed_date'] = instance.sample_has_parameter_analyst.all().order_by('-completed_date').first().completed_date
+        except:
+            representation['analysis_completed_date'] = ''
         
         try:
             representation['analysis_started_date'] = instance.sample_has_parameter_analyst.all().order_by('id').first().started_date
