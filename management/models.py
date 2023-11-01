@@ -164,8 +164,8 @@ class SampleForm(models.Model):#ClientRequest
     )
 
     form_available = models.CharField(max_length=100,choices=ROLE_CHOICES, blank=True, null=True)
-    created_date = models.DateTimeField(default=timezone.now)
-    updated_date = models.DateTimeField(default=timezone.now)
+    created_date = models.DateTimeField(auto_now_add=True)  
+    updated_date = models.DateTimeField(auto_now=True)
 
     analysis_pricing = models.BooleanField(default=False) #if parameter not select then auto select parameter.this insure that commodity select or parameter.umesh sir
     fiscal_year = models.CharField(max_length=55, null=True)
@@ -215,8 +215,8 @@ class SuperVisorSampleForm(models.Model):#sample form has parameter and paramete
     )
     status = models.CharField(choices=status_choices,default="not_assigned" , blank=True, null=True, max_length=155)
 
-    created_date = models.DateTimeField(default=timezone.now)
-    updated_date = models.DateTimeField(default=timezone.now)
+    created_date = models.DateTimeField(auto_now_add=True)  
+    updated_date = models.DateTimeField(auto_now=True)
     remarks = models.CharField(max_length=1000,null=True)
 
 
@@ -259,7 +259,7 @@ class SampleFormHasParameter(models.Model):#sample form has parameter and parame
 
     form_available = models.CharField(max_length=100,choices=ROLE_CHOICES, blank=True, null=True)
 
-    created_date = models.DateTimeField(default=timezone.now) #reported date
+    created_date = models.DateTimeField(auto_now_add=True) #reported date
     started_date = models.CharField(max_length=30,null=True) #started date
     sample_receipt_condition = models.CharField(max_length=100, blank=True, null=True)
     additional_info = models.CharField(max_length=500, blank=True, null=True)
@@ -285,8 +285,9 @@ class Payment(models.Model):
     register_date = models.CharField(blank=True, null=True, max_length=155)
     amount = models.IntegerField(blank=True, null=True)
     payment_receipt = models.FileField(upload_to='uploads/receipt',null=True)
-    created_date = models.DateTimeField(default=timezone.now)
-    updated_date = models.DateTimeField(default=timezone.now)
+    
+    created_date = models.DateTimeField(auto_now_add=True)  
+    updated_date = models.DateTimeField(auto_now=True)
 
 class SampleFormParameterFormulaCalculate(models.Model):
     sample_form = models.ForeignKey(SampleForm,related_name="result",on_delete=models.CASCADE,null=True)
@@ -299,8 +300,8 @@ class SampleFormParameterFormulaCalculate(models.Model):
     auto_calculate_result = models.CharField(max_length=200,null=True)
     remarks = models.CharField(max_length=200,null=True)
  
-    created_date = models.DateTimeField(default=timezone.now)
-    updated_date = models.DateTimeField(default=timezone.now)
+    created_date = models.DateTimeField(auto_now_add=True)  
+    updated_date = models.DateTimeField(auto_now=True)
 
     converted_result = models.CharField(max_length=200,null=True)
     analyst_remarks = models.CharField(max_length=200,null=True)
@@ -349,8 +350,8 @@ class RawDataSheet(models.Model):
     analyst_user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,default=None)
     remarks = models.CharField(max_length=1000,null=True)
     supervisor_remarks = models.CharField(max_length=1000,null=True)
-    created_date = models.DateTimeField(default=timezone.now)
-    updated_date = models.DateTimeField(default=timezone.now)
+    created_date = models.DateTimeField(auto_now_add=True)  
+    updated_date = models.DateTimeField(auto_now=True)
     additional_info = models.CharField(max_length=500, blank=True, null=True)
     started_date = models.CharField(max_length=30,null=True) #started date
     completed_date = models.DateTimeField(null=True) #raw data generated
@@ -410,8 +411,8 @@ class RawDataSheetDetail(models.Model):
     input_fields_value = models.CharField(max_length=2000,null=True)
     auto_calculate_result = models.CharField(max_length=200,null=True)
     remark = models.CharField(max_length=200,null=True)
-    created_date = models.DateTimeField(default=timezone.now)
-    updated_date = models.DateTimeField(default=timezone.now)
+    created_date = models.DateTimeField(auto_now_add=True)  
+    updated_date = models.DateTimeField(auto_now=True)
 
     converted_result = models.CharField(max_length=200,null=True)
     analyst_remarks = models.CharField(max_length=200,null=True)

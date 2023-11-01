@@ -47,8 +47,8 @@ class CustomUser(AbstractUser):
     created_by = models.IntegerField(null=True)
     remarks = models.CharField(max_length=200,null=True)
 
-    created_date = models.DateTimeField(default=timezone.now)
-    updated_date = models.DateTimeField(default=timezone.now)
+    created_date = models.DateTimeField(auto_now_add=True)  
+    updated_date = models.DateTimeField(auto_now=True)
 
     SUPERADMIN = 1
     SMU = 2
