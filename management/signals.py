@@ -50,6 +50,8 @@ def handle_sampleform_presave(sender, instance, **kwargs):
 @receiver(post_save, sender=SampleForm)
 def handle_sampleform_presave(sender, instance ,created , **kwargs):
     if instance.status == "completed":
+        instance.completed_date = timezone.now()
+        instance.approved_date = timezone.now()
         sampleFormNotificationHandler(instance,"approved_sample_form")
         sendFinalreport(instance)
     if created:
@@ -253,7 +255,7 @@ def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
             supervisor_sample_form_obj.update(status = "verified")
 
             sample_form_obj.status = "not_approved"
-            sample_form_obj.completed_date = timezone.now()
+            
             sample_form_obj.verified_date = timezone.now()
 
             sample_form_obj.remarks = instance.remarks
