@@ -1,5 +1,5 @@
 from . import views,preeti_to_unicode,preeti_to_pdf,dashboard
-from . import final_report,track,status,assigned_sample_for_smu_superadmin
+from . import final_report,track,status,assigned_sample_for_smu_superadmin, additional_details
 
 from django.urls import path, include
 
@@ -46,5 +46,7 @@ urlpatterns = [
 
 
     path('final-report-in-nepali/<str:sample_form_id>/<int:role_id>/', views.FinalReportNepali.as_view()), #both are same
+
+    path('get-sample-form-contacts-for-industry/', additional_details.AdditionalDetailSampleForm.as_view()), #by sagar 
  
 ]

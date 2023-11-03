@@ -10,6 +10,10 @@ class ClientCategory(models.Model):
     # reg_no = models.CharField(max_length=255)
     # registration_document = models.ImageField(upload_to='media/client_category', null=True)
     # user_renew_document = models.ImageField(upload_to='media/client_category', null=True)
+    # 11 DFTQC Section 
+    # 9 Government Agency
+    # 10 Importer/Exporter
+    # 1 Industry
     
 
 class CommodityCategory(models.Model):

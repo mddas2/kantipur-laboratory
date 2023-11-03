@@ -1,7 +1,7 @@
 import json
 from account.models import CustomUser
 from management.models import SampleForm,Commodity,SampleFormHasParameter,CommodityCategory
-from . serializers import CustomUserSerializer,CommodityCategorySerializer,SampleFormOnlySerializer,CommodityOnlySerializer,ClientCategorySerializer
+# from . serializers import CustomUserSerializer,CommodityCategorySerializer,SampleFormOnlySerializer,CommodityOnlySerializer,ClientCategorySerializer
 from django.http import HttpResponse
 import pandas as pd
 from management import roles
