@@ -266,7 +266,7 @@ class SampleFormHasParameter(models.Model):#sample form has parameter and parame
     created_date = models.DateTimeField(auto_now_add=True) #reported date
     started_date = models.CharField(max_length=30,null=True) #started date
     sample_receipt_condition = models.CharField(max_length=100, blank=True, null=True)
-    additional_info = models.CharField(max_length=500, blank=True, null=True)
+    additional_info = models.CharField(max_length=2000, blank=True, null=True)
     completed_date = models.DateTimeField(null=True) #raw data generated
     sample_received_date = models.CharField(max_length=30,null=True) # sample received date.
 
@@ -308,14 +308,14 @@ class SampleFormParameterFormulaCalculate(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
 
     converted_result = models.CharField(max_length=200,null=True)
-    analyst_remarks = models.CharField(max_length=200,null=True)
+    analyst_remarks = models.CharField(max_length=2000,null=True)
     decimal_place = models.CharField(max_length=200,null=True)
 
     units = models.CharField(max_length=200,null=True)
     mandatory_standard = models.CharField(max_length=200,null=True)
     test_method = models.CharField(max_length=200,null=True)
 
-    additional_info = models.CharField(max_length=500, blank=True, null=True)
+    additional_info = models.CharField(max_length=2000, blank=True, null=True)
 
     status_choices = (
         ('pending', 'pending'),
@@ -356,7 +356,7 @@ class RawDataSheet(models.Model):
     supervisor_remarks = models.CharField(max_length=1000,null=True)
     created_date = models.DateTimeField(auto_now_add=True)  
     updated_date = models.DateTimeField(auto_now=True)
-    additional_info = models.CharField(max_length=500, blank=True, null=True)
+    additional_info = models.CharField(max_length=2000, blank=True, null=True)
     started_date = models.CharField(max_length=30,null=True) #started date
     completed_date = models.DateTimeField(null=True) #raw data generated
     sample_received_date = models.CharField(max_length=30,null=True) # sample received date.
@@ -419,13 +419,13 @@ class RawDataSheetDetail(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
 
     converted_result = models.CharField(max_length=200,null=True)
-    analyst_remarks = models.CharField(max_length=200,null=True)
+    analyst_remarks = models.CharField(max_length=2000,null=True)
     decimal_place = models.CharField(max_length=200,null=True)
 
     units = models.CharField(max_length=200,null=True)
     mandatory_standard = models.CharField(max_length=200,null=True)
     test_method = models.CharField(max_length=200,null=True)
-    additional_info = models.CharField(max_length=500, blank=True, null=True)
+    additional_info = models.CharField(max_length=2000, blank=True, null=True)
 
 
 class MicroObservationTable(models.Model):
