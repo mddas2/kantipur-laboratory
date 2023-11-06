@@ -78,6 +78,9 @@ class ClientCategoryDetail(models.Model): #DFTQC
 
 class SampleForm(models.Model):#ClientRequest
     owner_user = models.EmailField(max_length=100,null=False,default=None)
+    owner_user_obj = models.ForeignKey(CustomUser,related_name="suser_have_sample_form",default=None,null=True,on_delete=models.SET_NULL)
+    created_by_user = models.ForeignKey(CustomUser,related_name="sample_form_created_by",default=None,null=True,on_delete=models.SET_NULL)
+
     name = models.CharField(max_length=255, null=True)
     condition = models.CharField(max_length=255,null=True)
     mfd = models.CharField(max_length=255,null=True)

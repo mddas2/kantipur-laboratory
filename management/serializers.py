@@ -267,13 +267,21 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
     
     def validate_price(self,value):#field level validation
         raise serializers.ValidationError('price can not be modified error')
+    
+    def validate_owner_user_obj(self,value):#field level validation
+        raise serializers.ValidationError('owner_user_obj can not be modified error')
         
     def validate(self, data):
         # raise serializers.ValidationError('testing sample form dftqc')
         action = self.context['view'].action
+        request = self.context.get('request')
+
+        if action == "create":
+            owner_user_id = CustomUser.objects.get(email = data.get('owner_user')).id
+            data['owner_user_obj'] = owner_user_id
+            data['created_by_user_id'] = request.user.id
 
         if action == "update" or action == "partial_update":
-            request = self.context.get('request')
             parameters = data.get('parameters')
             form_available = self.instance.form_available
             if form_available == "smu":
@@ -323,6 +331,17 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = SampleForm
         fields = '__all__'
+
+    def get_fields(self):
+        fields = super(SampleFormWriteSerializer, self).get_fields()
+        # Check if the request method is PUT or PATCH
+        request = self.context.get('request')
+        if request and request.method in ['PUT', 'PATCH']:
+            fields['owner_user'].read_only = True
+            fields['owner_user_obj'].read_only = True
+            fields['price'].read_only = True
+
+        return fields
 
 class SampleFormReadAnalystSerializer(serializers.ModelSerializer):
     commodity = CommodityReadSerializer(read_only=True,many=False)
