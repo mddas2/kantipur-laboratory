@@ -278,7 +278,7 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
 
         if action == "create":
             owner_user_id = CustomUser.objects.get(email = data.get('owner_user')).id
-            data['owner_user_obj'] = owner_user_id
+            data['owner_user_obj_id'] = owner_user_id
             data['created_by_user_id'] = request.user.id
 
         if action == "update" or action == "partial_update":
