@@ -76,14 +76,14 @@ class CommodityCategorySerializer(serializers.ModelSerializer):
     class Meta:
         ref_name = "CommodityCategorySerializers"
         model = CommodityCategory
-        fields = ['name']
+        fields = ['name','id']
 
 class CommoditySerializer(serializers.ModelSerializer):
     category = CommodityCategorySerializer(read_only = True)
     class Meta:
         ref_name = "CommoditySerializer"
         model = Commodity
-        fields = ['category','id']
+        fields = ['category']
 
 class SampleFormHasParameterSerializer(serializers.ModelSerializer):
     commodity = CommoditySerializer(read_only = True)
