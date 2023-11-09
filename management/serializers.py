@@ -131,6 +131,12 @@ class MicroObservationTableSerializer(serializers.ModelSerializer):
     class Meta:
         model = MicroObservationTable
         fields = '__all__' 
+    
+    def to_representation(self, instance):
+        representation =  super().to_representation(instance)
+        representation['parameter_name'] = instance.parameter.name
+        return representation
+    
 
 class MicroParameterSerializer(serializers.ModelSerializer):
     def to_internal_value(self, data):
@@ -145,11 +151,7 @@ class MicroParameterSerializer(serializers.ModelSerializer):
     class Meta:
         model = MicroParameter 
         fields = '__all__' 
-    
-    def to_representation(self, instance):
-        representation =  super().to_representation(instance)
-        representation['parameter_name'] = instance.parameter.name
-        return representation
+
 
 # class CommoditySerializer(serializers.ModelSerializer):
 #     class Meta:
