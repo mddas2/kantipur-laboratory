@@ -55,8 +55,10 @@ class rawDataSheetDetailSerializer(serializers.ModelSerializer):
         analyst_remarks = instance.analyst_remarks
         if analyst_remarks:
             representation['final_result'] = instance.analyst_remarks
-        else:
+        elif instance.converted_result:
             representation['final_result'] = instance.converted_result
+        else:
+            representation['final_result'] = instance.result
             
         return representation
            
