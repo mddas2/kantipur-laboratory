@@ -89,7 +89,7 @@ class SampleFormHasParameterSerializer(serializers.ModelSerializer):
     commodity = CommoditySerializer(read_only = True)
     class Meta:
         model = SampleFormHasParameter
-        fields = ['created_date','commodity']
+        fields = ['created_date','commodity','id']
 
 class rawDataSerializer(serializers.ModelSerializer):
 
