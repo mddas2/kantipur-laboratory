@@ -209,9 +209,11 @@ class AnalystProgressReport(views.APIView):
         for analyst_user in analyst_users:
             total_sample_forms_obj = SampleFormHasParameter.objects.filter(analyst_user_id = analyst_user.id).all()
             total_sample_forms = total_sample_forms_obj.count()
-
-            recheck = total_sample_forms_obj.filter(status = "recheck").count()
+            if total_sample_forms == 0:
+                continue
             pending = total_sample_forms_obj.filter(status = "pending").count()
+            recheck = total_sample_forms_obj.filter(status = "recheck").count()
+
             re_assign = total_sample_forms_obj.filter(status = "re_assign").count()
             processing = total_sample_forms_obj.filter(status = "processing").count()
             total_tested = total_sample_forms_obj.filter(is_supervisor_sent = True,).count()
