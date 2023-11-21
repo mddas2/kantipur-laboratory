@@ -200,6 +200,83 @@ class reportStatus(views.APIView):
 
         return Response(data)
 
+class AnalystProgressReport(views.APIView):
+    def get(self,request):
+        total_users = 0#CustomUser.objects.all().count()
+
+        analyst_users = CustomUser.objects.filter(role=roles.ANALYST)
+        analyst_reports = []
+        for analyst_user in analyst_users:
+            total_sample_forms_obj = SampleFormHasParameter.objects.filter(analyst_user_id = analyst_user.id).all()
+            total_sample_forms = total_sample_forms_obj.count()
+
+            recheck = total_sample_forms_obj.filter(status = "recheck").count()
+            pending = total_sample_forms_obj.filter(status = "pending").count()
+            re_assign = total_sample_forms_obj.filter(status = "re_assign").count()
+            processing = total_sample_forms_obj.filter(status = "processing").count()
+            total_tested = total_sample_forms_obj.filter(is_supervisor_sent = True,).count()
+
+
+            sample_form_obj = SampleForm.objects.filter(sample_has_parameter_analyst__analyst_user=analyst_user.id)
+            not_verified = sample_form_obj.filter(status = "not_verified").count()
+            completed = sample_form_obj.filter(status = "completed").count()
+            
+
+            total_report_generated = SampleFormHasParameter.objects.filter(analyst_user=self.request.user.id, sample_form__verifier__is_verified=True).count()
+            data = {
+                'analyst_email':analyst_user.email,
+                'user_name':analyst_user.username,
+                'total_request':total_sample_forms,
+                'total_tested':total_tested,
+                'pending':pending,
+                'recheck' : recheck,
+                're_assign' : re_assign,
+                'completed' : completed,
+                'not_verified':not_verified,
+                'processing':processing
+            }
+            analyst_reports.append(data)
+        json_response = request.GET.get('json_response',0)
+        print(json_response)
+        # json_response = True
+        if str(json_response).strip() == '1':
+            return Response(analyst_reports)
+        return downloadReport(analyst_reports)
+        
+
+
+def downloadReport(dataList):
+    import pandas as pd
+    from django.http import FileResponse
+    from django.views import View
+    import pandas as pd
+    import io
+
+    # dataList = [
+    #         {'Name': 'John', 'Age': 28, 'City': 'New York'},
+    #         {'Name': 'Jane', 'Age': 24, 'City': 'San Francisco'},
+    #         {'Name': 'Bob', 'Age': 22, 'City': 'Los Angeles'}
+    #     ]
+    
+    # Create a DataFrame from the list of dictionaries
+    df = pd.DataFrame(dataList)
+
+    # Create a response with the Excel file
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=output.xlsx'
+
+    # Write the DataFrame to the response
+    df.to_excel(response, index=False)
+
+    return response
+
+
+
+
+
+
+
+
 def reportGeneratedWeek(query):
     report_generated_week = []
     # Get the start and end of the current week (assuming Sunday as the start of the week)
