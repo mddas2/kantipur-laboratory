@@ -228,6 +228,7 @@ class AnalystProgressReport(views.APIView):
             data = {
                 'analyst_email':analyst_user.email,
                 'user_name':analyst_user.username,
+                'full_name':analyst_user.first_name + " " + analyst_user.last_name,
                 'total_request':total_sample_forms,
                 'total_tested':total_tested,
                 'pending':pending,
