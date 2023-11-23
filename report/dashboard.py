@@ -243,7 +243,6 @@ class AnalystProgressReport(views.APIView):
                 'recheck' : recheck,
                 're_assign' : re_assign,
                 'completed' : completed,
-                'not_verified':not_verified,
                 'processing':processing
             }
             analyst_reports.append(data)
