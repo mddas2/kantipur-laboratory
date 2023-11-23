@@ -212,7 +212,6 @@ class AnalystProgressReport(views.APIView):
             if total_sample_forms == 0:
                 continue
          
-        
             pending_data = total_sample_forms_obj.filter(Q(status='pending') | Q(status='processing'))
             pending = 0
             for pending_dat in pending_data:
@@ -255,35 +254,52 @@ class AnalystProgressReport(views.APIView):
         
 class SuperVisorProgressReport(views.APIView):
     def get(self,request):
-        supervisor_users = CustomUser.objects.filter(role=roles.ANALYST)
+        supervisor_users = CustomUser.objects.filter(role=roles.SUPERVISOR)
         suspervisor_reports = []
-        total_sample_forms_obj = SuperVisorSampleForm.objects.filter(supervisor_user = self.request.user.id).all()
-        total_requests = total_sample_forms_obj.count()
-        completed = total_sample_forms_obj.filter(sample_form__status = "completed").count()
-        reject = total_sample_forms_obj.filter(sample_form__status = "rejected").count()
-        not_verified = total_sample_forms_obj.filter(sample_form__verifier__is_verified = False).count()
-        verified = total_sample_forms_obj.filter(sample_form__verifier__is_verified = True).count()
-        pending = total_sample_forms_obj.filter(status = "pending").count()
-        not_assigned = total_sample_forms_obj.filter(status = "not_assigned").count()
-        processing = total_sample_forms_obj.filter(status = "processing").count()
+        for supervisor_user in supervisor_users:
+            total_sample_forms_obj = SuperVisorSampleForm.objects.filter(supervisor_user = supervisor_user).all()
+            total_requests = total_sample_forms_obj.count()
+            completed = total_sample_forms_obj.filter(sample_form__status = "completed").count()
+            reject = total_sample_forms_obj.filter(sample_form__status = "rejected").count()
+            not_verified = total_sample_forms_obj.filter(sample_form__verifier__is_verified = False).count()
+            verified = total_sample_forms_obj.filter(sample_form__verifier__is_verified = True).count()
+            pending = total_sample_forms_obj.filter(status = "pending").count()
+            not_assigned = total_sample_forms_obj.filter(status = "not_assigned").count()
+            processing = total_sample_forms_obj.filter(status = "processing").count()
 
-        recheck = total_sample_forms_obj.filter(sample_form__status = "recheck").count()      
+            recheck = total_sample_forms_obj.filter(sample_form__status = "recheck").count()      
 
-        analyst_users = CustomUser.objects.filter(role = roles.ANALYST)
-        task_by_analyst = []
-        for ana_user in analyst_users:
-            supervisor_anaalyst_obj = ana_user.sample_has_parameter_analyst.all().filter(super_visor_sample_form__supervisor_user = request.user)
-            total_request = supervisor_anaalyst_obj.count()
-            name =   ana_user.email
-            data = {
-                'name':name,
-                'total_request':total_request,
-            }
-            task_by_analyst.append(data)
+            analyst_users = CustomUser.objects.filter(role = roles.ANALYST)
+            task_by_analyst = []
+            for ana_user in analyst_users:
+                supervisor_anaalyst_obj = ana_user.sample_has_parameter_analyst.all().filter(super_visor_sample_form__supervisor_user_id = supervisor_user.id)
+        
+                total_request = supervisor_anaalyst_obj.count()
+                if total_request == 0:
+                    continue
+                pending_ana = 0
+                pending_data = supervisor_anaalyst_obj # all sample form of analyst
+                for pending_dat in pending_data:
+                    check = SampleFormParameterFormulaCalculate.objects.filter(sample_form_has_parameter_id = pending_dat.id).exists()
+                    if check == False:
+                        pending_ana = pending_ana + 1
+                completed_data_ana = supervisor_anaalyst_obj.filter(status = "completed").count()
+                total_tested_ana = supervisor_anaalyst_obj.filter(is_supervisor_sent = True,).count()
+                # print(total_request)
+                name =   ana_user.email
+                data = {
+                    'name':name,
+                    'total_request':total_request,
+                    'pending':pending_ana,
+                    'total_tested':total_tested_ana,
+                    'completed':completed_data_ana
+                }
+                task_by_analyst.append(data)
 
-            report_generated_week = reportGeneratedWeek(total_sample_forms_obj)
+            # report_generated_week = reportGeneratedWeek(total_sample_forms_obj)
       
             data = {
+                'supervisor full nme':supervisor_user.first_name  + " " + supervisor_user.last_name,
                 'total_request':total_requests,
                 'completed':completed,
                 'pending':pending,
@@ -294,12 +310,12 @@ class SuperVisorProgressReport(views.APIView):
                 "reject":reject,
                 'not_assigned':not_assigned,
                 'task_by_analyst':task_by_analyst,
-                'report_generated_week':report_generated_week,
+                # 'report_generated_week':report_generated_week,
             }
             
             suspervisor_reports.append(data)
         json_response = request.GET.get('json_response',0)
-        print(json_response)
+        # print(json_response)
         # json_response = True
         if str(json_response).strip() == '1':
             return Response(suspervisor_reports)

@@ -42,6 +42,7 @@ urlpatterns = [
 
     path('dashboard-report/', dashboard.reportStatus.as_view()),
     path('analyst-report-download/', dashboard.AnalystProgressReport.as_view()),
+    path('supervisor-report-download/', dashboard.SuperVisorProgressReport.as_view()),
 
     path('sample-form-track-by-analyst/<str:sample_form_id>/', views.SampleFormTrackbyAnalyst.as_view()),
 
