@@ -399,7 +399,7 @@ class CommodityViewSet(viewsets.ModelViewSet):
         'category_id': ['exact'],
     }
 
-    # authentication_classes = [JWTAuthentication]
+    authentication_classes = [JWTAuthentication]
     permission_classes = [CommodityViewSetPermission]
     pagination_class = MyLimitOffsetPagination
     
@@ -570,7 +570,7 @@ class CommodityCategoryViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     filterset_fields = ['name','id']
     search_fields = ['name']
-    # authentication_classes = [JWTAuthentication]
+    authentication_classes = [JWTAuthentication]
     permission_classes = [CommodityCategoryViewSetPermission]
     pagination_class = MyLimitOffsetPagination
 
@@ -762,8 +762,6 @@ class PaymentViewSet(viewsets.ModelViewSet):
     pagination_class = MyLimitOffsetPagination
     
     parser_classes = [MultiPartParser, FormParser]
-
-
     
     def create(self, request, *args, **kwargs):
         payment_dict = {}

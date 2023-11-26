@@ -1,6 +1,12 @@
 from rest_framework.permissions import BasePermission
 from . import roles
 
+def IsAuthenticated(request):
+    return bool(request.user and request.user.is_authenticated)
+
+def AdminLevelPermission(request):
+    return IsAuthenticated(request) and request.user.role in [roles.ADMIN, roles.SMU , roles.SUPERADMIN]
+
 class SampleFormViewSetPermission(BasePermission):
     def has_permission(self, request, view):
         method_name = view.action
@@ -19,20 +25,20 @@ class SampleFormViewSetPermission(BasePermission):
             return False
         else:
             return False
-        
+
 class CommodityViewSetPermission(BasePermission):
     def has_permission(self, request, view):
         method_name = view.action
         if method_name == 'list':
             return True
         elif method_name == 'create':
-            return True
+            return AdminLevelPermission(request)
         elif method_name == 'retrieve':
             return True
         elif method_name == 'update':
-            return True
+            return AdminLevelPermission(request)
         elif method_name == 'partial_update':
-            return True
+            return AdminLevelPermission(request)
         elif method_name == 'destroy':
             return False
         else:
@@ -83,13 +89,13 @@ class CommodityCategoryViewSetPermission(BasePermission):
         if method_name == 'list':
             return True
         elif method_name == 'create':
-            return True
+            return AdminLevelPermission(request)
         elif method_name == 'retrieve':
             return True
         elif method_name == 'update':
-            return True
+            return AdminLevelPermission(request)
         elif method_name == 'partial_update':
-            return True
+            return AdminLevelPermission(request)
         elif method_name == 'destroy':
             return False
         else:
@@ -101,13 +107,13 @@ class TestResultViewSetPermission(BasePermission):
         if method_name == 'list':
             return True
         elif method_name == 'create':
-            return True
+            return AdminLevelPermission(request)
         elif method_name == 'retrieve':
             return True
         elif method_name == 'update':
-            return True
+            return AdminLevelPermission(request)
         elif method_name == 'partial_update':
-            return True
+            return AdminLevelPermission(request)
         elif method_name == 'destroy':
             return False
         else:
@@ -119,13 +125,13 @@ class PaymentViewSetPermission(BasePermission):
         if method_name == 'list':
             return True
         elif method_name == 'create':
-            return True
+            return AdminLevelPermission(request)
         elif method_name == 'retrieve':
             return True
         elif method_name == 'update':
-            return True
+            return AdminLevelPermission(request)
         elif method_name == 'partial_update':
-            return True
+            return AdminLevelPermission(request)
         elif method_name == 'destroy':
             return False
         else:
@@ -155,13 +161,13 @@ class ClientCategoryPermission(BasePermission):
         if method_name == 'list':
             return True
         elif method_name == 'create':
-            return True
+            return False
         elif method_name == 'retrieve':
             return True
         elif method_name == 'update':
-            return True
+            return False
         elif method_name == 'partial_update':
-            return True
+            return False
         elif method_name == 'destroy':
             return False
         else:
