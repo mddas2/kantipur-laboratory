@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from .formula_serializers import SampleFormParameterFormulaCalculateReadSerializer,FormulaApiCalculateSerializer,FormulaApiGetFieldSerializer,FormulaApiCalculateSaveSerializer,RecheckSerializer,SampleFormRecheckSerializer
 from .models import SampleFormParameterFormulaCalculate,Commodity,TestResult,SampleForm,RawDataSheet,SampleFormHasParameter
+from .custompermission import MicroparameterViewsetPermission
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -216,8 +217,8 @@ class SampleFormParameterFormulaCalculateViewSet(viewsets.ModelViewSet):
     filterset_fields = ['id']
     ordering_fields = ['id']
     
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [MicroparameterViewsetPermission]
     pagination_class = MyLimitOffsetPagination
 
     def get_serializer_class(self):

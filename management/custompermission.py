@@ -10,6 +10,15 @@ def AdminLevelPermission(request):
 def AnalystPermission(request):
     return IsAuthenticated(request) and request.user.role in [roles.ANALYST]
 
+def VerifierLevelPermission(request):
+    return IsAuthenticated(request) and request.user.role in [roles.VERIFIER]
+
+def SuperVisorLevelPermission(request):
+    return IsAuthenticated(request) and request.user.role in [roles.SUPERVISOR]
+
+def SuperVisorAnalystLevelPermission(request):
+    return IsAuthenticated(request) and request.user.role in [roles.SUPERVISOR,roles.ANALYST]
+
 class SampleFormViewSetPermission(BasePermission):
     def has_permission(self, request, view):
         method_name = view.action
@@ -24,6 +33,24 @@ class SampleFormViewSetPermission(BasePermission):
         elif method_name == 'partial_update':
             #print("SDasd asd")
             return True
+        elif method_name == 'destroy':
+            return False
+        else:
+            return False
+        
+class SuperVisorSampleFormViewsetPermission(BasePermission):
+    def has_permission(self, request, view):
+        method_name = view.action
+        if method_name == 'list':
+            return True
+        elif method_name == 'create':
+            return SuperVisorLevelPermission(request)
+        elif method_name == 'retrieve':
+            return True
+        elif method_name == 'update':
+            return SuperVisorLevelPermission(request)
+        elif method_name == 'partial_update':
+            return SuperVisorLevelPermission(request)
         elif method_name == 'destroy':
             return False
         else:
@@ -164,13 +191,13 @@ class SampleFormHasVerifierViewSetPermission(BasePermission):
         if method_name == 'list':
             return True
         elif method_name == 'create':
-            return True
+            return VerifierLevelPermission(request)
         elif method_name == 'retrieve':
             return True
         elif method_name == 'update':
-            return True
+            return VerifierLevelPermission(request)
         elif method_name == 'partial_update':
-            return True
+            return VerifierLevelPermission(request)
         elif method_name == 'destroy':
             return False
         else:
@@ -200,13 +227,13 @@ class SampleFormHasParameterPermission(BasePermission):
         if method_name == 'list':
             return True
         elif method_name == 'create':
-            return True
+            return SuperVisorAnalystLevelPermission(request)
         elif method_name == 'retrieve':
             return True
         elif method_name == 'update':
-            return True
+            return SuperVisorAnalystLevelPermission(request)
         elif method_name == 'partial_update':
-            return True
+            return SuperVisorAnalystLevelPermission(request)
         elif method_name == 'destroy':
             return False
         else:
