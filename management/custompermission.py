@@ -7,6 +7,9 @@ def IsAuthenticated(request):
 def AdminLevelPermission(request):
     return IsAuthenticated(request) and request.user.role in [roles.ADMIN, roles.SMU , roles.SUPERADMIN]
 
+def AnalystPermission(request):
+    return IsAuthenticated(request) and request.user.role in [roles.ANALYST]
+
 class SampleFormViewSetPermission(BasePermission):
     def has_permission(self, request, view):
         method_name = view.action
@@ -39,6 +42,24 @@ class CommodityViewSetPermission(BasePermission):
             return AdminLevelPermission(request)
         elif method_name == 'partial_update':
             return AdminLevelPermission(request)
+        elif method_name == 'destroy':
+            return False
+        else:
+            return False
+        
+class MicroparameterViewsetPermission(BasePermission):
+    def has_permission(self, request, view):
+        method_name = view.action
+        if method_name == 'list':
+            return True
+        elif method_name == 'create':
+            return AnalystPermission(request)
+        elif method_name == 'retrieve':
+            return True
+        elif method_name == 'update':
+            return AnalystPermission(request)
+        elif method_name == 'partial_update':
+            return AnalystPermission(request)
         elif method_name == 'destroy':
             return False
         else:

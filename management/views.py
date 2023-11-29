@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from .pagination import MyLimitOffsetPagination
 from rest_framework.response import Response
 from . client_category_serializers import ClientCategoryDetailSerializer,ClientCategoryDetailImagesSerializer
-from .custompermission import FiscalYearPermission,ClientCategoryPermission,SampleFormViewSetPermission,CommodityViewSetPermission,CommodityCategoryViewSetPermission,TestResultViewSetPermission,PaymentViewSetPermission
+from .custompermission import FiscalYearPermission,ClientCategoryPermission,SampleFormViewSetPermission,CommodityViewSetPermission,CommodityCategoryViewSetPermission,TestResultViewSetPermission,PaymentViewSetPermission,MicroparameterViewsetPermission
 from rest_framework import status
 from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
@@ -837,7 +837,7 @@ class MicroparameterViewset(viewsets.ModelViewSet):
     search_fields = ['id']
     filterset_fields = ['id']
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated,CommodityViewSetPermission]
+    permission_classes = [IsAuthenticated,MicroparameterViewsetPermission]
     pagination_class = MyLimitOffsetPagination
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
