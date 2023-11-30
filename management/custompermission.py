@@ -16,6 +16,9 @@ def VerifierLevelPermission(request):
 def SuperVisorLevelPermission(request):
     return IsAuthenticated(request) and request.user.role in [roles.SUPERVISOR]
 
+def SmuSuperVisorLevelPermission(request):
+    return IsAuthenticated(request) and request.user.role in [roles.SUPERVISOR,roles.SMU]
+
 def SuperVisorAnalystLevelPermission(request):
     return IsAuthenticated(request) and request.user.role in [roles.SUPERVISOR,roles.ANALYST]
 
@@ -44,13 +47,13 @@ class SuperVisorSampleFormViewsetPermission(BasePermission):
         if method_name == 'list':
             return True
         elif method_name == 'create':
-            return SuperVisorLevelPermission(request)
+            return SmuSuperVisorLevelPermission(request)
         elif method_name == 'retrieve':
             return True
         elif method_name == 'update':
-            return SuperVisorLevelPermission(request)
+            return SmuSuperVisorLevelPermission(request)
         elif method_name == 'partial_update':
-            return SuperVisorLevelPermission(request)
+            return SmuSuperVisorLevelPermission(request)
         elif method_name == 'destroy':
             return False
         else:
