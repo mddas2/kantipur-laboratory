@@ -313,7 +313,7 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
         
         if action == "partial_update":
             if request.user.role == roles.ADMIN:
-                if len(data) == 3 and 'id' in data and 'status' in data and 'admin_remarks' in data:
+                if len(data) == 2 and 'status' in data and 'admin_remarks' in data:
                     return data
                 else:
                     raise serializers.ValidationError('You have not permission. ')
