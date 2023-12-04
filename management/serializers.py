@@ -280,6 +280,7 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
         
     def validate(self, data):
         # raise serializers.ValidationError('testing sample form dftqc')
+        parameters = data.get('parameters')
         action = self.context['view'].action
         request = self.context.get('request')
 
@@ -289,24 +290,10 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
             data['created_by_user_id'] = request.user.id
 
         if action == "update" or action == "partial_update":
-            parameters = data.get('parameters')
-            form_available = self.instance.form_available
-            if form_available == "smu":
-                pass
-            elif request.user.role == roles.USER:
-                raise serializers.ValidationError('You have not permission to update')
-            else:
-                if parameters:
-                    raise serializers.ValidationError('You have not permission to update parameters ')
-
+            if parameters and (request.user.role != roles.SMU or request.user.role != roles.USER):
+                raise serializers.ValidationError('You have not permission to update parameters ')
             
-
-        if action == "create" or action=="update":
-            parameters = data.get('parameters')
-
-            client_category_detail_id = data.get('client_category_detail')
-            # raise serializers.ValidationError('testing sample form client category...')
-            #id = data.get('id')
+        if action == "create" or action=="update": #user , smu
             commodity = data.get('commodity')
 
             commodity_parameters = TestResult.objects.filter(commodity=commodity)
@@ -322,18 +309,18 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
                 for paramet in data.get('parameters'):
                     price = paramet.price + price
                 data['price'] = price
-                
             return data
-        elif action == "partial_update" or action == "update":
-            supervisor_user = data.get('supervisor_user')
-            form_available = data.get('form_available')
-       
-            if supervisor_user is not None and form_available == "supervisor":
-                request = self.context.get('request')
-                data['approved_by'] = request.user
+        
+        if action == "partial_update":
+            if request.user.role == roles.ADMIN:
+                if len(data) == 3 and 'id' in data and 'status' in data and 'admin_remarks' in data:
+                    return data
+                else:
+                    raise serializers.ValidationError('You have not permission. ')
             return data
-        else:
-            return data
+            #for verifier validate.
+                    
+
         
     class Meta:
         model = SampleForm
@@ -442,7 +429,7 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
 
         action = self.context['view'].action
         
-        if len(attrs) == 3 and action == 'partial_update' and 'is_supervisor_sent' and 'status' and 'remarks' in attrs:
+        if len(attrs) == 3 and action == 'partial_update' and 'is_supervisor_sent' in attrs and 'status' in attrs and 'remarks' in attrs:
             if attrs.get('is_supervisor_sent') == True:
                 id=self.context['view'].kwargs.get('pk')
                 remarks  = attrs.get('remarks')
@@ -800,7 +787,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                 # print(obj_check_exist_for_other_supervisor.super_visor_sample_form,"::",super_visor_sample_form_table , "you are trying to update where other supervisor already assigned")
                 raise serializers.ValidationError('you are trying to assign sample to analyst who is already assigned by other supervisor.')
 
-        if len(attrs) == 3 and action == 'partial_update' and 'is_supervisor_sent' and 'status' and 'remarks' in attrs:
+        if len(attrs) == 3 and action == 'partial_update' and 'is_supervisor_sent' in attrs and 'status' in attrs and 'remarks' in attrs:
             if attrs.get('is_supervisor_sent') == True:
                 id=self.context['view'].kwargs.get('pk')
                 remarks  = attrs.get('remarks')
@@ -814,7 +801,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                 # raise serializers.ValidationError('Fixing micro raw data ...')
                 return attrs
         
-        elif len(attrs) == 4 and action == 'partial_update' and 'started_date' and 'sample_received_date' and 'additional_info' and 'sample_receipt_condition' in attrs:
+        elif len(attrs) == 4 and action == 'partial_update' and 'started_date' in attrs and 'sample_received_date' in attrs and 'additional_info' in attrs and 'sample_receipt_condition' in attrs:
             return attrs
             
         elif action == 'partial_update':

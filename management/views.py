@@ -243,7 +243,6 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     
         queryset = self.get_queryset()
         obj = queryset.filter(id=id).first()
-        print(obj)
         if not obj:
             raise Http404("Object not found")
 
@@ -287,10 +286,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         response = super().retrieve(request, *args, **kwargs)
         
         # Add extra response data for retrieve action
-        extra_data = {
-            "extra_field": "Extra value for retrieve",
-            "another_field": "Another value for retrieve"
-        }
+    
         # response.data.update(extra_data)
         return response
     
@@ -364,7 +360,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
 
         # Save the updated object to the database
         self.perform_update(serializer)
-        print(serializer.data)
+        # print(serializer.data)
         # Create a custom response
         response_data = {
             "message": "Sample partially updated successfully",

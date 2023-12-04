@@ -4,6 +4,12 @@ from . import roles
 def IsAuthenticated(request):
     return bool(request.user and request.user.is_authenticated)
 
+def SMU_USER_Permission(request):
+    return IsAuthenticated(request) and request.user.role in [roles.SMU ,roles.USER,]
+
+def allAdminPermission(request):
+    return IsAuthenticated(request) and request.user.role in [roles.ADMIN, roles.SMU , roles.SUPERADMIN, roles.VERIFIER]
+
 def AdminLevelPermission(request):
     return IsAuthenticated(request) and request.user.role in [roles.ADMIN, roles.SMU , roles.SUPERADMIN]
 
@@ -32,10 +38,10 @@ class SampleFormViewSetPermission(BasePermission):
         elif method_name == 'retrieve':
             return True
         elif method_name == 'update':
-            return True
+            return SMU_USER_Permission(request)
         elif method_name == 'partial_update':
             #print("SDasd asd")
-            return True
+            return allAdminPermission(request)
         elif method_name == 'destroy':
             return False
         else:
