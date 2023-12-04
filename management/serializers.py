@@ -317,7 +317,14 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
                     return data
                 else:
                     raise serializers.ValidationError('You have not permission. ')
-            return data
+            elif request.user.role == roles.VERIFIER:
+                return data #blunder md blunder_md  hints more validate
+            elif request.user.role == roles.SUPERVISOR:
+                return data #blunder md blunder_md  hints more validate
+            elif request.user.role == roles.SMU:
+                return data #blunder md blunder_md  hints more validate
+            else:
+                raise serializers.ValidationError('You have not permission. ')
             #for verifier validate.
                     
 
