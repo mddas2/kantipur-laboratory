@@ -52,6 +52,7 @@ def handle_sampleform_presave(sender, instance ,created , **kwargs):
     if instance.status == "completed":
         instance.completed_date = timezone.now()
         instance.approved_date = timezone.now()
+        instance.save()
         sampleFormNotificationHandler(instance,"approved_sample_form")
         sendFinalreport(instance)
     if created:
