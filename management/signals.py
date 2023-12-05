@@ -41,7 +41,7 @@ def handle_sampleform_presave(sender, instance, **kwargs):
                 instance.sample_symbol_number = full_encoded
                 instance.name = full_encoded
     else:
-        if instance.status in "completed":
+        if instance.status == "completed":
             instance.completed_date = timezone.now()
             instance.approved_date = timezone.now()
         
