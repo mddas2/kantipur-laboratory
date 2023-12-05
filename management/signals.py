@@ -28,8 +28,6 @@ def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwarg
     
 @receiver(pre_save, sender=SampleForm)
 def handle_sampleform_presave(sender, instance, **kwargs):
-    instance.completed_date = timezone.now()
-    instance.approved_date = timezone.now()
     original_sample_form_status = None
     if not instance.pk:
         client_category = instance.client_category_detail.client_category.id
@@ -42,15 +40,13 @@ def handle_sampleform_presave(sender, instance, **kwargs):
                 full_encoded = encoded_data.upper() + "-" +str(count_data)
                 instance.sample_symbol_number = full_encoded
                 instance.name = full_encoded
+    else:
+        if instance.status in "completed":
+            instance.completed_date = timezone.now()
+            instance.approved_date = timezone.now()
         
     if instance.id:
         original_sample_form_status = SampleForm.objects.get(pk=instance.id).supervisor_user
-
-    print(" in signaling ...")
-    if instance.pk and instance.status == "completed":
-        print(" going to completed")
-        instance.completed_date = timezone.now()
-        instance.approved_date = timezone.now()
 
     if instance.status != original_sample_form_status: # dynamic rawdata sheet status changing
         raw_data_obj = RawDataSheet.objects.filter(sample_form_id = instance.id).filter(~Q(status="recheck") or ~Q(status="re-assign"))
