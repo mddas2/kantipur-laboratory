@@ -42,8 +42,8 @@ urlpatterns = [
     
     path('get-parameter-to-verified/<int:sample_form_id>/', formula_algorithm.FormulaGetToVerifier.as_view(), name='formula-calculte-verifier'),
 
-    # path('import-excel-bulk/',import_excel.ImportExcel,name="ImportExcel"),
-    # path('import-excel-bulk/<str:total_rows>/<str:already_exists_parameters>/<str:total_create>/',import_excel.ResubmissionPrevent,name="ResubmissionPrevent"),
+    path('import-excel-bulk/',import_excel.ImportExcel,name="ImportExcel"),
+    path('import-excel-bulk/<str:total_rows>/<str:already_exists_parameters>/<str:total_create>/',import_excel.ResubmissionPrevent,name="ResubmissionPrevent"),
 
     path('get-commodity-data-with-parameters/', views.commodityLimitedData.as_view(), name='commodityLimitedData'),
 
