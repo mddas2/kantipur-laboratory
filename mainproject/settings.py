@@ -108,11 +108,11 @@ CORS_ALLOW_CREDENTIALS = True
 
 CORS_ORIGIN_WHITELIST = [
     'https://dev-lims.netlify.app',
-    'http://192.168.1.181:4200',
+    'http://192.168.1.113:4200',
 
     # Add other allowed origins as needed
 ]
-CSRF_TRUSTED_ORIGINS = ['https://dev-lims.netlify.app','http://192.168.1.181:4200']
+CSRF_TRUSTED_ORIGINS = ['https://dev-lims.netlify.app','http://192.168.1.113:4200']
 
 
 ROOT_URLCONF = 'mainproject.urls'
