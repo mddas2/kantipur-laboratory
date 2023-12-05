@@ -56,7 +56,7 @@ def handle_sampleform_presave(sender, instance, **kwargs):
 def handle_sampleform_presave(sender, instance ,created , **kwargs):
     if instance.status == "completed":
         sampleFormNotificationHandler(instance,"approved_sample_form")
-        # sendFinalreport(instance)
+        sendFinalreport(instance)
     if created:
         sampleFormNotificationHandler(instance,"new_sample_form")
         
