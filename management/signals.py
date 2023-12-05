@@ -28,6 +28,8 @@ def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwarg
     
 @receiver(pre_save, sender=SampleForm)
 def handle_sampleform_presave(sender, instance, **kwargs):
+    instance.completed_date = timezone.now()
+    instance.approved_date = timezone.now()
     original_sample_form_status = None
     if not instance.pk:
         client_category = instance.client_category_detail.client_category.id
