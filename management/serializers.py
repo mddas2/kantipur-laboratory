@@ -293,6 +293,11 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
             if parameters and (request.user.role != roles.SMU and request.user.role != roles.USER):
                 raise serializers.ValidationError('You have not permission to update parameters. Error code E-SAMPLE-FORM-1')
             
+            sample_form_id = self.context['view'].kwargs.get('pk')
+            supervisor_data = SuperVisorSampleForm.objects.filter(sample_form_id = sample_form_id).exists()
+            if supervisor_data and parameters: #if sampleform  reach to supervisor , then no one can update parameters.
+                raise serializers.ValidationError('You have not permission to update parameters. Error code E-SAMPLE-FORM-4')
+            
         if action == "create" or action=="update": #user , smu
             commodity = data.get('commodity')
 
