@@ -290,8 +290,8 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
             data['created_by_user_id'] = request.user.id
 
         if action == "update" or action == "partial_update":
-            if parameters and (request.user.role != roles.SMU or request.user.role != roles.USER):
-                raise serializers.ValidationError('You have not permission to update parameters ')
+            if parameters and (request.user.role != roles.SMU and request.user.role != roles.USER):
+                raise serializers.ValidationError('You have not permission to update parameters. Error code E-SAMPLE-FORM-1')
             
         if action == "create" or action=="update": #user , smu
             commodity = data.get('commodity')
@@ -316,7 +316,7 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
                 if len(data) == 2 and 'status' in data and 'admin_remarks' in data:
                     return data
                 else:
-                    raise serializers.ValidationError('You have not permission. ')
+                    raise serializers.ValidationError('You have not permission. Error code E-SAMPLE-FORM-2')
             elif request.user.role == roles.VERIFIER:
                 return data #blunder md blunder_md  hints more validate
             elif request.user.role == roles.SUPERVISOR:
@@ -324,7 +324,7 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
             elif request.user.role == roles.SMU:
                 return data #blunder md blunder_md  hints more validate
             else:
-                raise serializers.ValidationError('You have not permission. ')
+                raise serializers.ValidationError('You have not permission.Error code E-SAMPLE-FORM-3 ')
             #for verifier validate.
                     
 
