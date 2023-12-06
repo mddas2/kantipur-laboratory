@@ -1,4 +1,4 @@
-from .models import FiscalYear,Units,MandatoryStandard,TestMethod,MicroObservationTable,ClientCategory,SuperVisorSampleForm,ClientCategoryDetailImages, SampleForm, Commodity, CommodityCategory, MicroParameter , TestResult ,SampleFormHasParameter,Payment,SampleFormParameterFormulaCalculate,ClientCategoryDetail
+from .models import FiscalYear,Units,MandatoryStandard,TestMethod,MicroObservationTable,ClientCategory,SuperVisorSampleForm,ClientCategoryDetailImages, SampleForm, Commodity, CommodityCategory, MicroParameter , TestResult ,SampleFormHasParameter,Payment,SampleFormParameterFormulaCalculate,ClientCategoryDetail,NoticeImages
 from rest_framework import serializers
 from account.models import CustomUser
 from . import roles
@@ -974,3 +974,8 @@ def eventOnSampleform(sample_form_id,parameters):
         statuss = "processing"
         form_availables = "supervisor"
         SampleForm.objects.filter(id=sample_form_obj.id).update(is_analyst_test = False,status=statuss,form_available = form_availables)
+
+class NoticeImagesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NoticeImages
+        fields = '__all__'

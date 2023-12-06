@@ -20,6 +20,7 @@ router.register('sample-form-has-payment', views.PaymentViewSet, basename="Payme
 router.register('sample-form-has-calculate-result',formula_algorithm.SampleFormParameterFormulaCalculateViewSet,basename="SampleFormParameterFormulaCalculateViewSet")
 router.register('sample-form-has-verifier',verfier.SampleFormHasVerifierViewSet,basename="SampleFormHasVerifierViewSet")
 
+router.register('admin-notice',views.NoticeImagesViewSet,basename="NoticeImagesViewSet")
 
 urlpatterns = [
     path('', include(router.urls)),

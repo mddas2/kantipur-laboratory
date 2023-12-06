@@ -493,6 +493,14 @@ class ClientCategoryDetailImages(models.Model):
 class FiscalYear(models.Model):
     fiscal_year = models.CharField(max_length=500,null=True,blank=True)
 
+class NoticeImages(models.Model):
+    notice = models.CharField(max_length=500,null=True,blank=True)
+    description = models.CharField(max_length=500,null=True,blank=True)
+    file = models.FileField(upload_to='uploads/notice',null=True)
+    created_date = models.DateTimeField(auto_now_add=True)  
+    updated_date = models.DateTimeField(auto_now=True)
+    
+
 
     
  
