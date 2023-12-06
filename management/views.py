@@ -104,11 +104,7 @@ class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
         else:
             query = SuperVisorSampleForm.objects.filter(supervisor_user=user.id)
 
-            
-        if user.role == roles.SUPERVISOR:
-            query =  query.filter(supervisor_user = user.id)
-            # query =  SuperVisorSampleForm.objects.filter(supervisor_user = user.id)
-        else:
+        if user.role != roles.SUPERVISOR:
             raise PermissionDenied("You do not have permission to access thais resource.")
         
         return query.order_by("-created_date")
