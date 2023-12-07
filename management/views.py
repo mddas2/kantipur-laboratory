@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from .pagination import MyLimitOffsetPagination
 from rest_framework.response import Response
 from . client_category_serializers import ClientCategoryDetailSerializer,ClientCategoryDetailImagesSerializer
-from .custompermission import FiscalYearPermission,ClientCategoryPermission,SampleFormViewSetPermission,CommodityViewSetPermission,CommodityCategoryViewSetPermission,TestResultViewSetPermission,PaymentViewSetPermission,MicroparameterViewsetPermission,SuperVisorSampleFormViewsetPermission
+from .custompermission import FiscalYearPermission,ClientCategoryPermission,SampleFormViewSetPermission,CommodityViewSetPermission,CommodityCategoryViewSetPermission,TestResultViewSetPermission,PaymentViewSetPermission,MicroparameterViewsetPermission,SuperVisorSampleFormViewsetPermission,NoticeImagesPermission
 from rest_framework import status
 from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
@@ -1056,4 +1056,4 @@ class NoticeImagesViewSet(viewsets.ModelViewSet):
     ordering_fields = ['id']
 
     authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated,FiscalYearPermission] 
+    permission_classes = [NoticeImagesPermission] 

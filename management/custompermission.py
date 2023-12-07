@@ -7,6 +7,9 @@ def IsAuthenticated(request):
 def SMU_USER_Permission(request):
     return IsAuthenticated(request) and request.user.role in [roles.SMU ,roles.USER,]
 
+def fullAdminPermission(request):
+    return IsAuthenticated(request) and request.user.role in [roles.ADMIN, roles.SMU , roles.SUPERADMIN, roles.VERIFIER,roles.SUPERVISOR,roles.ANALYST]
+
 def allAdminPermission(request):
     return IsAuthenticated(request) and request.user.role in [roles.ADMIN, roles.SMU , roles.SUPERADMIN, roles.VERIFIER]
 
@@ -247,6 +250,25 @@ class SampleFormHasParameterPermission(BasePermission):
             return False
         else:
             return False
+
+class NoticeImagesPermission(BasePermission):
+    def has_permission(self, request, view):
+        method_name = view.action
+        if method_name == 'list':
+            return fullAdminPermission(request)
+        elif method_name == 'create':
+            return SuperVisorLevelPermission(request)
+        elif method_name == 'retrieve':
+            return fullAdminPermission(request)
+        elif method_name == 'update':
+            return SuperVisorLevelPermission(request)
+        elif method_name == 'partial_update':
+            return SuperVisorLevelPermission(request)
+        elif method_name == 'destroy':
+            return SuperVisorLevelPermission(request)
+        else:
+            return False
+        
 
 
     
