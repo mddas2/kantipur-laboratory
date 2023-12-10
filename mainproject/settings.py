@@ -73,14 +73,19 @@ CHANNEL_LAYERS = {
 #    }
 #}
 
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+#         "LOCATION": "unique-snowflake",
+#     }
+# }
+
 CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-        "LOCATION": "unique-snowflake",
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
+        'LOCATION': '167.71.205.126:11211',  # Update with your Memcached server details
     }
 }
-
-
 
 AUTH_USER_MODEL = "account.CustomUser" 
 
