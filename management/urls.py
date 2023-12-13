@@ -51,6 +51,5 @@ urlpatterns = [
     path('get-commodity-data-with-parameters/', views.commodityLimitedData.as_view(), name='commodityLimitedData'),
 
     path('get-commodity-category-only/', views.commodityCategoryLimitedData.as_view(), name='commodityCategoryLimitedData'),
-
     
 ]

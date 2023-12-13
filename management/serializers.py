@@ -324,6 +324,13 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
         if action == "partial_update":
             if request.user.role == roles.ADMIN:
                 if len(data) == 2 and 'status' in data and 'admin_remarks' in data:
+                    request = self.context.get('request')
+                    print(request.data)
+                    approved_by = CustomUser.objects.all().filter(id = int(request.data.get('approve_by')))
+                    if approved_by.exists() == False:
+                        raise serializers.ValidationError("Verified by user must be exists")    
+                    data['approved_by_id'] = approved_by.first().id
+                    print(data, " approved by")
                     return data
                 else:
                     raise serializers.ValidationError('You have not permission. Error code E-SAMPLE-FORM-2')

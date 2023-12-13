@@ -1,4 +1,4 @@
-from .models import SampleFormVerifier,SampleForm
+from .models import SampleFormVerifier,SampleForm,CustomUser
 from rest_framework import serializers
 from . encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
 
@@ -24,12 +24,17 @@ class SampleFormWriteVerifierSerilizer(serializers.ModelSerializer):
         action = self.context['view'].action
         if action == 'partial_update' or action == "update":
             is_verified = data.get('is_verified')
-
+            
+            
             if is_verified ==  True: 
+                request = self.context.get('request')
+                verified_by = CustomUser.objects.all().filter(id = int(request.data.get('verified_by')))
+                if verified_by.exists() == False:
+                    raise serializers.ValidationError("Verified by user must be exists")
+
                 instance = self.instance
                 sample_form_obj = instance.sample_form                
-                request = self.context.get('request')
-                sample_form_obj.verified_by = request.user                
+                sample_form_obj.verified_by_id = verified_by.first().id                
                 sample_form_obj.save()
         return data
     
