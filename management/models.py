@@ -82,6 +82,8 @@ class SampleForm(models.Model):#ClientRequest
     created_by_user = models.ForeignKey(CustomUser,related_name="sample_form_created_by",default=None,null=True,on_delete=models.SET_NULL)
 
     name = models.CharField(max_length=255, null=True)
+    new_name =  models.CharField(max_length=255,null=True) #latest
+
     condition = models.CharField(max_length=255,null=True)
     mfd = models.CharField(max_length=255,null=True)
 

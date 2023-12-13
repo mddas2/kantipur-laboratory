@@ -39,7 +39,10 @@ def handle_sampleform_presave(sender, instance, **kwargs):
                 encoded_data = additional_data.client_sub_category_dict[client_sub_caategory]
                 full_encoded = encoded_data.upper() + "-" +str(count_data)
                 instance.sample_symbol_number = full_encoded
-                instance.name = full_encoded
+                instance.new_name = instance.name
+                instance.name = instance.name+f'({full_encoded})'
+                print(instance.name,instance.new_name)
+    
     else:
         if instance.status == "completed":
             instance.completed_date = timezone.now()
