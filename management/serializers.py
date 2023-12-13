@@ -19,6 +19,11 @@ class ApprovedBySerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['first_name','last_name','email','id','department_name'] 
 
+class ApprovedByListSerializer(serializers.ModelSerializer):
+     class Meta:
+        model = CustomUser
+        fields = ['first_name','last_name','email','id','position'] 
+
 class ClientCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ClientCategory
@@ -982,11 +987,24 @@ class NoticeImagesSerializer(serializers.ModelSerializer):
 
 
 class ApprovedListSerializer(serializers.ModelSerializer):
+    user = ApprovedByListSerializer(read_only = True)
     class Meta:
         model = ApprovedList
         fields = '__all__'
 
+class ApprovedWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ApprovedList
+        fields = '__all__'
+
+
 class VerifiedListSerializer(serializers.ModelSerializer):
+    user = ApprovedByListSerializer(read_only = True)
+    class Meta:
+        model = VerifiedList
+        fields = '__all__'
+
+class VerifiedWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = VerifiedList
         fields = '__all__'

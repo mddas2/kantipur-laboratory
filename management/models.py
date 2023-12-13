@@ -503,11 +503,11 @@ class NoticeImages(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
     
 class ApprovedList(models.Model):
-    user = models.ForeignKey(CustomUser,related_name="approved_list",on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser,related_name="approved_list",on_delete=models.CASCADE)
     status = models.BooleanField(default=False)
 
 class VerifiedList(models.Model):
-    user = models.ForeignKey(CustomUser,related_name="verified_list",on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser,related_name="verified_list",on_delete=models.CASCADE)
     status = models.BooleanField(default=False)
 
 

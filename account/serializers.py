@@ -29,7 +29,13 @@ class CustomUserReadLimitedSerializer(serializers.ModelSerializer):
      class Meta:
         ref_name =  "CustomUserReadLimitedSerializer serializers"
         model = CustomUser
-        fields = ['id','email','first_name','username',] 
+        fields = ['id','email','first_name','username'] 
+
+class userAdminLevelDataSerializer(serializers.ModelSerializer):
+     class Meta:
+        ref_name =  "CustomUserReadLimitedSerializer2 serializers"
+        model = CustomUser
+        fields = ['id','email','first_name','username','last_name','position'] 
 
 
 class CustomUserSerializer(serializers.ModelSerializer):

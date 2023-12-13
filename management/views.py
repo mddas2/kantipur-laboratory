@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from .serializers import FiscalYearSerializer,limitedCommidityCategoryreadSerializer,limitedCommidityreadSerializer,TestResultWriteSerializer,MicroObservationTableSerializer,MicroParameterSerializer,ClientCategorySerializer, SampleFormWriteSerializer,SampleFormReadSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer,SuperVisorSampleFormReadSerializer,SuperVisorSampleFormWriteSerializer,NoticeImagesSerializer,ApprovedListSerializer,VerifiedListSerializer
+from .serializers import FiscalYearSerializer,limitedCommidityCategoryreadSerializer,limitedCommidityreadSerializer,TestResultWriteSerializer,MicroObservationTableSerializer,MicroParameterSerializer,ClientCategorySerializer, SampleFormWriteSerializer,SampleFormReadSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer,SuperVisorSampleFormReadSerializer,SuperVisorSampleFormWriteSerializer,NoticeImagesSerializer,ApprovedListSerializer,VerifiedListSerializer,VerifiedWriteSerializer,ApprovedWriteSerializer
 from .models import FiscalYear,ClientCategory,Units,MandatoryStandard,TestMethod, SampleForm, Commodity, CommodityCategory,TestResult, Payment,SuperVisorSampleForm,MicroParameter,MicroObservationTable,ClientCategoryDetail , NoticeImages , ApprovedList , VerifiedList
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -1060,22 +1060,32 @@ class NoticeImagesViewSet(viewsets.ModelViewSet):
 
 
 class ApprovedListViewSet(viewsets.ModelViewSet):
-    queryset = ApprovedList.objects.all()
+    queryset = ApprovedList.objects.all().order_by("-id")
     serializer_class = ApprovedListSerializer
     filter_backends = [SearchFilter,OrderingFilter]
     search_fields = ['id']
     ordering_fields = ['id']
 
     authentication_classes = [JWTAuthentication]
-    # permission_classes = [ApprovedListPermission] 
+    permission_classes = [ApprovedListPermission] 
+
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return ApprovedWriteSerializer
+        return super().get_serializer_class()
 
 class VerifiedListViewSet(viewsets.ModelViewSet):
-    queryset = VerifiedList.objects.all()
+    queryset = VerifiedList.objects.all().order_by("-id")
     serializer_class = VerifiedListSerializer
     filter_backends = [SearchFilter,OrderingFilter]
     search_fields = ['id']
     ordering_fields = ['id']
 
     authentication_classes = [JWTAuthentication]
-    # permission_classes = [VerifiedListPermission] 
+    permission_classes = [VerifiedListPermission] 
+
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return VerifiedWriteSerializer
+        return super().get_serializer_class()
 

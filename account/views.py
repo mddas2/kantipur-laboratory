@@ -8,7 +8,7 @@ from .serializers import LoginSerializer
 from django.contrib.auth.models import Group, Permission
 from account.models import CustomUser,CustomUserImages
 from rest_framework import viewsets
-from .serializers import CustomUserReadSerializer,CustomUserSerializer, GroupSerializer, PermissionSerializer,RoleSerializer,departmentTypeSerializer,CustomUserReadLimitedSerializer
+from .serializers import CustomUserReadSerializer,CustomUserSerializer, GroupSerializer, PermissionSerializer,RoleSerializer,departmentTypeSerializer,CustomUserReadLimitedSerializer,userAdminLevelDataSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken,TokenError
@@ -422,8 +422,8 @@ class userLimitedData(generics.ListAPIView):
         return Response(data)
     
 class userAdminLevelData(generics.ListAPIView):
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
 
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
@@ -445,7 +445,7 @@ class userAdminLevelData(generics.ListAPIView):
         return users
 
     def get_serializer_class(self):
-        return CustomUserReadLimitedSerializer
+        return userAdminLevelDataSerializer
     
     def list(self, request, *args, **kwargs):
         # Try to get cached data
