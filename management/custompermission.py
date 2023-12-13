@@ -32,7 +32,7 @@ def SuperVisorAnalystLevelPermission(request):
     return IsAuthenticated(request) and request.user.role in [roles.SUPERVISOR,roles.ANALYST]
 
 def SuperAdminLevelPermission(request):
-    return IsAuthenticated(request) and request.user.role in [roles.SUPERVISOR]
+    return IsAuthenticated(request) and request.user.role in [roles.SUPERADMIN]
 
 def AdminLevelPermission(request):
     return IsAuthenticated(request) and request.user.role in [roles.ADMIN]
