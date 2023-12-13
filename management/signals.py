@@ -41,7 +41,7 @@ def handle_sampleform_presave(sender, instance, **kwargs):
                 instance.sample_symbol_number = full_encoded
                 instance.new_name = instance.name
                 instance.name = instance.name+f'({full_encoded})'
-                print(instance.name,instance.new_name)
+                # print(instance.name,instance.new_name)
     
     else:
         if instance.status == "completed":
