@@ -283,6 +283,7 @@ class FinalReportNepaliAnalystSerializer(serializers.ModelSerializer):
     owner_user = serializers.SerializerMethodField()
     supervisor_user = CustomUserSerializer(read_only = True)
     verified_by = CustomUserSerializer(read_only = True)
+    approved_by = CustomUserSerializer(read_only = True)
     client_category_detail = ClientCategoryDetailSerializer(read_only = True,many=False)
     
     
