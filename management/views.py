@@ -1,14 +1,14 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from .serializers import FiscalYearSerializer,limitedCommidityCategoryreadSerializer,limitedCommidityreadSerializer,TestResultWriteSerializer,MicroObservationTableSerializer,MicroParameterSerializer,ClientCategorySerializer, SampleFormWriteSerializer,SampleFormReadSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer,SuperVisorSampleFormReadSerializer,SuperVisorSampleFormWriteSerializer,NoticeImagesSerializer
-from .models import FiscalYear,ClientCategory,Units,MandatoryStandard,TestMethod, SampleForm, Commodity, CommodityCategory,TestResult, Payment,SuperVisorSampleForm,MicroParameter,MicroObservationTable,ClientCategoryDetail , NoticeImages
+from .serializers import FiscalYearSerializer,limitedCommidityCategoryreadSerializer,limitedCommidityreadSerializer,TestResultWriteSerializer,MicroObservationTableSerializer,MicroParameterSerializer,ClientCategorySerializer, SampleFormWriteSerializer,SampleFormReadSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer,SuperVisorSampleFormReadSerializer,SuperVisorSampleFormWriteSerializer,NoticeImagesSerializer,ApprovedListSerializer,VerifiedListSerializer
+from .models import FiscalYear,ClientCategory,Units,MandatoryStandard,TestMethod, SampleForm, Commodity, CommodityCategory,TestResult, Payment,SuperVisorSampleForm,MicroParameter,MicroObservationTable,ClientCategoryDetail , NoticeImages , ApprovedList , VerifiedList
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .pagination import MyLimitOffsetPagination
 from rest_framework.response import Response
 from . client_category_serializers import ClientCategoryDetailSerializer,ClientCategoryDetailImagesSerializer
-from .custompermission import FiscalYearPermission,ClientCategoryPermission,SampleFormViewSetPermission,CommodityViewSetPermission,CommodityCategoryViewSetPermission,TestResultViewSetPermission,PaymentViewSetPermission,MicroparameterViewsetPermission,SuperVisorSampleFormViewsetPermission,NoticeImagesPermission
+from .custompermission import FiscalYearPermission,ClientCategoryPermission,SampleFormViewSetPermission,CommodityViewSetPermission,CommodityCategoryViewSetPermission,TestResultViewSetPermission,PaymentViewSetPermission,MicroparameterViewsetPermission,SuperVisorSampleFormViewsetPermission,NoticeImagesPermission,ApprovedListPermission,VerifiedListPermission
 from rest_framework import status
 from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
@@ -1057,3 +1057,25 @@ class NoticeImagesViewSet(viewsets.ModelViewSet):
 
     authentication_classes = [JWTAuthentication]
     permission_classes = [NoticeImagesPermission] 
+
+
+class ApprovedListViewSet(viewsets.ModelViewSet):
+    queryset = ApprovedList.objects.all()
+    serializer_class = ApprovedListSerializer
+    filter_backends = [SearchFilter,OrderingFilter]
+    search_fields = ['id']
+    ordering_fields = ['id']
+
+    authentication_classes = [JWTAuthentication]
+    # permission_classes = [ApprovedListPermission] 
+
+class VerifiedListViewSet(viewsets.ModelViewSet):
+    queryset = VerifiedList.objects.all()
+    serializer_class = VerifiedListSerializer
+    filter_backends = [SearchFilter,OrderingFilter]
+    search_fields = ['id']
+    ordering_fields = ['id']
+
+    authentication_classes = [JWTAuthentication]
+    # permission_classes = [VerifiedListPermission] 
+

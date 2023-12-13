@@ -21,6 +21,8 @@ router.register('sample-form-has-calculate-result',formula_algorithm.SampleFormP
 router.register('sample-form-has-verifier',verfier.SampleFormHasVerifierViewSet,basename="SampleFormHasVerifierViewSet")
 
 router.register('admin-notice',views.NoticeImagesViewSet,basename="NoticeImagesViewSet")
+router.register('sample-from-approved-by',views.ApprovedListViewSet,basename="ApprovedListViewSet")
+router.register('sample-from-verified-by',views.VerifiedListViewSet,basename="VerifiedListViewSet")
 
 urlpatterns = [
     path('', include(router.urls)),

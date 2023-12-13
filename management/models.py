@@ -502,6 +502,13 @@ class NoticeImages(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)  
     updated_date = models.DateTimeField(auto_now=True)
     
+class ApprovedList(models.Model):
+    user = models.ForeignKey(CustomUser,related_name="approved_list",on_delete=models.CASCADE)
+    status = models.BooleanField(default=False)
+
+class VerifiedList(models.Model):
+    user = models.ForeignKey(CustomUser,related_name="verified_list",on_delete=models.CASCADE)
+    status = models.BooleanField(default=False)
 
 
     

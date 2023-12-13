@@ -31,6 +31,19 @@ def SmuSuperVisorLevelPermission(request):
 def SuperVisorAnalystLevelPermission(request):
     return IsAuthenticated(request) and request.user.role in [roles.SUPERVISOR,roles.ANALYST]
 
+def SuperAdminLevelPermission(request):
+    return IsAuthenticated(request) and request.user.role in [roles.SUPERVISOR]
+
+def AdminLevelPermission(request):
+    return IsAuthenticated(request) and request.user.role in [roles.ADMIN]
+
+
+def AdminSuperAdminLevelPermission(request):
+    return IsAuthenticated(request) and request.user.role in [roles.ADMIN,roles.SUPERADMIN]
+
+def VerifierSuperAdminLevelPermission(request):
+    return IsAuthenticated(request) and request.user.role in [roles.VERIFIER,roles.SUPERADMIN]
+
 class SampleFormViewSetPermission(BasePermission):
     def has_permission(self, request, view):
         method_name = view.action
@@ -266,6 +279,42 @@ class NoticeImagesPermission(BasePermission):
             return SuperVisorLevelPermission(request)
         elif method_name == 'destroy':
             return SuperVisorLevelPermission(request)
+        else:
+            return False
+        
+class ApprovedListPermission(BasePermission):
+    def has_permission(self, request, view):
+        method_name = view.action
+        if method_name == 'list':
+            return AdminSuperAdminLevelPermission(request)
+        elif method_name == 'create':
+            return SuperAdminLevelPermission(request)
+        elif method_name == 'retrieve':
+            return AdminSuperAdminLevelPermission(request)
+        elif method_name == 'update':
+            return SuperAdminLevelPermission(request)
+        elif method_name == 'partial_update':
+            return SuperAdminLevelPermission(request)
+        elif method_name == 'destroy':
+            return SuperAdminLevelPermission(request)
+        else:
+            return False
+        
+class VerifiedListPermission(BasePermission):
+    def has_permission(self, request, view):
+        method_name = view.action
+        if method_name == 'list':
+            return VerifierSuperAdminLevelPermission(request)
+        elif method_name == 'create':
+            return SuperAdminLevelPermission(request)
+        elif method_name == 'retrieve':
+            return VerifierSuperAdminLevelPermission(request)
+        elif method_name == 'update':
+            return SuperAdminLevelPermission(request)
+        elif method_name == 'partial_update':
+            return SuperAdminLevelPermission(request)
+        elif method_name == 'destroy':
+            return SuperAdminLevelPermission(request)
         else:
             return False
         
