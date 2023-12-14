@@ -7,6 +7,9 @@ def IsAuthenticated(request):
 def SMU_USER_Permission(request):
     return IsAuthenticated(request) and request.user.role in [roles.SMU ,roles.USER,]
 
+def SmuSuperAdmin(request):
+    return IsAuthenticated(request) and request.user.role in [roles.SMU ,roles.SUPERADMIN,]
+
 def fullAdminPermission(request):
     return IsAuthenticated(request) and request.user.role in [roles.ADMIN, roles.SMU , roles.SUPERADMIN, roles.VERIFIER,roles.SUPERVISOR,roles.ANALYST]
 
@@ -198,13 +201,13 @@ class PaymentViewSetPermission(BasePermission):
         if method_name == 'list':
             return True
         elif method_name == 'create':
-            return AdminLevelPermission(request)
+            return SmuSuperAdmin(request)
         elif method_name == 'retrieve':
             return True
         elif method_name == 'update':
-            return AdminLevelPermission(request)
+            return SmuSuperAdmin(request)
         elif method_name == 'partial_update':
-            return AdminLevelPermission(request)
+            return SmuSuperAdmin(request)
         elif method_name == 'destroy':
             return False
         else:
