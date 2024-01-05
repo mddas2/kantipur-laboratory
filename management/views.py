@@ -236,7 +236,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         user = self.request.user
 
         id = generateDecodeIdforSampleForm(self.kwargs['pk'],user) 
-    
+        # print(id)
         queryset = self.get_queryset()
         obj = queryset.filter(id=id).first()
         if not obj:
