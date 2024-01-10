@@ -1,6 +1,6 @@
 from rest_framework import views
 from management.models import SampleForm
-from . final_serializer import CompletedSampleFormHasVerifierSerializer
+from . final_serializer import CompletedSampleFormHasVerifierSerializer,CompletedSampleFormHasVerifierSerializer_User
 from . analyst_final_report_serializer import CompletedSampleFormHasAnalystSerializer
 from rest_framework.response import Response
 from django.db.models import Q
@@ -63,6 +63,8 @@ class FinalSampleFormHasVerifiedAPIView(generics.ListAPIView):
     def get_serializer_class(self):
         if self.request.user.role == roles.ANALYST:
             serializer = CompletedSampleFormHasAnalystSerializer
+        elif self.request.user.role == roles.USER:
+            serializer = CompletedSampleFormHasVerifierSerializer_User
         else:
             serializer = CompletedSampleFormHasVerifierSerializer
         return serializer
