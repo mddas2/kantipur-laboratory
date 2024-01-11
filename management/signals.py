@@ -183,14 +183,17 @@ def supervisor_sample_form_has_parameter_m2m_changed(sender, instance, action, r
             sample_form_obj.save()
             break
 
-
+@receiver(pre_save, sender=SuperVisorSampleForm)
+# def SampleFormHasVerifierPostSave(sender, instance , **kwargs):
+#     if instance.is_supervisor_sent == True:
+#         instance.status = "not_verified"
+#         print(instance.status)
 
 @receiver(post_save, sender=SuperVisorSampleForm)
 def SupervisorHaveParameterAfterSave(sender, instance ,created , **kwargs):
-   
+    print(instance.status, " supervisor instance status")
     if created:
         sampleFormNotificationHandler(instance,"assigned_supervisor")
-
 
     if instance.is_supervisor_sent == True:      
      
@@ -210,10 +213,9 @@ def SupervisorHaveParameterAfterSave(sender, instance ,created , **kwargs):
                 sup_is_analyst_test = False
                 sup_status = "processing"
                 break
-        
+        # print(sup_status, " verifier sup status \n")
         sample_obj_param = instance.sample_form.parameters.all().count()
        
-
         if sup_is_analyst_test == True and sample_obj_param == supervisor_param:
             data = {
                 'is_verified':False,
@@ -221,7 +223,7 @@ def SupervisorHaveParameterAfterSave(sender, instance ,created , **kwargs):
             }
             verifier_obj,created = SampleFormVerifier.objects.update_or_create(sample_form_id = instance.sample_form_id,defaults=data)
             if created or verifier_obj != None:
-                #print("reached to verifier")
+                # print("reached to verifier")
                 SampleForm.objects.filter(id=instance.sample_form.id).update(is_analyst_test = sup_is_analyst_test,status=sup_status)
                 
 
