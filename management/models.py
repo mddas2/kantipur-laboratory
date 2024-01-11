@@ -207,7 +207,7 @@ class SuperVisorSampleForm(models.Model):#sample form has parameter and paramete
     parameters = models.ManyToManyField(TestResult, related_name="supervisor_has_parameter")
     test_type = models.CharField(max_length=1000,null=True)
 
-    is_supervisor_sent = models.BooleanField(default=False)
+    is_supervisor_sent = models.BooleanField(default=False) #if supervisor sent to verifier then it  1
     is_analyst_test = models.BooleanField(default=False)
     
     status_choices = (       
