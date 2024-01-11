@@ -1,4 +1,4 @@
-from .models import FiscalYear,Units,MandatoryStandard,TestMethod,MicroObservationTable,ClientCategory,SuperVisorSampleForm,ClientCategoryDetailImages, SampleForm, Commodity, CommodityCategory, MicroParameter , TestResult ,SampleFormHasParameter,Payment,SampleFormParameterFormulaCalculate,ClientCategoryDetail,NoticeImages,VerifiedList,ApprovedList
+from .models import FiscalYear,Units,MandatoryStandard,TestMethod,MicroObservationTable,ClientCategory,SuperVisorSampleForm,ClientCategoryDetailImages, SampleForm, Commodity, CommodityCategory, MicroParameter , TestResult ,SampleFormHasParameter,Payment,SampleFormParameterFormulaCalculate,ClientCategoryDetail,NoticeImages,VerifiedList,ApprovedList,SampleFormVerifier
 from rest_framework import serializers
 from account.models import CustomUser
 from . import roles
@@ -803,12 +803,17 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
         return super().to_internal_value(data)
     
     def validate(self, attrs):
+        check_verifier = SampleFormVerifier.objects.filter(sample_form_id = self.instance.sample_form).exists()
+        if check_verifier:
+            raise serializers.ValidationError('Sample Form already reached to Verifier so you can not modified')
+        
         sample_form = attrs.get('sample_form')
         super_visor_sample_form_table = attrs.get('super_visor_sample_form')
         analyst_user = attrs.get('analyst_user')
         parameter = attrs.get('parameter')
 
         action = self.context['view'].action
+        
         check_exist_for_other_supervisor = SampleFormHasParameter.objects.filter(sample_form = sample_form,analyst_user = analyst_user)
 
         if check_exist_for_other_supervisor.exists():

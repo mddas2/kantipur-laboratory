@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from .formula_serializers import SampleFormParameterFormulaCalculateReadSerializer,FormulaApiCalculateSerializer,FormulaApiGetFieldSerializer,FormulaApiCalculateSaveSerializer,RecheckSerializer,SampleFormRecheckSerializer
-from .models import SampleFormParameterFormulaCalculate,Commodity,TestResult,SampleForm,RawDataSheet,SampleFormHasParameter,SuperVisorSampleForm
+from .models import SampleFormParameterFormulaCalculate,Commodity,TestResult,SampleForm,RawDataSheet,SampleFormHasParameter,SuperVisorSampleForm,SampleFormVerifier
 from .custompermission import MicroparameterViewsetPermission,SampleFormRecheckPermission , ParameterHasResultRecheckPermission
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -17,6 +17,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from . custompermission import RejectSampleFormViewSetPermission
+from rest_framework import serializers
 
 
 class Formula:
@@ -353,7 +354,11 @@ class ParameterHasResultRecheck(APIView):
         sample_form_id = serializer.validated_data['sample_form']
         remarks = serializer.validated_data['remarks']
         sample_form_has_parameter_id = serializer.validated_data['sample_form_has_parameter']
-       
+
+        check_verifier = SampleFormVerifier.objects.filter(sample_form_id = sample_form_id).exists() #if already exists in verifier then no one can modified  put in serializer  validations
+        if check_verifier:
+            raise serializers.ValidationError('Sample Form already reached to Verifier so you can not modified')
+        
         formula_recheck_obj = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id = sample_form_id, parameter_id =parameter_id,sample_form_has_parameter_id=sample_form_has_parameter_id)
         if formula_recheck_obj.exists():
             formula_recheck_obj = formula_recheck_obj.first()
