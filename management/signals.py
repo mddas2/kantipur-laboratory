@@ -241,7 +241,7 @@ def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
         instance.status = "pending"
     else:
         if instance.is_supervisor_sent == True:
-            SampleFormParameterFormulaCalculate.objects.filter(sample_form_has_parameter_id = instance.pk,is_loked = False).update(is_locked = True)
+            SampleFormParameterFormulaCalculate.objects.filter(sample_form_has_parameter_id = instance.pk,is_locked = False).update(is_locked = True)
         # sampleFormNotificationHandler(instance,"assigned_analyst")
         
 @receiver(post_save, sender=SampleFormVerifier)
