@@ -803,7 +803,8 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
         return super().to_internal_value(data)
     
     def validate(self, attrs):
-        check_verifier = SampleFormVerifier.objects.filter(sample_form_id = self.instance.sample_form).exists()
+  
+        check_verifier = SampleFormVerifier.objects.filter(sample_form_id = attrs.get('sample_form')).exists()
         if check_verifier:
             raise serializers.ValidationError('Sample Form already reached to Verifier so you can not modified')
         
