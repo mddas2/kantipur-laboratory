@@ -3,8 +3,6 @@ from . import final_report,track,status,assigned_sample_for_smu_superadmin, addi
 
 from django.urls import path, include
 
-    
-
 
 urlpatterns = [   
     path('sample-form-has-assigned-analyst/', views.SampleFormHasAnalystAPIView.as_view()),

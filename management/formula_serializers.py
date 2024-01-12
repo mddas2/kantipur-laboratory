@@ -1,4 +1,4 @@
-from .models import SampleFormParameterFormulaCalculate
+from .models import SampleFormParameterFormulaCalculate,SampleFormVerifier
 from rest_framework import serializers
 from . encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
 
@@ -96,6 +96,13 @@ class RecheckSerializer(serializers.Serializer):
         data['sample_form'] = decoded_sample_form_id
 
         return super().to_internal_value(data)
+    
+    def validate(self, attrs):
+        sample_form_id = attrs.get('sample_form')
+        check_verifier = SampleFormVerifier.objects.filter(sample_form_id = sample_form_id).exists() #if already exists in verifier then no one can modified  put in serializer  validations
+        if check_verifier:
+            raise serializers.ValidationError('Sample Form already reached to Verifier so you can not modified')
+        return super().validate(attrs)
 
 class SampleFormRecheckSerializer(serializers.Serializer):
     sample_form = serializers.CharField()
