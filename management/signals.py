@@ -165,7 +165,6 @@ def supervisor_sample_form_has_parameter_m2m_changed(sender, instance, action, r
 
     status = "not_assigned"
  
-    
     parameters = instance.parameters.all()
 
     for param in parameters:    
@@ -240,6 +239,9 @@ def SupervisorHaveParameterAfterSave(sender, instance , created , **kwargs):
 def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
     if not instance.pk:
         instance.status = "pending"
+    else:
+        if instance.is_supervisor_sent == True:
+            SampleFormParameterFormulaCalculate.objects.filter(sample_form_has_parameter_id = instance.pk,is_loked = False).update(is_locked = True)
         # sampleFormNotificationHandler(instance,"assigned_analyst")
         
 @receiver(post_save, sender=SampleFormVerifier)
