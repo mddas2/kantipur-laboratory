@@ -58,7 +58,7 @@ class FinalSampleFormHasVerifiedAPIView(generics.ListAPIView):
             query = query.filter(Q(status="rejected") | Q(verifier__is_verified = True))
         else:
             raise PermissionDenied("You do not have permission to access this resource.")
-        return query.order_by("-status")
+        return query.order_by("-approved_date")
     
     def get_serializer_class(self):
         if self.request.user.role == roles.ANALYST:
