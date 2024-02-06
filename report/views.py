@@ -41,7 +41,7 @@ class SampleFormHasAnalystAPIView(generics.ListAPIView):
     
     def get_queryset(self):
         request = self.request
-        queryset = SuperVisorSampleForm.objects.filter(supervisor_user = request.user).filter(~Q(sample_form__status="completed") & ~Q(status="not_assigned")).order_by("-created_date")
+        queryset = SuperVisorSampleForm.objects.filter(supervisor_user = request.user).filter(~Q(sample_form__status="completed") & ~Q(status="not_assigned")).order_by("-sample_has_parameter_analyst__created_date")
         # queryset = SuperVisorSampleForm.objects.filter(Q(supervisor_user = request.user) & ~Q(status="completed") & ~Q(status="not_assigned")).order_by("-created_date")
         return queryset
 
