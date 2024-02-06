@@ -24,7 +24,6 @@ from rest_framework import generics
 from .report_download import TestReport,ReportAdminList,ReportParameter,ReportCommodity,ReportUserSampleForm,ReportUserList,ReportSampleForm,ReportUserRequest,ReportComodityCategory,FinalReport,rawDataSheetAnalystReport
 from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm,generateDecodeIdByRoleforSampleForm
 
-
 class SampleFormHasAnalystAPIView(generics.ListAPIView):
     
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
@@ -41,9 +40,10 @@ class SampleFormHasAnalystAPIView(generics.ListAPIView):
     
     def get_queryset(self):
         request = self.request
-        queryset = SuperVisorSampleForm.objects.filter(supervisor_user = request.user).filter(~Q(sample_form__status="completed") & ~Q(status="not_assigned")).order_by("-sample_has_parameter_analyst__created_date")
+        queryset = SuperVisorSampleForm.objects.filter(supervisor_user = request.user).filter(~Q(sample_form__status="completed") & ~Q(status="not_assigned")).order_by('-sample_has_parameter_analyst__created_date')
         # queryset = SuperVisorSampleForm.objects.filter(Q(supervisor_user = request.user) & ~Q(status="completed") & ~Q(status="not_assigned")).order_by("-created_date")
         return queryset
+    
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
