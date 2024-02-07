@@ -10,25 +10,27 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+
 from pathlib import Path
+import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load environment variables from myconfig.env file
+dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+load_dotenv(dotenv_path)
 
 # Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
+# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-z9jqz!rnkg1bew73i#s_#6(u+!tjr$kc)p&236oxy=!sz6c)d%'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-# /home/lims/env/bin/gunicorn --access-logfile - --workers 3 --bind 0.0.0.0:8000  mainproject.wsgi:application
-ALLOWED_HOSTS = ['*','192.168.1.96','192.168.1.95','192.168.1.90','192.168.1.80','limsserver.kantipurinfotech.com.np','127.0.0.1','192.168.1.179','192.168.1.100','192.168.1.73','192.168.1.179','192.168.1.88','192.168.1.101','192.168.1.112']
-# ALLOWED_HOSTS = ['127.0.0.1','103.140.1.69']
-
+ALLOWED_HOSTS = [host for host in os.getenv('ALLOWED_HOSTS').split(',') if host != '']
 # Application definition
 
 INSTALLED_APPS = [
@@ -51,14 +53,6 @@ INSTALLED_APPS = [
     'emailmanagement',
 ]
 ASGI_APPLICATION = 'mainproject.asgi.application'
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "channels_redis.core.RedisChannelLayer",
-#         "CONFIG": {
-#             "hosts": [("127.0.0.1", 6379)],
-#         },
-#     },
-# }
 
 CHANNEL_LAYERS = {
     "default": {
@@ -66,24 +60,15 @@ CHANNEL_LAYERS = {
     }
 }
 
-#CACHES = {
-#    "default": {
-#        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-#        "LOCATION": "redis://127.0.0.1:6379",
-#    }
-#}
-
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-#         "LOCATION": "unique-snowflake",
-#     }
-# }
-
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
-        'LOCATION': '167.71.205.126:11211',  # Update with your Memcached server details
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': os.getenv('REDIS_CACHE_LOCATION'),  # Update with your Redis server details
+        'KEY_PREFIX': os.getenv('REDIS_CACHE_KEY_PREFIX'),
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'MASTER_NAME': 'mymaster_lims_local',
+        }
     }
 }
 
@@ -107,18 +92,8 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-CORS_ORIGIN_ALLOW_ALL = True #this block all
-
-CORS_ALLOW_CREDENTIALS = True 
-
-CORS_ORIGIN_WHITELIST = [
-    'https://dev-lims.netlify.app',
-    'http://192.168.1.113:4200',
-
-    # Add other allowed origins as needed
-]
-CSRF_TRUSTED_ORIGINS = ['https://dev-lims.netlify.app','http://192.168.1.113:4200']
-
+CORS_ORIGIN_WHITELIST = [white for white in os.getenv('CORS_ORIGIN_WHITELIST').split(',') if white != '']
+CSRF_TRUSTED_ORIGINS = [trusted for trusted in os.getenv('CSRF_TRUSTED_ORIGINS').split(',') if trusted != '']
 
 ROOT_URLCONF = 'mainproject.urls'
 
@@ -138,41 +113,18 @@ TEMPLATES = [
     },
 ]
 
-
-
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db2.sqlite3',
-#     }
-# }
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'newlims',
-#         'USER': 'newlims',
-#         'PASSWORD':'AVNS_41KCiTCg-qKhtnP_VfR',
-#         'HOST':'kitdatabase-do-user-9161970-0.b.db.ondigitalocean.com',
-#         'PORT': '25060',
-#         'OPTIONS': {
-#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
-#         }
-#     }
-# }
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'lims_new_main', #lims_new
-        'USER': 'root',
-        'PASSWORD':'',
-        'HOST':'localhost',
-        'PORT': '3306',
+        'NAME': os.getenv('DATABASES_NAME'),
+        'USER': os.getenv('DATABASE_USER'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+        'HOST': os.getenv('DATABASE_HOST'),
+        'PORT': os.getenv('DATABASE_PORT'),
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
             'charset': 'utf8mb4',
@@ -214,8 +166,6 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Image)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
-from pathlib import Path
-import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -277,7 +227,7 @@ SIMPLE_JWT = {
 }
 
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'lims.dftqc@gmail.com'
-EMAIL_HOST_PASSWORD = 'ihtrzvzkwrobdvoi'
+EMAIL_HOST = os.getenv('smtp.gmail.com')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')

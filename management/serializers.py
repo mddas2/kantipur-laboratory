@@ -187,9 +187,9 @@ class SampleFormListSerializer(serializers.ModelSerializer):
 
     # parameters = TestResultForSampleFormSerializer(many=True, read_only=True)
 
-    owner_user = serializers.SerializerMethodField()
+    # owner_user = serializers.SerializerMethodField()
 
-    supervisor_user = ApprovedBySerializer(read_only = True)
+    # supervisor_user = ApprovedBySerializer(read_only = True)
 
     commodity = CommoditySampleFormSerializer(read_only = True,many=False)
 
@@ -198,7 +198,7 @@ class SampleFormListSerializer(serializers.ModelSerializer):
     class Meta:
         supervisor_user = ApprovedBySerializer(read_only = True)
         model = SampleForm
-        fields = ['id','owner_user','name','new_name','commodity','supervisor_user','parameters','refrence_number','sample_lab_id','remarks','remarks_recheck_verifier','remarks_reject_verifier','admin_remarks','verifier_remarks','client_category_detail','status','namuna_code','created_date']
+        fields = ['id','name','new_name','commodity','refrence_number','sample_lab_id','client_category_detail','status','namuna_code','created_date']
 
     def get_owner_user(self, obj):
         email = obj.owner_user
@@ -210,45 +210,6 @@ class SampleFormListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-
-        # sample_form_id = representation.get('id')
-        # sample_form_id = generateDecodeIdforSampleForm(sample_form_id,self.context['request'].user)
-
-        # parameters_data = representation.get('parameters', [])
-        assigned = 0
-        # for parameter_data in parameters_data:
-        #     parameter_id = parameter_data
-        #     # Check if the parameter exists in SampleFormHasParameter model
-        #     smple_frm_exist = SampleFormHasParameter.objects.filter(parameter=parameter_id, sample_form = sample_form_id)
-        #     exists = smple_frm_exist.exists()
-        #     parameter_data['exist'] = exists
-
-        #     smple_frm_exist_for_supervisor = SuperVisorSampleForm.objects.filter(parameters=parameter_id, sample_form = sample_form_id)
-        #     exists_supervisor_parameter = smple_frm_exist_for_supervisor.exists()
-        #     parameter_data['exists_supervisor_parameter'] = exists_supervisor_parameter
-
-        #     if exists_supervisor_parameter:
-        #         # print(smple_frm_exist.first().analyst_user.username)
-        #         try:
-        #             parameter_data['status_supervisor'] = "assigned"
-        #             parameter_data['supervisor_user'] = smple_frm_exist_for_supervisor.first().supervisor_user.username
-        #         except:
-        #             pass 
-
-        #     if exists:
-        #         # print(smple_frm_exist.first().analyst_user.username)
-        #         try:
-        #             parameter_data['status'] = "assigned"
-        #             parameter_data['analyst'] = smple_frm_exist.first().analyst_user.username
-        #         except:
-        #             pass           
-
-
-        #     if exists == True:
-        #         assigned+=1
-
-        representation['total_assign'] = '-'#assigned
-        representation['parameters'] = ''
         
         status = representation.get('status')
         request = self.context.get('request')
@@ -265,7 +226,7 @@ class SampleFormListSerializer(serializers.ModelSerializer):
 
         return representation
 
-class SampleFormReadSerializer(serializers.ModelSerializer):
+class SampleFormRetrieveSerializer(serializers.ModelSerializer):
 
     id = serializers.SerializerMethodField()
 

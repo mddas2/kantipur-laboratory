@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from .serializers import FiscalYearSerializer,limitedCommidityCategoryreadSerializer,limitedCommidityreadSerializer,TestResultWriteSerializer,MicroObservationTableSerializer,MicroParameterSerializer,ClientCategorySerializer, SampleFormWriteSerializer,SampleFormReadSerializer,SampleFormListSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer,SuperVisorSampleFormReadSerializer,SuperVisorSampleFormWriteSerializer,NoticeImagesSerializer,ApprovedListSerializer,VerifiedListSerializer,VerifiedWriteSerializer,ApprovedWriteSerializer
+from .serializers import FiscalYearSerializer,limitedCommidityCategoryreadSerializer,limitedCommidityreadSerializer,TestResultWriteSerializer,MicroObservationTableSerializer,MicroParameterSerializer,ClientCategorySerializer, SampleFormWriteSerializer,SampleFormRetrieveSerializer,SampleFormListSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer,SuperVisorSampleFormReadSerializer,SuperVisorSampleFormWriteSerializer,NoticeImagesSerializer,ApprovedListSerializer,VerifiedListSerializer,VerifiedWriteSerializer,ApprovedWriteSerializer
 from .models import FiscalYear,ClientCategory,Units,MandatoryStandard,TestMethod, SampleForm, Commodity, CommodityCategory,TestResult, Payment,SuperVisorSampleForm,MicroParameter,MicroObservationTable,ClientCategoryDetail , NoticeImages , ApprovedList , VerifiedList
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -214,7 +214,7 @@ class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
     
 class SampleFormViewSet(viewsets.ModelViewSet):
     queryset = SampleForm.objects.all()
-    serializer_class = SampleFormReadSerializer
+    serializer_class = SampleFormRetrieveSerializer
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     search_fields = ['id','name','owner_user','status','form_available','commodity__name','refrence_number','sample_lab_id']
     ordering_fields = ['name','id']
@@ -271,8 +271,8 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
             return SampleFormWriteSerializer
-        # elif self.action == 'list': #@md5 important
-        #     return SampleFormListSerializer 
+        elif self.action == 'list': #@md5 important
+            return SampleFormListSerializer 
         else:
             return super().get_serializer_class()
     

@@ -25,6 +25,7 @@ from django.db.models import Q
 from rest_framework import generics
 from .custompermission import AccountPermission
 from . serializers import CustomUserImageSerializer
+from django.db import transaction
 
 from django.core.cache import cache
 cache_time = 300 # 300 is 5 minute
@@ -103,37 +104,17 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
         return query.order_by("-created_date")
      
     def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        serializer = self.get_serializer(queryset, many=True)
-        data = serializer.data
-        return Response(data)
+        return super().list(request, *args, **kwargs)
     
-    def retrieve(self, request, pk=None):
-        try:
-            cache_key = f'user_{pk}'
-            cached_data = cache.get(cache_key)
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
-            if cached_data is None:
-                queryset = self.get_queryset()  # Call get_queryset to retrieve the queryset
-                user = queryset.get(pk=pk)  # Retrieve the user from the queryset
-                # Use the serializer class associated with the viewset
-                serializer = self.get_serializer(user)
-                data = serializer.data
-                cache.set(cache_key , data, cache_time)
-            else:
-                data = cached_data
-
-            return Response(data)
-        except:
-            return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-
-     
+    @transaction.atomic
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-
         # Save the new object to the database
-        self.perform_create(serializer)
+        self.perform_create(serializer) #task 1
 
         # Create a custom response
         response_data = {
@@ -144,15 +125,12 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
         name = request.POST.getlist('images[name]')
         files =  request.FILES.getlist('images[file]')
 
-        custom_user_detail = CeateClientCategoryDetail(name,files,serializer.data['id'],"create")
+        custom_user_detail = CeateClientCategoryDetail(name,files,serializer.data['id'],"create") #task 2
 
-        #NotificationHandler(serializer.instance,request,'create',"CustomUser")
-
-        cache.delete('Users')
-        cache.delete('UsersuserLimitedData')
-    
         return Response(response_data, status=status.HTTP_201_CREATED)
     
+    
+    @transaction.atomic
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
@@ -178,12 +156,7 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
         files =  request.FILES.getlist('images[file]')
 
         custom_user_detail = CeateClientCategoryDetail(name,files,serializer.data['id'],"update")
-        
-        NotificationHandler(serializer.instance,request,'update','CustomUser')
-        # Return the custom response
-        cache.delete('Users')
-        cache.delete('UsersuserLimitedData')
-        
+       
         return Response(response_data)
     
     
