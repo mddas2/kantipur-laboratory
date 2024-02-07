@@ -271,8 +271,8 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
             return SampleFormWriteSerializer
-        elif self.action == 'list': #@md5 important
-            return SampleFormListSerializer 
+        # elif self.action == 'list': #@md5 important
+        #     return SampleFormListSerializer 
         else:
             return super().get_serializer_class()
     
