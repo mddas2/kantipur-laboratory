@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from .serializers import FiscalYearSerializer,limitedCommidityCategoryreadSerializer,limitedCommidityreadSerializer,TestResultWriteSerializer,MicroObservationTableSerializer,MicroParameterSerializer,ClientCategorySerializer, SampleFormWriteSerializer,SampleFormReadSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer,SuperVisorSampleFormReadSerializer,SuperVisorSampleFormWriteSerializer,NoticeImagesSerializer,ApprovedListSerializer,VerifiedListSerializer,VerifiedWriteSerializer,ApprovedWriteSerializer
+from .serializers import FiscalYearSerializer,limitedCommidityCategoryreadSerializer,limitedCommidityreadSerializer,TestResultWriteSerializer,MicroObservationTableSerializer,MicroParameterSerializer,ClientCategorySerializer, SampleFormWriteSerializer,SampleFormReadSerializer,SampleFormListSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer,SuperVisorSampleFormReadSerializer,SuperVisorSampleFormWriteSerializer,NoticeImagesSerializer,ApprovedListSerializer,VerifiedListSerializer,VerifiedWriteSerializer,ApprovedWriteSerializer
 from .models import FiscalYear,ClientCategory,Units,MandatoryStandard,TestMethod, SampleForm, Commodity, CommodityCategory,TestResult, Payment,SuperVisorSampleForm,MicroParameter,MicroObservationTable,ClientCategoryDetail , NoticeImages , ApprovedList , VerifiedList
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -271,7 +271,10 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
             return SampleFormWriteSerializer
-        return super().get_serializer_class()
+        # elif self.action == 'list': @md5 important
+        #     return SampleFormListSerializer 
+        else:
+            return super().get_serializer_class()
     
     def list(self, request, *args, **kwargs):
         response = super().list(request, *args, **kwargs)
