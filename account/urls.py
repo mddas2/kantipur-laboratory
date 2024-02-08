@@ -25,7 +25,7 @@ urlpatterns = [
     path('refresh-token',TokenRefreshView.as_view(),name = 'refresg-token'),
     path('token-verify/',TokenVerifyView.as_view(),name="token_verify"),
 
-    path('check-token-status/',CheckTokenExpireView.as_view(),name="token_verify"),
+    # path('check-token-status/',CheckTokenExpireView.as_view(),name="token_verify"),
 
     path('permission-all-delete/', PermissionAllDelete.as_view()),
     path('roles/',RoleViewSet.as_view()),
