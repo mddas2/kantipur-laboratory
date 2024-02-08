@@ -54,33 +54,18 @@ class CustomUserSerializer(serializers.ModelSerializer):
         return make_password(value) 
     
     def validate_test_types(self,value):#field level validation
-        action = self.context['view'].action   
-        
-        if action == "update":
-            if value != None:
-                try:            
-                    string = [int(id) for id in value.split(',')]
-                    instance = self.instance
-                    if instance.role == roles.ANALYST and len(string) <2:
-                        return string
-                    elif instance.role == roles.SUPERVISOR:
-                        return string
-                    else:
-                        if instance.role == roles.ANALYST:
-                            raise serializers.ValidationError('multiple test type not alowed')
-                        else:
-                            raise serializers.ValidationError('Test type allowed for only analyst and supervisor.')                
-                except:
-                    raise serializers.ValidationError('Test type unknown id')
-            
+        if value != None:         
+            string = [int(id) for id in value.split(',')]
+            initial_data = self.initial_data
+            if initial_data.get('role') == str(roles.ANALYST) and len(string) <2:
                 return string
-        else:
-            if value != None: #multiple test type not alowed' md blunder
-                string = [int(id) for id in value.split(',')]
-                
+            elif initial_data.get('role') == str(roles.SUPERVISOR):
                 return string
-                # raise serializers.ValidationError('Test type allowed for only analyst and supervisor.')
-
+            else:
+                if initial_data.get('role') == str(roles.ANALYST):
+                    raise serializers.ValidationError('multiple test type not alowed')
+                else:
+                    raise serializers.ValidationError('Test type allowed for only analyst and supervisor.') 
         return value
       
     def validate_role(self,value):#field level validation
