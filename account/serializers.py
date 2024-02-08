@@ -17,13 +17,21 @@ class ApprovedBySerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['first_name','last_name','id','email','role','username'] 
 
-class CustomUserReadSerializer(serializers.ModelSerializer):
+class CustomUserListSerializer(serializers.ModelSerializer):
+
+     class Meta:
+        ref_name =  "account serializers"
+        model = CustomUser
+        fields = ['id','email','phone','username','first_name','last_name','remarks','date_joined','role','is_active'] 
+
+
+class CustomUserRetrieveSerializer(serializers.ModelSerializer):
      custom_user_image = CustomUserImageSerializer(many = True,read_only = True)
      approved_by = ApprovedBySerializer(read_only = True)
      class Meta:
         ref_name =  "account serializers"
         model = CustomUser
-        fields = '__all__' 
+        fields = '__all__'
 
 class CustomUserReadLimitedSerializer(serializers.ModelSerializer):
      class Meta:
