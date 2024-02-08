@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from . import views
 from .views import LoginView
 from rest_framework.routers import DefaultRouter
-from .views import PermissionAllDelete,RoleViewSet,DepartmentTypesViewSet,CheckTokenExpireView,userLimitedData,userAdminLevelData
+from .views import PermissionAllDelete,RoleViewSet,DepartmentTypesViewSet,CheckTokenExpireView,userLimitedData,userAdminLevelData,userAssignList
 from .group_permission import PermissionHasGroupViewSet,CustomPermissionInsert
 
 from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView,TokenVerifyView
@@ -34,7 +34,9 @@ urlpatterns = [
     path('add-customized-permission/',CustomPermissionInsert,name="CustomPermissionInsert"),
 
     path('get-limited-user-data/',userLimitedData.as_view(),name="userLimitedData"),
-    path('get-admin-level-data/',userAdminLevelData.as_view(),name="userAdminLevelData")
+    path('get-admin-level-data/',userAdminLevelData.as_view(),name="userAdminLevelData"),
+
+    path('get-assign-users-data/',userAssignList.as_view(),name="userAdminLevelData")
 
     # path('user-has-groups/',)
     

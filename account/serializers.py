@@ -33,6 +33,13 @@ class CustomUserRetrieveSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = '__all__'
 
+
+class CustomUserReadAssignedSerializer(serializers.ModelSerializer):
+     class Meta:
+        ref_name =  "CustomUserReadAssignedSerializer"
+        model = CustomUser
+        fields = ['id','first_name','last_name','test_type','role'] 
+
 class CustomUserReadLimitedSerializer(serializers.ModelSerializer):
      class Meta:
         ref_name =  "CustomUserReadLimitedSerializer serializers"

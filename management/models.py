@@ -121,7 +121,6 @@ class SampleForm(models.Model):#ClientRequest
 
     number_of_sample = models.CharField(max_length=1000,null=True)
     
-    
     remarks = models.CharField(max_length=1000,null=True) #smu_remarks
 
     remarks_recheck_verifier = models.CharField(max_length=1000,null=True)

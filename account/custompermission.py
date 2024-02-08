@@ -1,4 +1,13 @@
 from rest_framework.permissions import BasePermission
+from management import roles
+
+
+def IsAuthenticated(request):
+    return bool(request.user and request.user.is_authenticated)
+
+def fullAdminPermission(request):
+    return IsAuthenticated(request) and request.user.role in [roles.ADMIN, roles.SMU , roles.SUPERADMIN, roles.VERIFIER,roles.SUPERVISOR,roles.ANALYST]
+
 
 class AccountPermission(BasePermission):
     def has_permission(self, request, view):
@@ -20,3 +29,12 @@ class AccountPermission(BasePermission):
             return False
         else:
             return False
+    
+class AdminLevelPermission(BasePermission):
+    def has_permission(self, request, view):
+        if request.method == 'GET':
+            return fullAdminPermission(request)
+        else:
+            # Default to denying permission for unknown methods
+            return False
+      

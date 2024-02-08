@@ -1,0 +1,93 @@
+class SampleFormRetrieveSerializer(serializers.ModelSerializer):
+
+    id = serializers.SerializerMethodField()
+
+    def get_id(self, obj):
+        user = self.context['request'].user
+        return generateAutoEncodeIdforSampleForm(obj.id,user)
+
+    parameters = TestResultSerializer(many=True, read_only=True)
+    payment = PaymentSerializer(read_only=True,many=True)
+
+    owner_user = serializers.SerializerMethodField()
+    approved_by = ApprovedBySerializer(read_only = True,many=False)
+    verified_by = ApprovedBySerializer(read_only = True,many=False)
+    supervisor_user = ApprovedBySerializer(read_only = True)
+
+    commodity = CommoditySerializer(read_only = True,many=False)
+
+    client_category_detail = ClientCategoryDetailSerializer(read_only = True,many=False)
+    
+    class Meta:
+        approved_by = ApprovedBySerializer(read_only = True)
+        supervisor_user = ApprovedBySerializer(read_only = True)
+        verified_by = ApprovedBySerializer(read_only = True)
+        model = SampleForm
+        fields = '__all__'
+
+    def get_owner_user(self, obj):
+        email = obj.owner_user
+        try:
+            user = CustomUser.objects.get(email=email)
+            return ApprovedBySerializer(user).data
+        except CustomUser.DoesNotExist:
+            return None
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        sample_form_id = representation.get('id')
+        sample_form_id = generateDecodeIdforSampleForm(sample_form_id,self.context['request'].user)
+
+        parameters_data = representation.get('parameters', [])
+
+        assigned = 0
+        for parameter_data in parameters_data:
+            parameter_id = parameter_data.get('id')
+            # Check if the parameter exists in SampleFormHasParameter model
+            smple_frm_exist = SampleFormHasParameter.objects.filter(parameter=parameter_id, sample_form = sample_form_id)
+            exists = smple_frm_exist.exists()
+            parameter_data['exist'] = exists
+
+            smple_frm_exist_for_supervisor = SuperVisorSampleForm.objects.filter(parameters=parameter_id, sample_form = sample_form_id)
+            exists_supervisor_parameter = smple_frm_exist_for_supervisor.exists()
+            parameter_data['exists_supervisor_parameter'] = exists_supervisor_parameter
+
+            if exists_supervisor_parameter:
+                # print(smple_frm_exist.first().analyst_user.username)
+                try:
+                    parameter_data['status_supervisor'] = "assigned"
+                    parameter_data['supervisor_user'] = smple_frm_exist_for_supervisor.first().supervisor_user.username
+                except:
+                    pass 
+
+            if exists:
+                # print(smple_frm_exist.first().analyst_user.username)
+                try:
+                    parameter_data['status'] = "assigned"
+                    parameter_data['analyst'] = smple_frm_exist.first().analyst_user.username
+                except:
+                    pass           
+
+
+            if exists == True:
+                assigned+=1
+
+        representation['total_assign'] = assigned
+        representation['parameters'] = parameters_data
+        
+        status = representation.get('status')
+        request = self.context.get('request')
+
+        if request.user.role == roles.USER:
+            if status == "pending" or status == "processing" or status=="completed" or status == "recheck":
+                representation['status'] = status
+            else:
+                representation['status'] = "processing"
+                
+        if request.user.role == roles.SUPERVISOR:
+            if status == "not_assigned":
+                representation['status'] = "Not Assigned"
+
+
+        return representation

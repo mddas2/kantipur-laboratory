@@ -8,7 +8,7 @@ from .serializers import LoginSerializer
 from django.contrib.auth.models import Group, Permission
 from account.models import CustomUser,CustomUserImages
 from rest_framework import viewsets
-from .serializers import CustomUserRetrieveSerializer,CustomUserListSerializer,CustomUserSerializer, GroupSerializer, PermissionSerializer,RoleSerializer,departmentTypeSerializer,CustomUserReadLimitedSerializer,userAdminLevelDataSerializer
+from .serializers import CustomUserRetrieveSerializer,CustomUserListSerializer,CustomUserSerializer, GroupSerializer, PermissionSerializer,RoleSerializer,departmentTypeSerializer,CustomUserReadLimitedSerializer,userAdminLevelDataSerializer,CustomUserReadAssignedSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken,TokenError
@@ -23,7 +23,7 @@ from websocket.handle_notification import NotificationHandler
 from django.http import HttpResponse
 from django.db.models import Q
 from rest_framework import generics
-from .custompermission import AccountPermission
+from .custompermission import AccountPermission,AdminLevelPermission
 from . serializers import CustomUserImageSerializer
 from django.db import transaction
 from .pagination import MyPageNumberPagination
@@ -349,11 +349,36 @@ def CeateClientCategoryDetail(names,files,user_id,action):
         image_serializer.save()    
     return True
 
+class userAssignList(generics.ListAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [AdminLevelPermission]
+    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    search_fields = ['id','email','username','first_name','last_name','is_verified','phone']
+    ordering_fields = ['username','id']
+    filterset_fields = {
+        'email': ['exact', 'icontains'],
+        'username': ['exact'],
+        'is_verified': ['exact'],
+        'is_reject': ['exact'],
+        'role': ['exact'],
+        'client_category_id': ['exact'],
+        'created_date': ['date__gte', 'date__lte'],  # Date filtering
+        'is_active':['exact'],
+    }
+    
+    def get_queryset(self):
+        users = CustomUser.objects.all()
+        return users
+
+    def get_serializer_class(self):
+        return CustomUserReadAssignedSerializer
+    
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)    
+
 class userLimitedData(generics.ListAPIView):
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated]
-
-
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [AdminLevelPermission]
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     search_fields = ['id','email','username','first_name','last_name','is_verified','phone']
     ordering_fields = ['username','id']
@@ -376,24 +401,11 @@ class userLimitedData(generics.ListAPIView):
         return CustomUserReadLimitedSerializer
     
     def list(self, request, *args, **kwargs):
-        # Try to get cached data
-        cached_data = cache.get('UsersuserLimitedData')
-
-        if cached_data is None:
-            queryset = self.filter_queryset(self.get_queryset())
-            serializer = self.get_serializer(queryset, many=True)
-            data = serializer.data
-
-            # Store data in the cache for 5 minutes (300 seconds)
-            cache.set('UsersuserLimitedData', data, cache_time)
-        else:
-            data = cached_data        
-        return Response(data)
+        return super().list(request, *args, **kwargs)
     
 class userAdminLevelData(generics.ListAPIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
+    permission_classes = [AdminLevelPermission]
 
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     search_fields = ['id','email','username','first_name','last_name','is_verified','phone']
@@ -417,19 +429,7 @@ class userAdminLevelData(generics.ListAPIView):
         return userAdminLevelDataSerializer
     
     def list(self, request, *args, **kwargs):
-        # Try to get cached data
-        cached_data = cache.get('UsersuserLimitedData')
-
-        if cached_data is None:
-            queryset = self.filter_queryset(self.get_queryset())
-            serializer = self.get_serializer(queryset, many=True)
-            data = serializer.data
-
-            # Store data in the cache for 5 minutes (300 seconds)
-            cache.set('UsersuserLimitedData', data, cache_time)
-        else:
-            data = cached_data        
-        return Response(data)
+        return super().list(request, *args, **kwargs)
     
    
     
