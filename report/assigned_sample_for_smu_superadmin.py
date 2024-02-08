@@ -12,12 +12,14 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
+from .custompermission import AdmnLevelPermission
+from .pagination import MyPageNumberPaginatiton
 
-class FinalSampleFormHasVerifiedAPIView(generics.ListAPIView):
-    # queryset = SampleForm.objects.all() 
-    # serializer_class = CompletedSampleFormHasAnalystSerializer
+class AssignedSampleForSmuSuperAdmin(generics.ListAPIView):
+ 
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AdmnLevelPermission]
+    pagination_class = MyPageNumberPaginatiton
   
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     search_fields = ['id','namuna_code','code','name','owner_user','status','form_available','commodity__name']
@@ -36,13 +38,7 @@ class FinalSampleFormHasVerifiedAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         user = self.request.user 
-       
-        if user.role == roles.SMU:
-            query = SampleForm.objects.filter(Q(status="processing") | Q(status="not_verified"))
-        elif user.role == roles.SUPERADMIN:
-            query = SampleForm.objects.filter(Q(status="processing") | Q(status="not_verified"))
-        else:
-            raise PermissionDenied("You do not have permission to access this resource.")
+        query = SampleForm.objects.filter(Q(status="processing") | Q(status="not_verified"))
         return query.order_by("-created_date")
     
     def get_serializer_class(self):

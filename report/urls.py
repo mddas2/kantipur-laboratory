@@ -20,7 +20,7 @@ urlpatterns = [
 
     path('final-report-sample-form/', final_report.FinalSampleFormHasVerifiedAPIView.as_view()), #accessable to all superadmin,user
 
-    path('sample-form-assigned-for-smu-superadmin/', assigned_sample_for_smu_superadmin.FinalSampleFormHasVerifiedAPIView.as_view()),
+    path('sample-form-assigned-for-smu-superadmin/', assigned_sample_for_smu_superadmin.AssignedSampleForSmuSuperAdmin.as_view()),
 
     path('track-report-sample-form/', track.TrackSampleFormAPIView.as_view()),
 

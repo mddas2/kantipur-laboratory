@@ -139,19 +139,17 @@ class AssignedSampleForSmuSuperAdminSerializer(serializers.ModelSerializer):
     sample_has_parameter_analyst = SampleFormHasParameterReadSerializer(many=True,read_only=True)
     commodity = CommoditySerializer(read_only = True)
     supervisor_sample_form = SupervisorSampleFormSerializer(many = True,read_only=True)
-    client_category_detail = ClientCategoryDetailSerializer(read_only = True)
+    client_category_detail = serializers.SerializerMethodField()#ClientCategoryDetailSerializer(read_only = True)
     class Meta:
         name = "AssignedSampleForSmuSuperAdminSerializer"
         model = SampleForm
         fields = ['id','supervisor_sample_form','name','sample_has_parameter_analyst','commodity','status','created_date','refrence_number','sample_lab_id','namuna_code','client_category_detail']
 
+    def get_client_category_detail(self,obj):
+        return obj.client_category_detail.client_category_id
+
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-
-        request = self.context.get('request')
-
-
         representation['status'] = over_all_status[instance.status]
-            
         
         return representation
