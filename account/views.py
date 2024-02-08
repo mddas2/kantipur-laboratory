@@ -67,13 +67,7 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         user = self.request.user
-        
-        queryset = cache.get('Users')      
-        if queryset is None:
-            queryset = CustomUser.objects.all()
-            cache.set('Users', queryset, cache_time)
-        else:
-            queryset = queryset   
+        queryset = CustomUser.objects.all() 
     
         if not user.is_authenticated:
             # Return an empty queryset or a default response
@@ -108,25 +102,8 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
         data = serializer.data
         return Response(data)
     
-    def retrieve(self, request, pk=None):
-        try:
-            cache_key = f'user_{pk}'
-            cached_data = cache.get(cache_key)
-
-            if cached_data is None:
-                queryset = self.get_queryset()  # Call get_queryset to retrieve the queryset
-                user = queryset.get(pk=pk)  # Retrieve the user from the queryset
-                # Use the serializer class associated with the viewset
-                serializer = self.get_serializer(user)
-                data = serializer.data
-                cache.set(cache_key , data, cache_time)
-            else:
-                data = cached_data
-
-            return Response(data)
-        except:
-            return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
      
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
