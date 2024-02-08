@@ -125,8 +125,6 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
 
         #NotificationHandler(serializer.instance,request,'create',"CustomUser")
 
-        cache.delete('Users')
-        cache.delete('UsersuserLimitedData')
     
         return Response(response_data, status=status.HTTP_201_CREATED)
     
@@ -158,8 +156,6 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
         
         NotificationHandler(serializer.instance,request,'update','CustomUser')
         # Return the custom response
-        cache.delete('Users')
-        cache.delete('UsersuserLimitedData')
         
         return Response(response_data)
     
