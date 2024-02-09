@@ -27,7 +27,7 @@ from django.db.models import F
 class SampleFormHasAnalystAPIView(generics.ListAPIView):
     
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['id','sample_form__code','sample_form__namuna_code']
+    search_fields = ['id','sample_form__code','sample_form__id','sample_form__namuna_code','sample_form__sample_lab_id','sample_form__namuna_code']
     ordering_fields = ['id']
     filterset_fields = {
         'created_date': ['date__gte', 'date__lte']  # Date filtering

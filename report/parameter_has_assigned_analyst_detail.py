@@ -45,9 +45,7 @@ class ParameterSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class TestResultLimitedSerializer(serializers.ModelSerializer):
-    # commodity = CommodityReadSerializer(many=False,read_only = True)
-
-    class Meta:
+     class Meta:
         model = TestResult
         ref_name = "TestResultLimitedSerializer"
         exclude = ['units', 'mandatory_standard', 'test_method']
@@ -151,7 +149,7 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
     parameters = TestResultLimitedSerializer(read_only = True, many = True)
     
     # verified_by = CustomUserSerializer(read_only = True)
-    approved_by = CustomUserSerializer(read_only = True)
+    # approved_by = CustomUserSerializer(read_only = True)
 
     supervisor_sample_form = SupervisorSampleFormSerializer(many = True,read_only = True)
 
@@ -165,7 +163,7 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
     
     class Meta:
         model = SampleForm
-        fields = fields = ['id','name','new_name','commodity','refrence_number','sample_lab_id','client_category_detail','status','namuna_code','created_date','owner_user_obj','payment','parameters','mfd','dfb','days_dfb','dfb_duration','dfb_type','batch','brand','purpose','condition','note','amendments','sample_type','sample_units','sample_quantity','number_of_sample','analysis_fee','voucher_number','voucher_date','price','approved_by','supervisor_sample_form']
+        fields = fields = ['id','name','new_name','commodity','refrence_number','sample_lab_id','client_category_detail','status','namuna_code','created_date','owner_user_obj','payment','parameters','mfd','dfb','days_dfb','dfb_duration','dfb_type','batch','brand','purpose','condition','note','amendments','sample_type','sample_units','sample_quantity','number_of_sample','analysis_fee','voucher_number','voucher_date','price','supervisor_sample_form']
 
 
     def to_representation(self, instance):
@@ -194,6 +192,7 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
 
             sample_form_has_assigned_analyst_obj = instance.sample_has_parameter_analyst.all().filter(parameter=parameter_id)
             exists = sample_form_has_assigned_analyst_obj.exists()
+            
             if exists:
                 analyst_obj = sample_form_has_assigned_analyst_obj.first().analyst_user
                 first_name = analyst_obj.first_name
