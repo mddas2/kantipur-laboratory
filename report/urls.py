@@ -1,5 +1,8 @@
+from .apis import track
 from . import views,preeti_to_unicode,preeti_to_pdf,dashboard
-from . import final_report,track,status,assigned_sample_for_smu_superadmin, additional_details
+from . import final_report,status,assigned_sample_for_smu_superadmin, additional_details
+
+from .apis.track import TrackSampleFormAPIView
 
 from django.urls import path, include
 
@@ -18,7 +21,7 @@ urlpatterns = [
     path('sample-form-to-approved-by-admin/', views.notApprovedSampleFormHasAdminAPIView.as_view()),
     # path('completed-sample-form-has-assigned-verifier-check-exists/<int:sample_form_id>/', supervisor.getStatusOfVerifierSampleForm.as_view()),
 
-    path('final-report-sample-form/', final_report.FinalSampleFormHasVerifiedAPIView.as_view()), #accessable to all superadmin,user
+    path('final-report-sample-form/', TrackSampleFormAPIView.as_view()), #accessable to all superadmin,user
 
     path('sample-form-assigned-for-smu-superadmin/', assigned_sample_for_smu_superadmin.AssignedSampleForSmuSuperAdmin.as_view()),
 

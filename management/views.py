@@ -5,7 +5,7 @@ from .models import FiscalYear,ClientCategory,Units,MandatoryStandard,TestMethod
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
-from .pagination import MyLimitOffsetPagination,PageNumberPagination
+from .pagination import MyLimitOffsetPagination,MyPageNumberPagination
 from rest_framework.response import Response
 from . client_category_serializers import ClientCategoryDetailSerializer,ClientCategoryDetailImagesSerializer
 from .custompermission import FiscalYearPermission,ClientCategoryPermission,SampleFormViewSetPermission,CommodityViewSetPermission,CommodityCategoryViewSetPermission,TestResultViewSetPermission,PaymentViewSetPermission,MicroparameterViewsetPermission,SuperVisorSampleFormViewsetPermission,NoticeImagesPermission,ApprovedListPermission,VerifiedListPermission
@@ -230,7 +230,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     }
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated,SampleFormViewSetPermission]
-    pagination_class = PageNumberPagination
+    pagination_class = MyPageNumberPagination
 
     def get_object(self):
         user = self.request.user
