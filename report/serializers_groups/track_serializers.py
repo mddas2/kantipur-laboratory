@@ -44,12 +44,9 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
         fields = ['analyst_user','created_date'] 
 
 class TrackSampleFormSerializer(serializers.ModelSerializer):
-    sample_has_parameter_analyst = SampleFormHasParameterReadSerializer(many=True,read_only=True)
     commodity = CommoditySerializer(read_only = True)
     supervisor_sample_form = SupervisorSampleFormSerializer(many = True,read_only = True)
     id = serializers.SerializerMethodField()
-
-    client_category_detail = ClientCategoryDetailSerializer(read_only = True)
     
     def get_id(self, obj):
         user = self.context['request'].user
@@ -57,19 +54,17 @@ class TrackSampleFormSerializer(serializers.ModelSerializer):
     class Meta:
         name = "CompletedSampleFormHasVerifierSerializer_report_"
         model = SampleForm
-        fields = ['id','supervisor_sample_form','name','supervisor_user','sample_has_parameter_analyst','commodity','status','created_date','completed_date','client_category_detail','namuna_code'] #user access
-    
-    def to_representation(self,instance):
-        representation = super().to_representation(instance)
-        client_category_detail = instance.client_category_detail.client_category.id
-        if client_category_detail == 11:
-            representation['name'] = instance.commodity.name #"error md fix" #sample_name
-        return representation
+        fields = ['id','supervisor_sample_form','name','supervisor_user','commodity','status','created_date','completed_date','namuna_code'] #user access
+
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
 
         request = self.context.get('request')
+
+        client_category_detail = instance.client_category_detail.client_category.id
+        if client_category_detail == 11:
+            representation['name'] = instance.commodity.name #"error md fix" #sample_name
 
         status = representation.get('status')
         if request.user.role == roles.SUPERVISOR:
