@@ -217,9 +217,8 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
                 else:
                     parameter_data['status'] = "processing"
                     parameter_data['result'] = '-'
-
-
-            parameter_data['exist'] = exists
+            else:
+                parameter_data['status'] = "not_assigned"
 
         representation['parameters'] = parameters_data
 
