@@ -165,7 +165,7 @@ class DetailParameterHasAssignedAnalyst(views.APIView):
         if self.request.user.role == roles.ANALYST:
             queryset = SampleForm.objects.filter(id=sample_form_id).first()
             serializer = DetailSampleFormHasParameterAnalystSerializer(queryset,many = False,context={'request': request})
-        else:
+        else:#for superadmin,smu
             queryset = SampleForm.objects.filter(id=sample_form_id).first()
             serializer = DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(queryset,many = False,context={'request': request})
         return Response(serializer.data)

@@ -149,15 +149,13 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
     
     parameters = TestResultLimitedSerializer(read_only = True, many = True)
     
-    owner_user = serializers.SerializerMethodField()
-    verified_by = CustomUserSerializer(read_only = True)
+    # verified_by = CustomUserSerializer(read_only = True)
     approved_by = CustomUserSerializer(read_only = True)
 
     supervisor_sample_form = SupervisorSampleFormSerializer(many = True,read_only = True)
 
     payment = PaymentSerializer(read_only = True,many = True)
 
-    
     id = serializers.SerializerMethodField()
 
     def get_id(self, obj):
@@ -166,15 +164,7 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
     
     class Meta:
         model = SampleForm
-        fields = '__all__'
-    
-    def get_owner_user(self, obj):
-        email = obj.owner_user
-        try:
-            user = CustomUser.objects.get(email=email)
-            return CustomUserSerializer(user).data
-        except CustomUser.DoesNotExist:
-            return None
+        fields = fields = ['id','name','new_name','commodity','refrence_number','sample_lab_id','client_category_detail','status','namuna_code','created_date','owner_user_obj','payment','parameters','mfd','dfb','days_dfb','dfb_duration','dfb_type','batch','brand','purpose','condition','note','amendments','sample_type','sample_units','sample_quantity','number_of_sample','analysis_fee','voucher_number','voucher_date','price','approved_by','supervisor_sample_form']
 
 
     def to_representation(self, instance):
@@ -182,24 +172,13 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
 
         sample_form_id = representation.get('id')
         sample_form_id = generateDecodeIdforSampleForm(sample_form_id,self.context['request'].user)
-
         # Add extra response data for parameters field
         parameters_data = representation.get('parameters', [])
-
         user = self.context['request'].user
-
-        # representation['status'] = over_all_status[representation.get('status')]
         if user.role == roles.SMU or user.role == roles.SUPERADMIN:
             smu_superadmin_status = representation.get('status')
             representation['status'] = over_all_status[smu_superadmin_status]
-            # if smu_superadmin_status == "not_assigned" or smu_superadmin_status == "not_verified":
-            #     representation['status'] = "processing"
         
-
-        elif user.role == roles.USER:
-            
-            pass
-            # representation['payment'] = PaymentSerializer(instance.payment).data
 
         for parameter_data in parameters_data:
             parameter_id = parameter_data.get('id')
@@ -210,7 +189,6 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
                 exists_sup = sample_form_has_supervisor_obj.exists()
                 if exists_sup:
                     sup_full_name = str(sample_form_has_supervisor_obj.first().supervisor_user.first_name) +' '+ str(sample_form_has_supervisor_obj.first().supervisor_user.last_name)
-                    # parameter_data['sup_full_name'] = 'ask with manoj das'
                     parameter_data['sup_full_name'] = sup_full_name
 
             sample_form_has_assigned_analyst_obj = SampleFormHasParameter.objects.filter(parameter=parameter_id, sample_form = sample_form_id)

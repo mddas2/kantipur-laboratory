@@ -33,6 +33,12 @@ class CustomUserSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['first_name','last_name','id'] 
 
+class CustomUserSuperVisorUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        ref_name = "CustomUser_report_finalserializer"
+        model = CustomUser
+        fields = ['first_name','last_name'] 
+
 class CommoditySerializer(serializers.ModelSerializer):
     class Meta:
         ref_name = "Commodity_report_finalserializer"
@@ -40,7 +46,7 @@ class CommoditySerializer(serializers.ModelSerializer):
         fields = ['name']
 
 class SupervisorSampleFormSerializer(serializers.ModelSerializer):
-    supervisor_user = CustomUserSerializer(read_only = True)
+    supervisor_user = CustomUserSuperVisorUserSerializer(read_only = True)
     class Meta:
         ref_name = "SupervisorSampleFormSerializer"
         model = SuperVisorSampleForm
@@ -136,14 +142,14 @@ class CompletedSampleFormHasVerifierSerializer_User(serializers.ModelSerializer)
         return representation
 
 class AssignedSampleForSmuSuperAdminSerializer(serializers.ModelSerializer):
-    sample_has_parameter_analyst = SampleFormHasParameterReadSerializer(many=True,read_only=True)
+    # sample_has_parameter_analyst = SampleFormHasParameterReadSerializer(many=True,read_only=True)
     commodity = CommoditySerializer(read_only = True)
     supervisor_sample_form = SupervisorSampleFormSerializer(many = True,read_only=True)
     client_category_detail = serializers.SerializerMethodField()#ClientCategoryDetailSerializer(read_only = True)
     class Meta:
         name = "AssignedSampleForSmuSuperAdminSerializer"
         model = SampleForm
-        fields = ['id','supervisor_sample_form','name','sample_has_parameter_analyst','commodity','status','created_date','refrence_number','sample_lab_id','namuna_code','client_category_detail']
+        fields = ['id','supervisor_sample_form','name','commodity','status','created_date','refrence_number','namuna_code','client_category_detail']
 
     def get_client_category_detail(self,obj):
         return obj.client_category_detail.client_category_id
