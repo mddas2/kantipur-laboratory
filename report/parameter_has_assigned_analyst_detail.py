@@ -7,6 +7,7 @@ from rest_framework import serializers
 from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
 from management.status_naming import over_all_status
 from management import roles
+from .analyst_standard_result import getStandardResult
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -185,19 +186,18 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
             # Check if the parameter exists in SampleFormHasParameter model
             # print(parameter_id)
             if user.role == roles.SMU or user.role == roles.SUPERADMIN or user.role == roles.VERIFIER or user.role == roles.ADMIN:
-                sample_form_has_supervisor_obj = SuperVisorSampleForm.objects.filter(parameters=parameter_id, sample_form = sample_form_id)
+                sample_form_has_supervisor_obj = instance.supervisor_sample_form.all().filter(parameters = parameter_id)
                 exists_sup = sample_form_has_supervisor_obj.exists()
                 if exists_sup:
                     sup_full_name = str(sample_form_has_supervisor_obj.first().supervisor_user.first_name) +' '+ str(sample_form_has_supervisor_obj.first().supervisor_user.last_name)
                     parameter_data['sup_full_name'] = sup_full_name
 
-            sample_form_has_assigned_analyst_obj = SampleFormHasParameter.objects.filter(parameter=parameter_id, sample_form = sample_form_id)
+            sample_form_has_assigned_analyst_obj = instance.sample_has_parameter_analyst.all().filter(parameter=parameter_id)
             exists = sample_form_has_assigned_analyst_obj.exists()
             if exists:
                 analyst_obj = sample_form_has_assigned_analyst_obj.first().analyst_user
                 first_name = analyst_obj.first_name
                 last_name = analyst_obj.last_name
-                status = sample_form_has_assigned_analyst_obj.first().status
                 created_date = sample_form_has_assigned_analyst_obj.first().created_date
                 parameter_data['first_name'] = first_name
                 parameter_data['last_name'] = last_name
@@ -205,17 +205,11 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
                 parameter_data['sample_form_has_parameter'] = sample_form_has_assigned_analyst_obj.first().id  
                 parameter_data['assigned_date'] = created_date
                 
-                formula_obj_result = SampleFormParameterFormulaCalculate.objects.filter(sample_form_id=sample_form_id,parameter_id = parameter_id)
+                formula_obj_result = instance.result.all().filter(parameter_id = parameter_id)
                 if formula_obj_result.count()>0:
                     parameter_data['status'] = formula_obj_result.first().status
-                    analyst_remarks = formula_obj_result.first().analyst_remarks
 
-                    if analyst_remarks:
-                        parameter_data['result'] = formula_obj_result.first().analyst_remarks
-                    elif formula_obj_result.first().converted_result:
-                        parameter_data['result'] = formula_obj_result.first().converted_result
-                    else:
-                        parameter_data['result'] = formula_obj_result.first().result
+                    parameter_data['result'] = getStandardResult(formula_obj_result)
 
                     parameter_data['units'] = formula_obj_result.first().units
                     parameter_data['mandatory_standard'] = formula_obj_result.first().mandatory_standard
@@ -246,8 +240,6 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
         representation['client_category'] = client_category_detail
 
         return representation
-
-
 
 class ClientCategoryDetailSerializer(serializers.ModelSerializer):
     class Meta:
