@@ -197,7 +197,11 @@ class SampleFormListSerializer(serializers.ModelSerializer):
         fields = ['id','name','new_name','commodity','refrence_number','sample_lab_id','client_category_detail','status','namuna_code','created_date','company_name']
     
     def get_company_name(self, obj):
-        return obj.owner_user_obj.department_name
+        try:
+            return obj.owner_user_obj.department_name
+        except:
+            print("\n\n issue")
+            return []
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
