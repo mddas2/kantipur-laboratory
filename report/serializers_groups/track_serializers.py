@@ -52,7 +52,7 @@ class TrackSampleFormSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         return generateAutoEncodeIdforSampleForm(obj.id,user)
     class Meta:
-        name = "CompletedSampleFormHasVerifierSerializer_report_"
+        name = "TrackSampleFormSerializer"
         model = SampleForm
         fields = ['id','supervisor_sample_form','name','supervisor_user','commodity','status','created_date','completed_date','namuna_code'] #user access
 

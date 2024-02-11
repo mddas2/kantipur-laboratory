@@ -1,6 +1,6 @@
 from rest_framework import views
 from management.models import SampleForm
-from . final_serializer import CompletedSampleFormHasVerifierSerializer,CompletedSampleFormHasVerifierSerializer_User
+from . final_serializer import FinalSampleFormReportSerializer_User,FinalSampleFormReportSerializer
 from . analyst_final_report_serializer import CompletedSampleFormHasAnalystSerializer
 from rest_framework.response import Response
 from django.db.models import Q
@@ -14,7 +14,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 from .pagination import MyPageNumberPaginatiton
 
-class FinalSampleFormHasVerifiedAPIView(generics.ListAPIView):
+class FinalSampleFormReportAPIView(generics.ListAPIView): #FinalSampleFormHasVerifiedAPIView # during detail of sample report ,retrieve need limited fields, it needs refined during retrieved by final report detail. please seperate
     # queryset = SampleForm.objects.all() 
     # serializer_class = CompletedSampleFormHasAnalystSerializer
     authentication_classes = [JWTAuthentication]
@@ -67,9 +67,9 @@ class FinalSampleFormHasVerifiedAPIView(generics.ListAPIView):
         if self.request.user.role == roles.ANALYST:
             serializer = CompletedSampleFormHasAnalystSerializer
         elif self.request.user.role == roles.USER:
-            serializer = CompletedSampleFormHasVerifierSerializer_User
+            serializer = FinalSampleFormReportSerializer_User
         else:
-            serializer = CompletedSampleFormHasVerifierSerializer
+            serializer = FinalSampleFormReportSerializer #for superadmin
         return serializer
         
     def get(self, request, *args, **kwargs):

@@ -59,8 +59,8 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
         model = SampleFormHasParameter
         fields = ['analyst_user','created_date'] 
 
-class CompletedSampleFormHasVerifierSerializer(serializers.ModelSerializer):
-    sample_has_parameter_analyst = SampleFormHasParameterReadSerializer(many=True,read_only=True)
+class FinalSampleFormReportSerializer(serializers.ModelSerializer):
+    # sample_has_parameter_analyst = SampleFormHasParameterReadSerializer(many=True,read_only=True)
     commodity = CommoditySerializer(read_only = True)
     supervisor_sample_form = SupervisorSampleFormSerializer(many = True,read_only = True)
     id = serializers.SerializerMethodField()
@@ -71,9 +71,9 @@ class CompletedSampleFormHasVerifierSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         return generateAutoEncodeIdforSampleForm(obj.id,user)
     class Meta:
-        name = "CompletedSampleFormHasVerifierSerializer_report_"
+        name = "FinalSampleFormReportAPIViewReport"
         model = SampleForm
-        fields = ['id','supervisor_sample_form','name','supervisor_user','sample_has_parameter_analyst','commodity','status','created_date','completed_date','client_category_detail','namuna_code'] #user access
+        fields = ['id','supervisor_sample_form','name','supervisor_user','commodity','status','created_date','completed_date','client_category_detail','namuna_code'] #user access
     
     def to_representation(self,instance):
         representation = super().to_representation(instance)
@@ -100,8 +100,8 @@ class CompletedSampleFormHasVerifierSerializer(serializers.ModelSerializer):
 
         return representation
 
-class CompletedSampleFormHasVerifierSerializer_User(serializers.ModelSerializer):
-    sample_has_parameter_analyst = SampleFormHasParameterReadSerializer(many=True,read_only=True)
+class FinalSampleFormReportSerializer_User(serializers.ModelSerializer):
+    # sample_has_parameter_analyst = SampleFormHasParameterReadSerializer(many=True,read_only=True)
     commodity = CommoditySerializer(read_only = True)
     supervisor_sample_form = SupervisorSampleFormSerializer(many = True,read_only = True)
     id = serializers.SerializerMethodField()
@@ -112,9 +112,9 @@ class CompletedSampleFormHasVerifierSerializer_User(serializers.ModelSerializer)
         user = self.context['request'].user
         return generateAutoEncodeIdforSampleForm(obj.id,user)
     class Meta:
-        name = "CompletedSampleFormHasVerifierSerializer_report_"
+        name = "FinalSampleFormReportAPIView_User_Report"
         model = SampleForm
-        fields = ['id','supervisor_sample_form','name','supervisor_user','sample_has_parameter_analyst','commodity','status','created_date','completed_date','client_category_detail','namuna_code','mfd','dfb','sample_quantity','sample_units','voucher_number','voucher_date','analysis_fee','parameters','days_dfb','dfb_duration'] #user access
+        fields = ['id','supervisor_sample_form','name','supervisor_user','commodity','status','created_date','completed_date','client_category_detail','namuna_code','mfd','dfb','sample_quantity','sample_units','voucher_number','voucher_date','analysis_fee','parameters','days_dfb','dfb_duration'] #user access
     
     def to_representation(self,instance):
         representation = super().to_representation(instance)

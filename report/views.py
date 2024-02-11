@@ -154,7 +154,7 @@ class ParameterHasAssignedAnalyst(views.APIView):
         serializer = SampleFormHasParameterAnalystSerializer(queryset,many = False)
         return Response(serializer.data)
 
-class DetailParameterHasAssignedAnalyst(views.APIView):
+class DetailParameterHasAssignedAnalyst(views.APIView): #it is used by sample report by superadmin, where non necessary fields are also providing, for sample report
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
