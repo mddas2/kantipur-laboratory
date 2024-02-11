@@ -31,7 +31,7 @@ class CustomUserRetrieveSerializer(serializers.ModelSerializer):
      class Meta:
         ref_name =  "account serializers"
         model = CustomUser
-        fields = '__all__'
+        exclude = ['password']
 
 
 class CustomUserReadAssignedSerializer(serializers.ModelSerializer):
