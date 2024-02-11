@@ -21,7 +21,7 @@ urlpatterns = [
     path('sample-form-to-approved-by-admin/', views.notApprovedSampleFormHasAdminAPIView.as_view()),
     # path('completed-sample-form-has-assigned-verifier-check-exists/<int:sample_form_id>/', supervisor.getStatusOfVerifierSampleForm.as_view()),
 
-    path('final-report-sample-form/', TrackSampleFormAPIView.as_view()), #accessable to all superadmin,user
+    path('final-report-sample-form/', final_report.FinalSampleFormHasVerifiedAPIView.as_view()), #accessable to all superadmin,user
 
     path('sample-form-assigned-for-smu-superadmin/', assigned_sample_for_smu_superadmin.AssignedSampleForSmuSuperAdmin.as_view()),
 

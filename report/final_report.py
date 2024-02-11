@@ -12,13 +12,16 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
+from .pagination import MyPageNumberPaginatiton
 
 class FinalSampleFormHasVerifiedAPIView(generics.ListAPIView):
     # queryset = SampleForm.objects.all() 
     # serializer_class = CompletedSampleFormHasAnalystSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-  
+    
+    pagination_class = MyPageNumberPaginatiton
+
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     search_fields = ['id','name','owner_user','status','form_available','commodity__name','namuna_code','code']
     ordering_fields = ['name','id']
