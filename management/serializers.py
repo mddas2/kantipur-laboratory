@@ -72,6 +72,18 @@ class TestResultSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+
+class TestResultSerializer_2(serializers.ModelSerializer):
+
+    units = UnitsReadSerializer(many=True,read_only = True)
+    mandatory_standard = MandatoryStandardReadSerializer(many=True,read_only = True)
+    test_method = TestMethodReadSerializer(many=True,read_only = True)
+
+    class Meta:
+        model = TestResult
+        exclude = ['results','remarks']
+
+
 class TestResultForSampleFormSerializer(serializers.ModelSerializer):
     class Meta:
         model = TestResult
@@ -97,11 +109,11 @@ class TestResultWriteSerializer(serializers.ModelSerializer):
 
 
 class CommoditySerializer(serializers.ModelSerializer):
-    test_result = TestResultSerializer(many=True,read_only=True)
+    test_result = TestResultSerializer_2(many=True,read_only=True)
     class Meta:
         ref_name = "Commodity_management"
         model = Commodity
-        fields = '__all__'
+        fields = ['name','name_nepali','price','test_result','test_duration']
 
 class CommoditySampleFormSerializer(serializers.ModelSerializer):
     class Meta:
