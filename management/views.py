@@ -398,8 +398,7 @@ class CommodityViewSet(viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = [CommodityViewSetPermission]
     pagination_class = MyPageNumberPagination  
-   
-    
+
     def get_queryset(self):
         query = Commodity.objects.all()  
         return query
