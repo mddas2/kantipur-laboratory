@@ -67,7 +67,7 @@ class CompletedSampleFormHasVerifierSerializer(serializers.ModelSerializer):
     class Meta:
         name = "CompletedSampleFormHasVerifierSerializer_report_"
         model = SampleForm
-        fields = ['id','supervisor_sample_form','name','supervisor_user','sample_has_parameter_analyst','commodity','status','created_date','completed_date','client_category_detail','namuna_code'] #user access
+        fields = ['id','supervisor_sample_form','name','supervisor_user','sample_has_parameter_analyst','commodity','status','created_date','completed_date','client_category_detail','namuna_code','is_print'] #user access
     
     def to_representation(self,instance):
         representation = super().to_representation(instance)
@@ -108,7 +108,7 @@ class CompletedSampleFormHasVerifierSerializer_User(serializers.ModelSerializer)
     class Meta:
         name = "CompletedSampleFormHasVerifierSerializer_report_"
         model = SampleForm
-        fields = ['id','supervisor_sample_form','name','supervisor_user','sample_has_parameter_analyst','commodity','status','created_date','completed_date','client_category_detail','namuna_code','mfd','dfb','sample_quantity','sample_units','voucher_number','voucher_date','analysis_fee','parameters','days_dfb','dfb_duration'] #user access
+        fields = ['id','supervisor_sample_form','name','supervisor_user','sample_has_parameter_analyst','commodity','status','created_date','completed_date','client_category_detail','namuna_code','mfd','dfb','sample_quantity','sample_units','voucher_number','voucher_date','analysis_fee','parameters','days_dfb','dfb_duration','is_print'] #user access
     
     def to_representation(self,instance):
         representation = super().to_representation(instance)
