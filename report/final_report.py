@@ -32,6 +32,7 @@ class FinalSampleFormHasVerifiedAPIView(generics.ListAPIView):
         'supervisor_user': ['exact'],
         'created_date': ['date__gte', 'date__lte'],  # Date filtering
         'client_category_detail__client_category':['exact'],
+        'is_print':['exact'],
     }
 
     def get_queryset(self):

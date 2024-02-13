@@ -23,7 +23,7 @@ class SampleFormIsPrint(APIView):
             }
 
             # Return the custom response
-            return Response(response_data, status=status.HTTP_201_CREATED)
+            return Response(response_data, status=status.HTTP_200_OK)
         
         response_data = {
                 "message": "you are not smu",
