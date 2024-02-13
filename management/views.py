@@ -398,44 +398,9 @@ class CommodityViewSet(viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = [CommodityViewSetPermission]
     pagination_class = MyLimitOffsetPagination
-    
-    # def get_queryset(self):
-    #     query = Commodity.objects.all()
-    #     return query
-    
-    
-    # def list(self, request, *args, **kwargs):
-    #     # Try to get cached data
- 
-    #     cached_data = cache.get('CommodityViewSet')
 
-    #     if cached_data is None:
-    #         # Cache is empty, fetch data from the database
-    #         queryset = self.filter_queryset(self.get_queryset())
-            
-    #         # Use pagination to get a page of data
-    #         page = self.paginate_queryset(queryset)
-    #         if page is not None:
-    #             serializer = self.get_serializer(page, many=True)
-    #             data = self.get_paginated_response(serializer.data).data
-    #         else:
-    #             data = []
-
-    #         cache.set('CommodityViewSet', data, cache_time)
-    #     else:
-    #         data = cached_data
-        
-    #     return Response(data)
-    
     def get_queryset(self):
-        cached_data = cache.get('CommodityViewSet')
-        if cached_data is None:
-            query = Commodity.objects.all()
-            cache.set('CommodityViewSet', query, cache_time)
-        else:
-            query = cached_data
-        return query
-    
+        return Commodity.objects.all()
     
     def list(self, request, *args, **kwargs):
         
@@ -518,7 +483,6 @@ class commodityLimitedData(generics.ListAPIView):
         return limitedCommidityreadSerializer
         
     def list(self, request, *args, **kwargs):
-        from rest_framework.response import Response
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
         data = serializer.data

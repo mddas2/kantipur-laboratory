@@ -181,6 +181,8 @@ class SampleForm(models.Model):#ClientRequest
     namuna_code = models.CharField(max_length=55, null=True)
     code = models.IntegerField(max_length=30,null=True)
 
+    is_print = models.BooleanField(default = False)
+
     def save(self, *args, **kwargs):
         create = False
         if not self.pk:
