@@ -12,6 +12,7 @@ from .custompermission import FiscalYearPermission,ClientCategoryPermission,Samp
 from rest_framework import status
 from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.parsers import MultiPartParser, FormParser
 from . import roles
 from rest_framework.exceptions import PermissionDenied
 from django.db.models import Q
@@ -397,12 +398,10 @@ class CommodityViewSet(viewsets.ModelViewSet):
 
     authentication_classes = [JWTAuthentication]
     permission_classes = [CommodityViewSetPermission]
-    pagination_class = MyPageNumberPagination  
+    pagination_class = MyLimitOffsetPagination
 
     def get_queryset(self):
-        query = Commodity.objects.all()  
-        return query
-    
+        return Commodity.objects.all()
     
     def  list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
@@ -420,7 +419,6 @@ class CommodityViewSet(viewsets.ModelViewSet):
             "data": serializer.data
         }
 
-        cache.delete('CommodityViewSet')
         # Return the custom response
         return Response(response_data, status=status.HTTP_201_CREATED)
     
@@ -438,9 +436,6 @@ class CommodityViewSet(viewsets.ModelViewSet):
             "message": "commodity updated successfully",
             "data": serializer.data
         }
-
-        # Return the custom response
-        cache.delete('CommodityViewSet')
         return Response(response_data)
     
     def destroy(self, request, *args, **kwargs):
@@ -474,7 +469,6 @@ class commodityLimitedData(generics.ListAPIView):
         return limitedCommidityreadSerializer
         
     def list(self, request, *args, **kwargs):
-        from rest_framework.response import Response
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
         data = serializer.data
@@ -704,7 +698,6 @@ class TestResultViewSet(viewsets.ModelViewSet):
         return Response(response_data)
 
 class PaymentViewSet(viewsets.ModelViewSet):
-    from rest_framework.parsers import MultiPartParser, FormParser
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
     filter_backends = [SearchFilter]

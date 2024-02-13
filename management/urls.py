@@ -2,6 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views,import_excel,sample_form_has_parameter,formula_algorithm,raw_data
 from . import verfier
+from . import is_print
 
 router = DefaultRouter()
 router.register('client-category', views.ClientCategoryViewSet, basename="apis/client_category")
@@ -52,4 +53,5 @@ urlpatterns = [
 
     path('get-commodity-category-only/', views.commodityCategoryLimitedData.as_view(), name='commodityCategoryLimitedData'),
     
+    path('is-print-save-sample-form/<int:sample_form>/', is_print.SampleFormIsPrint.as_view(), name='SampleFormIsPrint'),
 ]
