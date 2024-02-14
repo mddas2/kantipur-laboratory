@@ -345,7 +345,6 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
             if request.user.role == roles.ADMIN:
                 if len(data) == 2 and 'status' in data and 'admin_remarks' in data:
                     request = self.context.get('request')
-                    print(request.data)
                     approved_by = CustomUser.objects.all().filter(id = int(request.data.get('approve_by')))
                     if approved_by.exists() == False:
                         raise serializers.ValidationError("Verified by user must be exists")    
