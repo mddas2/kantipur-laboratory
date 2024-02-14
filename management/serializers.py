@@ -362,8 +362,6 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
             else:
                 raise serializers.ValidationError('You have not permission.Error code E-SAMPLE-FORM-3 ')
             #for verifier validate.
-                    
-
         
     class Meta:
         model = SampleForm
@@ -379,6 +377,16 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
             fields['price'].read_only = True
 
         return fields
+
+class SampleFormSuperVisorListSerializer(serializers.ModelSerializer):
+    commodity = serializers.SerializerMethodField()
+    class Meta:
+        model = SampleForm
+        fields = ['namuna_code','name','commodity','status']
+    
+    def get_commodity(self,obj):
+        # return ""
+        return obj.commodity.name
 
 class SampleFormReadAnalystSerializer(serializers.ModelSerializer):
     commodity = CommodityReadSerializer(read_only=True,many=False)
@@ -594,7 +602,7 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
     
    
 class SuperVisorSampleFormReadSerializer(serializers.ModelSerializer):  
-    sample_form = SampleFormReadAnalystSerializer(read_only=True)
+    sample_form = SampleFormSuperVisorListSerializer(read_only=True)
     commodity = CommodityWriteSerializer(read_only=True,many=True)
     parameters = TestResultLimitedSerializer(many=True,read_only=True)
     class Meta:

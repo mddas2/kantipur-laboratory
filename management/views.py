@@ -91,7 +91,7 @@ class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
     }
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated,SuperVisorSampleFormViewsetPermission]
-    pagination_class = MyLimitOffsetPagination
+    pagination_class = MyPageNumberPagination
 
 
     def get_queryset(self):
