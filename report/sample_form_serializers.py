@@ -41,14 +41,29 @@ class SampleFormSerializer(serializers.ModelSerializer):
         representation['client_category'] = client_category_detail
         return representation
 
+class SampleFormHasSupervisorParameter_SampleFormSerializer(serializers.ModelSerializer): #SampleFormHasSupervisorParameterSerializer
+    commodity = CommoditySerializer(read_only = True)
+    class Meta:
+        ref_name = "SampleFormHasSupervisorParameter_SampleFormSerializer"
+        model = SampleForm
+        fields = ['name','client_category_detail','namuna_code','commodity']
+    
+    # def to_representation(self, instance): #if dftqc then sample name as commodity category else do no things
+    #     representation = super().to_representation(instance)
+    #     client_category_detail = instance.client_category_detail.client_category.id
+    #     if client_category_detail == 11:
+    #         representation['name'] = instance.commodity.name #"error md fix" #sample_name
+    #     representation['client_category'] = client_category_detail
+    #     return representation
+
+
 class SampleFormHasSupervisorParameterSerializer(serializers.ModelSerializer):
     sample_has_parameter_analyst = SampleFormHasParameterReadSerializer(many=True,read_only=True) 
-    commodity = CommoditySerializer(read_only = True)
-    sample_form = SampleFormSerializer(read_only = True)
+    sample_form = SampleFormHasSupervisorParameter_SampleFormSerializer(read_only = True)
  
     class Meta:
         model = SuperVisorSampleForm
-        fields = ['id','sample_form','commodity','sample_has_parameter_analyst','commodity','status','created_date','is_analyst_test']
+        fields = ['id','sample_form','sample_has_parameter_analyst','status','created_date','is_analyst_test']
 
     
     def to_representation(self, instance):
@@ -57,13 +72,5 @@ class SampleFormHasSupervisorParameterSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
 
         representation['status'] = over_all_status[instance.status]
-
-        if request.user.role == roles.SUPERVISOR:
-            # is_analyst_test = representation.get('is_analyst_test')
-            # if is_analyst_test == True:
-            #     stat = "completed"
-            #     representation['status'] = stat
-            commodity_obj = Commodity.objects.get(id = instance.sample_form.commodity_id)
-            representation['commodity'] = CommoditySerializer(commodity_obj,many = False).data
         return representation
                 

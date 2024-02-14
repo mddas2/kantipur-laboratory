@@ -382,7 +382,7 @@ class SampleFormSuperVisorListSerializer(serializers.ModelSerializer):
     commodity = serializers.SerializerMethodField()
     class Meta:
         model = SampleForm
-        fields = ['namuna_code','name','commodity','status']
+        fields = ['namuna_code','name','commodity','status','id']
     
     def get_commodity(self,obj):
         # return ""
@@ -598,21 +598,31 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
         
         return super().create(validated_data)
 
-   
-class SuperVisorSampleFormRetrieveSerializer(serializers.ModelSerializer):  
+
+class SampleFormParameterFormulaCalculate_SampleFormHasParameter(serializers.ModelSerializer):
+    class Meta:
+        model = SampleFormParameterFormulaCalculate
+        fields = '__all__'
+
+
+class SampleFormHasParameter_SuperVisorSampleFormRetrieveSerializer(serializers.ModelSerializer):
+    formula_calculate = SampleFormParameterFormulaCalculate_SampleFormHasParameter(many=True,read_only = True)
+    class Meta:
+        model = SampleFormHasParameter
+        fields = '__all__'
+
+class SuperVisorSampleFormRetrieveSerializer(serializers.ModelSerializer): 
     sample_form = SampleFormSuperVisorListSerializer(read_only=True)
-    commodity = CommodityWriteSerializer(read_only=True,many=True)
     parameters = TestResultLimitedSerializer(many=True,read_only=True)
+    # sample_has_parameter_analyst = SampleFormHasParameter_SuperVisorSampleFormRetrieveSerializer(read_only = True,many = True) #standard approach to remove representation loop.
     class Meta:
         model = SuperVisorSampleForm
-        fields = '__all__'
+        fields = ['sample_form','status'] #sample_has_parameter_analyst
        
-    
     def to_representation(self, instance):
         representation = super().to_representation(instance)
 
         sample_form_id = instance.sample_form.id
-        # print(sample_form_id,"sasdadada sdd ds")
         # sample_form_id = generateDecodeIdforSampleForm(sample_form_id,self.context['request'].user)
 
         parameters_data = representation.get('parameters', [])

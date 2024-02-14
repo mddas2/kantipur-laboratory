@@ -57,7 +57,7 @@ class SampleFormHasAnalystFinalReportAPIView(generics.ListAPIView): #supervisor 
     }
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    # pagination_class = MyPageNumberPagination
+    pagination_class = MyPageNumberPagination
 
     def get_serializer_class(self): 
         return SampleFormHasSupervisorParameterSerializer
