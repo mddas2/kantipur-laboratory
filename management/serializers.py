@@ -614,7 +614,7 @@ class SampleFormHasParameter_SuperVisorSampleFormRetrieveSerializer(serializers.
 class SuperVisorSampleFormRetrieveSerializer(serializers.ModelSerializer): 
     sample_form = SampleFormSuperVisorListSerializer(read_only=True)
     parameters = TestResultLimitedSerializer(many=True,read_only=True)
-    # sample_has_parameter_analyst = SampleFormHasParameter_SuperVisorSampleFormRetrieveSerializer(read_only = True,many = True) #standard approach to remove representation loop.
+    # sample_has_parameter_analyst = SampleFormHasParameter_SuperVisorSampleFormRetrieveSerializer(read_only = True,many = True) #standard approach to remove representation loop..
     class Meta:
         model = SuperVisorSampleForm
         fields = ['sample_form','status'] #sample_has_parameter_analyst
