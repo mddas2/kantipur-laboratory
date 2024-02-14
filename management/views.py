@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from .serializers import FiscalYearSerializer,limitedCommidityCategoryreadSerializer,limitedCommidityreadSerializer,TestResultWriteSerializer,MicroObservationTableSerializer,MicroParameterSerializer,ClientCategorySerializer, SampleFormWriteSerializer,SampleFormRetrieveSerializer,SampleFormListSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer,SuperVisorSampleFormReadSerializer,SuperVisorSampleFormWriteSerializer,NoticeImagesSerializer,ApprovedListSerializer,VerifiedListSerializer,VerifiedWriteSerializer,ApprovedWriteSerializer
+from .serializers import FiscalYearSerializer,limitedCommidityCategoryreadSerializer,limitedCommidityreadSerializer,TestResultWriteSerializer,MicroObservationTableSerializer,MicroParameterSerializer,ClientCategorySerializer, SampleFormWriteSerializer,SampleFormRetrieveSerializer,SampleFormListSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer,SuperVisorSampleFormRetrieveSerializer,SuperVisorSampleFormListSerializer,SuperVisorSampleFormWriteSerializer,NoticeImagesSerializer,ApprovedListSerializer,VerifiedListSerializer,VerifiedWriteSerializer,ApprovedWriteSerializer
 from .models import FiscalYear,ClientCategory,Units,MandatoryStandard,TestMethod, SampleForm, Commodity, CommodityCategory,TestResult, Payment,SuperVisorSampleForm,MicroParameter,MicroObservationTable,ClientCategoryDetail , NoticeImages , ApprovedList , VerifiedList
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -80,7 +80,7 @@ class ClientCategoryViewSet(viewsets.ModelViewSet):
 
 class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
     queryset = SuperVisorSampleForm.objects.all()
-    serializer_class = SuperVisorSampleFormReadSerializer
+    serializer_class = SuperVisorSampleFormRetrieveSerializer
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     search_fields = ['id']
     ordering_fields = ['id']
@@ -114,6 +114,8 @@ class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
             return SuperVisorSampleFormWriteSerializer
+        elif self.action in ['list']:
+            return  SuperVisorSampleFormListSerializer
         return super().get_serializer_class()
     
     def list(self, request, *args, **kwargs):

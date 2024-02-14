@@ -598,10 +598,8 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
         
         return super().create(validated_data)
 
-
-    
    
-class SuperVisorSampleFormReadSerializer(serializers.ModelSerializer):  
+class SuperVisorSampleFormRetrieveSerializer(serializers.ModelSerializer):  
     sample_form = SampleFormSuperVisorListSerializer(read_only=True)
     commodity = CommodityWriteSerializer(read_only=True,many=True)
     parameters = TestResultLimitedSerializer(many=True,read_only=True)
@@ -675,17 +673,7 @@ class SuperVisorSampleFormReadSerializer(serializers.ModelSerializer):
                 except:
                     pass 
 
-            # if exists:
-            #     # print(smple_frm_exist.first().analyst_user.username)
-            #     try:
-            #         parameter_data['status'] = smple_frm_exist.first().status
-            #         if smple_frm_exist.first().status == "not_verified":
-            #             parameter_data['status'] = over_all_status['completed']
-            #         parameter_data['analyst'] = smple_frm_exist.first().analyst_user.username
-            #     except:
-            #         pass           
-
-
+    
             if exists == True:
                 assigned+=1
 
@@ -707,6 +695,12 @@ class SuperVisorSampleFormReadSerializer(serializers.ModelSerializer):
 
         return representation
         
+class SuperVisorSampleFormListSerializer(serializers.ModelSerializer):  
+    sample_form = SampleFormSuperVisorListSerializer(read_only=True)
+    class Meta:
+        model = SuperVisorSampleForm
+        fields = ['created_date','sample_form','id','status']
+       
 
 class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
     sample_form = SampleFormReadAnalystSerializer(read_only=True)

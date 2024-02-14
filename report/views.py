@@ -17,8 +17,8 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
-from management.pagination import MyLimitOffsetPagination
-from django.db.models import Q
+from management.pagination import MyPageNumberPagination
+from django.db.models import Q,Max
 from management import roles
 from rest_framework import generics
 from .report_download import TestReport,ReportAdminList,ReportParameter,ReportCommodity,ReportUserSampleForm,ReportUserList,ReportSampleForm,ReportUserRequest,ReportComodityCategory,FinalReport,rawDataSheetAnalystReport
@@ -34,6 +34,7 @@ class SampleFormHasAnalystAPIView(generics.ListAPIView):
     }
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+    pagination_class = MyPageNumberPagination
 
     def get_serializer_class(self): 
         return SampleFormHasSupervisorParameterSerializer
@@ -56,6 +57,7 @@ class SampleFormHasAnalystFinalReportAPIView(generics.ListAPIView): #supervisor 
     }
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+    # pagination_class = MyPageNumberPagination
 
     def get_serializer_class(self): 
         return SampleFormHasSupervisorParameterSerializer
