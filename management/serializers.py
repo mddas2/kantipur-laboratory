@@ -281,7 +281,7 @@ class SampleFormReadSerializer(serializers.ModelSerializer):
     verified_by = ApprovedBySerializer(read_only = True,many=False)
     supervisor_user = ApprovedBySerializer(read_only = True)
 
-    commodity = CommoditySerializer(read_only = True,many=False)
+    commodity = CommoditySampleFormSerializer(read_only = True,many=False)
 
     client_category_detail = ClientCategoryDetailSerializer(read_only = True,many=False)
     
