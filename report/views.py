@@ -1,15 +1,11 @@
-import os
-from django.conf import settings
 from django.http import HttpResponse
 from rest_framework import views
 import json
 from management.models import SampleForm,SuperVisorSampleForm,SampleFormHasParameter
-from rest_framework import viewsets,status
 from rest_framework.response import Response
 from . sample_form_serializers import SampleFormHasSupervisorParameterSerializer
 from . supervisor_final_report_serializer import SupervisorFinalReportSerializer
 from . parameter_has_assigned_analyst import SampleFormHasParameterAnalystSerializer,SampleFormTrackbyAnalystSerializer
-from . analyst_final_report_serializer import DetailSampleFormHasParameterRoleAsAnalystSerializer
 from . parameter_has_assigned_analyst_detail import DetailSampleFormHasParameterAnalystSerializer,DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp,FinalReportNepaliAnalystSerializer
 from . verifier_has_completed_sample_form import CompletedSampleFormHasVerifierSerializer
 from django.shortcuts import render
@@ -21,9 +17,9 @@ from management.pagination import MyPageNumberPagination
 from django.db.models import Q,Max
 from management import roles
 from rest_framework import generics
-from .report_download import TestReport,ReportAdminList,ReportParameter,ReportCommodity,ReportUserSampleForm,ReportUserList,ReportSampleForm,ReportUserRequest,ReportComodityCategory,FinalReport,rawDataSheetAnalystReport
-from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm,generateDecodeIdByRoleforSampleForm
-from django.db.models import F
+from .report_download import TestReport,ReportParameter,ReportCommodity,ReportUserSampleForm,ReportUserList,ReportSampleForm,ReportUserRequest,ReportComodityCategory,FinalReport,rawDataSheetAnalystReport
+from management.encode_decode import generateDecodeIdforSampleForm,generateDecodeIdByRoleforSampleForm
+from rest_framework.exceptions import PermissionDenied
 class SampleFormHasAnalystAPIView(generics.ListAPIView):
     
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
@@ -84,7 +80,7 @@ class DetailSampleFormHasAnalystFinalReportAPIView(views.APIView):
 class CompletedSampleFormHasVerifierAPIView(generics.ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-
+    pagination_class = MyPageNumberPagination
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     search_fields = ['id','name','owner_user','status','form_available','commodity__name','namuna_code','code']
     ordering_fields = ['name','id']
@@ -103,7 +99,10 @@ class CompletedSampleFormHasVerifierAPIView(generics.ListAPIView):
     
     def get_queryset(self):
         request = self.request
-        queryset = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=False) and Q(status="not_verified")).order_by("-created_date")
+        if request.user.role == roles.VERIFIER:
+            queryset = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=False) and Q(status="not_verified")).order_by("-created_date")
+        else:
+            raise PermissionDenied("You do not have permission to access thais resource.")
         return queryset
 
     def get(self, request, *args, **kwargs):

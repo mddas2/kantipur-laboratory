@@ -21,11 +21,14 @@ class TestResultParametersSerializer(serializers.ModelSerializer):
         fields = ['name']
 
 class ClientCategoryDetailSerializer(serializers.ModelSerializer):
-    # ClientCategoryDetail = ClientCategoryDetailImagesSerializer(many=True,read_only=True)
+    client_category_name = serializers.SerializerMethodField()
     class Meta:
         ref_name = "ClientCategoryDetailSerializer"
         model = ClientCategoryDetail
-        fields = '__all__'
+        fields = ['client_category_name']
+    
+    def get_client_category_name(self,obj):
+        return obj.client_category.name
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:

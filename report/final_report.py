@@ -70,7 +70,7 @@ class FinalSampleFormReportAPIView(generics.ListAPIView): #FinalSampleFormHasVer
         elif self.request.user.role == roles.USER:
             serializer = FinalSampleFormReportSerializer_User
         else:
-            serializer = FinalSampleFormReportSerializer #for superadmin,smu,
+            serializer = FinalSampleFormReportSerializer #for superadmin,smu,verifier
         return serializer
         
     def get(self, request, *args, **kwargs):
