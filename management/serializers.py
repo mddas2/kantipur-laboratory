@@ -616,7 +616,7 @@ class SuperVisorSampleFormRetrieveSerializer(serializers.ModelSerializer):
     # sample_has_parameter_analyst = SampleFormHasParameter_SuperVisorSampleFormRetrieveSerializer(read_only = True,many = True) #standard approach to remove representation loop..
     class Meta:
         model = SuperVisorSampleForm
-        fields = ['sample_form','status','parameters'] #sample_has_parameter_analyst
+        fields = ['sample_form','status','parameters','created_date'] #sample_has_parameter_analyst
        
     def to_representation(self, instance):
         representation = super().to_representation(instance)
