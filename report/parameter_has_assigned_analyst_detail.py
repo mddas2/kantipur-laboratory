@@ -14,6 +14,11 @@ class CustomUserSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['first_name','last_name','id','email','department_name','department_address','position'] 
 
+class CustomUserSerializer_DetailSampleFormHasParameterAnalystSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['first_name','last_name'] 
+
 class CommoditySerializer(serializers.ModelSerializer):
     class Meta:
         model = Commodity
@@ -54,21 +59,10 @@ class TestResultLimitedSerializer(serializers.ModelSerializer):
 class DetailSampleFormHasParameterAnalystSerializer(serializers.ModelSerializer):
     commodity = CommoditySerializer(read_only = True)
     parameters = ParameterSerializer(read_only = True, many = True)
-    owner_user = serializers.SerializerMethodField()
-    supervisor_user = CustomUserSerializer(read_only = True)
-    verified_by = CustomUserSerializer(read_only = True)
+    verified_by = CustomUserSerializer_DetailSampleFormHasParameterAnalystSerializer(read_only = True)
     class Meta:
         model = SampleForm
-        fields = '__all__'
-    
-    def get_owner_user(self, obj):
-        email = obj.owner_user
-        try:
-            user = CustomUser.objects.get(email=email)
-            return CustomUserSerializer(user).data
-        except CustomUser.DoesNotExist:
-            return None
-
+        fields = ['id','name','commodity','supervisor_user','verified_by','approved_date','sample_lab_id','client_category_detail','status','namuna_code','created_date','parameters']
 
     def to_representation(self, instance):
         request = self.context.get('request')
@@ -139,7 +133,9 @@ class DetailSampleFormHasParameterAnalystSerializer(serializers.ModelSerializer)
         if client_category_detail == 11:
             representation['name'] = instance.commodity.name #"error md fix" #sample_name
         representation['client_category'] = client_category_detail
-
+    
+        super_visor_obj = SampleFormHasParameter.objects.filter(analyst_user = user,sample_form_id = sample_form_id).first().super_visor_sample_form.supervisor_user
+        representation['supervisor_user'] = str(super_visor_obj.first_name)+" "+str(super_visor_obj.last_name)
         return representation
 
 

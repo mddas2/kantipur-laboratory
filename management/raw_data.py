@@ -152,10 +152,6 @@ def UpdategenerateRawData(supervisor_table_id,remarks):
 
 
 class rawDataDetail(generics.ListAPIView):
-    # queryset = SampleForm.objects.all() 
-    # serializer_class = CompletedSampleFormHasAnalystSerializer
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated]
   
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     search_fields = ['id']
@@ -177,8 +173,7 @@ class rawDataDetail(generics.ListAPIView):
         return self.list(request, *args, **kwargs)
 
 class rawDataForSampleForm(generics.ListAPIView):
-    # queryset = SampleForm.objects.all() 
-    # serializer_class = CompletedSampleFormHasAnalystSerializer
+
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
   

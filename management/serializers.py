@@ -386,6 +386,16 @@ class SampleFormSuperVisorListSerializer(serializers.ModelSerializer):
     def get_commodity(self,obj):
         # return ""
         return obj.commodity.name
+    
+class SampleForm_SampleFormHasParameterListSerializer(serializers.ModelSerializer): #for analysts only
+    commodity = serializers.SerializerMethodField()
+    class Meta:
+        model = SampleForm
+        fields = ['namuna_code','name','commodity','status','id']
+    
+    def get_commodity(self,obj):
+        # return ""
+        return obj.commodity.name
 
 class SampleFormReadAnalystSerializer(serializers.ModelSerializer):
     commodity = CommodityReadSerializer(read_only=True,many=False)
@@ -711,7 +721,14 @@ class SuperVisorSampleFormListSerializer(serializers.ModelSerializer):
         fields = ['created_date','sample_form','id','status']
        
 
-class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
+class SampleFormHasParameterListSerializer(serializers.ModelSerializer):
+    sample_form = SampleForm_SampleFormHasParameterListSerializer(read_only=True)
+
+    class Meta:
+        model = SampleFormHasParameter
+        fields = ['id','status','sample_form','created_date']
+
+class SampleFormHasParameterRetrieveSerializer(serializers.ModelSerializer):
     sample_form = SampleFormReadAnalystSerializer(read_only=True)
     commodity = CommodityAllReadSerializer(read_only=True)
     parameter = TestResultSerializer(many=True,read_only=True)

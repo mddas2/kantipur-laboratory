@@ -65,12 +65,12 @@ class FinalSampleFormReportAPIView(generics.ListAPIView): #FinalSampleFormHasVer
         return query.order_by("-approved_date")
     
     def get_serializer_class(self):
-        if self.request.user.role == roles.ANALYST:
+        if self.request.user.role == roles.ANALYST: #analyst reached
             serializer = CompletedSampleFormHasAnalystSerializer
         elif self.request.user.role == roles.USER:
             serializer = FinalSampleFormReportSerializer_User
         else:
-            serializer = FinalSampleFormReportSerializer #for superadmin
+            serializer = FinalSampleFormReportSerializer #for superadmin,smu,
         return serializer
         
     def get(self, request, *args, **kwargs):

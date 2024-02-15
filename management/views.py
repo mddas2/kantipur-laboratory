@@ -29,7 +29,8 @@ class ClientCategoryViewSet(viewsets.ModelViewSet):
     search_fields = ['name']
     ordering_fields = ['name','id']
     permission_classes = [ClientCategoryPermission]
-    pagination_class = MyLimitOffsetPagination
+    pagination_class = MyPageNumberPagination
+
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -400,7 +401,7 @@ class CommodityViewSet(viewsets.ModelViewSet):
 
     authentication_classes = [JWTAuthentication]
     permission_classes = [CommodityViewSetPermission]
-    pagination_class = MyLimitOffsetPagination
+    pagination_class = MyPageNumberPagination
 
     def get_queryset(self):
         return Commodity.objects.all()
@@ -607,7 +608,7 @@ class TestResultViewSet(viewsets.ModelViewSet):
     search_fields = ['id','name','formula','commodity__name']
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated,TestResultViewSetPermission]
-    pagination_class = MyLimitOffsetPagination
+    pagination_class = MyPageNumberPagination
     
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
@@ -615,27 +616,7 @@ class TestResultViewSet(viewsets.ModelViewSet):
         return super().get_serializer_class()
     
     def list(self, request, *args, **kwargs):
-        # Try to get cached data
-        cached_data = cache.get('TestResultViewSet')
-
-        if cached_data is None:
-            # Cache is empty, fetch data from the database
-            queryset = self.filter_queryset(self.get_queryset())
-            
-            # Use pagination to get a page of data
-            page = self.paginate_queryset(queryset)
-            if page is not None:
-                serializer = self.get_serializer(page, many=True)
-                data = self.get_paginated_response(serializer.data).data
-            else:
-                data = []
-
-            # Store data in the cache for 5 minutes (300 seconds)
-            cache.set('TestResultViewSet', data, cache_time)
-        else:
-            data = cached_data
-        
-        return Response(data)
+        return super().list(request, *args, **kwargs)
     
     def create(self, request, *args, **kwargs):
         units = request.data.get('units')
@@ -654,9 +635,6 @@ class TestResultViewSet(viewsets.ModelViewSet):
             "data": serializer.data
         }
 
-        # Return the custom response
-
-        cache.delete("TestResultViewSet")
         return Response(response_data, status=status.HTTP_201_CREATED)
     
     def update(self, request, *args, **kwargs):

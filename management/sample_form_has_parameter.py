@@ -1,11 +1,11 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from .serializers import SampleFormHasParameterReadSerializer,SampleFormHasParameterWriteSerializer
+from .serializers import SampleFormHasParameterListSerializer,SampleFormHasParameterRetrieveSerializer,SampleFormHasParameterWriteSerializer
 from .models import SampleFormHasParameter,TestResult
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
-from .pagination import MyLimitOffsetPagination
+from .pagination import MyPageNumberPagination
 from rest_framework.response import Response
 from .custompermission import SampleFormHasParameterPermission
 from rest_framework import status
@@ -17,7 +17,7 @@ from django.db.models import Q
 
 class SampleFormHasParameterViewSet(viewsets.ModelViewSet):
     queryset = SampleFormHasParameter.objects.all()
-    serializer_class = SampleFormHasParameterReadSerializer
+    serializer_class = SampleFormHasParameterListSerializer
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
     search_fields = ['status','sample_form__name','sample_form__id','sample_form__code','sample_form__namuna_code','sample_form__refrence_number','sample_form__sample_lab_id']
     filterset_fields = ['status','form_available','analyst_user','sample_form','commodity','']
@@ -38,7 +38,7 @@ class SampleFormHasParameterViewSet(viewsets.ModelViewSet):
     
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated,SampleFormHasParameterPermission]
-    pagination_class = MyLimitOffsetPagination
+    pagination_class = MyPageNumberPagination
 
     def get_queryset(self):
         user = self.request.user
@@ -51,6 +51,8 @@ class SampleFormHasParameterViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
             return SampleFormHasParameterWriteSerializer
+        elif self.action in ['retrieve']:
+            return SampleFormHasParameterRetrieveSerializer
         return super().get_serializer_class()
     
     def create(self, request, *args, **kwargs):
