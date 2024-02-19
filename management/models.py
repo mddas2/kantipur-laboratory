@@ -460,8 +460,6 @@ class MicroObservationTable(models.Model):
     positive_control = models.CharField(max_length=500,null=True,blank=True)
 
 
-
-
 # class MicroObservationTableRawData(models.Model):
 class MicroObservationTableRawData(models.Model):
     micro_parameter_table_raw_data = models.ForeignKey(MicroParameterRawData,related_name="micro_observation_table_raw_data",on_delete=models.CASCADE,null=True,default=None)

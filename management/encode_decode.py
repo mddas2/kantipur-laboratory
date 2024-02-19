@@ -1,5 +1,5 @@
 from hashids import Hashids
-from ..account import roles
+from account import roles
 
 sample_form_user_salt = "user"
 sample_form_supervisor_salt = "common"

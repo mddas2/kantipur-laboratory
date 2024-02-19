@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'websocket',
     'django_filters',
     'emailmanagement',
+    'offices',
 ]
 ASGI_APPLICATION = 'mainproject.asgi.application'
 

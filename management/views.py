@@ -12,7 +12,7 @@ from rest_framework import status
 from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.parsers import MultiPartParser, FormParser
-from ..account import roles
+from account import roles
 from rest_framework.exceptions import PermissionDenied
 from django.db.models import Q
 from django.http import Http404

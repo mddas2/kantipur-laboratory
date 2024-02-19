@@ -4,7 +4,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import SampleForm
 from rest_framework import status
 from rest_framework.response import Response
-from ..account import roles
+from account import roles
 
 class SampleFormIsPrint(APIView):
     authentication_classes = [JWTAuthentication]

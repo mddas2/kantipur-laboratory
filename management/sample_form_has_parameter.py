@@ -9,7 +9,7 @@ from .custompermission import SampleFormHasParameterPermission
 from rest_framework import status
 from rest_framework.filters import OrderingFilter,SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
-from ..account import roles
+from account import roles
 from rest_framework.exceptions import PermissionDenied
 from django.db.models import Q
 
