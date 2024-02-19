@@ -6,7 +6,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from . import department_type
-
+from offices.models import Branches,InspectorType
 
 class TestType(models.Model):
     name = models.CharField(choices=(('Chemical','Chemical'),('Microbiological','Microbiological'),('Instrumental','Instrumental')), default=None, max_length=155,null=True)
@@ -59,6 +59,7 @@ class CustomUser(AbstractUser):
     USER = 5
     VERIFIER = 6
     ADMIN = 7
+    INSPECTOR = 8
 
     ROLE_CHOICES = (
         (SUPERADMIN, 'SUPERADMIN'),
@@ -68,6 +69,7 @@ class CustomUser(AbstractUser):
         (USER, 'USER'),
         (VERIFIER, 'VERIFIER'),
         (ADMIN, 'ADMIN'),
+        (INSPECTOR,'INSPECTOR')
     )
     
     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, blank=True, null=True)
@@ -113,3 +115,12 @@ class CustomUserImages(models.Model):
     file = models.FileField(upload_to='media/user/customuserimages',default=None)
     name = models.CharField(max_length=255,null=True)
     user = models.ForeignKey(CustomUser,related_name="custom_user_image",null=True,on_delete=models.CASCADE)
+
+class UserHaveInspector(models.Model):
+    user = models.OneToOneField(CustomUser,related_name = "inspector", on_delete = models.CASCADE)
+    branch = models.OneToOneField(Branches,on_delete = models.SET_NULL , null = True,blank = True)
+    inspector_type = models.ManyToManyField(InspectorType,null=True)
+    nepali_name = models.CharField(max_length = 200)
+    government_id = models.CharField(max_length = 300)
+    government_issued_document = models.FileField(upload_to='media/user/inspector')
+

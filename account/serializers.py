@@ -1,8 +1,14 @@
 from rest_framework import serializers
 from django.contrib.auth.models import Group,Permission
-from account.models import CustomUser,CustomUserImages
+from account.models import CustomUser,CustomUserImages,UserHaveInspector
 from django.contrib.auth.hashers import make_password
 from account import roles
+
+class UserHaveInspectorSerializer(serializers.ModelSerializer):
+     class Meta:
+        ref_name = "CustomUserImageSerializer"
+        model = UserHaveInspector
+        fields = '__all__'
 
 class CustomUserImageSerializer(serializers.ModelSerializer):
      class Meta:
@@ -25,14 +31,14 @@ class CustomUserListSerializer(serializers.ModelSerializer):
 
 
 class CustomUserRetrieveSerializer(serializers.ModelSerializer):
-     custom_user_image = CustomUserImageSerializer(many = True,read_only = True)
-     approved_by = ApprovedBySerializer(read_only = True)
-     class Meta:
+    custom_user_image = CustomUserImageSerializer(many = True,read_only = True)
+    approved_by = ApprovedBySerializer(read_only = True)
+    inspector = UserHaveInspectorSerializer(many = False,read_only = False)
+    class Meta:
         ref_name =  "account serializers"
         model = CustomUser
         exclude = ['password']
-
-
+     
 class CustomUserReadAssignedSerializer(serializers.ModelSerializer):
      class Meta:
         ref_name =  "CustomUserReadAssignedSerializer"
@@ -123,16 +129,6 @@ class CustomUserSerializer(serializers.ModelSerializer):
         model = CustomUser
         # fields = '__all__' 
         exclude = ['test_type']
-    
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        test_type = instance.test_type
-        try:            
-            string = [int(value) for value in test_type.split(',')]
-        except:
-            string = test_type
-        #representation['test_type'] = string
-        return representation
 
 
 class RoleSerializer(serializers.Serializer):

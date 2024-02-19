@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import Group, Permission
 from account.models import CustomUser
 from rest_framework import viewsets
-from .serializers import CustomUserRetrieveSerializer,CustomUserListSerializer,CustomUserSerializer, GroupSerializer, PermissionSerializer,RoleSerializer,departmentTypeSerializer,CustomUserReadLimitedSerializer,userAdminLevelDataSerializer,CustomUserReadAssignedSerializer
+from .serializers import CustomUserRetrieveSerializer,CustomUserListSerializer,CustomUserSerializer, GroupSerializer, PermissionSerializer,RoleSerializer,departmentTypeSerializer,CustomUserReadLimitedSerializer,userAdminLevelDataSerializer,CustomUserReadAssignedSerializer,UserHaveInspectorSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken,TokenError
@@ -23,6 +23,7 @@ from .custompermission import AccountPermission,AdminLevelPermission
 from . serializers import CustomUserImageSerializer
 from django.db import transaction
 from .pagination import MyPageNumberPagination
+from rest_framework.exceptions import PermissionDenied
 
 from django.core.cache import cache
 cache_time = 300 # 300 is 5 minute
@@ -118,11 +119,16 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
             "data": serializer.data
         }
 
+        if serializer.data.get('role') == roles.INSPECTOR:
+            # print(serializer.data)
+            #print(serializer.data.get('id',None),"::user id")
+            inspector_data = CreateInspector(serializer.data.get('id',None),request,"create")
+            response_data['inspector_detail']=inspector_data
+        
         name = request.POST.getlist('images[name]')
         files =  request.FILES.getlist('images[file]')
-
         custom_user_detail = CeateClientCategoryDetail(name,files,serializer.data['id'],"create") #task 2
-
+        # raise PermissionDenied("Inspector Type Creating , Testing.")
         return Response(response_data, status=status.HTTP_201_CREATED)
     
     
@@ -427,7 +433,22 @@ class userAdminLevelData(generics.ListAPIView):
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
     
-   
+
+def CreateInspector(user_id,request_data,create_update):
+    print(request_data)
+    data = {
+        'user': user_id,
+        'government_id':request_data.POST.get('government_id'),
+        'inspector_type':[1],#request_data.get('inspector_type'),
+        'government_issued_document':request_data.FILES.get('government_issued_document'),
+        'nepali_name':request_data.POST.get('nepali_name'),
+        'branch':request_data.POST.get('branch'),
+    }
     
+    inspector_serializer = UserHaveInspectorSerializer(many=False,data=data)
+    inspector_serializer.is_valid(raise_exception=True)
+    inspector_serializer.save() 
+    return inspector_serializer.data
+
 
              
