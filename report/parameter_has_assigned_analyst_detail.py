@@ -6,7 +6,7 @@ from account.models import CustomUser
 from rest_framework import serializers
 from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
 from management.status_naming import over_all_status
-from management import roles
+from account import roles
 from .analyst_standard_result import getStandardResult
 
 class CustomUserSerializer(serializers.ModelSerializer):

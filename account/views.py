@@ -4,9 +4,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth import authenticate, login
 from django.views.decorators.csrf import csrf_exempt
-from .serializers import LoginSerializer
 from django.contrib.auth.models import Group, Permission
-from account.models import CustomUser,CustomUserImages
+from account.models import CustomUser
 from rest_framework import viewsets
 from .serializers import CustomUserRetrieveSerializer,CustomUserListSerializer,CustomUserSerializer, GroupSerializer, PermissionSerializer,RoleSerializer,departmentTypeSerializer,CustomUserReadLimitedSerializer,userAdminLevelDataSerializer,CustomUserReadAssignedSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -16,11 +15,8 @@ from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework.filters import SearchFilter
 from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
-from management import roles
-from rest_framework.exceptions import PermissionDenied
+from account import roles
 from . import department_type
-from websocket.handle_notification import NotificationHandler
-from django.http import HttpResponse
 from django.db.models import Q
 from rest_framework import generics
 from .custompermission import AccountPermission,AdminLevelPermission

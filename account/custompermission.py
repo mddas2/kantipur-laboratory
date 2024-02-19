@@ -1,5 +1,5 @@
 from rest_framework.permissions import BasePermission
-from management import roles
+from account import roles
 
 
 def IsAuthenticated(request):

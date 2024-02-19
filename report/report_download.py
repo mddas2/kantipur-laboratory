@@ -1,15 +1,14 @@
-import json
 from account.models import CustomUser
 from management.models import SampleForm,Commodity,SampleFormHasParameter,CommodityCategory
 # from . serializers import CustomUserSerializer,CommodityCategorySerializer,SampleFormOnlySerializer,CommodityOnlySerializer,ClientCategorySerializer
 from django.http import HttpResponse
 import pandas as pd
-from management import roles
+from account import roles
 from datetime import date
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 from management.models import SampleFormParameterFormulaCalculate
-from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm,generateDecodeIdByRoleforSampleForm
+from management.encode_decode import generateDecodeIdByRoleforSampleForm
 from management.raw_data_serializer import rawDataTestTypeGlobalSerializer
 
 from account.department_type import department_code

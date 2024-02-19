@@ -1,6 +1,6 @@
 from .models import Notification
 from rest_framework import serializers
-from management import roles
+from account import roles
 from management.models import SampleForm
 from websocket import frontend_setting
 

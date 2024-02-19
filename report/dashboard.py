@@ -2,10 +2,10 @@ from django.http import HttpResponse
 from rest_framework import views
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
-from management import roles
+from account import roles
 from account.models import CustomUser
 from management.models import SampleForm,SampleFormHasParameter,SampleFormVerifier,SuperVisorSampleForm,SampleFormParameterFormulaCalculate
-from django.db.models import Q,OuterRef,Subquery ,Count, IntegerField
+from django.db.models import Q
 from rest_framework.response import Response
 
 class reportStatus(views.APIView):

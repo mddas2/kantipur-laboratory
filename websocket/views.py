@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import viewsets
 from . models import Notification
 from rest_framework import status
@@ -9,8 +8,6 @@ from .pagination import MyLimitOffsetPagination
 from rest_framework.response import Response
 from . serializer import NotificationWriteSerializer,NotificationReadSerializer
 from django_filters.rest_framework import DjangoFilterBackend
-from management import roles
-from django.db.models import Q
 
 # Create your views here.
 class NotificationViewSet(viewsets.ModelViewSet):

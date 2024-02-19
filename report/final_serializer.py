@@ -4,8 +4,8 @@ from rest_framework import serializers
 from management.models import SampleForm, Commodity,SampleFormHasParameter,SuperVisorSampleForm,ClientCategoryDetail,TestResult
 from account.models import CustomUser
 from rest_framework import serializers
-from management import roles
-from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
+from account import roles
+from management.encode_decode import generateAutoEncodeIdforSampleForm
 from management.status_naming import over_all_status
 
 # class ClientCategoryDetailImagesSerializer(serializers.ModelSerializer):

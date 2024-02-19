@@ -2,7 +2,7 @@ from rest_framework import views
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from management.encode_decode import generateDecodeIdforSampleForm
-from management import roles
+from account import roles
 from management.models import SampleForm
 from rest_framework.exceptions import PermissionDenied
 from ..serializers_groups.full_detail_sample_form_serializers import DetailFullSampleFormSerializer

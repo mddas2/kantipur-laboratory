@@ -1,7 +1,7 @@
 from management.models import SampleForm
 from ..serializers_groups.track_serializers import TrackSampleFormSerializer
 
-from management import roles
+from account import roles
 from rest_framework.exceptions import PermissionDenied
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated

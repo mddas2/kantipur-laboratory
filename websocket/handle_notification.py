@@ -1,14 +1,11 @@
 from account.models import CustomUser
-from .models import Notification
 from .serializer import NotificationWriteSerializer
 from rest_framework import status
 from . import frontend_setting
 from . import mapping_notification_type
-from emailmanagement.email_sender import ESendMail
-from management import roles
+from account import roles
 from django.db.models import Q
 from management import encode_decode
-from management.models import SuperVisorSampleForm
 
 def NotificationHandler(instance, request,method,model_name):
     to_notification = CustomUser.objects.filter(Q(role = roles.SMU) | Q(id = instance.id))

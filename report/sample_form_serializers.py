@@ -1,6 +1,5 @@
 from management.models import SampleForm, Commodity,SampleFormHasParameter
 from rest_framework import serializers
-from management import roles
 
 from management.models import SampleForm, Commodity,SampleFormHasParameter,SuperVisorSampleForm
 from account.models import CustomUser

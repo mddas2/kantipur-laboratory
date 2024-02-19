@@ -1,14 +1,11 @@
-import json
 from account.models import CustomUser
-from management.models import SampleForm,Commodity,SampleFormHasParameter,CommodityCategory
+from management.models import SampleForm,Commodity,CommodityCategory
 from . serializers import CustomUserSerializer,CommodityCategorySerializer,SampleFormOnlySerializer,CommodityOnlySerializer,ClientCategorySerializer
 from django.http import HttpResponse
 import pandas as pd
-from management import roles
-from datetime import date
 from django.template.loader import get_template
 from xhtml2pdf import pisa
-from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm,generateDecodeIdByRoleforSampleForm
+from management.encode_decode import generateDecodeIdByRoleforSampleForm
 # https://limsserver.kantipurinfotech.com.np/api/report/get-report/report_name/report_type/report_lang/
 def ReportAdminList(report_type,report_lang,id=None):
     query = CustomUser.objects.all()

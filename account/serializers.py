@@ -1,9 +1,8 @@
 from rest_framework import serializers
-from management.serializers import ClientCategorySerializer
 from django.contrib.auth.models import Group,Permission
 from account.models import CustomUser,CustomUserImages
 from django.contrib.auth.hashers import make_password
-from management import roles
+from account import roles
 
 class CustomUserImageSerializer(serializers.ModelSerializer):
      class Meta:
