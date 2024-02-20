@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from django.contrib.auth import authenticate, login
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import Group, Permission
-from account.models import CustomUser
+from account.models import CustomUser,UserHaveInspector
 from rest_framework import viewsets
 from .serializers import CustomUserRetrieveSerializer,CustomUserListSerializer,CustomUserSerializer, GroupSerializer, PermissionSerializer,RoleSerializer,departmentTypeSerializer,CustomUserReadLimitedSerializer,userAdminLevelDataSerializer,CustomUserReadAssignedSerializer,UserHaveInspectorSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -128,7 +128,6 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
         name = request.POST.getlist('images[name]')
         files =  request.FILES.getlist('images[file]')
         custom_user_detail = CeateClientCategoryDetail(name,files,serializer.data['id'],"create") #task 2
-        # raise PermissionDenied("Inspector Type Creating , Testing.")
         return Response(response_data, status=status.HTTP_201_CREATED)
     
     
@@ -153,6 +152,12 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
             "message": "User Account updated successfully",
             "data": serializer.data
         }
+
+        if serializer.data.get('role') == roles.INSPECTOR:
+            # print(serializer.data)
+            #print(serializer.data.get('id',None),"::user id")
+            inspector_data = CreateInspector(serializer.data.get('id',None),request,"update")
+            response_data['inspector_detail']=inspector_data
 
         name = request.POST.getlist('images[name]')
         files =  request.FILES.getlist('images[file]')
@@ -435,7 +440,7 @@ class userAdminLevelData(generics.ListAPIView):
     
 
 def CreateInspector(user_id,request_data,create_update):
-    print(request_data)
+
     data = {
         'user': user_id,
         'government_id':request_data.POST.get('government_id'),
@@ -447,7 +452,12 @@ def CreateInspector(user_id,request_data,create_update):
     
     inspector_serializer = UserHaveInspectorSerializer(many=False,data=data)
     inspector_serializer.is_valid(raise_exception=True)
-    inspector_serializer.save() 
+    if create_update == "create":
+        inspector_serializer.save() 
+    else:
+        inspector_obj = CustomUser.objects.get(id = user_id).inspector
+        inspector_instance = UserHaveInspector.objects.get(id=inspector_obj.id)
+        inspector_serializer.update(inspector_instance, data)
     return inspector_serializer.data
 
 

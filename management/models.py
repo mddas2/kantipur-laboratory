@@ -3,6 +3,7 @@ from django.db.models import UniqueConstraint
 from account.models import CustomUser
 from django.utils import timezone
 from . import encode_decode
+from offices.models import InspectorType
 
 class ClientCategory(models.Model):
     name = models.CharField(max_length=255,unique=True)
@@ -14,6 +15,7 @@ class ClientCategory(models.Model):
     # 9 Government Agency
     # 10 Importer/Exporter
     # 1 Industry
+    #12 Inspector
     
 
 class CommodityCategory(models.Model):
@@ -40,7 +42,6 @@ class MandatoryStandard(models.Model):
 class TestMethod(models.Model):
     ref_test_method = models.CharField(max_length=255,null=True)
     
-
 class TestResult(models.Model):
     commodity = models.ForeignKey(Commodity,related_name="test_result",on_delete=models.CASCADE,default=None)
     formula = models.CharField(max_length=255, null=True,blank=True)
@@ -508,6 +509,19 @@ class ApprovedList(models.Model):
 class VerifiedList(models.Model):
     user = models.OneToOneField(CustomUser,related_name="verified_list",on_delete=models.CASCADE)
     status = models.BooleanField(default=False)
+
+class SampleFormHaveInspector(models.Model):
+    sample_form = models.OneToOneField(SampleForm,related_name = "inspector",on_delete = models.CASCADE)
+    type = models.ForeignKey(InspectorType,related_name = "sample_form",on_delete = models.PROTECT )#food,feed
+    sample_serial_number = models.CharField(max_length = 150)
+    letter_number = models.CharField(max_length = 150)
+    letter_submitted_date = models.CharField(max_length = 150)
+    sample_collected_date = models.CharField(max_length = 150)
+    
+    
+
+
+
 
 
     

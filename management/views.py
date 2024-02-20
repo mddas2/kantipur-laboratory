@@ -18,6 +18,10 @@ from django.db.models import Q
 from django.http import Http404
 from . encode_decode import generateDecodeIdforSampleForm
 from rest_framework import generics
+from account.models import CustomUser
+from management.models import ClientCategory
+from django.http import QueryDict
+from django.db import transaction
 from django.core.cache import cache
 cache_time = 300 # 300 is 5 minute
 
@@ -292,6 +296,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         # response.data.update(extra_data)
         return response
     
+    @transaction.atomic
     def create(self, request, *args, **kwargs):
 
         name = request.POST.getlist('images[name]')
@@ -302,13 +307,9 @@ class SampleFormViewSet(viewsets.ModelViewSet):
 
         create_client,client_category_detail = CeateClientCategoryDetail(name,files,client_category,client_sub_category)
         
-        if create_client:
-            from django.http import QueryDict
-            
+        if create_client:            
             mutable_data = QueryDict(mutable=True)
             mutable_data.update(request.data)
-
-
             # Set the client_category_detail_id in the mutable data
             mutable_data['client_category_detail'] = client_category_detail
 
@@ -876,8 +877,6 @@ class MicroObservationTableViewSet(viewsets.ModelViewSet):
 
     
 def Home(request):
-    from account.models import CustomUser
-    from management.models import ClientCategory
     clien_category = ClientCategory.objects.get(id='1')
     user = CustomUser.objects.get(id='1')
     user.client_category = clien_category
