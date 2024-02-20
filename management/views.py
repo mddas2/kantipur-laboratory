@@ -1,6 +1,6 @@
 from django.http import HttpResponse
-from .serializers import FiscalYearSerializer,limitedCommidityCategoryreadSerializer,limitedCommidityreadSerializer,TestResultWriteSerializer,MicroObservationTableSerializer,MicroParameterSerializer,ClientCategorySerializer, SampleFormWriteSerializer,SampleFormRetrieveSerializer,SampleFormListSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer,SuperVisorSampleFormRetrieveSerializer,SuperVisorSampleFormListSerializer,SuperVisorSampleFormWriteSerializer,NoticeImagesSerializer,ApprovedListSerializer,VerifiedListSerializer,VerifiedWriteSerializer,ApprovedWriteSerializer
-from .models import FiscalYear,ClientCategory,Units,MandatoryStandard,TestMethod, SampleForm, Commodity, CommodityCategory,TestResult, Payment,SuperVisorSampleForm,MicroParameter,MicroObservationTable,ClientCategoryDetail , NoticeImages , ApprovedList , VerifiedList
+from .serializers import FiscalYearSerializer,limitedCommidityCategoryreadSerializer,limitedCommidityreadSerializer,TestResultWriteSerializer,MicroObservationTableSerializer,MicroParameterSerializer,ClientCategorySerializer, SampleFormWriteSerializer,SampleFormRetrieveSerializer,SampleFormListSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer,SuperVisorSampleFormRetrieveSerializer,SuperVisorSampleFormListSerializer,SuperVisorSampleFormWriteSerializer,NoticeImagesSerializer,ApprovedListSerializer,VerifiedListSerializer,VerifiedWriteSerializer,ApprovedWriteSerializer,SampleFormHaveInspectorSerializer
+from .models import FiscalYear,ClientCategory,Units,MandatoryStandard,TestMethod, SampleForm, Commodity, CommodityCategory,TestResult, Payment,SuperVisorSampleForm,MicroParameter,MicroObservationTable,ClientCategoryDetail , NoticeImages , ApprovedList , VerifiedList , SampleFormHaveInspector
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -241,21 +241,17 @@ class SampleFormViewSet(viewsets.ModelViewSet):
 
     def get_object(self):
         user = self.request.user
-
         id = generateDecodeIdforSampleForm(self.kwargs['pk'],user) 
-        # print(id)
         queryset = self.get_queryset()
         obj = queryset.filter(id=id).first()
         if not obj:
             raise Http404("Object not found")
-
         return obj
 
     def get_queryset(self):
         user = self.request.user
 
         if user.role == roles.USER:         
-            # query =  SampleForm.objects.filter(Q(owner_user = user.email) & ~Q(status="completed") & ~Q(status="rejected") )
             query =  SampleForm.objects.filter(Q(owner_user = user.email)).filter(~Q(status="completed")).filter(~Q(status="rejected") )
         elif user.role == roles.SUPERVISOR:
             query =  SampleForm.objects.filter(supervisor_user=user,status="not_assigned")
@@ -310,7 +306,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         if create_client:            
             mutable_data = QueryDict(mutable=True)
             mutable_data.update(request.data)
-            # Set the client_category_detail_id in the mutable data
+            # Set the client_category_detail_id in the mutable datac
             mutable_data['client_category_detail'] = client_category_detail
 
             serializer = self.get_serializer(data=mutable_data)
@@ -320,7 +316,10 @@ class SampleFormViewSet(viewsets.ModelViewSet):
 
             # Save the new object to the database
             self.perform_create(serializer)
-
+            
+            if request.user.role == roles.INSPECTOR:           
+                inspector_data = CreateInspectorSampleForm(serializer.data.get('id',None),request,"create")
+                response_data['inspector_sample_form_detail']=inspector_data
             # Create a custom response
             response_data = {
                 "message": "Sample submitted successfully",
@@ -330,14 +329,14 @@ class SampleFormViewSet(viewsets.ModelViewSet):
             # Return the custom response
             return Response(response_data, status=status.HTTP_201_CREATED)
         else:
-            esponse_data = {
+            response_data = {
                 "message": " can not create ",
             }
 
             # Return the custom response
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
 
-    
+    @transaction.atomic
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
@@ -346,6 +345,10 @@ class SampleFormViewSet(viewsets.ModelViewSet):
 
         # Save the updated object to the database
         self.perform_update(serializer)
+
+        if request.user.role == roles.INSPECTOR:           
+            inspector_data = CreateInspectorSampleForm(serializer.data.get('id',None),request,"update")
+            response_data['inspector_sample_form_detail']=inspector_data
 
         # Create a custom response
         response_data = {
@@ -1019,3 +1022,24 @@ class VerifiedListViewSet(viewsets.ModelViewSet):
             return VerifiedWriteSerializer
         return super().get_serializer_class()
 
+def CreateInspectorSampleForm(sample_form_id,request_data,create_update):
+    data = {
+        'sample_form': sample_form_id,
+        'type':request_data.POST.get('type'),
+        'sample_serial_number':request_data.get('sample_serial_number'),
+        'letter_number':request_data.FILES.get('letter_number'),
+        'letter_submitted_date':request_data.POST.get('letter_submitted_date'),
+        'sample_collected_date':request_data.POST.get('sample_collected_date'),
+    }
+
+    if create_update == "create":
+        inspector_serializer = SampleFormHaveInspectorSerializer(many=False,data=data)
+        inspector_serializer.is_valid(raise_exception=True)
+        inspector_serializer.save() 
+    else:
+        inspector_obj = CustomUser.objects.get(id = sample_form_id).inspector
+        inspector_instance = SampleFormHaveInspector.objects.get(id=inspector_obj.id)
+        inspector_serializer = SampleFormHaveInspectorSerializer(instance=inspector_instance,data=data)
+        inspector_serializer.is_valid(raise_exception=True)
+        inspector_serializer.save()
+    return inspector_serializer.data

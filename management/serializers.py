@@ -1,4 +1,4 @@
-from .models import FiscalYear,Units,MandatoryStandard,TestMethod,MicroObservationTable,ClientCategory,SuperVisorSampleForm,ClientCategoryDetailImages, SampleForm, Commodity, CommodityCategory, MicroParameter , TestResult ,SampleFormHasParameter,Payment,SampleFormParameterFormulaCalculate,ClientCategoryDetail,NoticeImages,VerifiedList,ApprovedList,SampleFormVerifier
+from .models import FiscalYear,Units,MandatoryStandard,TestMethod,MicroObservationTable,ClientCategory,SuperVisorSampleForm,ClientCategoryDetailImages, SampleForm, Commodity, CommodityCategory, MicroParameter , TestResult ,SampleFormHasParameter,Payment,SampleFormParameterFormulaCalculate,ClientCategoryDetail,NoticeImages,VerifiedList,ApprovedList,SampleFormVerifier,SampleFormHaveInspector
 from rest_framework import serializers
 from account.models import CustomUser
 from account import roles
@@ -292,13 +292,6 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
     
     def validate_price(self,value):#field level validation
         raise serializers.ValidationError('price can not be modified error')
-    
-    # def validate_status(self,value):#field level validation
-    #     sample_form_id = self.instance.id
-    #     supervisor_data = SuperVisorSampleForm.objects.filter(sample_form_id = sample_form_id).exists()
-    #     if supervisor_data == True and value == "recheck":
-    #         raise serializers.ValidationError('sample form is assigned to supervisor so you can not Recheck. Error code E-SAMPLE-FORM-5')
-
     
     def validate_owner_user_obj(self,value):#field level validation
         raise serializers.ValidationError('owner_user_obj can not be modified error')
@@ -1067,4 +1060,9 @@ class VerifiedListSerializer(serializers.ModelSerializer):
 class VerifiedWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = VerifiedList
+        fields = '__all__'
+
+class SampleFormHaveInspectorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SampleFormHaveInspector
         fields = '__all__'
