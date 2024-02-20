@@ -33,7 +33,7 @@ class EmailCheckView(generics.GenericAPIView):
             email = user.email
             subject = 'Password Reset Link'
             reset_verification = "reset_password"
-            #sendMail(email, reset_url,subject,reset_verification)
+            sendMail(email, reset_url,subject,reset_verification)
             
             return response.Response(
                 {
@@ -93,7 +93,7 @@ class SendEmailVerificationLink(APIView):
         verify_url = f"{site_f}/user-verification-success?pk={encoded_pk}&token={token}"
         subject = 'Email Verification Link '
         reset_verification = "verification"
-        #sendMail(email,verify_url,subject,reset_verification)
+        sendMail(email,verify_url,subject,reset_verification)
 
         return Response({
             'detail': 'Email verificatio'})
@@ -149,5 +149,5 @@ def sendMail(email, reset_url,subject,reset_verification):
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [email]
     plain_message = ""
-    #send_mail(subject, plain_message, email_from, recipient_list,html_message=html_contents)
+    send_mail(subject, plain_message, email_from, recipient_list,html_message=html_contents)
     

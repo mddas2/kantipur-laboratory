@@ -32,5 +32,5 @@ def sendFinalreport(instance):
     recipient_list = [instance.owner_user]
     plain_message = ""
     subject = f"Test report for {instance.name} (Refrence Number:{instance.refrence_number})"
-    #send_mail(subject, plain_message, email_from, recipient_list,html_message=message)
+    send_mail(subject, plain_message, email_from, recipient_list,html_message=message)
     #  <a href="https://pdfmachine.kantipurinfotech.com.np/public/api/show-pdf-report/{instance.id}/1" style="text-decoration: none; background: #0B53A7; color: #FFFFFF; padding: 10px 20px; border-radius: 3px; display: inline-block; margin-top: 15px;">View Report</a>
