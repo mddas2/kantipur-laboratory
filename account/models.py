@@ -122,5 +122,5 @@ class UserHaveInspector(models.Model):
     inspector_type = models.ManyToManyField(InspectorType,null=True)
     nepali_name = models.CharField(max_length = 200)
     government_id = models.CharField(max_length = 300)
-    government_issued_document = models.FileField(upload_to='media/user/inspector')
+    government_issued_document = models.FileField(upload_to='media/user/inspector',blank=True,null=True)
 

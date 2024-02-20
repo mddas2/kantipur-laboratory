@@ -449,15 +449,19 @@ def CreateInspector(user_id,request_data,create_update):
         'nepali_name':request_data.POST.get('nepali_name'),
         'branch':request_data.POST.get('branch'),
     }
-    
-    inspector_serializer = UserHaveInspectorSerializer(many=False,data=data)
-    inspector_serializer.is_valid(raise_exception=True)
+
     if create_update == "create":
+        inspector_serializer = UserHaveInspectorSerializer(many=False,data=data)
+        inspector_serializer.is_valid(raise_exception=True)
         inspector_serializer.save() 
     else:
         inspector_obj = CustomUser.objects.get(id = user_id).inspector
         inspector_instance = UserHaveInspector.objects.get(id=inspector_obj.id)
-        inspector_serializer.update(inspector_instance, data)
+        if request_data.FILES.get('government_issued_document') == None:
+            data.pop('government_issued_document')
+        inspector_serializer = UserHaveInspectorSerializer(instance=inspector_instance,data=data)
+        inspector_serializer.is_valid(raise_exception=True)
+        inspector_serializer.save()
     return inspector_serializer.data
 
 

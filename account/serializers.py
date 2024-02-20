@@ -5,10 +5,19 @@ from django.contrib.auth.hashers import make_password
 from account import roles
 
 class UserHaveInspectorSerializer(serializers.ModelSerializer):
-     class Meta:
+    class Meta:
         ref_name = "CustomUserImageSerializer"
         model = UserHaveInspector
         fields = '__all__'
+    def validate_branch(self,value):
+        user = self.context['request'].user
+        if user.role==roles.SUPERADMIN:
+            return value
+        elif user.is_authenticated and value!=roles.USER:
+                raise serializers.ValidationError("You can only set USER as role") 
+        return value
+        
+    
 
 class CustomUserImageSerializer(serializers.ModelSerializer):
      class Meta:
