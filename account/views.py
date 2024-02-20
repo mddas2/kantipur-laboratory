@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import Group, Permission
 from account.models import CustomUser,UserHaveInspector
 from rest_framework import viewsets
-from .serializers import CustomUserRetrieveSerializer,CustomUserListSerializer,CustomUserSerializer, GroupSerializer, PermissionSerializer,RoleSerializer,departmentTypeSerializer,CustomUserReadLimitedSerializer,userAdminLevelDataSerializer,CustomUserReadAssignedSerializer,UserHaveInspectorSerializer
+from .serializers import CustomUserRetrieveSerializer,CustomUserListSerializer,CustomUserSerializer, GroupSerializer, PermissionSerializer,RoleSerializer,departmentTypeSerializer,CustomUserReadLimitedSerializer,userAdminLevelDataSerializer,CustomUserReadAssignedSerializer,UserHaveWrirteInspectorSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken,TokenError
@@ -440,7 +440,6 @@ class userAdminLevelData(generics.ListAPIView):
     
 
 def CreateInspector(user_id,request_data,create_update):
-
     data = {
         'user': user_id,
         'government_id':request_data.POST.get('government_id'),
@@ -451,7 +450,7 @@ def CreateInspector(user_id,request_data,create_update):
     }
 
     if create_update == "create":
-        inspector_serializer = UserHaveInspectorSerializer(many=False,data=data)
+        inspector_serializer = UserHaveWrirteInspectorSerializer(many=False,data=data)
         inspector_serializer.is_valid(raise_exception=True)
         inspector_serializer.save() 
     else:
@@ -459,7 +458,7 @@ def CreateInspector(user_id,request_data,create_update):
         inspector_instance = UserHaveInspector.objects.get(id=inspector_obj.id)
         if request_data.FILES.get('government_issued_document') == None:
             data.pop('government_issued_document')
-        inspector_serializer = UserHaveInspectorSerializer(instance=inspector_instance,data=data)
+        inspector_serializer = UserHaveWrirteInspectorSerializer(instance=inspector_instance,data=data)
         inspector_serializer.is_valid(raise_exception=True)
         inspector_serializer.save()
     return inspector_serializer.data

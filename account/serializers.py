@@ -1,23 +1,56 @@
 from rest_framework import serializers
 from django.contrib.auth.models import Group,Permission
 from account.models import CustomUser,CustomUserImages,UserHaveInspector
+from offices.models import Branches
 from django.contrib.auth.hashers import make_password
 from account import roles
 
-class UserHaveInspectorSerializer(serializers.ModelSerializer):
+class BranchReadSerializer(serializers.ModelSerializer):
     class Meta:
-        ref_name = "CustomUserImageSerializer"
+        ref_name = "BranchReadSerializer"
+        model = Branches
+        fields = '__all__'
+
+class UserHaveReadInspectorSerializer(serializers.ModelSerializer):
+    branch = BranchReadSerializer(read_only = True)
+    class Meta:
+        ref_name = "UserHaveReadInspectorSerializer"
         model = UserHaveInspector
         fields = '__all__'
+
+class UserHaveWrirteInspectorSerializer(serializers.ModelSerializer):
+    class Meta:
+        ref_name = "UserHaveWrirteInspectorSerializer"
+        model = UserHaveInspector
+        fields = '__all__'
+
     def validate_branch(self,value):
         user = self.context['request'].user
         if user.role==roles.SUPERADMIN:
             return value
-        elif user.is_authenticated and value!=roles.USER:
-                raise serializers.ValidationError("You can only set USER as role") 
-        return value
-        
+        else:
+            raise serializers.ValidationError("You have not permission to update branch") 
     
+    def validate_inspector_type(self,value):
+        user = self.context['request'].user
+        if user.role==roles.SUPERADMIN:
+            return value
+        else:
+            raise serializers.ValidationError("You have not permission to update inspector type") 
+    
+    def validate_government_id(self,value):
+        user = self.context['request'].user
+        if user.role==roles.SUPERADMIN:
+            return value
+        else:
+            raise serializers.ValidationError("You have not permission to update government id") 
+    
+    def validate_government_issued_document(self,value):
+        user = self.context['request'].user
+        if user.role==roles.SUPERADMIN:
+            return value
+        else:
+            raise serializers.ValidationError("You have not permission to update issued document") 
 
 class CustomUserImageSerializer(serializers.ModelSerializer):
      class Meta:
@@ -42,7 +75,7 @@ class CustomUserListSerializer(serializers.ModelSerializer):
 class CustomUserRetrieveSerializer(serializers.ModelSerializer):
     custom_user_image = CustomUserImageSerializer(many = True,read_only = True)
     approved_by = ApprovedBySerializer(read_only = True)
-    inspector = UserHaveInspectorSerializer(many = False,read_only = False)
+    inspector = UserHaveReadInspectorSerializer(many = False,read_only = False)
     class Meta:
         ref_name =  "account serializers"
         model = CustomUser
