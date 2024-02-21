@@ -10,6 +10,9 @@ class BranchesViewSets(viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication]
     queryset = Branches.objects.all()
     pagination_class = MyPageNumberPagination
+
+    serializer_class = BrancheReadSerializers
+
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
             return BrancheWriteSerializers

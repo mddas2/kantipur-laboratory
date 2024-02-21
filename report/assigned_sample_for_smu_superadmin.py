@@ -27,7 +27,6 @@ class AssignedSampleForSmuSuperAdmin(generics.ListAPIView):
         'status': ['exact'],
         'form_available': ['exact'],
         'commodity_id': ['exact'],
-        'supervisor_user': ['exact'],
         'created_date': ['date__gte', 'date__lte'],  # Date filtering
         'client_category_detail__client_category':['exact'],
     }

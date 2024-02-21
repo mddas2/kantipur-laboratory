@@ -15,7 +15,6 @@ class AdditionalDetailSampleForm(generics.ListAPIView): #by sagar
         'status': ['exact'],
         'form_available': ['exact'],
         'commodity_id': ['exact'],
-        'supervisor_user': ['exact'],
         'created_date': ['date__gte', 'date__lte']  # Date filtering
     }
 

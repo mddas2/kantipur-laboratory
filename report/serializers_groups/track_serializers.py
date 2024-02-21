@@ -54,7 +54,7 @@ class TrackSampleFormSerializer(serializers.ModelSerializer):
     class Meta:
         name = "TrackSampleFormSerializer"
         model = SampleForm
-        fields = ['id','supervisor_sample_form','name','supervisor_user','commodity','status','created_date','completed_date','namuna_code'] #user access
+        fields = ['id','supervisor_sample_form','name','commodity','status','created_date','completed_date','namuna_code'] #user access
 
 
     def to_representation(self, instance):

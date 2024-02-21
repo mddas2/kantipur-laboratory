@@ -89,7 +89,6 @@ class CompletedSampleFormHasVerifierAPIView(generics.ListAPIView):
         'status': ['exact'],
         'form_available': ['exact'],
         'commodity_id': ['exact'],
-        'supervisor_user': ['exact'],
         'created_date': ['date__gte', 'date__lte']  # Date filtering
     }
 
@@ -120,7 +119,6 @@ class notApprovedSampleFormHasAdminAPIView(generics.ListAPIView):
         'status': ['exact'],
         'form_available': ['exact'],
         'commodity_id': ['exact'],
-        'supervisor_user': ['exact'],
         'created_date': ['date__gte', 'date__lte']  # Date filtering
     }
 

@@ -81,7 +81,7 @@ class TestResultSerializer_2(serializers.ModelSerializer):
 
     class Meta:
         model = TestResult
-        exclude = ['results','remarks']
+        exclude = ['remarks']
 
 
 class TestResultForSampleFormSerializer(serializers.ModelSerializer):
@@ -204,7 +204,7 @@ class SampleFormListSerializer(serializers.ModelSerializer):
     client_category_detail = ClientCategoryDetailSerializer(read_only = True,many=False)
     
     class Meta:
-        supervisor_user = ApprovedBySerializer(read_only = True)
+        # supervisor_user = ApprovedBySerializer(read_only = True)
         model = SampleForm
         fields = ['id','name','new_name','commodity','refrence_number','sample_lab_id','client_category_detail','status','namuna_code','created_date','company_name']
     
@@ -248,7 +248,7 @@ class SampleFormRetrieveSerializer(serializers.ModelSerializer):
     parameters = TestResultSerializer(many=True, read_only=True)
     payment = PaymentSerializer(read_only=True,many=True)
     class Meta:
-        supervisor_user = ApprovedBySerializer(read_only = True)
+        # supervisor_user = ApprovedBySerializer(read_only = True)
         model = SampleForm
         fields = ['id','name','new_name','commodity','refrence_number','sample_lab_id','client_category_detail','status','namuna_code','created_date','company_name','owner_user_obj','payment','parameters','mfd','dfb','days_dfb','dfb_duration','dfb_type','batch','brand','purpose','condition','note','amendments','sample_type','sample_units','sample_quantity','number_of_sample','analysis_fee','voucher_number','voucher_date','price']
     
