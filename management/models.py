@@ -104,7 +104,7 @@ class SampleForm(models.Model):#ClientRequest
     language = models.CharField(max_length=10)
     note = models.TextField(null=True,blank=True)
     commodity = models.ForeignKey(Commodity,related_name="sample_form",on_delete=models.CASCADE,default=None)
-    supervisor_user = models.ForeignKey(CustomUser, related_name="sample_has_parameters",default=None,on_delete=models.SET_NULL,null=True)
+    # supervisor_user = models.ForeignKey(CustomUser, related_name="sample_has_parameters",default=None,on_delete=models.SET_NULL,null=True)
     parameters = models.ManyToManyField(TestResult, related_name="sample_form",blank=True)
 
     approved_by = models.ForeignKey(CustomUser, related_name="sample_form_approve",on_delete=models.SET_NULL,null=True) #smu
@@ -124,11 +124,11 @@ class SampleForm(models.Model):#ClientRequest
     
     remarks = models.CharField(max_length=1000,null=True) #smu_remarks
 
-    remarks_recheck_verifier = models.CharField(max_length=1000,null=True)
-    remarks_reject_verifier = models.CharField(max_length=1000,null=True)
+    # remarks_recheck_verifier = models.CharField(max_length=1000,null=True)
+    # remarks_reject_verifier = models.CharField(max_length=1000,null=True)
 
     admin_remarks = models.CharField(max_length=1000,null=True)
-    verifier_remarks = models.CharField(max_length=1000,null=True)
+    # verifier_remarks = models.CharField(max_length=1000,null=True)
 
     sample_symbol_number = models.CharField(max_length=255, null=True) #latest
     analysis_fee = models.CharField(max_length=255, null=True) #latest
