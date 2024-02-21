@@ -182,11 +182,6 @@ def supervisor_sample_form_has_parameter_m2m_changed(sender, instance, action, r
             sample_form_obj.save()
             break
 
-# @receiver(pre_save, sender=SuperVisorSampleForm)
-# def SampleFormHasVerifierPostSave(sender, instance , **kwargs):
-#     if instance.is_supervisor_sent == True:
-#         instance.status = "not_verified"
-#         print(instance.status)
 
 @receiver(post_save, sender=SuperVisorSampleForm)
 def SupervisorHaveParameterAfterSave(sender, instance , created , **kwargs):
