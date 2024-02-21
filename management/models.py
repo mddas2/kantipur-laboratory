@@ -4,6 +4,7 @@ from account.models import CustomUser
 from django.utils import timezone
 from . import encode_decode
 from offices.models import InspectorType
+from simple_history.models import HistoricalRecords
 
 class ClientCategory(models.Model):
     name = models.CharField(max_length=255,unique=True)
@@ -21,6 +22,7 @@ class ClientCategory(models.Model):
 class CommodityCategory(models.Model):
     name = models.CharField(max_length=255,unique=True) 
     name_nepali = models.CharField(max_length=255,null=True) 
+    history = HistoricalRecords()
     
 class Commodity(models.Model):
     #type_test = choice 
@@ -29,7 +31,8 @@ class Commodity(models.Model):
     name_nepali = models.CharField(max_length=255,null=True)
     test_duration = models.CharField(max_length=255,null=True)
     units = models.CharField(max_length=255,null=True)
-    price = models.IntegerField(null=True)    
+    price = models.IntegerField(null=True)   
+    history = HistoricalRecords() 
 
 class Units(models.Model):
     units = models.CharField(max_length=100,null=True)
@@ -52,7 +55,6 @@ class TestResult(models.Model):
     test_type_nepali = models.CharField(max_length=255,null=True)
     
     price = models.IntegerField(null=True)
-    results = models.CharField(max_length=100,null=True)
     
     units = models.ManyToManyField(Units, related_name="test_result",blank=True)
     mandatory_standard = models.ManyToManyField(MandatoryStandard, related_name="test_result",blank=True)
@@ -60,6 +62,7 @@ class TestResult(models.Model):
 
 
     remarks = models.TextField(max_length=500,null=True)    
+    history = HistoricalRecords()
 
 class ClientCategoryDetail(models.Model): #DFTQC
     client_sub_category_choices = (
@@ -183,13 +186,14 @@ class SampleForm(models.Model):#ClientRequest
 
     is_print = models.BooleanField(default = False)
 
+    history = HistoricalRecords()
+
     def save(self, *args, **kwargs):
         create = False
         if not self.pk:
             # Generate and save the encoded IDs for all user roles
             create = True
            
-        super().save(*args, **kwargs)
         if create == True:
             self.refrence_number = encode_decode.generateEncodeIdforSampleForm(self.pk, "user")
             self.sample_lab_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "common")
@@ -199,8 +203,7 @@ class SampleForm(models.Model):#ClientRequest
             total_fiscal_year_data = total_fiscal_year_data + 10000
             self.code = total_fiscal_year_data
             self.namuna_code = self.fiscal_year +  "/NFFRL/" + str(total_fiscal_year_data)
-
-            self.save()
+        super().save(*args, **kwargs)
 
 class SuperVisorSampleForm(models.Model):#sample form has parameter and parameter for each parameter each suspervisor
     sample_form = models.ForeignKey(SampleForm,related_name="supervisor_sample_form",on_delete=models.CASCADE,null=True)
@@ -229,6 +232,7 @@ class SuperVisorSampleForm(models.Model):#sample form has parameter and paramete
     created_date = models.DateTimeField(auto_now_add=True)  
     updated_date = models.DateTimeField(auto_now=True)
     remarks = models.CharField(max_length=1000,null=True)
+    history = HistoricalRecords()
 
 
 class SampleFormHasParameter(models.Model):#sample form has parameter and parameter for each parameter each analyst
@@ -280,6 +284,7 @@ class SampleFormHasParameter(models.Model):#sample form has parameter and parame
     updated_date = models.DateTimeField(default=timezone.now)
     remarks = models.CharField(max_length=1000,null=True)
 
+    history = HistoricalRecords()
 
     # class Meta:
     #     constraints = [
@@ -299,6 +304,8 @@ class Payment(models.Model):
     
     created_date = models.DateTimeField(auto_now_add=True)  
     updated_date = models.DateTimeField(auto_now=True)
+
+    history = HistoricalRecords()
 
 class SampleFormParameterFormulaCalculate(models.Model):
     sample_form = models.ForeignKey(SampleForm,related_name="result",on_delete=models.CASCADE,null=True)
@@ -334,7 +341,7 @@ class SampleFormParameterFormulaCalculate(models.Model):
     )
     status = models.CharField(choices=status_choices, default="processing", max_length=155)
     is_locked = models.BooleanField(default=False)
-
+    history = HistoricalRecords()
 
 class SampleFormVerifier(models.Model):
     sample_form = models.OneToOneField(SampleForm,related_name="verifier",on_delete=models.CASCADE,default=None)
@@ -351,6 +358,7 @@ class SampleFormVerifier(models.Model):
 
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
+    history = HistoricalRecords()
 
 class RawDataSheet(models.Model):
     sample_form = models.ForeignKey(SampleForm,related_name="raw_datasheet",on_delete=models.CASCADE,default=None)
