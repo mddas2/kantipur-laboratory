@@ -4,8 +4,6 @@ from django.db import models
 # Create your models here.s
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.utils import timezone
-from . import department_type
 from offices.models import Branches,InspectorType
 
 class TestType(models.Model):
@@ -16,7 +14,7 @@ class CustomUser(AbstractUser):
     email = models.EmailField(max_length=255,unique=True)
     username = models.CharField(max_length=255,unique=True)  
 
-    test_type = models.ManyToManyField(TestType, related_name="users",default=None,null=True) 
+    test_type = models.ManyToManyField(TestType, related_name="users",default=None) 
     test_types = models.CharField(max_length=255,null=True)
 
     renew_document = models.FileField(upload_to='media/user/renew_doument',default=None)
@@ -119,7 +117,7 @@ class CustomUserImages(models.Model):
 class UserHaveInspector(models.Model):
     user = models.OneToOneField(CustomUser,related_name = "inspector", on_delete = models.CASCADE)
     branch = models.OneToOneField(Branches,on_delete = models.SET_NULL , null = True,blank = True)
-    inspector_type = models.ManyToManyField(InspectorType,null=True)
+    inspector_type = models.ManyToManyField(InspectorType)
     nepali_name = models.CharField(max_length = 200)
     government_id = models.CharField(max_length = 300)
     government_issued_document = models.FileField(upload_to='media/user/inspector',blank=True,null=True)

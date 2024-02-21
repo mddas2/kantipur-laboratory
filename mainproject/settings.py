@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django_filters',
     'emailmanagement',
     'offices',
+    'simple_history',
 ]
 ASGI_APPLICATION = 'mainproject.asgi.application'
 
