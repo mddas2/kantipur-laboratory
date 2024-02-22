@@ -1,5 +1,6 @@
 virtualenv/
 db.sqlite3
+mainproject
 # management/migrations
 # account/migrations
 # emailmanagement/migrations
