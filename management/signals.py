@@ -48,8 +48,8 @@ def handle_sampleform_presave(sender, instance, **kwargs):
             instance.completed_date = timezone.now()
             instance.approved_date = timezone.now()
         
-    if instance.id:
-        original_sample_form_status = SampleForm.objects.get(pk=instance.id).supervisor_user
+    # if instance.id:
+    #     original_sample_form_status = SampleForm.objects.get(pk=instance.id).supervisor_user
 
     if instance.status != original_sample_form_status: # dynamic rawdata sheet status changing
         raw_data_obj = RawDataSheet.objects.filter(sample_form_id = instance.id).filter(~Q(status="recheck") or ~Q(status="re-assign"))

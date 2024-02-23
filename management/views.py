@@ -252,10 +252,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
 
         if user.role == roles.USER:         
             query =  SampleForm.objects.filter(Q(owner_user = user.email)).filter(~Q(status="completed")).filter(~Q(status="rejected") )
-        # elif user.role == roles.SUPERVISOR:
-        #     query =  SampleForm.objects.filter(supervisor_user=user,status="not_assigned")
-        #     if self.request.method == "PATCH":
-        #         query =  SampleForm.objects.filter(supervisor_user=user)
+
         elif user.role == roles.SMU:
             query = SampleForm.objects.filter(Q(form_available = 'smu') or Q(status = "not_assigned")).filter(~Q(status = "rejected")).filter(~Q(status = "recheck"))
         elif user.role == roles.SUPERADMIN:
@@ -285,10 +282,6 @@ class SampleFormViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         response = super().retrieve(request, *args, **kwargs)
-        
-        # Add extra response data for retrieve action
-    
-        # response.data.update(extra_data)
         return response
     
     @transaction.atomic
@@ -498,21 +491,7 @@ class commodityCategoryLimitedData(generics.ListAPIView):
         return limitedCommidityCategoryreadSerializer
         
     def list(self, request, *args, **kwargs):
-        # Try to get cached data
-        cached_data = cache.get('commodityCategoryLimitedData')
-
-        if cached_data is None:
-            # Cache is empty, fetch data from the database
-            queryset = self.filter_queryset(self.get_queryset())
-            serializer = self.get_serializer(queryset, many=True)
-            data = serializer.data
-
-            # Store data in the cache for 5 minutes (300 seconds)
-            cache.set('commodityCategoryLimitedData', data, cache_time)
-        else:
-            data = cached_data
-        
-        return Response(data)
+        return super().list(request, *args, **kwargs)
     
 class CommodityCategoryViewSet(viewsets.ModelViewSet):
 
@@ -526,28 +505,8 @@ class CommodityCategoryViewSet(viewsets.ModelViewSet):
     pagination_class = MyLimitOffsetPagination
 
     def list(self, request, *args, **kwargs):
-        # Try to get cached data
-        cached_data = cache.get('CommodityCategoryViewSet')
+        return super().list(request, *args, **kwargs)
 
-        if cached_data is None:
-            # Cache is empty, fetch data from the database
-            queryset = self.filter_queryset(self.get_queryset())
-            
-            # Use pagination to get a page of data
-            page = self.paginate_queryset(queryset)
-            if page is not None:
-                serializer = self.get_serializer(page, many=True)
-                data = self.get_paginated_response(serializer.data).data
-            else:
-                data = []
-
-            # Store data in the cache for 5 minutes (300 seconds)
-            cache.set('CommodityCategoryViewSet', data, cache_time)
-        else:
-            data = cached_data
-        
-        return Response(data)
-    
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -561,10 +520,6 @@ class CommodityCategoryViewSet(viewsets.ModelViewSet):
             "data": serializer.data
         }
 
-        # Return the custom response
-        
-        cache.delete("CommodityCategoryViewSet")
-        cache.delete("commodityCategoryLimitedData")
         return Response(response_data, status=status.HTTP_201_CREATED)
     
     def update(self, request, *args, **kwargs):
@@ -582,9 +537,6 @@ class CommodityCategoryViewSet(viewsets.ModelViewSet):
             "data": serializer.data
         }
 
-        # Return the custom response
-        cache.delete("CommodityCategoryViewSet")
-        cache.delete("commodityCategoryLimitedData")
         return Response(response_data)
     
     def destroy(self, request, *args, **kwargs):
@@ -598,9 +550,6 @@ class CommodityCategoryViewSet(viewsets.ModelViewSet):
             "message": "commodity category deleted successfully"
         }
 
-        # Return the custom response
-        cache.delete("CommodityCategoryViewSet")
-        cache.delete("commodityCategoryLimitedData")
         return Response(response_data)
 
 class TestResultViewSet(viewsets.ModelViewSet):
@@ -661,7 +610,7 @@ class TestResultViewSet(viewsets.ModelViewSet):
         }
 
         # Return the custom response
-        cache.delete("TestResultViewSet")
+    
         return Response(response_data)
     
     def destroy(self, request, *args, **kwargs):
@@ -675,8 +624,7 @@ class TestResultViewSet(viewsets.ModelViewSet):
             "message": "parameter deleted successfully"
         }
 
-        # Return the custom response
-        cache.delete("TestResultViewSet")
+    
         return Response(response_data)
 
 class PaymentViewSet(viewsets.ModelViewSet):

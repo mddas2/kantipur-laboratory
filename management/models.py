@@ -193,7 +193,7 @@ class SampleForm(models.Model):#ClientRequest
         if not self.pk:
             # Generate and save the encoded IDs for all user roles
             create = True
-           
+        super().save(*args, **kwargs)
         if create == True:
             self.refrence_number = encode_decode.generateEncodeIdforSampleForm(self.pk, "user")
             self.sample_lab_id = encode_decode.generateEncodeIdforSampleForm(self.pk, "common")
@@ -203,7 +203,9 @@ class SampleForm(models.Model):#ClientRequest
             total_fiscal_year_data = total_fiscal_year_data + 10000
             self.code = total_fiscal_year_data
             self.namuna_code = self.fiscal_year +  "/NFFRL/" + str(total_fiscal_year_data)
-        super().save(*args, **kwargs)
+            
+            self.save()
+        # super().save(*args, **kwargs)
 
 class SuperVisorSampleForm(models.Model):#sample form has parameter and parameter for each parameter each suspervisor
     sample_form = models.ForeignKey(SampleForm,related_name="supervisor_sample_form",on_delete=models.CASCADE,null=True)
