@@ -81,8 +81,7 @@ class ClientCategoryDetail(models.Model): #DFTQC
     # client_category = models.CharField(max_length=200,null=True,blank=True)
 
 class SampleForm(models.Model):#ClientRequest
-    owner_user = models.EmailField(max_length=100,null=False,default=None)
-    owner_user_obj = models.ForeignKey(CustomUser,related_name="suser_have_sample_form",default=None,null=True,on_delete=models.SET_NULL)
+    owner_user_obj = models.ForeignKey(CustomUser,related_name="user_have_sample_form",default=None,null=True,on_delete=models.PROTECT)
     created_by_user = models.ForeignKey(CustomUser,related_name="sample_form_created_by",default=None,null=True,on_delete=models.SET_NULL)
 
     name = models.CharField(max_length=255, null=True)
@@ -104,7 +103,6 @@ class SampleForm(models.Model):#ClientRequest
     report_date = models.DateField(null=True)
     amendments = models.CharField(max_length=255,null=True,blank=True)
     is_commodity_select = models.BooleanField(default=False) #if parameter not select then auto select parameter.this insure that commodity select or parameter.
-    language = models.CharField(max_length=10)
     note = models.TextField(null=True,blank=True)
     commodity = models.ForeignKey(Commodity,related_name="sample_form",on_delete=models.CASCADE,default=None)
     # supervisor_user = models.ForeignKey(CustomUser, related_name="sample_has_parameters",default=None,on_delete=models.SET_NULL,null=True)

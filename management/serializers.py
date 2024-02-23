@@ -281,11 +281,14 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
         if action != "partial_update":
             # Create a mutable copy of the QueryDict and convert it to a regular dictionary
             mutable_data = data.dict()
-            parameters = mutable_data['parameters']        
-            converted_list = ast.literal_eval(parameters)
-
-            mutable_data['parameters'] = converted_list
-
+            parameters = mutable_data['parameters']  
+            if type(parameters) == list:
+                return super().to_internal_value(mutable_data)
+            try:
+                converted_list = ast.literal_eval(parameters)
+                mutable_data['parameters'] = converted_list
+            except ValueError as e:
+                raise serializers.ValidationError({'parameters': str(e)})
             return super().to_internal_value(mutable_data)
         else:
             return super().to_internal_value(data)
@@ -294,6 +297,13 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
         raise serializers.ValidationError('price can not be modified error')
     
     def validate_owner_user_obj(self,value):#field level validation
+        action = self.context['view'].action
+        request = self.context.get('request')
+        if action == "create":
+            if request.user.role in [roles.USER,roles.INSPECTOR]:
+                return request.user.id
+            elif request.user.role in [roles.SMU,roles.SUPERADMIN]:
+                return value
         raise serializers.ValidationError('owner_user_obj can not be modified error')
         
     def validate(self, data):
@@ -303,8 +313,6 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
 
         if action == "create":
-            owner_user_id = CustomUser.objects.get(email = data.get('owner_user')).id
-            data['owner_user_obj_id'] = owner_user_id
             data['created_by_user_id'] = request.user.id
 
         if action == "update" or action == "partial_update":

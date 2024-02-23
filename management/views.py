@@ -294,29 +294,28 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         client_category = request.data.get('client_category')
 
         create_client,client_category_detail = CeateClientCategoryDetail(name,files,client_category,client_sub_category)
-        
         if create_client:            
             mutable_data = QueryDict(mutable=True)
             mutable_data.update(request.data)
             # Set the client_category_detail_id in the mutable datac
             mutable_data['client_category_detail'] = client_category_detail
-
             serializer = self.get_serializer(data=mutable_data)
+
             if serializer.is_valid() == False:
                 ClientCategoryDetail.objects.get(id = client_category_detail).delete()
             serializer.is_valid(raise_exception=True)
-
+           
             # Save the new object to the database
             self.perform_create(serializer)
             
-            if request.user.role == roles.INSPECTOR:           
-                inspector_data = CreateInspectorSampleForm(serializer.data.get('id',None),request,"create")
-                response_data['inspector_sample_form_detail']=inspector_data
-            # Create a custom response
             response_data = {
                 "message": "Sample submitted successfully",
                 "data": serializer.data
             }
+
+            if request.user.role == roles.INSPECTOR:           
+                inspector_data = CreateInspectorSampleForm(serializer.data.get('id',None),request,"create")
+                response_data['inspector_sample_form_detail']=inspector_data
 
             # Return the custom response
             return Response(response_data, status=status.HTTP_201_CREATED)
@@ -834,7 +833,6 @@ def Home(request):
     return HttpResponse(user)
 
 def CeateClientCategoryDetail(names,files,client_category,client_sub_category):
-    
     data = {
         'client_category':client_category,
         'client_sub_category':client_sub_category,
@@ -842,28 +840,30 @@ def CeateClientCategoryDetail(names,files,client_category,client_sub_category):
     
     serializer = ClientCategoryDetailSerializer(data=data)
     serializer.is_valid(raise_exception=True)
-    serializer.save()
-    
+    serializer.save()    
     image_data = []
 
+    if names:
+        print("on going")
+        for name, file in zip(names, files):
+            dict_data = {
+                        'client_category_detail':int(serializer.data['id']),
+                        'name':name,
+                        'file':file,
+                    }
+            image_data.append(dict_data)
 
-    for name, file in zip(names, files):
-       #print("name:",name," file:",file,int(serializer.data['id']))
-       dict_data = {
-                'client_category_detail':int(serializer.data['id']),
-                'name':name,
-                'file':file,
-            }
-       image_data.append(dict_data)
+        image_serializer = ClientCategoryDetailImagesSerializer(many=True,data=image_data)
+        if image_serializer.is_valid() == False:
+            ClientCategoryDetail.objects.get(id = int(serializer.data['id'])).delete()
 
-    image_serializer = ClientCategoryDetailImagesSerializer(many=True,data=image_data)
-    if image_serializer.is_valid() == False:
-        ClientCategoryDetail.objects.get(id = int(serializer.data['id'])).delete()
-
-    image_serializer.is_valid(raise_exception=True)
-    image_serializer.save()
+        image_serializer.is_valid(raise_exception=True)
+        image_serializer.save()
+        return True,int(serializer.data['id'])
     
-    return True,int(serializer.data['id'])
+    else:
+        print("some things ")
+        return True , int(serializer.data['id'])
    
 def additionalOperation(data):
  
@@ -970,15 +970,16 @@ class VerifiedListViewSet(viewsets.ModelViewSet):
         return super().get_serializer_class()
 
 def CreateInspectorSampleForm(sample_form_id,request_data,create_update):
+    print(request_data.data)
     data = {
         'sample_form': sample_form_id,
-        'type':request_data.POST.get('type'),
-        'sample_serial_number':request_data.get('sample_serial_number'),
-        'letter_number':request_data.FILES.get('letter_number'),
-        'letter_submitted_date':request_data.POST.get('letter_submitted_date'),
-        'sample_collected_date':request_data.POST.get('sample_collected_date'),
+        'type':request_data.data.get('type'),
+        'sample_serial_number':request_data.data.get('sample_serial_number'),
+        'letter_number':request_data.data.get('letter_number'),
+        'letter_submitted_date':request_data.data.get('letter_submitted_date'),
+        'sample_collected_date':request_data.data.get('sample_collected_date'),
     }
-
+    print(data)
     if create_update == "create":
         inspector_serializer = SampleFormHaveInspectorSerializer(many=False,data=data)
         inspector_serializer.is_valid(raise_exception=True)
