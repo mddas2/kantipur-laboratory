@@ -25,6 +25,8 @@ from django.db import transaction
 from django.core.cache import cache
 cache_time = 300 # 300 is 5 minute
 
+from .inspector.inspector_serializer import SampleFormInspectorListSerializer
+
 class ClientCategoryViewSet(viewsets.ModelViewSet):
     queryset = ClientCategory.objects.all()
     serializer_class = ClientCategorySerializer
@@ -223,11 +225,10 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     queryset = SampleForm.objects.all()
     serializer_class = SampleFormRetrieveSerializer
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['id','name','owner_user','status','form_available','commodity__name','refrence_number','sample_lab_id']
+    search_fields = ['id','name','owner_user_obj__email','status','form_available','commodity__name','refrence_number','sample_lab_id']
     ordering_fields = ['name','id']
     filterset_fields = {
         'name': ['exact', 'icontains'],
-        'owner_user': ['exact'],
         'status': ['exact'],
         'form_available': ['exact'],
         'commodity_id': ['exact'],
@@ -249,10 +250,10 @@ class SampleFormViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-
         if user.role == roles.USER:         
-            query =  SampleForm.objects.filter(Q(owner_user = user.email)).filter(~Q(status="completed")).filter(~Q(status="rejected") )
-
+            query =  SampleForm.objects.filter(Q(owner_user_obj_id = user.id)).filter(~Q(status="completed")).filter(~Q(status="rejected") )
+        elif user.role == roles.INSPECTOR:
+            query =  SampleForm.objects.filter(Q(owner_user_obj_id = user.id)).filter(~Q(status="completed")).filter(~Q(status="rejected") )
         elif user.role == roles.SMU:
             query = SampleForm.objects.filter(Q(form_available = 'smu') or Q(status = "not_assigned")).filter(~Q(status = "rejected")).filter(~Q(status = "recheck"))
         elif user.role == roles.SUPERADMIN:
@@ -263,13 +264,13 @@ class SampleFormViewSet(viewsets.ModelViewSet):
             query = SampleForm.objects.filter(status = "not_verified")
         else:
             raise PermissionDenied("You do not have permission to access this resource.")
-        
         return query.order_by("-created_date")
-        
         
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
             return SampleFormWriteSerializer
+        elif self.request.user.role == roles.INSPECTOR:
+            return SampleFormInspectorListSerializer
         elif self.action == 'list': #@md5 important
             return SampleFormListSerializer 
         else:
@@ -977,7 +978,11 @@ def CreateInspectorSampleForm(sample_form_id,request_data,create_update):
         'sample_serial_number':request_data.data.get('sample_serial_number'),
         'letter_number':request_data.data.get('letter_number'),
         'letter_submitted_date':request_data.data.get('letter_submitted_date'),
-        'sample_collected_date':request_data.data.get('sample_collected_date'),
+        'feed_owner_name':request_data.data.get('feed_owner_name'),
+        'sample_collected_address':request_data.data.get('sample_collected_address'),
+        'preservatives_details_and_quantity':request_data.data.get('preservatives_details_and_quantity'),
+        'preservatives_details_and_quantity':request_data.data.get('preservatives_details_and_quantity'),
+        'sample_collected_date':request_data.data.get('remarks'),
     }
     print(data)
     if create_update == "create":

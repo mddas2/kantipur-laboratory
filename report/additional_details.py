@@ -7,11 +7,11 @@ from .serializers_groups.additional_serializers import SampleFormSerializer
 class AdditionalDetailSampleForm(generics.ListAPIView): #by sagar
 
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['name','owner_user','status','form_available','commodity__name']
+    search_fields = ['name','owner_user_obj','status','form_available','commodity__name']
     ordering_fields = ['name','id']
     filterset_fields = {
         'name': ['exact', 'icontains'],
-        'owner_user': ['exact'],
+        'owner_user_obj': ['exact'],
         'status': ['exact'],
         'form_available': ['exact'],
         'commodity_id': ['exact'],

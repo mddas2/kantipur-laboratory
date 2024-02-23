@@ -81,7 +81,7 @@ class ClientCategoryDetail(models.Model): #DFTQC
     # client_category = models.CharField(max_length=200,null=True,blank=True)
 
 class SampleForm(models.Model):#ClientRequest
-    owner_user_obj = models.ForeignKey(CustomUser,related_name="user_have_sample_form",default=None,null=True,on_delete=models.PROTECT)
+    owner_user_obj = models.ForeignKey(CustomUser,related_name="user_have_sample_form",null=True,on_delete=models.PROTECT)
     created_by_user = models.ForeignKey(CustomUser,related_name="sample_form_created_by",default=None,null=True,on_delete=models.SET_NULL)
 
     name = models.CharField(max_length=255, null=True)
@@ -124,10 +124,6 @@ class SampleForm(models.Model):#ClientRequest
     number_of_sample = models.CharField(max_length=1000,null=True)
     
     remarks = models.CharField(max_length=1000,null=True) #smu_remarks
-
-    # remarks_recheck_verifier = models.CharField(max_length=1000,null=True)
-    # remarks_reject_verifier = models.CharField(max_length=1000,null=True)
-
     admin_remarks = models.CharField(max_length=1000,null=True)
     # verifier_remarks = models.CharField(max_length=1000,null=True)
 
@@ -525,6 +521,10 @@ class SampleFormHaveInspector(models.Model):
     letter_number = models.CharField(max_length = 150)
     letter_submitted_date = models.CharField(max_length = 150)
     sample_collected_date = models.CharField(max_length = 150)
+    feed_owner_name = models.CharField(max_length = 150,null = True,blank = True)
+    sample_collected_address = models.CharField(max_length = 250,null = True,blank = True)
+    preservatives_details_and_quantity = models.CharField(max_length = 150,null = True,blank=True)
+    remarks = models.CharField(max_length = 150,null = True,blank = True)
     
     
 

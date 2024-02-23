@@ -64,7 +64,7 @@ def NotificationHandler(instance, request,method,model_name):
 
 def sampleFormNotificationHandler(instance,notification_type):
 
-    
+    return True
     group_notification = mapping_notification_type.mapping[notification_type]['to_users']
     group_notification = ','.join(group_notification)
 

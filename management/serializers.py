@@ -24,6 +24,11 @@ class ApprovedByListSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['first_name','last_name','email','id','position'] 
 
+class OwnerUserSerializer(serializers.ModelSerializer):
+     class Meta:
+        model = CustomUser
+        fields = ['first_name','last_name','email'] 
+
 class ClientCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ClientCategory
@@ -212,7 +217,6 @@ class SampleFormListSerializer(serializers.ModelSerializer):
         try:
             return obj.owner_user_obj.department_name
         except:
-            print("\n\n issue")
             return []
 
     def to_representation(self, instance):
@@ -297,11 +301,13 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
         raise serializers.ValidationError('price can not be modified error')
     
     def validate_owner_user_obj(self,value):#field level validation
+        if not value:
+            raise serializers.ValidationError('owner_user_obj can not be null error')
         action = self.context['view'].action
         request = self.context.get('request')
         if action == "create":
             if request.user.role in [roles.USER,roles.INSPECTOR]:
-                return request.user.id
+                return request.user
             elif request.user.role in [roles.SMU,roles.SUPERADMIN]:
                 return value
         raise serializers.ValidationError('owner_user_obj can not be modified error')
@@ -400,7 +406,7 @@ class SampleForm_SampleFormHasParameterListSerializer(serializers.ModelSerialize
 
 class SampleFormReadAnalystSerializer(serializers.ModelSerializer):
     commodity = CommodityReadSerializer(read_only=True,many=False)
-    owner_user = serializers.SerializerMethodField()
+    owner_user_obj = OwnerUserSerializer(read_only = True,many=False)
     supervisor_user = ApprovedBySerializer(read_only = True)
 
     id = serializers.SerializerMethodField()
@@ -413,8 +419,7 @@ class SampleFormReadAnalystSerializer(serializers.ModelSerializer):
         action = self.context['view'].action
         if action == "create":
             parameters = data.get('parameters')
-            
-            #id = data.get('id')
+   
             if len(parameters) == 0:
                 commodity = data.get('commodity')   
                 parameters = TestResult.objects.filter(commodity=commodity)
@@ -429,17 +434,8 @@ class SampleFormReadAnalystSerializer(serializers.ModelSerializer):
             representation['name'] = instance.commodity.name #"error md fix" #sample_name
         representation['client_category'] = client_category_detail
         return representation
-        
-    def get_owner_user(self, obj):
-        email = obj.owner_user
-        try:
-            user = CustomUser.objects.get(email=email)
-            return ApprovedBySerializer(user).data
-        except CustomUser.DoesNotExist:
-            return None
 
     class Meta:
-        
         model = SampleForm
         fields = '__all__'
 
