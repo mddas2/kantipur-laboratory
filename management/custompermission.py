@@ -7,6 +7,9 @@ def IsAuthenticated(request):
 def SMU_USER_Permission(request):
     return IsAuthenticated(request) and request.user.role in [roles.SMU ,roles.USER]
 
+def SMU_USER_SUPERADMIN_INSPECTOR_Permission(request):
+    return IsAuthenticated(request) and request.user.role in [roles.SMU ,roles.USER, roles.SUPERADMIN,roles.INSPECTOR]
+
 def SmuSuperAdmin(request):
     return IsAuthenticated(request) and request.user.role in [roles.SMU ,roles.SUPERADMIN]
 
@@ -53,13 +56,12 @@ class SampleFormViewSetPermission(BasePermission):
         if method_name == 'list':
             return True
         elif method_name == 'create':
-            return True
+            return SMU_USER_SUPERADMIN_INSPECTOR_Permission(request)
         elif method_name == 'retrieve':
             return True
         elif method_name == 'update':
             return SMU_USER_Permission(request)
         elif method_name == 'partial_update':
-            #print("SDasd asd")
             return allAdminPermission(request)
         elif method_name == 'destroy':
             return False
