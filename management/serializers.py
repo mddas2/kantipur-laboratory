@@ -473,10 +473,17 @@ class CommodityCategorySerializer(serializers.ModelSerializer):
         model = CommodityCategory
         fields = '__all__'
         
+class UniqueSampleFormValidator:
+    def __call__(self, value):
+        queryset = SuperVisorSampleForm.objects.filter(sample_form=value)
+        if queryset.exists():
+            raise serializers.ValidationError("This SampleForm is already associated with a SuperVisorSampleForm.")
+        
 class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = SuperVisorSampleForm
         fields = '__all__'
+        validators = [UniqueSampleFormValidator()]
     
     def validate(self, attrs):
         sample_form = attrs.get('sample_form')

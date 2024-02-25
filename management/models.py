@@ -5,6 +5,7 @@ from django.utils import timezone
 from . import encode_decode
 from offices.models import InspectorType
 from simple_history.models import HistoricalRecords
+from django.core.exceptions import ValidationError
 
 class ClientCategory(models.Model):
     name = models.CharField(max_length=255,unique=True)
@@ -202,8 +203,8 @@ class SampleForm(models.Model):#ClientRequest
         # super().save(*args, **kwargs)
 
 class SuperVisorSampleForm(models.Model):#sample form has parameter and parameter for each parameter each suspervisor
-    sample_form = models.ForeignKey(SampleForm,related_name="supervisor_sample_form",on_delete=models.CASCADE,null=True)
-    supervisor_user = models.ForeignKey(CustomUser,related_name="supervisor_sample_form",on_delete=models.CASCADE,default=None)
+    sample_form = models.ForeignKey(SampleForm,related_name="supervisor_sample_form",on_delete=models.PROTECT,null=True)
+    supervisor_user = models.ForeignKey(CustomUser,related_name="supervisor_sample_form",on_delete=models.PROTECT,default=None)
        
     parameters = models.ManyToManyField(TestResult, related_name="supervisor_has_parameter")
     test_type = models.CharField(max_length=1000,null=True)
@@ -229,16 +230,10 @@ class SuperVisorSampleForm(models.Model):#sample form has parameter and paramete
     updated_date = models.DateTimeField(auto_now=True)
     remarks = models.CharField(max_length=1000,null=True)
     history = HistoricalRecords()
-
-    class Meta:
-        # Ensure the combination of sample_form and supervisor_user is unique
-        unique_together = ['sample_form', 'supervisor_user']
-
-
-
+    
 class SampleFormHasParameter(models.Model):#sample form has parameter and parameter for each parameter each analyst
-    sample_form = models.ForeignKey(SampleForm,related_name="sample_has_parameter_analyst",on_delete=models.CASCADE,null=True)
-    super_visor_sample_form = models.ForeignKey(SuperVisorSampleForm,related_name="sample_has_parameter_analyst", on_delete=models.CASCADE,null=True)
+    sample_form = models.ForeignKey(SampleForm,related_name="sample_has_parameter_analyst",on_delete=models.PROTECT,null=True)
+    super_visor_sample_form = models.ForeignKey(SuperVisorSampleForm,related_name="sample_has_parameter_analyst", on_delete=models.PROTECT,null=True)
     commodity = models.ForeignKey(Commodity,related_name="sample_has_parameter_analyst",on_delete=models.CASCADE,default=None)
 
     analyst_user = models.ForeignKey(CustomUser,related_name="sample_has_parameter_analyst",on_delete=models.CASCADE,default=None)
