@@ -14,11 +14,10 @@ class TrackSampleFormAPIView(generics.ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['name','owner_user','status','form_available','commodity__name']
+    search_fields = ['name','owner_user_obj__name','status','form_available','commodity__name']
     ordering_fields = ['name','id']
     filterset_fields = {
         'name': ['exact', 'icontains'],
-        'owner_user': ['exact'],
         'status': ['exact'],
         'form_available': ['exact'],
         'commodity_id': ['exact'],

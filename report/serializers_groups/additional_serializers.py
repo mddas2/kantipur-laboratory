@@ -8,7 +8,7 @@ class SampleFormSerializer(serializers.ModelSerializer): #this is  for data filt
     ref_name = "AdditionalSampleFormSerializer"
     class Meta:
         model = SampleForm
-        fields = ['id','owner_user']
+        fields = ['id','owner_user_obj']
     
     def to_representation(self, instance):
         representation =  super().to_representation(instance)

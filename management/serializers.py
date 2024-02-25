@@ -378,7 +378,6 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
         # Check if the request method is PUT or PATCH
         request = self.context.get('request')
         if request and request.method in ['PUT', 'PATCH']:
-            fields['owner_user'].read_only = True
             fields['owner_user_obj'].read_only = True
             fields['price'].read_only = True
 

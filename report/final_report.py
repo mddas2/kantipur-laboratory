@@ -21,12 +21,11 @@ class FinalSampleFormReportAPIView(generics.ListAPIView): #FinalSampleFormHasVer
     pagination_class = MyPageNumberPaginatiton
 
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['id','name','owner_user','status','form_available','commodity__name','namuna_code','code']
+    search_fields = ['id','name','owner_user_obj__name','status','form_available','commodity__name','namuna_code','code']
     ordering_fields = ['name','id']
     
     filterset_fields = {
         'name': ['exact', 'icontains'],
-        'owner_user': ['exact'],
         'status': ['exact'],
         'form_available': ['exact'],
         'commodity_id': ['exact'],
@@ -40,6 +39,10 @@ class FinalSampleFormReportAPIView(generics.ListAPIView): #FinalSampleFormHasVer
   
         if user.role == roles.USER:
             query = SampleForm.objects.filter(owner_user=user.email).filter(Q(verifier__is_sent=True , verifier__is_verified=True , status="completed") | Q(status="rejected"))
+        
+        if user.role == roles.INSPECTOR:
+            query = SampleForm.objects.filter(owner_user=user.email).filter(Q(verifier__is_sent=True , verifier__is_verified=True , status="completed") | Q(status="rejected"))
+
         elif user.role == roles.SUPERVISOR:
             raise PermissionDenied("You do not have permission to access this resource.")
             query = SampleForm.objects.filter(Q(status="completed") | Q(status="not_verified")).filter(verifier__is_sent=True).filter(supervisor_sample_form__supervisor_user = user)
