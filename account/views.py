@@ -443,14 +443,14 @@ def CreateInspector(user_id,request_data,create_update):
     data = {
         'user': user_id,
         'government_id':request_data.POST.get('government_id'),
-        'inspector_type':[1],#request_data.get('inspector_type'),
+        'inspector_type':[1],
         'government_issued_document':request_data.FILES.get('government_issued_document'),
         'nepali_name':request_data.POST.get('nepali_name'),
         'branch':request_data.POST.get('branch'),
     }
 
     if create_update == "create":
-        inspector_serializer = UserHaveWrirteInspectorSerializer(many=False,data=data)
+        inspector_serializer = UserHaveWrirteInspectorSerializer(many=False,data=data,context={'request':request_data})
         inspector_serializer.is_valid(raise_exception=True)
         inspector_serializer.save() 
     else:
@@ -458,7 +458,7 @@ def CreateInspector(user_id,request_data,create_update):
         inspector_instance = UserHaveInspector.objects.get(id=inspector_obj.id)
         if request_data.FILES.get('government_issued_document') == None:
             data.pop('government_issued_document')
-        inspector_serializer = UserHaveWrirteInspectorSerializer(instance=inspector_instance,data=data)
+        inspector_serializer = UserHaveWrirteInspectorSerializer(instance=inspector_instance,data=data,context={'request':request_data})
         inspector_serializer.is_valid(raise_exception=True)
         inspector_serializer.save()
     return inspector_serializer.data

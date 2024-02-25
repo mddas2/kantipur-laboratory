@@ -230,6 +230,11 @@ class SuperVisorSampleForm(models.Model):#sample form has parameter and paramete
     remarks = models.CharField(max_length=1000,null=True)
     history = HistoricalRecords()
 
+    class Meta:
+        # Ensure the combination of sample_form and supervisor_user is unique
+        unique_together = ['sample_form', 'supervisor_user']
+
+
 
 class SampleFormHasParameter(models.Model):#sample form has parameter and parameter for each parameter each analyst
     sample_form = models.ForeignKey(SampleForm,related_name="sample_has_parameter_analyst",on_delete=models.CASCADE,null=True)
