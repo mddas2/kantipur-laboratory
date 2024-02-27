@@ -3,8 +3,13 @@ from account import roles
 
 from rest_framework import serializers
 from .. encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
-from ..models import Commodity,SampleForm,SampleFormHaveInspector
+from ..models import Commodity,SampleForm,SampleFormHaveInspector,TestResult
 from account.models import CustomUser
+
+class TestResultLimitedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TestResult
+        exclude = ['units', 'mandatory_standard', 'test_method','formula','price','commodity']
 
 class CustomUserInspectorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -32,11 +37,42 @@ class SampleFormInspectorListSerializer(serializers.ModelSerializer):
 
     commodity = CommoditySampleFormSerializer(read_only = True,many=False)
     inspector = SampleFormHaveInspector_SampleFormSerializers(read_only = True)
-    owner_user_obj = CustomUserInspectorSerializer(read_only = True)
+
     class Meta:
         model = SampleForm
-        fields = ['id','name','new_name','commodity','refrence_number','sample_lab_id','status','namuna_code','created_date','inspector','owner_user_obj']
+        fields = ['id','name','new_name','commodity','refrence_number','sample_lab_id','status','namuna_code','created_date','inspector']
 
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        
+        status = representation.get('status')
+        request = self.context.get('request')
+
+        if request.user.role == roles.USER:
+            if status == "pending" or status == "processing" or status=="completed" or status == "recheck":
+                representation['status'] = status
+            else:
+                representation['status'] = "processing"
+                
+        if request.user.role == roles.SUPERVISOR:
+            if status == "not_assigned":
+                representation['status'] = "Not Assigned"
+        return representation
+    
+
+class SampleFormInspectorRetrieveSerializer(serializers.ModelSerializer):
+    id = serializers.SerializerMethodField()
+    def get_id(self, obj):
+        user = self.context['request'].user
+        return generateAutoEncodeIdforSampleForm(obj.id,user)
+
+    commodity = CommoditySampleFormSerializer(read_only = True,many=False)
+    inspector = SampleFormHaveInspector_SampleFormSerializers(read_only = True)
+    # owner_user_obj = CustomUserInspectorSerializer(read_only = True)
+    parameters = TestResultLimitedSerializer(many = True,read_only = True)
+    class Meta:
+        model = SampleForm
+        fields = ['id','name','new_name','commodity','refrence_number','sample_lab_id','status','namuna_code','created_date','inspector','parameters','owner_user_obj']
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)

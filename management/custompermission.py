@@ -5,7 +5,7 @@ def IsAuthenticated(request):
     return bool(request.user and request.user.is_authenticated)
 
 def SMU_USER_Permission(request):
-    return IsAuthenticated(request) and request.user.role in [roles.SMU ,roles.USER]
+    return IsAuthenticated(request) and request.user.role in [roles.SMU,roles.USER,roles.INSPECTOR]
 
 def SMU_USER_SUPERADMIN_INSPECTOR_Permission(request):
     return IsAuthenticated(request) and request.user.role in [roles.SMU ,roles.USER, roles.SUPERADMIN,roles.INSPECTOR]

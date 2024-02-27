@@ -1,5 +1,15 @@
 from django.http import HttpResponse
-from .serializers import FiscalYearSerializer,limitedCommidityCategoryreadSerializer,limitedCommidityreadSerializer,TestResultWriteSerializer,MicroObservationTableSerializer,MicroParameterSerializer,ClientCategorySerializer, SampleFormWriteSerializer,SampleFormRetrieveSerializer,SampleFormListSerializer, CommoditySerializer, CommodityCategorySerializer, TestResultSerializer,PaymentSerializer,SuperVisorSampleFormRetrieveSerializer,SuperVisorSampleFormListSerializer,SuperVisorSampleFormWriteSerializer,NoticeImagesSerializer,ApprovedListSerializer,VerifiedListSerializer,VerifiedWriteSerializer,ApprovedWriteSerializer,SampleFormHaveInspectorSerializer
+from .serializers import (
+    FiscalYearSerializer,
+    limitedCommidityCategoryreadSerializer,
+    limitedCommidityreadSerializer,
+    TestResultWriteSerializer,MicroObservationTableSerializer,
+    MicroParameterSerializer,ClientCategorySerializer, SampleFormWriteSerializer,
+    SampleFormRetrieveSerializer,SampleFormListSerializer, CommoditySerializer,
+    CommodityCategorySerializer, TestResultSerializer,PaymentSerializer,SuperVisorSampleFormRetrieveSerializer,
+    SuperVisorSampleFormListSerializer,SuperVisorSampleFormWriteSerializer,NoticeImagesSerializer,ApprovedListSerializer,VerifiedListSerializer,VerifiedWriteSerializer,
+    ApprovedWriteSerializer,SampleFormHaveInspectorSerializer)
+
 from .models import FiscalYear,ClientCategory,Units,MandatoryStandard,TestMethod, SampleForm, Commodity, CommodityCategory,TestResult, Payment,SuperVisorSampleForm,MicroParameter,MicroObservationTable,ClientCategoryDetail , NoticeImages , ApprovedList , VerifiedList , SampleFormHaveInspector
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -24,8 +34,7 @@ from django.http import QueryDict
 from django.db import transaction
 from django.core.cache import cache
 cache_time = 300 # 300 is 5 minute
-
-from .inspector.inspector_serializer import SampleFormInspectorListSerializer
+from .inspector.inspector_serializer import SampleFormInspectorListSerializer,SampleFormInspectorRetrieveSerializer
 
 class ClientCategoryViewSet(viewsets.ModelViewSet):
     queryset = ClientCategory.objects.all()
@@ -270,7 +279,10 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'partial_update']:
             return SampleFormWriteSerializer
         elif self.request.user.role == roles.INSPECTOR:
-            return SampleFormInspectorListSerializer
+            if self.action == 'list':
+                return SampleFormInspectorListSerializer
+            elif self.action == 'retrieve':
+                return SampleFormInspectorRetrieveSerializer
         elif self.action == 'list': #@md5 important
             return SampleFormListSerializer 
         else:
@@ -982,7 +994,8 @@ def CreateInspectorSampleForm(sample_form_id,request_data,create_update):
         'sample_collected_address':request_data.data.get('sample_collected_address'),
         'preservatives_details_and_quantity':request_data.data.get('preservatives_details_and_quantity'),
         'preservatives_details_and_quantity':request_data.data.get('preservatives_details_and_quantity'),
-        'sample_collected_date':request_data.data.get('remarks'),
+        'sample_collected_date':request_data.data.get('sample_collected_date'),
+        'remarks':request_data.data.get('remarks'),
     }
     print(data)
     if create_update == "create":
