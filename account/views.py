@@ -371,6 +371,7 @@ class userAssignList(generics.ListAPIView):
         'client_category_id': ['exact'],
         'created_date': ['date__gte', 'date__lte'],  # Date filtering
         'is_active':['exact'],
+        # 'test_type':['exact'],
     }
     
     def get_queryset(self):

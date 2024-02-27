@@ -281,10 +281,8 @@ class SampleFormRetrieveSerializer(serializers.ModelSerializer):
 class SampleFormWriteSerializer(serializers.ModelSerializer):
     
     def to_internal_value(self, data):
-        print(data)
         action = self.context['view'].action
-        print(action)
-        if action != "partial_update" and  action != 'update':
+        if action == "update": #and  action != 'update':
             # Create a mutable copy of the QueryDict and convert it to a regular dictionary
             mutable_data = data.dict()
             parameters = mutable_data['parameters']  
@@ -298,9 +296,6 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
             return super().to_internal_value(mutable_data)
         else:
             return super().to_internal_value(data)
-    
-    def validate_price(self,value):#field level validation
-        raise serializers.ValidationError('price can not be modified error')
     
     def validate_owner_user_obj(self,value):#field level validation
         if not value:

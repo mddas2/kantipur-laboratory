@@ -10,6 +10,9 @@ def SMU_USER_Permission(request):
 def SMU_USER_SUPERADMIN_INSPECTOR_Permission(request):
     return IsAuthenticated(request) and request.user.role in [roles.SMU ,roles.USER, roles.SUPERADMIN,roles.INSPECTOR]
 
+def SMU_SUPERADMIN_INSPECTOR_Permission(request):
+    return IsAuthenticated(request) and request.user.role in [roles.SMU , roles.SUPERADMIN,roles.INSPECTOR]
+
 def SmuSuperAdmin(request):
     return IsAuthenticated(request) and request.user.role in [roles.SMU ,roles.SUPERADMIN]
 
@@ -55,11 +58,19 @@ class SampleFormViewSetPermission(BasePermission):
         method_name = view.action
         if method_name == 'list':
             return True
+        elif method_name == 'get_formal_form':
+            return True
         elif method_name == 'create':
             return SMU_USER_SUPERADMIN_INSPECTOR_Permission(request)
         elif method_name == 'retrieve':
             return True
-        elif method_name == 'update':
+        elif method_name == 'formal_form':
+            return SMU_SUPERADMIN_INSPECTOR_Permission(request)
+        elif method_name == 'update':    
+            if view.get_object().status == "pending" or view.get_object().status == "not_assigned":   
+                pass
+            else:
+                return False
             return SMU_USER_Permission(request)
         elif method_name == 'partial_update':
             return allAdminPermission(request)

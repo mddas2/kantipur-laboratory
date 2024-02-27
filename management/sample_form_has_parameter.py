@@ -22,7 +22,6 @@ class SampleFormHasParameterViewSet(viewsets.ModelViewSet):
 
     filterset_fields = {
         'sample_form__name': ['exact', 'icontains'],
-        'sample_form__owner_user': ['exact'],
         'sample_form__status': ['exact'],
         'sample_form__form_available': ['exact'],
         'sample_form__commodity_id': ['exact'],

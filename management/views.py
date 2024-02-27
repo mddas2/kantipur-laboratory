@@ -34,7 +34,8 @@ from django.http import QueryDict
 from django.db import transaction
 from django.core.cache import cache
 cache_time = 300 # 300 is 5 minute
-from .inspector.inspector_serializer import SampleFormInspectorListSerializer,SampleFormInspectorRetrieveSerializer
+from .inspector.inspector_serializer import SampleFormInspectorListSerializer,SampleFormInspectorRetrieveSerializer,SampleFormWriteSerializer_Inspector
+from rest_framework.decorators import action
 
 class ClientCategoryViewSet(viewsets.ModelViewSet):
     queryset = ClientCategory.objects.all()
@@ -276,8 +277,13 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         return query.order_by("-created_date")
         
     def get_serializer_class(self):
+        print(self.action)
         if self.action in ['create', 'update', 'partial_update']:
             return SampleFormWriteSerializer
+        elif self.action == 'formal_form':
+            return SampleFormWriteSerializer_Inspector    
+        elif self.action == 'get_formal_form':
+            return SampleFormInspectorListSerializer
         elif self.request.user.role == roles.INSPECTOR:
             if self.action == 'list':
                 return SampleFormInspectorListSerializer
@@ -362,7 +368,40 @@ class SampleFormViewSet(viewsets.ModelViewSet):
 
         # Return the custom response
         return Response(response_data)
+    
+    @action(detail=True, methods=['patch'],name="formal_form", url_path="update-formal-form")
+    def formal_form(self, request,pk=None):
+        instance = self.get_object()
+        print("above serializer...")
+        serializer = self.get_serializer(instance, data=request.data)
+        print(serializer," serializer...")
+        serializer.is_valid(raise_exception=True)
 
+        # Save the updated object to the database
+        self.perform_update(serializer)
+
+        if request.user.role == roles.INSPECTOR:           
+            inspector_data = CreateInspectorSampleForm(serializer.data.get('id',None),request,"update")
+            response_data['inspector_sample_form_detail']=inspector_data
+
+        # Create a custom response
+        response_data = {
+            "message": "Sample updated successfully",
+            "data": serializer.data
+        }
+    
+        return Response({"message": "update formal form successful"}, status=status.HTTP_200_OK)
+
+
+    @action(detail=False, methods=['get'],name="formal_form", url_path="get-formal-form")
+    def get_formal_form(self, request,*args,**kwargs):
+        response = super().list(request, *args, **kwargs)
+        return response
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        data = serializer.data
+        return Response(data)
+     
     def partial_update(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=True)
