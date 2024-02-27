@@ -220,6 +220,7 @@ class SampleFormListSerializer(serializers.ModelSerializer):
             return []
 
     def to_representation(self, instance):
+        print(" list ..... kjashadkjdaashdkj")
         representation = super().to_representation(instance)
         
         status = representation.get('status')
@@ -282,7 +283,7 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
     
     def to_internal_value(self, data):
         action = self.context['view'].action
-        if action == "update": #and  action != 'update':
+        if action != "partial_update": #and  action != 'update':
             # Create a mutable copy of the QueryDict and convert it to a regular dictionary
             mutable_data = data.dict()
             parameters = mutable_data['parameters']  

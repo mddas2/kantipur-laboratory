@@ -260,7 +260,9 @@ class SampleFormViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.role == roles.USER:         
+        if self.action == 'get_formal_form' and user.role == roles.SMU:
+            query = SampleForm.objects.filter(client_category_detail__client_category_id=12).filter(Q(form_available = 'smu') or Q(status = "not_assigned")).filter(~Q(status = "rejected")).filter(~Q(status = "recheck"))
+        elif user.role == roles.USER:         
             query =  SampleForm.objects.filter(Q(owner_user_obj_id = user.id)).filter(~Q(status="completed")).filter(~Q(status="rejected") )
         elif user.role == roles.INSPECTOR:
             query =  SampleForm.objects.filter(Q(owner_user_obj_id = user.id)).filter(~Q(status="completed")).filter(~Q(status="rejected") )

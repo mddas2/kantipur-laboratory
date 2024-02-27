@@ -98,7 +98,7 @@ class SampleFormWriteSerializer_Inspector(serializers.ModelSerializer):
         # raise serializers.ValidationError('testing sample form dftqc')
         parameters = data.get('parameters')
         request = self.context.get('request')
-        
+
         if parameters and (request.user.role != roles.SMU and request.user.role != roles.INSPECTOR):
             raise serializers.ValidationError('You have not permission to update parameters. Error code E-SAMPLE-FORM-1')
         
