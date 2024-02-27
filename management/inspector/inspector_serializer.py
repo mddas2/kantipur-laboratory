@@ -4,6 +4,13 @@ from account import roles
 from rest_framework import serializers
 from .. encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
 from ..models import Commodity,SampleForm,SampleFormHaveInspector
+from account.models import CustomUser
+
+class CustomUserInspectorSerializer(serializers.ModelSerializer):
+    class Meta:
+        ref_name = "CustomUserInspectorSerializer"
+        model = CustomUser
+        fields = ['first_name','last_name','id']
 
 class SampleFormHaveInspector_SampleFormSerializers(serializers.ModelSerializer):
     class Meta:
@@ -25,10 +32,10 @@ class SampleFormInspectorListSerializer(serializers.ModelSerializer):
 
     commodity = CommoditySampleFormSerializer(read_only = True,many=False)
     inspector = SampleFormHaveInspector_SampleFormSerializers(read_only = True)
+    owner_user_obj = CustomUserInspectorSerializer(read_only = True)
     class Meta:
-        # supervisor_user = ApprovedBySerializer(read_only = True)
         model = SampleForm
-        fields = ['id','name','new_name','commodity','refrence_number','sample_lab_id','status','namuna_code','created_date','inspector']
+        fields = ['id','name','new_name','commodity','refrence_number','sample_lab_id','status','namuna_code','created_date','inspector','owner_user_obj']
 
 
     def to_representation(self, instance):
