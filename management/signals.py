@@ -221,7 +221,6 @@ def SupervisorHaveParameterAfterSave(sender, instance , created , **kwargs):
                 # print("reached to verifier")
                 SampleForm.objects.filter(id=instance.sample_form.id).update(is_analyst_test = sup_is_analyst_test,status=sup_status)
                 
-
         elif instance.is_supervisor_sent == False:
             if sample_obj_param == supervisor_param:
                 status = "processing"

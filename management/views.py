@@ -153,33 +153,11 @@ class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-
-        # Save the new object to the database
         self.perform_create(serializer)
-
-        # this is for redirect for angular
-        created_data = serializer.data
-
-        sample_form_id = created_data['sample_form']
-        sample_form_obj = SampleForm.objects.get(id=sample_form_id)
-        all_parameters = sample_form_obj.parameters.all()
-
-        all_supervisor_parameters = TestResult.objects.filter(supervisor_has_parameter__sample_form_id=sample_form_id)
-
-        if all_parameters.count() == all_supervisor_parameters.count():
-            total_assiged = True
-        else:
-            total_assiged = False
-
-        # print(all_parameters.count(),"::",all_supervisor_parameters.count())
-        # Create a custom response
         response_data = {
             "message": "submitted successfully",
             "data": serializer.data,
-            "total_assiged" : total_assiged
         }
-
-        # Return the custom response
         return Response(response_data, status=status.HTTP_201_CREATED)
     
     def update(self, request, *args, **kwargs):
@@ -374,23 +352,21 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['patch'],name="formal_form", url_path="update-formal-form")
     def formal_form(self, request,pk=None):
         instance = self.get_object()
-        print("above serializer...")
         serializer = self.get_serializer(instance, data=request.data)
-        print(serializer," serializer...")
         serializer.is_valid(raise_exception=True)
 
         # Save the updated object to the database
         self.perform_update(serializer)
-
-        if request.user.role == roles.INSPECTOR:           
-            inspector_data = CreateInspectorSampleForm(serializer.data.get('id',None),request,"update")
-            response_data['inspector_sample_form_detail']=inspector_data
 
         # Create a custom response
         response_data = {
             "message": "Sample updated successfully",
             "data": serializer.data
         }
+
+        if request.user.role == roles.INSPECTOR:           
+            inspector_data = CreateInspectorSampleForm(serializer.data.get('id',None),request,"update")
+            response_data['inspector_sample_form_detail']=inspector_data
     
         return Response({"message": "update formal form successful"}, status=status.HTTP_200_OK)
 
@@ -1024,7 +1000,6 @@ class VerifiedListViewSet(viewsets.ModelViewSet):
         return super().get_serializer_class()
 
 def CreateInspectorSampleForm(sample_form_id,request_data,create_update):
-    print(request_data.data)
     data = {
         'sample_form': sample_form_id,
         'type':request_data.data.get('type'),
@@ -1038,13 +1013,12 @@ def CreateInspectorSampleForm(sample_form_id,request_data,create_update):
         'sample_collected_date':request_data.data.get('sample_collected_date'),
         'remarks':request_data.data.get('remarks'),
     }
-    print(data)
     if create_update == "create":
         inspector_serializer = SampleFormHaveInspectorSerializer(many=False,data=data)
         inspector_serializer.is_valid(raise_exception=True)
         inspector_serializer.save() 
     else:
-        inspector_obj = CustomUser.objects.get(id = sample_form_id).inspector
+        inspector_obj = SampleForm.objects.get(id = sample_form_id).inspector
         inspector_instance = SampleFormHaveInspector.objects.get(id=inspector_obj.id)
         inspector_serializer = SampleFormHaveInspectorSerializer(instance=inspector_instance,data=data)
         inspector_serializer.is_valid(raise_exception=True)
