@@ -220,7 +220,6 @@ class SampleFormListSerializer(serializers.ModelSerializer):
             return []
 
     def to_representation(self, instance):
-        print(" list ..... kjashadkjdaashdkj")
         representation = super().to_representation(instance)
         
         status = representation.get('status')
