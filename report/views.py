@@ -113,7 +113,7 @@ class notApprovedSampleFormHasAdminAPIView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['id','name','owner_user','status','form_available','commodity__name']
+    search_fields = ['id','name','owner_user','status','form_available','commodity__name','namuna_code','new_name']
     ordering_fields = ['name','id']
     filterset_fields = {
         'name': ['exact', 'icontains'],
