@@ -160,5 +160,6 @@ class AssignedSampleForSmuSuperAdminSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['status'] = over_all_status[instance.status]
+        representation['assigned_date'] = instance.supervisor_sample_form.first().created_date
         
         return representation
