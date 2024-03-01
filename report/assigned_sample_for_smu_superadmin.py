@@ -33,7 +33,7 @@ class AssignedSampleForSmuSuperAdmin(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user 
         query = SampleForm.objects.filter(Q(status="processing") | Q(status="not_verified"))
-        return query.order_by("-created_date")
+        return query.order_by("-supervisor_sample_form__created_date")
     
     def get_serializer_class(self):
         if self.request.user.role == roles.SMU or self.request.user.role == roles.SUPERADMIN:

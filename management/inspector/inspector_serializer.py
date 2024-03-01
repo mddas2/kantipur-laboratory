@@ -76,45 +76,45 @@ class PaymentSerializer(serializers.ModelSerializer):
         model = Payment
         fields = '__all__' 
 
-class SampleFormInspectorRetrieveSerializer_main(serializers.ModelSerializer):
+# class SampleFormInspectorRetrieveSerializer_main(serializers.ModelSerializer):
 
-    id = serializers.SerializerMethodField()
+#     id = serializers.SerializerMethodField()
 
-    def get_id(self, obj):
-        user = self.context['request'].user
-        return generateAutoEncodeIdforSampleForm(obj.id,user)
+#     def get_id(self, obj):
+#         user = self.context['request'].user
+#         return generateAutoEncodeIdforSampleForm(obj.id,user)
     
-    company_name = serializers.SerializerMethodField()
-    commodity = CommoditySampleFormSerializer(read_only = True,many=False)
-    client_category_detail = ClientCategoryDetailSerializer(read_only = True,many=False)
+#     company_name = serializers.SerializerMethodField()
+#     commodity = CommoditySampleFormSerializer(read_only = True,many=False)
+#     client_category_detail = ClientCategoryDetailSerializer(read_only = True,many=False)
     
-    parameters = TestResultSerializer(many=True, read_only=True)
-    payment = PaymentSerializer(read_only=True,many=True)
-    class Meta:
-        # supervisor_user = ApprovedBySerializer(read_only = True)
-        model = SampleForm
-        fields = ['id','name','new_name','commodity','refrence_number','sample_lab_id','client_category_detail','status','namuna_code','created_date','company_name','owner_user_obj','payment','parameters','mfd','dfb','days_dfb','dfb_duration','dfb_type','batch','brand','purpose','condition','note','amendments','sample_type','sample_units','sample_quantity','number_of_sample','analysis_fee','voucher_number','voucher_date','price']
+#     parameters = TestResultSerializer(many=True, read_only=True)
+#     payment = PaymentSerializer(read_only=True,many=True)
+#     class Meta:
+#         # supervisor_user = ApprovedBySerializer(read_only = True)
+#         model = SampleForm
+#         fields = ['id','name','new_name','commodity','refrence_number','sample_lab_id','client_category_detail','status','namuna_code','created_date','company_name','owner_user_obj','payment','parameters','mfd','dfb','days_dfb','dfb_duration','dfb_type','batch','brand','purpose','condition','note','amendments','sample_type','sample_units','sample_quantity','number_of_sample','analysis_fee','voucher_number','voucher_date','price']
     
-    def get_company_name(self, obj):
-        return obj.owner_user_obj.department_name
+#     def get_company_name(self, obj):
+#         return obj.owner_user_obj.department_name
 
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
+#     def to_representation(self, instance):
+#         representation = super().to_representation(instance)
         
-        status = representation.get('status')
-        request = self.context.get('request')
+#         status = representation.get('status')
+#         request = self.context.get('request')
 
-        if request.user.role == roles.USER:
-            if status == "pending" or status == "processing" or status=="completed" or status == "recheck":
-                representation['status'] = status
-            else:
-                representation['status'] = "processing"
+#         if request.user.role == roles.USER:
+#             if status == "pending" or status == "processing" or status=="completed" or status == "recheck":
+#                 representation['status'] = status
+#             else:
+#                 representation['status'] = "processing"
                 
-        if request.user.role == roles.SUPERVISOR:
-            if status == "not_assigned":
-                representation['status'] = "Not Assigned"
+#         if request.user.role == roles.SUPERVISOR:
+#             if status == "not_assigned":
+#                 representation['status'] = "Not Assigned"
 
-        return representation
+#         return representation
 
 class SampleFormInspectorListSerializer(serializers.ModelSerializer):
     id = serializers.SerializerMethodField()

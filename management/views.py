@@ -337,9 +337,9 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         # Save the updated object to the database
         self.perform_update(serializer)
 
-        if request.user.role == roles.INSPECTOR:           
-            inspector_data = CreateInspectorSampleForm(serializer.data.get('id',None),request,"update")
-            response_data['inspector_sample_form_detail']=inspector_data
+        # if request.user.role == roles.INSPECTOR:           
+        #     inspector_data = CreateInspectorSampleForm(serializer.data.get('id',None),request,"update")
+        #     response_data['inspector_sample_form_detail']=inspector_data
 
         # Create a custom response
         response_data = {
@@ -377,7 +377,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         response = super().list(request, *args, **kwargs)
         return response
     
-    @action(detail=False, methods=['get'],name="retrieve_formal_form", url_path="detail-formal-form")
+    @action(detail=True, methods=['get'],name="retrieve_formal_form", url_path="detail-formal-form")
     def retrieve_formal_form(self, request,*args,**kwargs):
         response = super().retrieve(request, *args, **kwargs)
         return response
