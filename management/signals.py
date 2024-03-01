@@ -30,7 +30,7 @@ def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwarg
 def handle_sampleform_presave(sender, instance, **kwargs):
     original_sample_form_status = None
     if not instance.pk:
-        status = "pending"
+        instance.status = "pending"
         client_category = instance.client_category_detail.client_category.id
         client_sub_caategory = instance.client_category_detail.client_sub_category
 

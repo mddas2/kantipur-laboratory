@@ -257,13 +257,14 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         return query.order_by("-created_date")
         
     def get_serializer_class(self):
-        print(self.action)
         if self.action in ['create', 'update', 'partial_update']:
             return SampleFormWriteSerializer
         elif self.action == 'formal_form':
             return SampleFormWriteSerializer_Inspector    
         elif self.action == 'get_formal_form':
             return SampleFormInspectorListSerializer
+        elif self.action == 'retrieve_formal_form':
+            return SampleFormInspectorRetrieveSerializer
         elif self.request.user.role == roles.INSPECTOR:
             if self.action == 'list':
                 return SampleFormInspectorListSerializer
@@ -375,11 +376,12 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     def get_formal_form(self, request,*args,**kwargs):
         response = super().list(request, *args, **kwargs)
         return response
-        queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
-        data = serializer.data
-        return Response(data)
-     
+    
+    @action(detail=False, methods=['get'],name="retrieve_formal_form", url_path="detail-formal-form")
+    def retrieve_formal_form(self, request,*args,**kwargs):
+        response = super().retrieve(request, *args, **kwargs)
+        return response
+    
     def partial_update(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=True)
