@@ -30,7 +30,8 @@ class SampleFormHasAnalystAPIView(generics.ListAPIView):
     search_fields = ['id','sample_form__code','sample_form__namuna_code']
     ordering_fields = ['id']
     filterset_fields = {
-        'created_date': ['date__gte', 'date__lte']  # Date filtering
+        'created_date': ['date__gte', 'date__lte'],  # Date filtering
+        'status':['exact'],
     }
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -80,7 +81,7 @@ class DetailSampleFormHasAnalystFinalReportAPIView(views.APIView):
         return Response(serializer.data)
 
     
-class CompletedSampleFormHasVerifierAPIView(generics.ListAPIView):
+class CompletedSampleFormHasVerifierAPIView(generics.ListAPIView): #blunder md , permission fixed
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -101,7 +102,6 @@ class CompletedSampleFormHasVerifierAPIView(generics.ListAPIView):
         return CompletedSampleFormHasVerifierSerializer
     
     def get_queryset(self):
-        request = self.request
         queryset = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=False) and Q(status="not_verified")).order_by("-created_date")
         return queryset
 

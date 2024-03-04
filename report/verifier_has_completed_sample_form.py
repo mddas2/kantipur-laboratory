@@ -27,11 +27,15 @@ class CompletedSampleFormHasVerifierSerializer(serializers.ModelSerializer):
     sample_has_parameter_analyst = SampleFormHasParameterReadSerializer(many=True,read_only=True)
     commodity = CommoditySerializer(read_only = True)
     id = serializers.SerializerMethodField()
-
+    verifier_requested_date = serializers.SerializerMethodField()
     def get_id(self, obj):
         user = self.context['request'].user
         return generateAutoEncodeIdforSampleForm(obj.id,user)
+    
+    def get_verifier_requested_date(self,obj):
+        return obj.verifier.created_date
+    
     class Meta:
         model = SampleForm
-        fields = ['id','name','sample_has_parameter_analyst','commodity','status','created_date','sample_lab_id','namuna_code']
+        fields = ['id','name','sample_has_parameter_analyst','commodity','status','created_date','sample_lab_id','namuna_code','verifier_requested_date','verified_date']
         ref_name = "verifier_CompletedSampleFormHasVerifierSerialize"
