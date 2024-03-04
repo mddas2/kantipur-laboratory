@@ -985,18 +985,16 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
             
             obj = SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=parameter[0]).first()
             
-            if len(obj.parameter.all())>1:
+            if len(obj.parameter.all())>1: #if supervisor have multiple parameter
                 obj.parameter.remove(*parameter) #revoke parameter from existence obj
                 obj.is_supervisor_sent = False
                 AlterRawDataStatus(obj)
                 obj.save()
 
-                
                 flushFormulaCalculate(obj,parameter)
-            
 
                 instance = SampleFormHasParameter.objects.filter(sample_form=sample_form, analyst_user=analyst_user)
-                print(instance, " sdasd")
+                print(instance, " main")
                 if instance.exists():
                     print(2)
                     instance = instance.first()
@@ -1013,7 +1011,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                     samp.save()
                     
                     return obj
-            else:
+            else:#if supervisor have only one parameter
                 if obj.analyst_user == analyst_user:
                     print(4)
                     return obj
@@ -1023,7 +1021,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                     instance = SampleFormHasParameter.objects.filter(sample_form=sample_form, analyst_user=analyst_user)
                     print(instance," ins md")
                     if instance.exists():
-                        #print("exists")
+                        print("6")
                         instance = instance.first()
                         AlterRawDataStatus(instance)
                         instance.parameter.add(*parameter) #if particular analysts already exist then add parameter to that analysts re-asign
@@ -1034,18 +1032,18 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
 
                         return instance
                     else:
-                        pass
-                        # obj.analyst_user = analyst_user
-                        # flushFormulaCalculate(obj,parameter)
-                        # AlterRawDataStatus(obj)
-                        # obj.save()
-                        
+                        print("7")
+                        obj.analyst_user = analyst_user #simply update analysis
+                        flushFormulaCalculate(obj,parameter)
+                        AlterRawDataStatus(obj)
+                        obj.save()
                         #print("this sample form has parameter have single parameter and this is changable analyst and this parameter and changeble analyst is not exist, so this need to create new and then delete,or simply change analyst name")
                     
                     return obj
             # raise serializers.ValidationError('remove from and re-assigning. i am fixing right now')
-        print(6)
+        print(8)
         if SampleFormHasParameter.objects.filter(sample_form=sample_form, analyst_user=analyst_user).exists():
+            print(9)
             #print("testing ok append parameter")
             instance = SampleFormHasParameter.objects.get(sample_form=sample_form, analyst_user=analyst_user)
             # Append the new parameters to the existing instance
@@ -1070,7 +1068,7 @@ def flushsupervisorprameterCalculate(obj,parameter):
 
 def AlterRawDataStatus(obj):
     raw_data_obj = obj.raw_datasheet.all().last()
-    print(raw_data_obj," obj none")
+    # print(raw_data_obj," obj none")
     if raw_data_obj == None:
         pass
         #print("this sample form has parameter haave not raw data sheet")

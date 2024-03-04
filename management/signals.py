@@ -121,7 +121,6 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
             else:
                 break
            
-    
         # sample_form_status = "processing"
  
         if is_analyst_test_param == False:
@@ -151,7 +150,6 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
         else:
             pass
             #print("all parameter has not assigned...")
-
     if instance.is_supervisor_sent == False:
         SampleForm.objects.filter(id=instance.sample_form.id).update(is_analyst_test = False,status="processing")
         
@@ -237,11 +235,14 @@ def SupervisorHaveParameterAfterSave(sender, instance , created , **kwargs):
 
 @receiver(pre_save, sender=SampleFormHasParameter)
 def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
+    print("status processing hello",instance.is_supervisor_sent)
     if not instance.pk:
         instance.status = "pending"
     else:
         if instance.is_supervisor_sent == True:
             SampleFormParameterFormulaCalculate.objects.filter(sample_form_has_parameter_id = instance.pk,is_locked = False).update(is_locked = True)
+        else:
+            SuperVisorSampleForm.objects.filter(id = instance.super_visor_sample_form_id).update(status = "processing")
         # sampleFormNotificationHandler(instance,"assigned_analyst")
         
 @receiver(post_save, sender=SampleFormVerifier)
