@@ -71,6 +71,7 @@ class CustomUser(AbstractUser):
     )
     
     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, blank=True, null=True)
+    is_public_analyst = models.BooleanField(default = False)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
