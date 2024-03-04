@@ -388,9 +388,16 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
 
 class SampleFormSuperVisorListSerializer(serializers.ModelSerializer):
     commodity = CommodityReadSerializer_SampleFormSuperVisorListSerializer(read_only = True)
+    id = serializers.SerializerMethodField()
+    
+    def get_id(self, obj):
+        user = self.context['request'].user
+        return generateAutoEncodeIdforSampleForm(obj.id,user)
+    
     class Meta:
         model = SampleForm
         fields = ['namuna_code','name','commodity','status','id']
+
     
 class SampleForm_SampleFormHasParameterListSerializer(serializers.ModelSerializer): #for analysts only
     commodity = serializers.SerializerMethodField()

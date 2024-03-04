@@ -232,7 +232,7 @@ class SuperVisorSampleForm(models.Model):#sample form has parameter and paramete
     history = HistoricalRecords()
     
 class SampleFormHasParameter(models.Model):#sample form has parameter and parameter for each parameter each analyst
-    sample_form = models.ForeignKey(SampleForm,related_name="sample_has_parameter_analyst",on_delete=models.PROTECT,null=True)
+    sample_form = models.ForeignKey(SampleForm,related_name="sample_has_parameter_analyst",on_delete=models.PROTECT)
     super_visor_sample_form = models.ForeignKey(SuperVisorSampleForm,related_name="sample_has_parameter_analyst", on_delete=models.PROTECT,null=True)
     commodity = models.ForeignKey(Commodity,related_name="sample_has_parameter_analyst",on_delete=models.CASCADE,default=None)
 

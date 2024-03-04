@@ -152,8 +152,7 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
             pass
             #print("all parameter has not assigned...")
     if instance.is_supervisor_sent == False:
-        if not created:
-            SampleForm.objects.filter(id=instance.sample_form.id).update(is_analyst_test = False,status="processing")
+        SampleForm.objects.filter(id=instance.sample_form.id).update(is_analyst_test = False,status="processing")
         
 @receiver(m2m_changed, sender=SuperVisorSampleForm.parameters.through)
 def supervisor_sample_form_has_parameter_m2m_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
