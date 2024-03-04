@@ -25,7 +25,8 @@ class SampleFormHasAnalystAPIView(generics.ListAPIView):
     search_fields = ['id','sample_form__code','sample_form__id','sample_form__namuna_code','sample_form__sample_lab_id','sample_form__namuna_code']
     ordering_fields = ['id']
     filterset_fields = {
-        'created_date': ['date__gte', 'date__lte']  # Date filtering
+        'created_date': ['date__gte', 'date__lte'],  # Date filtering
+        'status':['exact'],
     }
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -76,7 +77,7 @@ class DetailSampleFormHasAnalystFinalReportAPIView(views.APIView):
         return Response(serializer.data)
 
     
-class CompletedSampleFormHasVerifierAPIView(generics.ListAPIView):
+class CompletedSampleFormHasVerifierAPIView(generics.ListAPIView): #blunder md , permission fixed
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     pagination_class = MyPageNumberPagination
@@ -95,11 +96,15 @@ class CompletedSampleFormHasVerifierAPIView(generics.ListAPIView):
         return CompletedSampleFormHasVerifierSerializer
     
     def get_queryset(self):
+<<<<<<< HEAD
         request = self.request
         if request.user.role == roles.VERIFIER:
             queryset = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=False) and Q(status="not_verified")).order_by("-created_date")
         else:
             raise PermissionDenied("You do not have permission to access thais resource.")
+=======
+        queryset = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=False) and Q(status="not_verified")).order_by("-created_date")
+>>>>>>> main
         return queryset
 
     def get(self, request, *args, **kwargs):
@@ -110,7 +115,11 @@ class notApprovedSampleFormHasAdminAPIView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+<<<<<<< HEAD
     search_fields = ['id','name','owner_user_obj__name','status','form_available','commodity__name']
+=======
+    search_fields = ['id','name','owner_user','status','form_available','commodity__name','namuna_code','new_name']
+>>>>>>> main
     ordering_fields = ['name','id']
     filterset_fields = {
         'name': ['exact', 'icontains'],

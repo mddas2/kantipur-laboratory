@@ -48,11 +48,11 @@ class FinalSampleFormReportAPIView(generics.ListAPIView): #FinalSampleFormHasVer
             query = SampleForm.objects.filter(Q(status="completed") | Q(status="not_verified")).filter(verifier__is_sent=True).filter(supervisor_sample_form__supervisor_user = user)
 
         elif user.role == roles.SMU:
-            query = SampleForm.objects.filter(Q(verifier__is_sent=True, verifier__is_verified=True) | Q(status="rejected") | Q(status="recheck"))
+            query = SampleForm.objects.filter(Q(status = "completed") | Q(status="rejected") | Q(status="recheck"))
         elif user.role == roles.SUPERADMIN:
-            query = SampleForm.objects.filter(Q(verifier__is_sent=True, verifier__is_verified=True) | Q(status="rejected"))
+            query = SampleForm.objects.filter(Q(status = "completed") | Q(status="rejected") | Q(status="recheck"))
         elif user.role == roles.ADMIN:
-            query = SampleForm.objects.filter(Q(verifier__is_sent=True) & Q(verifier__is_verified=True) & Q(status="completed"))
+            query = SampleForm.objects.filter(status="completed")
         elif user.role == roles.ANALYST:
             # query = SampleForm.objects.filter(sample_has_parameter_analyst__analyst_user=user).filter(Q(sample_has_parameter_analyst__status='verified',sample_has_parameter_analyst__is_supervisor_sent=True) | Q(status="rejected"))
             query = SampleForm.objects.filter(sample_has_parameter_analyst__analyst_user=user).filter(Q(status = "completed") | Q(status="rejected"))

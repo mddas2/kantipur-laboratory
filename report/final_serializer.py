@@ -76,7 +76,11 @@ class FinalSampleFormReportSerializer(serializers.ModelSerializer):
     class Meta:
         name = "FinalSampleFormReportAPIViewReport"
         model = SampleForm
+<<<<<<< HEAD
         fields = ['id','supervisor_sample_form','name','commodity','status','created_date','completed_date','client_category_detail','namuna_code'] #user access
+=======
+        fields = ['id','supervisor_sample_form','name','supervisor_user','sample_has_parameter_analyst','commodity','status','created_date','completed_date','client_category_detail','namuna_code','is_print','verified_date','approved_date'] #user access
+>>>>>>> main
     
     def to_representation(self,instance):
         representation = super().to_representation(instance)
