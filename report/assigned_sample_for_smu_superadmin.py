@@ -31,18 +31,8 @@ class AssignedSampleForSmuSuperAdmin(generics.ListAPIView):
     }
 
     def get_queryset(self):
-        user = self.request.user 
-<<<<<<< HEAD
         query = SampleForm.objects.filter(Q(status="processing") | Q(status="not_verified"))
         return query.order_by("-supervisor_sample_form__created_date")
-=======
-       
-        if user.role in [roles.SMU,roles.SUPERADMIN]:
-            query = SampleForm.objects.filter(Q(status="processing") | Q(status="not_verified") | Q(status="not_approved"))
-        else:
-            raise PermissionDenied("You do not have permission to access this resource.")
-        return query.order_by("-created_date")
->>>>>>> main
     
     def get_serializer_class(self):
         if self.request.user.role == roles.SMU or self.request.user.role == roles.SUPERADMIN:
