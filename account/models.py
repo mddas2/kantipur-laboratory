@@ -13,6 +13,7 @@ class CustomUser(AbstractUser):
     phone = models.CharField(max_length=15 , unique=True)
     email = models.EmailField(max_length=255,unique=True)
     username = models.CharField(max_length=255,unique=True)  
+    nepali_name = models.CharField(max_length = 50,null = True,blank = True)
 
     test_type = models.ManyToManyField(TestType, related_name="users",default=None) 
     test_types = models.CharField(max_length=255,null=True)
@@ -46,6 +47,7 @@ class CustomUser(AbstractUser):
     remarks = models.CharField(max_length=200,null=True)
 
     position = models.CharField(max_length=200,null=True) #post 
+    position_nepali = models.CharField(max_length=200,null=True,blank = True)
 
     created_date = models.DateTimeField(auto_now_add=True)  
     updated_date = models.DateTimeField(auto_now=True)

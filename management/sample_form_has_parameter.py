@@ -25,7 +25,6 @@ class SampleFormHasParameterViewSet(viewsets.ModelViewSet):
         'sample_form__status': ['exact'],
         'sample_form__form_available': ['exact'],
         'sample_form__commodity_id': ['exact'],
-        'sample_form__supervisor_user': ['exact'],
         'analyst_user':['exact'],
         'sample_form__commodity':['exact'],
         'created_date': ['date__gte', 'date__lte']  # Date filtering
