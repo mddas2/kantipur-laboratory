@@ -263,7 +263,10 @@ class SampleFormRetrieveSerializer(serializers.ModelSerializer):
         fields = ['id','name','new_name','commodity','refrence_number','sample_lab_id','client_category_detail','status','namuna_code','created_date','company_name','owner_user_obj','payment','parameters','mfd','dfb','days_dfb','dfb_duration','dfb_type','batch','brand','purpose','condition','note','amendments','sample_type','sample_units','sample_quantity','number_of_sample','analysis_fee','voucher_number','voucher_date','price']
     
     def get_company_name(self, obj):
-        return obj.owner_user_obj.department_name
+        try:
+            return obj.owner_user_obj.department_name
+        except:
+            return "department name"
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
