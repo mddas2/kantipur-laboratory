@@ -192,6 +192,7 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
         if user.role == roles.SMU or user.role == roles.SUPERADMIN:
             smu_superadmin_status = representation.get('status')
             representation['status'] = over_all_status[smu_superadmin_status]
+
             # if smu_superadmin_status == "not_assigned" or smu_superadmin_status == "not_verified":
             #     representation['status'] = "processing"
         
@@ -264,8 +265,11 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
         
         client_category_detail = instance.client_category_detail.client_category.id
         if client_category_detail == 11:
-            representation['name'] = instance.commodity.name #"error md fix" #sample_name
+            #representation['name'] = instance.commodity.name #"error md fix" #sample_name
+            if instance.new_name != None:
+                representation['name'] = instance.new_name#instance.new_namess
         representation['client_category'] = client_category_detail
+        
 
         return representation
 

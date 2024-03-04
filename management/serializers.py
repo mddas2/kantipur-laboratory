@@ -495,7 +495,8 @@ class SampleFormReadAnalystSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         client_category_detail = instance.client_category_detail.client_category.id
         if client_category_detail == 11:
-            representation['name'] = instance.commodity.name #"error md fix" #sample_name
+            if instance.new_name != None:
+                representation['name'] = instance.new_name#instance.new_names
         representation['client_category'] = client_category_detail
         return representation
         
@@ -887,7 +888,6 @@ class SampleFormHasParameterReadSerializer(serializers.ModelSerializer):
         representation['completed_done'] = total_completed
         representation['completed_done'] = total_completed
         # representation['assigned_by'] = self.assigned_by
-
         return representation
 
 class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
