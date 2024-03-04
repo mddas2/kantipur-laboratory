@@ -47,6 +47,12 @@ class CommodityReadSerializer(serializers.ModelSerializer):
         model = Commodity
         fields = ['id','name','name_nepali']
 
+class CommodityReadSerializer_SampleFormSuperVisorListSerializer(serializers.ModelSerializer):
+    class Meta:
+        ref_name = "CommodityRead_management"
+        model = Commodity
+        fields = ['id','name']
+
 class UnitsReadSerializer(serializers.ModelSerializer):
     class Meta:
         ref_name = "UnitsReadSerializer"
@@ -381,14 +387,10 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
         return fields
 
 class SampleFormSuperVisorListSerializer(serializers.ModelSerializer):
-    commodity = serializers.SerializerMethodField()
+    commodity = CommodityReadSerializer_SampleFormSuperVisorListSerializer(read_only = True)
     class Meta:
         model = SampleForm
         fields = ['namuna_code','name','commodity','status','id']
-    
-    def get_commodity(self,obj):
-        # return ""
-        return obj.commodity.name
     
 class SampleForm_SampleFormHasParameterListSerializer(serializers.ModelSerializer): #for analysts only
     commodity = serializers.SerializerMethodField()

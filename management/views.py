@@ -109,7 +109,6 @@ class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated,SuperVisorSampleFormViewsetPermission]
     pagination_class = MyPageNumberPagination
 
-
     def get_queryset(self):
         user = self.request.user
         action = self.action
