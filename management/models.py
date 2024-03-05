@@ -225,7 +225,7 @@ class SuperVisorSampleForm(models.Model):#sample form has parameter and paramete
         ('verified','verified'),
     )
     status = models.CharField(choices=status_choices,default="not_assigned" , blank=True, null=True, max_length=155)
-
+    performance_remarks = models.CharField(max_length = 20,choices=(('green','Green'),('yellow','Yellow'),('red','Red')),null = True)
     created_date = models.DateTimeField(auto_now_add=True)  
     updated_date = models.DateTimeField(auto_now=True)
     remarks = models.CharField(max_length=1000,null=True)
@@ -279,6 +279,7 @@ class SampleFormHasParameter(models.Model):#sample form has parameter and parame
 
     updated_date = models.DateTimeField(default=timezone.now)
     remarks = models.CharField(max_length=1000,null=True)
+    performance_remarks = models.CharField(max_length = 20,choices=(('green','Green'),('yellow','Yellow'),('red','Red')),null = True)
 
     history = HistoricalRecords()
 
@@ -313,6 +314,7 @@ class SampleFormParameterFormulaCalculate(models.Model):
     input_fields_value = models.CharField(max_length=2000,null=True)
     auto_calculate_result = models.CharField(max_length=200,null=True)
     remarks = models.CharField(max_length=200,null=True)
+    performance_remarks = models.CharField(max_length = 20,choices=(('green','Green'),('yellow','Yellow'),('red','Red')),null = True)
  
     created_date = models.DateTimeField(auto_now_add=True)  
     updated_date = models.DateTimeField(auto_now=True)
@@ -354,6 +356,7 @@ class SampleFormVerifier(models.Model):
 
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
+    performance_remarks = models.CharField(max_length = 20,choices=(('green','Green'),('yellow','Yellow'),('red','Red')),null = True)
     history = HistoricalRecords()
 
 class RawDataSheet(models.Model):
