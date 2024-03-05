@@ -248,26 +248,41 @@ def SampleFormHasVerifierPostSave(sender, instance ,created , **kwargs):
 @receiver(pre_save, sender=SampleFormVerifier)
 def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
     sample_form_obj = instance.sample_form
-    if not instance.pk:  
-        sample_form_obj.form_available = "verifier"
-        sample_form_obj.status = "not_verified"
+    client_category_detail = instance.client_category_detail.client_category.id
+    if client_category_detail == 12:
+        sample_form_has_parameter_obj = sample_form_obj.sample_has_parameter_analyst
+        sample_form_has_parameter_obj.update(status = "completed")
+        
+        supervisor_sample_form_obj = sample_form_obj.supervisor_sample_form
+        supervisor_sample_form_obj.update(status = "completed")
+
+        sample_form_obj.status = "completed"
+    
+        sample_form_obj.verified_date = timezone.now()
+        sample_form_obj.remarks = instance.remarks
         sample_form_obj.save()
-    else:        
-        if instance.is_verified == True:
-            sample_form_has_parameter_obj = sample_form_obj.sample_has_parameter_analyst
-            sample_form_has_parameter_obj.update(status = "verified")
-            
-            supervisor_sample_form_obj = sample_form_obj.supervisor_sample_form
-            supervisor_sample_form_obj.update(status = "verified")
+        instance.is_verified = True
+    else:
+        if not instance.pk:  
+            sample_form_obj.form_available = "verifier"
+            sample_form_obj.status = "not_verified"
+            sample_form_obj.save()            
+        else:        
+            if instance.is_verified == True:
+                sample_form_has_parameter_obj = sample_form_obj.sample_has_parameter_analyst
+                sample_form_has_parameter_obj.update(status = "verified")
+                
+                supervisor_sample_form_obj = sample_form_obj.supervisor_sample_form
+                supervisor_sample_form_obj.update(status = "verified")
 
-            sample_form_obj.status = "not_approved"
-            
-            sample_form_obj.verified_date = timezone.now()
+                sample_form_obj.status = "not_approved"
+                
+                sample_form_obj.verified_date = timezone.now()
 
-            sample_form_obj.remarks = instance.remarks
-            sample_form_obj.save()
+                sample_form_obj.remarks = instance.remarks
+                sample_form_obj.save()
 
-            sampleFormNotificationHandler(instance,"assigned_admin")
+                sampleFormNotificationHandler(instance,"assigned_admin")
 
             
 
