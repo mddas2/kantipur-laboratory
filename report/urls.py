@@ -42,6 +42,8 @@ urlpatterns = [
     path('final-report', views.FinalReportPdf,name="FinalReport"),
 
     path('dashboard-report/', dashboard.reportStatus.as_view()),
+    path('dashboard-report/<int:user_id>', dashboard.reportStatus.as_view()),
+
     path('analyst-report-download/', dashboard.AnalystProgressReport.as_view()),
     path('supervisor-report-download/', dashboard.SuperVisorProgressReport.as_view()),
 

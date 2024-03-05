@@ -11,9 +11,8 @@ from rest_framework.response import Response
 class reportStatus(views.APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    def get(self, request):        
+    def get(self, request ,user_id=None):        
         if self.request.user.role == roles.SUPERADMIN or self.request.user.role == roles.SMU or self.request.user.role == roles.ADMIN:
-            total_users = CustomUser.objects.all().count()
             total_sample_forms_obj = SampleForm.objects.all()
             total_request = total_sample_forms_obj.count()
             completed = total_sample_forms_obj.filter(status = "completed").count()
@@ -81,8 +80,9 @@ class reportStatus(views.APIView):
                 'test_type_data':test_type_data,
             }
             
-
         elif self.request.user.role == roles.SUPERVISOR:
+            if user_id:
+                total_sample_forms_obj = SuperVisorSampleForm.objects.filter(supervisor_user = user_id).all()
             total_sample_forms_obj = SuperVisorSampleForm.objects.filter(supervisor_user = self.request.user.id).all()
             total_requests = total_sample_forms_obj.count()
             completed = total_sample_forms_obj.filter(sample_form__status = "completed").count()
@@ -98,6 +98,8 @@ class reportStatus(views.APIView):
             analyst_users = CustomUser.objects.filter(role = roles.ANALYST)
             task_by_analyst = []
             for ana_user in analyst_users:
+                if user_id:
+                    supervisor_anaalyst_obj = ana_user.sample_has_parameter_analyst.all().filter(super_visor_sample_form__supervisor_user = user_id)
                 supervisor_anaalyst_obj = ana_user.sample_has_parameter_analyst.all().filter(super_visor_sample_form__supervisor_user = request.user)
                 total_request = supervisor_anaalyst_obj.count()
                 name =   ana_user.email
@@ -133,8 +135,6 @@ class reportStatus(views.APIView):
             pending = total_sample_forms_obj.filter(status = "pending").count()
             re_assign = total_sample_forms_obj.filter(status = "re_assign").count()
             processing = total_sample_forms_obj.filter(status = "processing").count()
-
-    
 
             sample_form_obj = SampleForm.objects.filter(sample_has_parameter_analyst__analyst_user=self.request.user.id)
             not_verified = sample_form_obj.filter(status = "not_verified").count()
