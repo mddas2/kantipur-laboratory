@@ -27,6 +27,7 @@ class SampleFormHasAnalystAPIView(generics.ListAPIView):
     filterset_fields = {
         'created_date': ['date__gte', 'date__lte'],  # Date filtering
         'status':['exact'],
+        'sample_form__client_category_detail__client_category':['exact']
     }
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]

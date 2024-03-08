@@ -103,7 +103,8 @@ class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
     filterset_fields = {
         'supervisor_user': ['exact'],
         'status': ['exact'],       
-        'created_date': ['date__gte', 'date__lte']  # Date filtering
+        'created_date': ['date__gte', 'date__lte'],  # Date filtering
+        'sample_form__client_category_detail__client_category':['exact']
     }
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated,SuperVisorSampleFormViewsetPermission]
