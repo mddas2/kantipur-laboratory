@@ -248,8 +248,9 @@ def SampleFormHasVerifierPostSave(sender, instance ,created , **kwargs):
 @receiver(pre_save, sender=SampleFormVerifier)
 def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
     sample_form_obj = instance.sample_form
-    client_category_detail = instance.client_category_detail.client_category.id
+    client_category_detail = sample_form_obj.client_category_detail.client_category.id
     if client_category_detail == 12:
+        print("it is inspector ")
         sample_form_has_parameter_obj = sample_form_obj.sample_has_parameter_analyst
         sample_form_has_parameter_obj.update(status = "completed")
         

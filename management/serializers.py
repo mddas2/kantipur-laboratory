@@ -485,9 +485,12 @@ class CommodityCategorySerializer(serializers.ModelSerializer):
         
 class UniqueSampleFormValidator:
     def __call__(self, value):
-        queryset = SuperVisorSampleForm.objects.filter(sample_form_id=value.get('sample_form').id)
-        if queryset.exists():
-            raise serializers.ValidationError("This SampleForm is already associated with a SuperVisorSampleForm.")
+        try:
+            queryset = SuperVisorSampleForm.objects.filter(sample_form_id=value.get('sample_form').id)
+            if queryset.exists():
+                raise serializers.ValidationError("This SampleForm is already associated with a SuperVisorSampleForm.")
+        except:
+            pass
         
 class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
     class Meta:

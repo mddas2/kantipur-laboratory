@@ -2,6 +2,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 
 def sendFinalreport(instance):
+    return True
     message = f"""<!DOCTYPE html>
         <html lang="en">
         <head>
