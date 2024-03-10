@@ -90,7 +90,7 @@ def sampleFormNotificationHandler(instance,notification_type):
         notification_message = notification_message.format(sample_lab_id = instance.sample_form.sample_lab_id)
         to_notification = [instance.supervisor_user_id]  # here instance is supervisoruser
 
-        from_notification = CustomUser.objects.filter(role = roles.SMU).first()
+        from_notification = CustomUser.objects.filter(role = roles.SMU).first().id
 
     elif notification_type == "assigned_analyst":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
@@ -100,7 +100,7 @@ def sampleFormNotificationHandler(instance,notification_type):
         notification_message = notification_message.format(sample_lab_id = instance.sample_form.sample_lab_id)
 
         to_notification = [instance.analyst_user_id] # here instance is sampleformhasparameter
-        from_notification = instance.supervisor_sample_form.supervisor_user_id
+        from_notification = instance.super_visor_sample_form.supervisor_user_id
 
     elif notification_type == "assigned_verifier":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
@@ -159,7 +159,7 @@ def sampleFormNotificationHandler(instance,notification_type):
 
     # Save the new notification object
     notification = serializer.save()
-
+    print("\n\n assigned notification \n\n")
     # Create a custom response
     response_data = {
         "message": "sample form Notification created successfully ",
