@@ -14,6 +14,7 @@ from django.db.models import Q
 from . import additional_data
 from emailmanagement.sendmail_final_report import sendFinalreport
 
+@transaction.atomic
 @receiver(post_save, sender=SampleFormParameterFormulaCalculate)
 def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwargs):
     
@@ -25,7 +26,7 @@ def SampleFormParameterFormulaCalculatePreSave(sender, instance,created, **kwarg
         # sampleFormNotificationHandler(instance,"update","SampleFormHasParameter","Analyst started testing sample form "+instance.id ,"particular message ","SUPERVISOR","ANALYST from message")
         sample_form_has_parameter.update(status="processing")
         
-    
+@transaction.atomic
 @receiver(pre_save, sender=SampleForm)
 def handle_sampleform_presave(sender, instance, **kwargs):
     original_sample_form_status = None
@@ -63,7 +64,8 @@ def handle_sampleform_presave(sender, instance, **kwargs):
     if instance.status != original_sample_form_status: # dynamic rawdata sheet status changing
         raw_data_obj = RawDataSheet.objects.filter(sample_form_id = instance.id).filter(~Q(status="recheck") or ~Q(status="re-assign"))
         raw_data_obj.update(status = instance.status)
-            
+
+@transaction.atomic    
 @receiver(post_save, sender=SampleForm)
 def handle_sampleform_presave(sender, instance ,created , **kwargs):
     if instance.status == "completed":
@@ -107,6 +109,7 @@ def sample_form_has_parameter_m2m_changed(sender, instance, action, reverse, mod
     super_visor_sample_form_obj.is_analyst_test = is_analyst_test
     super_visor_sample_form_obj.save()
 
+@transaction.atomic
 @receiver(post_save, sender=SampleFormHasParameter)
 def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
     if created:
@@ -190,7 +193,7 @@ def supervisor_sample_form_has_parameter_m2m_changed(sender, instance, action, r
             sample_form_obj.save()
             break
 
-
+@transaction.atomic
 @receiver(post_save, sender=SuperVisorSampleForm)
 def SupervisorHaveParameterAfterSave(sender, instance , created , **kwargs):
     print(instance.status, " supervisor instance status")
@@ -240,6 +243,7 @@ def SupervisorHaveParameterAfterSave(sender, instance , created , **kwargs):
                 form_available = "smu"
             SampleForm.objects.filter(id=instance.sample_form.id).update(is_analyst_test = False,status=status,form_available = form_available)
 
+@transaction.atomic
 @receiver(pre_save, sender=SampleFormHasParameter)
 def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
     print("status processing hello",instance.is_supervisor_sent)
@@ -252,11 +256,13 @@ def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
             SuperVisorSampleForm.objects.filter(id = instance.super_visor_sample_form_id).update(status = "processing")
         # sampleFormNotificationHandler(instance,"assigned_analyst")
         
+@transaction.atomic
 @receiver(post_save, sender=SampleFormVerifier)
 def SampleFormHasVerifierPostSave(sender, instance ,created , **kwargs):
     if created:
         sampleFormNotificationHandler(instance,"assigned_verifier")
 
+@transaction.atomic
 @receiver(pre_save, sender=SampleFormVerifier)
 def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
     sample_form_obj = instance.sample_form
@@ -283,9 +289,8 @@ def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
                 supervisor_sample_form_obj.update(status = "verified")
 
                 sample_form_obj.status = "not_approved"
-                
+                sample_form_obj.form_available = "verifier"
                 sample_form_obj.verified_date = timezone.now()
-
                 sample_form_obj.remarks = instance.remarks
                 sample_form_obj.save()
 
