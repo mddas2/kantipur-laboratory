@@ -1,8 +1,9 @@
 from management.models import Units,MandatoryStandard,ClientCategoryDetail,SampleForm, Commodity,SampleFormHasParameter,TestResult,SampleFormParameterFormulaCalculate,Payment
 from rest_framework import serializers
 
-from management.models import SampleForm, Commodity,SampleFormHasParameter,SuperVisorSampleForm
+from management.models import SampleForm, Commodity,SampleFormHasParameter,SuperVisorSampleForm,SampleFormHaveInspector
 from account.models import CustomUser
+from offices.models import Branches
 from rest_framework import serializers
 from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
 from management.status_naming import over_all_status
@@ -10,6 +11,17 @@ from account import roles
 from .analyst_standard_result import getStandardResult
 
 class CustomUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['first_name','last_name','id','email','department_name','department_address','position'] 
+
+class BranchesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Branches
+        fields = ['name']
+
+class CustomUserSerializer_FinalReportNepaliAnalystSerializer(serializers.ModelSerializer):
+    branch = BranchesSerializer(read_only = True)
     class Meta:
         model = CustomUser
         fields = ['first_name','last_name','id','email','department_name','department_address','position'] 
@@ -244,28 +256,24 @@ class ClientCategoryDetailSerializer(serializers.ModelSerializer):
         model = ClientCategoryDetail
         fields = '__all__'
 
+class SampleFormHaveInspectorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SampleFormHaveInspector
+        fields = '__all__'
+
 class FinalReportNepaliAnalystSerializer(serializers.ModelSerializer):
     commodity = CommoditySerializer(read_only = True)
     parameters = TestResultLimitedSerializer(read_only = True, many = True)
-    owner_user = serializers.SerializerMethodField()
+    owner_user_obj = CustomUserSerializer_FinalReportNepaliAnalystSerializer
     supervisor_user = CustomUserSerializer(read_only = True)
     verified_by = CustomUserSerializer(read_only = True)
     approved_by = CustomUserSerializer(read_only = True)
     client_category_detail = ClientCategoryDetailSerializer(read_only = True,many=False)
-    
+    inspector = SampleFormHaveInspectorSerializer(many = False , read_only = True)
     
     class Meta:
         model = SampleForm
         fields = '__all__'
-    
-    def get_owner_user(self, obj):
-        email = obj.owner_user
-        try:
-            user = CustomUser.objects.get(email=email)
-            return CustomUserSerializer(user).data
-        except CustomUser.DoesNotExist:
-            return None
-
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
