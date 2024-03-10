@@ -46,8 +46,16 @@ def handle_sampleform_presave(sender, instance, **kwargs):
     
     else:
         if instance.status == "completed":
+
+            sample_form_has_parameter_obj = instance.sample_has_parameter_analyst
+            sample_form_has_parameter_obj.update(status = "completed")
+
+            instance.supervisor_sample_form.all().update(status = "completed")
+            
+            instance.form_available = "admin"
             instance.completed_date = timezone.now()
             instance.approved_date = timezone.now()
+            instance.form_available = 'admin'
         
     # if instance.id:
     #     original_sample_form_status = SampleForm.objects.get(pk=instance.id).supervisor_user
@@ -59,6 +67,7 @@ def handle_sampleform_presave(sender, instance, **kwargs):
 @receiver(post_save, sender=SampleForm)
 def handle_sampleform_presave(sender, instance ,created , **kwargs):
     if instance.status == "completed":
+        print(" finaal completed md")
         sampleFormNotificationHandler(instance,"approved_sample_form")
         sendFinalreport(instance)
     if created:
@@ -206,7 +215,7 @@ def SupervisorHaveParameterAfterSave(sender, instance , created , **kwargs):
                 sup_is_analyst_test = False
                 sup_status = "processing"
                 break
-        # print(sup_status, " verifier sup status \n")
+  
         sample_obj_param = instance.sample_form.parameters.all().count()
        
         if sup_is_analyst_test == True and sample_obj_param == supervisor_param:
@@ -217,7 +226,10 @@ def SupervisorHaveParameterAfterSave(sender, instance , created , **kwargs):
             verifier_obj,created = SampleFormVerifier.objects.update_or_create(sample_form_id = instance.sample_form_id,defaults=data)
             if created or verifier_obj != None:
                 # print("reached to verifier")
-                SampleForm.objects.filter(id=instance.sample_form.id).update(is_analyst_test = sup_is_analyst_test,status=sup_status)
+                sample_form_obj = SampleForm.objects.filter(id=instance.sample_form.id)
+                if sample_form_obj.first().client_category_detail.client_category_id == 12:
+                    sup_status = "completed"
+                sample_form_obj.update(is_analyst_test = sup_is_analyst_test,status=sup_status)
                 
         elif instance.is_supervisor_sent == False:
             if sample_obj_param == supervisor_param:
@@ -250,18 +262,12 @@ def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
     sample_form_obj = instance.sample_form
     client_category_detail = sample_form_obj.client_category_detail.client_category.id
     if client_category_detail == 12:
-        print("it is inspector ")
-        sample_form_has_parameter_obj = sample_form_obj.sample_has_parameter_analyst
-        sample_form_has_parameter_obj.update(status = "completed")
-        
-        supervisor_sample_form_obj = sample_form_obj.supervisor_sample_form
-        supervisor_sample_form_obj.update(status = "completed")
 
         sample_form_obj.status = "completed"
-    
         sample_form_obj.verified_date = timezone.now()
         sample_form_obj.remarks = instance.remarks
         sample_form_obj.save()
+        
         instance.is_verified = True
     else:
         if not instance.pk:  
@@ -285,6 +291,7 @@ def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
 
                 sampleFormNotificationHandler(instance,"assigned_admin")
 
-            
+
+
 
 

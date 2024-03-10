@@ -67,7 +67,7 @@ def NotificationHandler(instance, request,method,model_name):
 def sampleFormNotificationHandler(instance,notification_type):
 
     # from_notification = mapping_notification_type.mapping[notification_type]['from_user']
-
+    print(notification_type)
     if notification_type == "new_sample_form":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']
@@ -111,7 +111,7 @@ def sampleFormNotificationHandler(instance,notification_type):
 
         to_notification = CustomUser.objects.filter(role = roles.VERIFIER)
         to_notification = to_notification.values_list('id', flat=True)
-        from_notification = instance.supervisor_user_id
+        from_notification = instance.sample_form.supervisor_sample_form.first().supervisor_user_id
 
     elif notification_type == "assigned_admin":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
@@ -122,7 +122,7 @@ def sampleFormNotificationHandler(instance,notification_type):
 
         to_notification = CustomUser.objects.filter(role = roles.ADMIN)
         to_notification = to_notification.values_list('id', flat=True)
-        from_notification =CustomUser.objects.filter(role = roles.VERIFIER).first()
+        from_notification =CustomUser.objects.filter(role = roles.VERIFIER).first().id
 
     elif notification_type == "approved_sample_form":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
@@ -134,7 +134,7 @@ def sampleFormNotificationHandler(instance,notification_type):
         to_notification = CustomUser.objects.filter(Q(role = roles.SMU) | Q(role = roles.ADMIN) | Q(id = instance.owner_user_obj_id))
         to_notification = to_notification.values_list('id', flat=True)
 
-        from_notification =CustomUser.objects.filter(role = roles.ADMIN).first()
+        from_notification =CustomUser.objects.filter(role = roles.ADMIN).first().id
 
     notification_data = {
         "notification_message": notification_message,

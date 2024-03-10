@@ -68,7 +68,6 @@ class SampleFormHasAnalystFinalReportAPIView(generics.ListAPIView): #supervisor 
         return self.list(request, *args, **kwargs)
     
 
-    
 class DetailSampleFormHasAnalystFinalReportAPIView(views.APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]

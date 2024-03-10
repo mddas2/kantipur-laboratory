@@ -69,8 +69,6 @@ class SampleFormHasSupervisorParameterSerializer(serializers.ModelSerializer):
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-    
-        request = self.context.get('request')
 
         representation['status'] = over_all_status[instance.status]
         return representation
