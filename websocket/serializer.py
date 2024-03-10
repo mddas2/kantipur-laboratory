@@ -3,8 +3,15 @@ from rest_framework import serializers
 from account import roles
 from management.models import SampleForm
 from websocket import frontend_setting
+from account.models import CustomUser
 
-class NotificationReadSerializer(serializers.ModelSerializer):        
+class CustomUserDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields  = ['username','email','id','first_name','last_name']
+
+class NotificationReadSerializer(serializers.ModelSerializer):      
+    from_notification = CustomUserDetailSerializer()
     class Meta:
         model = Notification
         fields = '__all__'
@@ -29,9 +36,6 @@ class NotificationReadSerializer(serializers.ModelSerializer):
             path = frontend_setting.my_account
             representation['path'] = path
         
-        
-            
-            
         return representation
     
 class NotificationWriteSerializer(serializers.ModelSerializer): 
