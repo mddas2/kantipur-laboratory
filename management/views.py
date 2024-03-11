@@ -123,8 +123,8 @@ class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
 
         if user.role != roles.SUPERVISOR:
             raise PermissionDenied("You do not have permission to access thais resource.")
-        
-        if 'sample_form__client_category_detail__client_category' in self.request.GET:
+
+        if 'sample_form__client_category_detail__client_category' in self.request.GET or self.action != 'list':
             pass
         else:
             return query.order_by("-created_date").filter(~Q(sample_form__client_category_detail__client_category=12))
