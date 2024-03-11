@@ -19,6 +19,8 @@ from rest_framework import generics
 from .report_download import TestReport,ReportParameter,ReportCommodity,ReportUserSampleForm,ReportUserList,ReportSampleForm,ReportUserRequest,ReportComodityCategory,FinalReport,rawDataSheetAnalystReport
 from management.encode_decode import generateDecodeIdforSampleForm,generateDecodeIdByRoleforSampleForm
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.decorators import action
+
 class SampleFormHasAnalystAPIView(generics.ListAPIView):
     
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
@@ -38,11 +40,37 @@ class SampleFormHasAnalystAPIView(generics.ListAPIView):
     
     def get_queryset(self):
         request = self.request
-        queryset = SuperVisorSampleForm.objects.filter(supervisor_user = request.user).filter(~Q(sample_form__status="completed") & ~Q(status="not_assigned")).annotate(max_created=Max('sample_has_parameter_analyst__created_date')).order_by('-max_created')
+        queryset = SuperVisorSampleForm.objects.filter(supervisor_user = request.user).filter(~Q(sample_form__status="completed") & ~Q(status="not_assigned") & ~Q(sample_form__client_category_detail__client_category=12)).annotate(max_created=Max('sample_has_parameter_analyst__created_date')).order_by('-max_created')
         return queryset
     
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
+    
+class FormalSampleForm_SampleFormHasAnalystAPIView(generics.ListAPIView):
+    
+    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    search_fields = ['id','sample_form__code','sample_form__id','sample_form__namuna_code','sample_form__sample_lab_id','sample_form__namuna_code']
+    ordering_fields = ['id']
+    filterset_fields = {
+        'created_date': ['date__gte', 'date__lte'],  # Date filtering
+        'status':['exact'],
+        'sample_form__client_category_detail__client_category':['exact']
+    }
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    pagination_class = MyPageNumberPagination
+
+    def get_serializer_class(self): 
+        return SampleFormHasSupervisorParameterSerializer
+    
+    def get_queryset(self):
+        request = self.request
+        queryset = SuperVisorSampleForm.objects.filter(supervisor_user = request.user).filter(~Q(sample_form__status="completed") & ~Q(status="not_assigned") & Q(sample_form__client_category_detail__client_category=12)).annotate(max_created=Max('sample_has_parameter_analyst__created_date')).order_by('-max_created')
+        return queryset
+    
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
     
 class SampleFormHasAnalystFinalReportAPIView(generics.ListAPIView): #supervisor final report
     

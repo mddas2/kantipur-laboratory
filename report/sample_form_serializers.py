@@ -44,10 +44,14 @@ class SampleFormSerializer(serializers.ModelSerializer):
 
 class SampleFormHasSupervisorParameter_SampleFormSerializer(serializers.ModelSerializer): #SampleFormHasSupervisorParameterSerializer
     commodity = CommoditySerializer(read_only = True)
+    client_category = serializers.SerializerMethodField()
     class Meta:
         ref_name = "SampleFormHasSupervisorParameter_SampleFormSerializer"
         model = SampleForm
-        fields = ['name','client_category_detail','namuna_code','commodity']
+        fields = ['name','namuna_code','commodity','client_category']
+    
+    def get_client_category(self,obj):
+        return obj.client_category_detail.client_category_id
     
     # def to_representation(self, instance): #if dftqc then sample name as commodity category else do no things
     #     representation = super().to_representation(instance)
