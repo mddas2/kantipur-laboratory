@@ -124,8 +124,12 @@ class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
         if user.role != roles.SUPERVISOR:
             raise PermissionDenied("You do not have permission to access thais resource.")
         
+        if 'sample_form__client_category_detail__client_category' in self.request.GET:
+            pass
+        else:
+            return query.order_by("-created_date").filter(~Q(sample_form__client_category_detail__client_category=12))
+
         return query.order_by("-created_date")
-        
         
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
@@ -209,6 +213,12 @@ class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
         # Return the custom response
         return Response(response_data)
     
+    # @action(detail=False, methods=['get'],name="formal_form", url_path="get-formal-form")
+    # def get_formal_form(self, request, *args, **kwargs):
+    #     queryset = self.filter_queryset(self.get_queryset()).filter(sample_form__client_category_detail__client_category=12)
+    #     serializer = self.get_serializer(queryset, many=True)
+    #     return Response(serializer.data)
+    
 class SampleFormViewSet(viewsets.ModelViewSet):
     queryset = SampleForm.objects.all()
     serializer_class = SampleFormRetrieveSerializer
@@ -254,6 +264,12 @@ class SampleFormViewSet(viewsets.ModelViewSet):
             query = SampleForm.objects.filter(status = "not_verified")
         else:
             raise PermissionDenied("You do not have permission to access this resource.")
+        
+        if self.action == 'get_formal_form':
+            query = query.filter(client_category_detail__client_category=12)
+        else:
+            query = query.filter(~Q(client_category_detail__client_category=12))
+        
         return query.order_by("-created_date")
         
     def get_serializer_class(self):
@@ -376,7 +392,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     def get_formal_form(self, request,*args,**kwargs):
         response = super().list(request, *args, **kwargs)
         return response
-    
+
     @action(detail=True, methods=['get'],name="retrieve_formal_form", url_path="detail-formal-form")
     def retrieve_formal_form(self, request,*args,**kwargs):
         response = super().retrieve(request, *args, **kwargs)
