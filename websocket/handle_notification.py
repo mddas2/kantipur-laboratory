@@ -65,9 +65,8 @@ def NotificationHandler(instance, request,method,model_name):
 def sampleFormNotificationHandler(instance,notification_type):
 
     # from_notification = mapping_notification_type.mapping[notification_type]['from_user']
-    print('\n\n',notification_type,'\n')
+
     if notification_type == "new_sample_form":
-        print(instance.namuna_code,instance," firsts")
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']
         path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.id)
@@ -105,11 +104,24 @@ def sampleFormNotificationHandler(instance,notification_type):
 
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']
+
         path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.super_visor_sample_form_id)
+        if instance.sample_form.client_category_detail.client_category_id == 12:
+            path = path + '?type=formal'       
 
         notification_message = notification_message.format(sample_name = instance.sample_form.name,namuna_code = instance.sample_form.namuna_code,analyst_first_name = instance.analyst_user.first_name,analyst_last_name=instance.analyst_user.last_name)
         to_notification = [instance.super_visor_sample_form.supervisor_user_id]#[instance.analyst_user_id] # here instance is sampleformhasparameter
         from_notification = instance.analyst_user_id
+    
+    elif notification_type == "parameter_recheck":
+        notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
+        particular_message = mapping_notification_type.mapping[notification_type]['user_message']
+        path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.id)
+
+        notification_message = notification_message.format(sample_name = instance.sample_form.name,namuna_code = instance.sample_form.namuna_code,supervisor_first_name=instance.super_visor_sample_form.supervisor_user.first_name,supervisor_last_name=instance.super_visor_sample_form.supervisor_user.last_name)
+
+        to_notification = [instance.analyst_user_id] # here instance is sampleformhasparameter
+        from_notification = instance.super_visor_sample_form.supervisor_user_id
 
     elif notification_type == "assigned_verifier":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
