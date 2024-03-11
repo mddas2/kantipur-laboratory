@@ -9,7 +9,7 @@ from management import encode_decode
 from django.contrib.contenttypes.models import ContentType
 
 def NotificationHandler(instance, request,method,model_name):
-    return True
+    # return True
     to_notification = CustomUser.objects.filter(Q(role = roles.SMU) | Q(id = instance.id))
     
     to_notification = to_notification.values_list('id',flat=True)
@@ -28,10 +28,7 @@ def NotificationHandler(instance, request,method,model_name):
     except:
         from_notification = instance.id
 
-    model_name = "CustomUser"
-    is_read = False
-    group_notification = "admin"
-    
+    model_name = "CustomUser"    
 
     # Create notification data
     notification_data = {
@@ -39,12 +36,13 @@ def NotificationHandler(instance, request,method,model_name):
         'particular_message':particular_message,
         "path": path,
         "from_notification": from_notification,
-        "model_name": model_name,
-        "is_read": is_read,
-        "group_notification": 'USER_ADMIN',
+        "is_read": False,
         "to_notification": to_notification,
-        'instance_id':instance.id,
-        'notification_type':notification_type
+        'method_type':model_name,
+
+        'object_id':instance.id,
+        'content_object':instance,
+        'content_type':ContentType.objects.get_for_model(instance).id,
     }
 
     # Serialize the notification data
@@ -67,17 +65,17 @@ def NotificationHandler(instance, request,method,model_name):
 def sampleFormNotificationHandler(instance,notification_type):
 
     # from_notification = mapping_notification_type.mapping[notification_type]['from_user']
-    print(notification_type)
     if notification_type == "new_sample_form":
+        print(instance.namuna_code,instance," firsts")
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']
         path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.id)
 
-        notification_message =  notification_message.format(sample_id = instance.id,username = instance.owner_user_obj_id)
+        notification_message =  notification_message.format(sample_name = instance.name,namuna_code = instance.namuna_code,first_name = instance.owner_user_obj.first_name ,last_name = instance.owner_user_obj.last_name)
         refrence_number = encode_decode.generateEncodeIdforSampleForm(instance.id, "user")
         particular_message =  particular_message.format(refrence_number = refrence_number)
 
-        to_notification = CustomUser.objects.filter(Q(role = roles.SMU) | Q(id = instance.owner_user_obj_id))
+        to_notification = CustomUser.objects.filter(role = roles.SMU)
         to_notification = to_notification.values_list('id', flat=True)
 
         from_notification = instance.owner_user_obj_id
@@ -150,7 +148,7 @@ def sampleFormNotificationHandler(instance,notification_type):
         'content_object':instance,
         'content_type':ContentType.objects.get_for_model(instance).id,
     }
-    print(notification_data)
+    # print(notification_data)
     # return True
 
     # Serialize the notification data

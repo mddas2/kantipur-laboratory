@@ -72,10 +72,9 @@ def handle_sampleform_presave(sender, instance ,created , **kwargs):
         print(" finaal completed md")
         sampleFormNotificationHandler(instance,"approved_sample_form")
         sendFinalreport(instance)
-    if created:
-        sampleFormNotificationHandler(instance,"new_sample_form")
+    # if created:
+    #     sampleFormNotificationHandler(instance,"new_sample_form")
         
-        #send mail
 
 @receiver(m2m_changed, sender=SampleFormHasParameter.parameter.through)
 def sample_form_has_parameter_m2m_changed(sender, instance, action, reverse, model, pk_set, **kwargs):

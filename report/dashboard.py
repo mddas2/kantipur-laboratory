@@ -13,21 +13,20 @@ class reportStatus(views.APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):        
         if self.request.user.role == roles.SUPERADMIN or self.request.user.role == roles.SMU or self.request.user.role == roles.ADMIN:
-            total_users = CustomUser.objects.all().count()
             total_sample_forms_obj = SampleForm.objects.all()
             total_request = total_sample_forms_obj.count()
             completed = total_sample_forms_obj.filter(status = "completed").count()
             reject = total_sample_forms_obj.filter(status = "rejected").count()
-            not_verified = total_sample_forms_obj.filter(verifier__is_verified = False).count()
+            not_verified = total_sample_forms_obj.filter(status = "not_verified").count()
+            not_approved = total_sample_forms_obj.filter(status = "not_approved").count()
+            recheck = total_sample_forms_obj.filter(status = "recheck").count()
             pending = total_sample_forms_obj.filter(status = "pending").count()
             not_assigned = total_sample_forms_obj.filter(status = "not_assigned").count()
             processing = total_sample_forms_obj.filter(status = "processing").count()
 
             try:
-                recheck = total_sample_forms_obj.raw_datasheet.all().filter(status = "recheck").count()
                 re_assigned = total_sample_forms_obj.raw_datasheet.all().filter(status = "re-assign").count()
             except:
-                recheck = 1
                 re_assigned = 1
 
             import_export = 0
@@ -46,7 +45,6 @@ class reportStatus(views.APIView):
                 supervisor_pending_sample_form = supervisor_all_sample_form.filter(is_supervisor_sent = False).count()
                 supervisor_verifier_sent_sample_form = supervisor_all_sample_form.filter(is_supervisor_sent = True).count()
                 
-
                 data = {
                     'name':full_name,
                     'total_sample_form': supervisor_all_sample_form_count,
@@ -70,6 +68,7 @@ class reportStatus(views.APIView):
                 'completed':completed,
                 'pending':pending,
                 'not_verified':not_verified,
+                'not_approved':not_approved,
                 "processing":processing,
                 "recheck":recheck,
                 "reject":reject,
@@ -81,7 +80,6 @@ class reportStatus(views.APIView):
                 'test_type_data':test_type_data,
             }
             
-
         elif self.request.user.role == roles.SUPERVISOR:
             total_sample_forms_obj = SuperVisorSampleForm.objects.filter(supervisor_user = self.request.user.id).all()
             total_requests = total_sample_forms_obj.count()

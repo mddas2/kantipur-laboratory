@@ -6,6 +6,7 @@ from . import encode_decode
 from offices.models import InspectorType
 from simple_history.models import HistoricalRecords
 from django.core.exceptions import ValidationError
+from websocket.handle_notification import sampleFormNotificationHandler
 
 class ClientCategory(models.Model):
     name = models.CharField(max_length=255,unique=True)
@@ -202,6 +203,7 @@ class SampleForm(models.Model):#ClientRequest
             self.namuna_code = self.fiscal_year +  "/NFFRL/" + str(total_fiscal_year_data)
             
             self.save()
+            sampleFormNotificationHandler(self,"new_sample_form")
         # super().save(*args, **kwargs)
 
 class SuperVisorSampleForm(models.Model):#sample form has parameter and parameter for each parameter each suspervisor

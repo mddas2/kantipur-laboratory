@@ -49,7 +49,6 @@ urlpatterns = [
 
     path('sample-form-track-by-analyst/<str:sample_form_id>/', views.SampleFormTrackbyAnalyst.as_view()),
 
-
     path('final-report-in-nepali/<str:sample_form_id>/<int:role_id>/', views.FinalReportNepali.as_view()), #both are same
 
     path('get-sample-form-contacts-for-industry/', additional_details.AdditionalDetailSampleForm.as_view()), #by sagar 
