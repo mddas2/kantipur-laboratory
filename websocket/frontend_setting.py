@@ -18,3 +18,4 @@ supervisor_sample_request_details ="/dashboard/lab-sample-details/"
 analyst_sample_request_details = "/dashboard/test-request-details/" 
 verifier_sample_request_details = "/dashboard/verify-sample-report/" 
 admin_sample_request_details = "/dashboard/admin-sample-request-details/"
+supervisor_sample_assigned_details = '/dashboard/sample-report/'

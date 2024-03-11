@@ -14,7 +14,7 @@ mapping = {
         "from_user":['admin','smu'],
         "to_users":['supervisor'],
         "path":frontend_setting.supervisor_sample_request_details,
-        "admin_message":"A new sample {sample_name} ({namuna_code}) has been assigned by SMU_FULLNAME for supervision.",
+        "admin_message":"A new sample <strong>{sample_name} ({namuna_code})</strong> has been assigned by <strong>{smu_first_name} {smu_last_name}</strong> for supervision.",
         "user_message":"None",
     },
     "assigned_analyst":{
@@ -22,7 +22,15 @@ mapping = {
         "from_user":['supervisor'],
         "to_users":['analyst'],
         "path":frontend_setting.analyst_sample_request_details,
-        "admin_message":"A new sample {sample_name} ({namuna_code}) has been assigned by SUPERVISOR_FULLNAME for testing.",
+        "admin_message":"A new sample <strong>{sample_name} ({namuna_code})</strong>s has been assigned by <strong>{supervisor_first_name} {supervisor_last_name}</strong> for testing.",
+        "user_message":"None",
+    },
+    "sent_to_supervisor":{
+        "model_name":"SampleFormHasParameter",
+        "from_user":['supervisor'],
+        "to_users":['analyst'],
+        "path":frontend_setting.supervisor_sample_assigned_details,
+        "admin_message":"A test report of <strong>{sample_name} ({namuna_code})</strong> has been submitted by <strong>{analyst_first_name} {analyst_last_name}</strong>",
         "user_message":"None",
     },
     "assigned_verifier":{
@@ -46,8 +54,8 @@ mapping = {
         "from_user":['verifier'],
         "to_users":['user','smu','admin','supervisor','analyst'],#user, smu,supervisor,superadmin,verifier
         "path":frontend_setting.sample_request,
-        "admin_message":"A sample report of {sample_name} ({namuna_code}) has been approved by APPROVAL_NAME.",
+        "admin_message":"A sample report of {sample_name} ({namuna_code}) has been approved by admin",
         "user_path":frontend_setting.smu_sample_request_details,  #sagar put full path here
-        "user_message":"",
+        "user_message":"A sample report of {sample_name} ({namuna_code}) has been approved by admin",
     }
 }

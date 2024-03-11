@@ -115,7 +115,6 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
         sampleFormNotificationHandler(instance,"assigned_analyst")
     if instance.is_supervisor_sent == True:
         super_visor_sample_form_obj = instance.super_visor_sample_form
-        
         is_analyst_test_param = False
     
         sample_form_status = "processing"
@@ -162,6 +161,7 @@ def SampleFormHasParameterAfterSave(sender, instance ,created , **kwargs):
         else:
             pass
             #print("all parameter has not assigned...")
+        sampleFormNotificationHandler(instance,"sent_to_supervisor")
     if instance.is_supervisor_sent == False:
         SampleForm.objects.filter(id=instance.sample_form.id).update(is_analyst_test = False,status="processing")
         
@@ -259,7 +259,10 @@ def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
 @receiver(post_save, sender=SampleFormVerifier)
 def SampleFormHasVerifierPostSave(sender, instance ,created , **kwargs):
     if created:
-        sampleFormNotificationHandler(instance,"assigned_verifier")
+        sample_form_obj = instance.sample_form
+        client_category_detail = sample_form_obj.client_category_detail.client_category.id
+        if client_category_detail != 12:
+            sampleFormNotificationHandler(instance,"assigned_verifier")
 
 @transaction.atomic
 @receiver(pre_save, sender=SampleFormVerifier)

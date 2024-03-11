@@ -1,7 +1,7 @@
 from .models import Notification
 from rest_framework import serializers
 from account import roles
-from management.models import SampleForm
+# from management.models import SampleForm
 from websocket import frontend_setting
 from account.models import CustomUser
 
@@ -24,14 +24,14 @@ class NotificationReadSerializer(serializers.ModelSerializer):
         instance_id = representation.get('instance_id',None)
         user_message = representation.get('particular_message',None)
 
-        if notification_type == "new_sample_form" and user_role == roles.USER:
-            representation['notification_message'] = user_message
+        # if notification_type == "new_sample_form" and user_role == roles.USER:
+        #     representation['notification_message'] = user_message
             
-            instance_refrence_obj = SampleForm.objects.get(id = instance_id)
-            path = frontend_setting.user_my_sample + str(instance_refrence_obj.refrence_number)
-            representation['path'] = path
+        #     instance_refrence_obj = SampleForm.objects.get(id = instance_id)
+        #     path = frontend_setting.user_my_sample + str(instance_refrence_obj.refrence_number)
+        #     representation['path'] = path
         
-        elif notification_type == "customuser_create" and user_role == roles.USER:
+        if notification_type == "customuser_create" and user_role == roles.USER:
             representation['notification_message'] = user_message
             path = frontend_setting.my_account
             representation['path'] = path

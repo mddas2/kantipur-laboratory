@@ -65,6 +65,7 @@ def NotificationHandler(instance, request,method,model_name):
 def sampleFormNotificationHandler(instance,notification_type):
 
     # from_notification = mapping_notification_type.mapping[notification_type]['from_user']
+    print('\n\n',notification_type,'\n')
     if notification_type == "new_sample_form":
         print(instance.namuna_code,instance," firsts")
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
@@ -85,7 +86,7 @@ def sampleFormNotificationHandler(instance,notification_type):
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']
         path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.id)
 
-        notification_message = notification_message.format(sample_lab_id = instance.sample_form.sample_lab_id)
+        notification_message = notification_message.format(sample_name = instance.sample_form.name,namuna_code = instance.sample_form.namuna_code,smu_first_name = CustomUser.objects.filter(role = roles.SMU).first().first_name,smu_last_name = CustomUser.objects.filter(role = roles.SMU).first().last_name)
         to_notification = [instance.supervisor_user_id]  # here instance is supervisoruser
 
         from_notification = CustomUser.objects.filter(role = roles.SMU).first().id
@@ -95,17 +96,27 @@ def sampleFormNotificationHandler(instance,notification_type):
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']
         path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.id)
 
-        notification_message = notification_message.format(sample_lab_id = instance.sample_form.sample_lab_id)
+        notification_message = notification_message.format(sample_name = instance.sample_form.name,namuna_code = instance.sample_form.namuna_code,supervisor_first_name=instance.super_visor_sample_form.supervisor_user.first_name,supervisor_last_name=instance.super_visor_sample_form.supervisor_user.last_name)
 
         to_notification = [instance.analyst_user_id] # here instance is sampleformhasparameter
         from_notification = instance.super_visor_sample_form.supervisor_user_id
+
+    elif notification_type == "sent_to_supervisor":
+
+        notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
+        particular_message = mapping_notification_type.mapping[notification_type]['user_message']
+        path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.super_visor_sample_form_id)
+
+        notification_message = notification_message.format(sample_name = instance.sample_form.name,namuna_code = instance.sample_form.namuna_code,analyst_first_name = instance.analyst_user.first_name,analyst_last_name=instance.analyst_user.last_name)
+        to_notification = [instance.super_visor_sample_form.supervisor_user_id]#[instance.analyst_user_id] # here instance is sampleformhasparameter
+        from_notification = instance.analyst_user_id
 
     elif notification_type == "assigned_verifier":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']
         path = mapping_notification_type.mapping[notification_type]['path']+str(instance.sample_form.sample_lab_id)
 
-        notification_message = notification_message.format(sample_lab_id = instance.sample_form.sample_lab_id)
+        notification_message = notification_message.format(sample_name = instance.sample_form.name,namuna_code = instance.sample_form.namuna_code)
 
         to_notification = CustomUser.objects.filter(role = roles.VERIFIER)
         to_notification = to_notification.values_list('id', flat=True)
@@ -127,7 +138,7 @@ def sampleFormNotificationHandler(instance,notification_type):
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']
         path = mapping_notification_type.mapping[notification_type]['path']
 
-        notification_message = notification_message.format(sample_lab_id = instance.sample_lab_id)
+        notification_message = notification_message.format(sample_name = instance.name,namuna_code = instance.namuna_code)
 
         to_notification = CustomUser.objects.filter(Q(role = roles.SMU) | Q(role = roles.ADMIN) | Q(id = instance.owner_user_obj_id))
         to_notification = to_notification.values_list('id', flat=True)
