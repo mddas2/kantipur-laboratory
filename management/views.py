@@ -265,7 +265,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         else:
             raise PermissionDenied("You do not have permission to access this resource.")
         
-        if self.action == 'get_formal_form':
+        if self.action in ['get_formal_form','retrieve_formal_form']:
             query = query.filter(client_category_detail__client_category=12)
         else:
             query = query.filter(~Q(client_category_detail__client_category=12))
