@@ -441,10 +441,11 @@ class userAdminLevelData(generics.ListAPIView):
     
 
 def CreateInspector(user_id,request_data,create_update):
+
     data = {
         'user': user_id,
         'government_id':request_data.POST.get('government_id'),
-        'inspector_type':[1],
+        'inspector_type':[ins_type for ins_type in request_data.POST.get('inspector_type').split(',')],
         'government_issued_document':request_data.FILES.get('government_issued_document'),
         'nepali_name':request_data.POST.get('nepali_name'),
         'branch':request_data.POST.get('branch'),
