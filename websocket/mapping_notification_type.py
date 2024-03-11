@@ -53,7 +53,7 @@ mapping = {
         "model_name":"SampleFormVerifier",
         "from_user":['verifier'],
         "to_users":['user','smu','admin','supervisor','analyst'],#user, smu,supervisor,superadmin,verifier
-        "path":frontend_setting.sample_request,
+        "path":frontend_setting.final_report_path,
         "admin_message":"A sample report of <strong>{sample_name} ({namuna_code})</strong> has been generated.",
         "user_path":frontend_setting.final_report_path,  #sagar put full path here
         "user_message":"A sample report of {sample_name} ({namuna_code}) has been approved by admin",
