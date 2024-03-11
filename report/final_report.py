@@ -36,12 +36,12 @@ class FinalSampleFormReportAPIView(generics.ListAPIView): #FinalSampleFormHasVer
 
     def get_queryset(self):
         user = self.request.user
-  
-        if user.role == roles.USER:
-            query = SampleForm.objects.filter(owner_user=user.email).filter(Q(verifier__is_sent=True , verifier__is_verified=True , status="completed") | Q(status="rejected"))
         
-        if user.role == roles.INSPECTOR:
-            query = SampleForm.objects.filter(owner_user=user.email).filter(Q(verifier__is_sent=True , verifier__is_verified=True , status="completed") | Q(status="rejected"))
+        if user.role == roles.USER:
+            query = SampleForm.objects.filter(owner_user_obj_id=user.id).filter(Q(verifier__is_sent=True , verifier__is_verified=True , status="completed") | Q(status="rejected"))
+        
+        elif user.role == roles.INSPECTOR:
+            query = SampleForm.objects.filter(owner_user_obj_id=user.id).filter(Q(verifier__is_sent=True , verifier__is_verified=True , status="completed") | Q(status="rejected"))
 
         elif user.role == roles.SUPERVISOR:
             raise PermissionDenied("You do not have permission to access this resource.")

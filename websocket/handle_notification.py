@@ -149,11 +149,12 @@ def sampleFormNotificationHandler(instance,notification_type):
     elif notification_type == "approved_sample_form":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']
-        path = mapping_notification_type.mapping[notification_type]['path']
+        path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.id)
+        # dashboard/sample-test-report/J1AkLj #user path
 
         notification_message = notification_message.format(sample_name = instance.name,namuna_code = instance.namuna_code)
 
-        to_notification = CustomUser.objects.filter(Q(role = roles.SMU) | Q(role = roles.ADMIN) | Q(id = instance.owner_user_obj_id))
+        to_notification = CustomUser.objects.filter(Q(role = roles.SMU) | Q(role = roles.VERIFIER) | Q(role = roles.SUPERADMIN) | Q(id = instance.owner_user_obj_id))
         to_notification = to_notification.values_list('id', flat=True)
 
         from_notification =CustomUser.objects.filter(role = roles.ADMIN).first().id

@@ -117,7 +117,7 @@ class FinalSampleFormReportSerializer_User(serializers.ModelSerializer):
     class Meta:
         name = "FinalSampleFormReportAPIView_User_Report"
         model = SampleForm
-        fields = ['id','supervisor_sample_form','name','supervisor_user','commodity','status','created_date','completed_date','client_category_detail','namuna_code','mfd','dfb','sample_quantity','sample_units','voucher_number','voucher_date','analysis_fee','parameters','days_dfb','dfb_duration'] #user access
+        fields = ['id','supervisor_sample_form','name','commodity','status','created_date','completed_date','client_category_detail','namuna_code','mfd','dfb','sample_quantity','sample_units','voucher_number','voucher_date','analysis_fee','parameters','days_dfb','dfb_duration'] #user access
     
     def to_representation(self,instance):
         representation = super().to_representation(instance)

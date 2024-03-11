@@ -46,7 +46,7 @@ mapping = {
         "from_user":['verifier'],
         "to_users":['user','smu','admin','supervisor','analyst'],
         "path":frontend_setting.admin_sample_request_details,
-        "admin_message":"A sample report of <strong> {sample_name} ({namuna_code}) </strong> has been submitted by {verified_by_first_name} {verified_by_last_name} for approval.",
+        "admin_message":"A sample report of <strong> {sample_name} ({namuna_code}) </strong> has been submitted by <strong>{verified_by_first_name} {verified_by_last_name}</strong>  for approval.",
         "user_message":"this sample form verified",
     },
     "approved_sample_form":{
@@ -54,8 +54,8 @@ mapping = {
         "from_user":['verifier'],
         "to_users":['user','smu','admin','supervisor','analyst'],#user, smu,supervisor,superadmin,verifier
         "path":frontend_setting.sample_request,
-        "admin_message":"A sample report of {sample_name} ({namuna_code}) has been approved by admin",
-        "user_path":frontend_setting.smu_sample_request_details,  #sagar put full path here
+        "admin_message":"A sample report of <strong>{sample_name} ({namuna_code})</strong> has been generated.",
+        "user_path":frontend_setting.final_report_path,  #sagar put full path here
         "user_message":"A sample report of {sample_name} ({namuna_code}) has been approved by admin",
     }
 }
