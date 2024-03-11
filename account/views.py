@@ -93,7 +93,7 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
         elif user.role == roles.VERIFIER:
             # Regular user can see SampleForm instances with form_available='user'
             # query = CustomUser.objects.filter(is_active = True).filter(role=roles.USER)   
-            query = queryset.filter(is_active = True).filter(role=roles.USER)      
+            query = queryset.filter(is_active = True).filter(Q(role=roles.USER) | Q(role =roles.INSPECTOR))      
         else:
             # query = CustomUser.objects.filter(email=user.email,is_active = True)
             query = queryset.filter(email=user.email,is_active = True)

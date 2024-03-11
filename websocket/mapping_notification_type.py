@@ -38,7 +38,7 @@ mapping = {
         "from_user":['supervisor'],
         "to_users":['verifier'],
         "path":frontend_setting.verifier_sample_request_details,
-        "admin_message":"A sample report of {sample_name} ({namuna_code}) has been submitted by SUPERVISOFR_NAME for verification.",
+        "admin_message":"A sample report of <strong>{sample_name} ({namuna_code})</strong> has been submitted by <strong>{supervisor_first_name} {supervisor_last_name}</strong> for verification.",
         "user_message":"None",
     },
     "assigned_admin":{
@@ -46,7 +46,7 @@ mapping = {
         "from_user":['verifier'],
         "to_users":['user','smu','admin','supervisor','analyst'],
         "path":frontend_setting.admin_sample_request_details,
-        "admin_message":"A sample report of {sample_name} ({namuna_code}) has been submitted by VERIFIER_NAME for approval.",
+        "admin_message":"A sample report of <strong> {sample_name} ({namuna_code}) </strong> has been submitted by {verified_by_first_name} {verified_by_last_name} for approval.",
         "user_message":"this sample form verified",
     },
     "approved_sample_form":{

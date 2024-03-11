@@ -127,8 +127,9 @@ def sampleFormNotificationHandler(instance,notification_type):
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']
         path = mapping_notification_type.mapping[notification_type]['path']+str(instance.sample_form.sample_lab_id)
-
-        notification_message = notification_message.format(sample_name = instance.sample_form.name,namuna_code = instance.sample_form.namuna_code)
+        
+        supervisor_obj = instance.sample_form.supervisor_sample_form.all().first().supervisor_user
+        notification_message = notification_message.format(sample_name = instance.sample_form.name,namuna_code = instance.sample_form.namuna_code , supervisor_first_name = supervisor_obj.first_name,supervisor_last_name = supervisor_obj.last_name)
 
         to_notification = CustomUser.objects.filter(role = roles.VERIFIER)
         to_notification = to_notification.values_list('id', flat=True)
@@ -139,7 +140,7 @@ def sampleFormNotificationHandler(instance,notification_type):
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']
         path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.sample_form.id)
 
-        notification_message = notification_message.format(sample_lab_id = instance.sample_form.sample_lab_id)
+        notification_message = notification_message.format(sample_name = instance.sample_form.name,namuna_code = instance.sample_form.namuna_code,verified_by_first_name = instance.sample_form.verified_by.first_name,verified_by_last_name = instance.sample_form.verified_by.last_name)
 
         to_notification = CustomUser.objects.filter(role = roles.ADMIN)
         to_notification = to_notification.values_list('id', flat=True)
