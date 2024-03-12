@@ -119,9 +119,9 @@ def sampleFormNotificationHandler(instance,notification_type):
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']
         path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.id)
 
-        notification_message = notification_message.format(sample_name = instance.sample_form.name,namuna_code = instance.sample_form.namuna_code,supervisor_first_name=instance.super_visor_sample_form.supervisor_user.first_name,supervisor_last_name=instance.super_visor_sample_form.supervisor_user.last_name)
-        to_notification = [instance.analyst_user_id] # here instance is sampleformhasparameter
-        from_notification = instance.super_visor_sample_form.supervisor_user_id
+        notification_message = notification_message.format(sample_name = instance.sample_form.name,namuna_code = instance.sample_form.namuna_code,supervisor_first_name=instance.sample_form_has_parameter.super_visor_sample_form.supervisor_user.first_name,supervisor_last_name=instance.sample_form_has_parameter.super_visor_sample_form.supervisor_user.last_name)
+        to_notification = [instance.sample_form_has_parameter.analyst_user_id] # here instance is sampleformhasparameter
+        from_notification = instance.sample_form_has_parameter.super_visor_sample_form.supervisor_user_id
 
     elif notification_type == "assigned_verifier":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
@@ -153,8 +153,10 @@ def sampleFormNotificationHandler(instance,notification_type):
         # dashboard/sample-test-report/J1AkLj #user path
 
         notification_message = notification_message.format(sample_name = instance.name,namuna_code = instance.namuna_code)
-
-        to_notification = CustomUser.objects.filter(Q(role = roles.SMU) | Q(role = roles.VERIFIER) | Q(role = roles.SUPERADMIN) | Q(id = instance.owner_user_obj_id))
+        if instance.client_category_detail.client_category_id == 12:
+            to_notification = CustomUser.objects.filter(Q(role = roles.SMU) | Q(role = roles.SUPERADMIN) | Q(id = instance.owner_user_obj_id))
+        else:
+            to_notification = CustomUser.objects.filter(Q(role = roles.SMU) | Q(role = roles.VERIFIER) | Q(role = roles.SUPERADMIN) | Q(id = instance.owner_user_obj_id))
         to_notification = to_notification.values_list('id', flat=True)
 
         from_notification =CustomUser.objects.filter(role = roles.ADMIN).first().id

@@ -30,7 +30,7 @@ mapping = {
         "from_user":['supervisor'],
         "to_users":['analyst'],
         "path":frontend_setting.analyst_sample_request_details,
-        "admin_message":"A new sample <strong>{sample_name} ({namuna_code})</strong> has been assigned by <strong>{supervisor_first_name} {supervisor_last_name}</strong> for recheck.",
+        "admin_message":"A new sample <strong>{sample_name} ({namuna_code})</strong> has been assigned for recheck by <strong>{supervisor_first_name} {supervisor_last_name}</strong>.",
         "user_message":"None",
     },
     "sent_to_supervisor":{

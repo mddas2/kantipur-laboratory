@@ -466,7 +466,9 @@ class SampleFormHaveInspector(models.Model):
     sample_collected_address = models.CharField(max_length = 250,null = True,blank = True)
     preservatives_details_and_quantity = models.CharField(max_length = 150,null = True,blank=True)
     remarks = models.CharField(max_length = 150,null = True,blank = True)
-    
+    sample_received_date = models.CharField(max_length = 150,null = True,blank = True,default='')
+    smu_sample_condition = models.CharField(max_length = 350,null = True,blank = True,default='')
+    supervisor_sample_condition = models.CharField(max_length = 350,null = True,blank = True,default='')
     
 
 
