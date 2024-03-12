@@ -4,7 +4,7 @@ notification_type = (
     ('assigned_supervisor','Assigned Supervisor'),
     ('re_assigned_superviso','Re-assigned Supervisor'),
     ('assigned_analyst','Assigned Analyst'),
-    ('recheck_parameter','Recheck Parameter'),
+    ('parameter_recheck','Recheck Parameter'), 
     ('re_assigned_parameter','Re-assigned Parameter'),
     ('sent_to_supervisor','Sent to Supervisor'),
     ('assigned_verifier','Assigned Verifier'),

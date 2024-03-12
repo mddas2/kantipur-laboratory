@@ -120,7 +120,6 @@ def sampleFormNotificationHandler(instance,notification_type):
         path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.id)
 
         notification_message = notification_message.format(sample_name = instance.sample_form.name,namuna_code = instance.sample_form.namuna_code,supervisor_first_name=instance.super_visor_sample_form.supervisor_user.first_name,supervisor_last_name=instance.super_visor_sample_form.supervisor_user.last_name)
-
         to_notification = [instance.analyst_user_id] # here instance is sampleformhasparameter
         from_notification = instance.super_visor_sample_form.supervisor_user_id
 

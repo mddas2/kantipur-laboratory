@@ -59,7 +59,7 @@ class FinalSampleFormReportAPIView(generics.ListAPIView): #FinalSampleFormHasVer
 
         elif user.role == roles.VERIFIER:
             query = SampleForm.objects.filter(verifier__is_sent=True)
-            query = query.filter(Q(status="rejected") | Q(verifier__is_verified = True))
+            query = query.filter(Q(status="rejected") | Q(verifier__is_verified = True)).filter(~Q(client_category_detail__client_category=12))
         else:
             raise PermissionDenied("You do not have permission to access this resource.")
         return query.order_by("-approved_date")
