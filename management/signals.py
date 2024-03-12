@@ -284,6 +284,7 @@ def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
         sample_form_obj.admin_remarks = instance.remarks
 
         sample_form_obj.save()
+        print('\n\n ',sample_form_obj.remarks," remarks")
         
         instance.is_verified = True
     else:

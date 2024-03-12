@@ -250,6 +250,8 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if self.action == 'get_formal_form' and user.role == roles.SMU:
             query = SampleForm.objects.filter(client_category_detail__client_category_id=12).filter(Q(form_available = 'smu') or Q(status = "not_assigned")).filter(~Q(status = "rejected")).filter(~Q(status = "recheck"))
+        elif self.action == 'patch_formal_form' and user.role == roles.SUPERVISOR and user.is_public_analyst:
+            query =  SampleForm.objects.all().filter(~Q(status="completed")).filter(~Q(status="rejected") )
         elif user.role == roles.USER:         
             query =  SampleForm.objects.filter(Q(owner_user_obj_id = user.id)).filter(~Q(status="completed")).filter(~Q(status="rejected") )
         elif user.role == roles.INSPECTOR:
@@ -263,9 +265,8 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         elif user.role == roles.VERIFIER:
             query = SampleForm.objects.filter(status = "not_verified")
         else:
-            raise PermissionDenied("You do not have permission to access this resource.")
+            raise PermissionDenied("You do not have permission to access this resource")
         
-        print(self.action)
         if self.action in ['get_formal_form','retrieve_formal_form','formal_form','patch_formal_form']:
             query = query.filter(client_category_detail__client_category=12)
         else:
