@@ -70,7 +70,8 @@ def sampleFormNotificationHandler(instance,notification_type):
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']
         path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.id)
-
+        if instance.client_category_detail.client_category_id == 12:
+            path = path + '?type=formal'     
         notification_message =  notification_message.format(sample_name = instance.name,namuna_code = instance.namuna_code,first_name = instance.owner_user_obj.first_name ,last_name = instance.owner_user_obj.last_name)
         refrence_number = encode_decode.generateEncodeIdforSampleForm(instance.id, "user")
         particular_message =  particular_message.format(refrence_number = refrence_number)

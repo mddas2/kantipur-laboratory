@@ -399,7 +399,32 @@ class SampleFormSuperVisorListSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = SampleForm
-        fields = ['namuna_code','name','commodity','status','id']
+        fields = ['namuna_code','name','commodity','status','id','owner_user_obj']
+
+
+class SampleFormSuperVisorRetrieveSerializer(serializers.ModelSerializer):
+    commodity = CommodityReadSerializer_SampleFormSuperVisorListSerializer(read_only = True)
+    id = serializers.SerializerMethodField()
+    
+    def get_id(self, obj):
+        user = self.context['request'].user
+        return generateAutoEncodeIdforSampleForm(obj.id,user)
+    
+    class Meta:
+        model = SampleForm
+        fields = ['namuna_code','name','commodity','status','id','owner_user_obj']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if self.context['request'].user.is_public_analyst:
+            # print(instance.inspector)
+            try:
+                inspector = SampleFormHaveInspectorSerializer_SampleFormSuperVisorRetrieveSerializer(instance.inspector).data
+                representation['inspector'] = inspector
+            except:
+                pass
+        
+        return representation
 
     
 class SampleForm_SampleFormHasParameterListSerializer(serializers.ModelSerializer): #for analysts only
@@ -637,7 +662,7 @@ class SampleFormHasParameter_SuperVisorSampleFormRetrieveSerializer(serializers.
         fields = '__all__'
 
 class SuperVisorSampleFormRetrieveSerializer(serializers.ModelSerializer): 
-    sample_form = SampleFormSuperVisorListSerializer(read_only=True)
+    sample_form = SampleFormSuperVisorRetrieveSerializer(read_only=True)
     parameters = TestResultLimitedSerializer(many=True,read_only=True)
     # sample_has_parameter_analyst = SampleFormHasParameter_SuperVisorSampleFormRetrieveSerializer(read_only = True,many = True) #standard approach to remove representation loop..
     class Meta:
@@ -1083,6 +1108,11 @@ class VerifiedWriteSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class SampleFormHaveInspectorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SampleFormHaveInspector
+        fields = '__all__'
+
+class SampleFormHaveInspectorSerializer_SampleFormSuperVisorRetrieveSerializer(serializers.ModelSerializer):
     class Meta:
         model = SampleFormHaveInspector
         fields = '__all__'

@@ -89,7 +89,10 @@ class CustomUserSerializerViewSet(viewsets.ModelViewSet):
         elif user.role == roles.SUPERVISOR:
             # Regular user can see SampleForm instances with form_available='user'
             # query = CustomUser.objects.filter(is_active = True).filter(Q(role=roles.ANALYST) | Q(email = user.email))   
-            query = queryset.filter(is_active = True).filter(Q(role=roles.ANALYST) | Q(email = user.email))
+            if user.is_public_analyst:
+                query = queryset.filter(is_active = True).filter(Q(role=roles.ANALYST) | Q(email = user.email) | Q(role=roles.INSPECTOR) )
+            else:
+                query = queryset.filter(is_active = True).filter(Q(role=roles.ANALYST) | Q(email = user.email))
         elif user.role == roles.VERIFIER:
             # Regular user can see SampleForm instances with form_available='user'
             # query = CustomUser.objects.filter(is_active = True).filter(role=roles.USER)   
@@ -372,6 +375,7 @@ class userAssignList(generics.ListAPIView):
         'client_category_id': ['exact'],
         'created_date': ['date__gte', 'date__lte'],  # Date filtering
         'is_active':['exact'],
+        'is_public_analyst':['exact'],
         # 'test_type':['exact'],
     }
     
