@@ -18,6 +18,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from . custompermission import RejectSampleFormViewSetPermission
 from rest_framework import serializers
+from websocket.handle_notification import sampleFormNotificationHandler
 
 
 class Formula:
@@ -402,7 +403,6 @@ class ParameterHasResultRecheck(APIView):
 class SampleFormResultRecheck(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated,SampleFormRecheckPermission]
-    
  
     def post(self, request, format=None):
 
@@ -423,19 +423,13 @@ class SampleFormResultRecheck(APIView):
         sample_form_recheck_obj = SampleForm.objects.filter(id = sample_form_id)
         if sample_form_recheck_obj.exists():
            sample_form_recheck_obj.update(status  = "recheck",remarks=remarks)
+           sampleFormNotificationHandler(sample_form_recheck_obj,"recheck_sample")
         else:
             message = {
                 "message":"some things went wrong"
             }
             return Response(message, status=status.HTTP_400_BAD_REQUEST)
-        #data = {
-        #    'result' : result,
-        #    'input_fields_value':formula_variable_fields_value
-        #}
-
-        #data,created = SampleFormParameterFormulaCalculate.objects.update_or_create(sample_form_id = sample_form_id, parameter_id =parameter_id, commodity_id = commodity_id,sample_form_has_parameter_id=sample_form_has_parameter_id,defaults=data)
-        #param = data.parameter.name
-    
+      
         message = {
             "message":"Recheck successfully"
         }

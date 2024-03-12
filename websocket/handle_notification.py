@@ -80,6 +80,19 @@ def sampleFormNotificationHandler(instance,notification_type):
         to_notification = to_notification.values_list('id', flat=True)
 
         from_notification = instance.owner_user_obj_id
+    
+    if notification_type == "recheck_sample":
+        print(" recheck sample inside")
+        notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
+        particular_message = mapping_notification_type.mapping[notification_type]['user_message']
+        path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.id)
+        
+        notification_message =  notification_message.format(sample_name = instance.name)
+        refrence_number = encode_decode.generateEncodeIdforSampleForm(instance.id, "user")
+        particular_message =  particular_message.format(refrence_number = refrence_number)
+
+        to_notification = [instance.owner_user_obj_id]
+        from_notification = CustomUser.objects.filter(roles.SMU).first().id
    
     elif notification_type == "assigned_supervisor":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
@@ -92,6 +105,7 @@ def sampleFormNotificationHandler(instance,notification_type):
         from_notification = CustomUser.objects.filter(role = roles.SMU).first().id
 
     elif notification_type == "assigned_analyst":
+        print(" re- assigned analyst ")
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']
         path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.id)

@@ -9,6 +9,15 @@ mapping = {
         "user_path":frontend_setting.smu_sample_request_details,  #sagar put full path here
         "user_message":"Your sample ({refrence_number}) has been submitted successfully",
     },
+    "recheck_sample":{
+        "model_name":"SampleForm",
+        "from_user":['admin','user'],
+        "to_users":['admin','user'],
+        "admin_message":"A sample <strong>{sample_name})</strong> has been assigned for recheck.",
+        "path":frontend_setting.smu_sample_request_details, #sagar put full path here
+        "user_path":frontend_setting.smu_sample_request_details,  #sagar put full path here
+        "user_message":"Your sample ({refrence_number}) has been submitted successfully",
+    },
     "assigned_supervisor":{
         "model_name":"SuperVisorSampleForm",
         "from_user":['admin','smu'],

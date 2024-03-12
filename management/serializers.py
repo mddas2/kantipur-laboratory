@@ -440,7 +440,7 @@ class SampleForm_SampleFormHasParameterListSerializer(serializers.ModelSerialize
 class SampleFormReadAnalystSerializer(serializers.ModelSerializer):
     commodity = CommodityReadSerializer(read_only=True,many=False)
     owner_user_obj = OwnerUserSerializer(read_only = True,many=False)
-    supervisor_user = ApprovedBySerializer(read_only = True)
+    # supervisor_user = ApprovedBySerializer(read_only = True)
 
     id = serializers.SerializerMethodField()
 
@@ -975,9 +975,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                 flushFormulaCalculate(obj,parameter)
 
                 instance = SampleFormHasParameter.objects.filter(sample_form=sample_form, analyst_user=analyst_user)
-                print(instance, " main")
                 if instance.exists():
-                    print(2)
                     instance = instance.first()
                     AlterRawDataStatus(instance)
                     instance.parameter.add(*parameter) #if particular analysts already exist then add parameter to that analysts re-asign
@@ -985,9 +983,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                   
                     return instance
                 else:
-                    print(analyst_user,obj.sample_form_id,obj.commodity_id,parameter)
-                    print(3)
-                    samp = SampleFormHasParameter.objects.create(analyst_user=analyst_user,status="processing",commodity_id = obj.commodity_id,sample_form_id=obj.sample_form_id,form_available=obj.form_available,super_visor_sample_form = obj.super_visor_sample_form)
+                    samp = SampleFormHasParameter.objects.create(analyst_user=analyst_user,status="processing",commodity_id = obj.commodity_id,sample_form_id=obj.sample_form_id,super_visor_sample_form = obj.super_visor_sample_form)
                     samp.parameter.set(parameter)
                     samp.save()
                     

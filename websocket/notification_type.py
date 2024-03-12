@@ -1,5 +1,6 @@
 notification_type = (
     ('new_sample_form','Sample Request'),
+    ('recheck_sample','Recheck Sample'),
     ('reject','Reject'),
     ('assigned_supervisor','Assigned Supervisor'),
     ('re_assigned_superviso','Re-assigned Supervisor'),
