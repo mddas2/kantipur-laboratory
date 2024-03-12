@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from management.models import SuperVisorSampleForm,ClientCategory, SampleForm, Commodity, CommodityCategory , TestResult ,SampleFormHasParameter,Payment,SampleFormParameterFormulaCalculate
+from management.models import SuperVisorSampleForm,ClientCategory, SampleForm, Commodity, CommodityCategory , TestResult ,SampleFormHasParameter,Payment,SampleFormParameterFormulaCalculate,SampleFormHaveInspector
 from account.models import CustomUser
 
 class TestResultSerializer(serializers.ModelSerializer):
@@ -14,6 +14,19 @@ class SampleFormSerializer(serializers.ModelSerializer):
         model = SampleForm
         fields = '__all__'
 
+class InspectorSerializer_SampleFormSerializer_SupervisorFinalReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        ref_name = "InspectorSerializer_SampleFormSerializer_SupervisorFinalReportSerializer"
+        model = SampleFormHaveInspector
+        fields = '__all__'
+
+class SampleFormSerializer_SupervisorFinalReportSerializer(serializers.ModelSerializer):
+    inspector = InspectorSerializer_SampleFormSerializer_SupervisorFinalReportSerializer()
+    class Meta:
+        ref_name = "SampleFormSerializer_SupervisorFinalReportSerializer"
+        model = SampleForm
+        fields = '__all__'
+
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         ref_name = "supervisorfinalreportCustomUserSerializer"
@@ -22,7 +35,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
 class SupervisorFinalReportSerializer(serializers.ModelSerializer):
     parameters = TestResultSerializer(read_only = True,many=True)
-    sample_form = SampleFormSerializer(read_only = True)
+    sample_form = SampleFormSerializer_SupervisorFinalReportSerializer(read_only = True)
     supervisor_user = CustomUserSerializer(read_only = True)
     class Meta:
         ref_name = "supervisorfinalreportSuperVisorSampleForm"

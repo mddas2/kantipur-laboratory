@@ -2,7 +2,7 @@ from management.models import Units,MandatoryStandard,ClientCategoryDetail,Sampl
 from rest_framework import serializers
 
 from management.models import SampleForm, Commodity,SampleFormHasParameter,SuperVisorSampleForm,SampleFormHaveInspector
-from account.models import CustomUser
+from account.models import CustomUser,UserHaveInspector
 from offices.models import Branches
 from rest_framework import serializers
 from management.encode_decode import generateDecodeIdforSampleForm,generateAutoEncodeIdforSampleForm
@@ -13,18 +13,25 @@ from .analyst_standard_result import getStandardResult
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['first_name','last_name','id','email','department_name','department_address','position'] 
+        fields = ['first_name','last_name','id','email','department_name','department_address','position','nepali_name'] 
 
 class BranchesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Branches
-        fields = ['name']
+        fields = ['name','nepali_name']
 
-class CustomUserSerializer_FinalReportNepaliAnalystSerializer(serializers.ModelSerializer):
+class UserHaveInspectorSerializer(serializers.ModelSerializer):
     branch = BranchesSerializer(read_only = True)
     class Meta:
+        model = UserHaveInspector
+        fields = ['nepali_name','branch']
+
+
+class CustomUserSerializer_FinalReportNepaliAnalystSerializer(serializers.ModelSerializer):
+    inspector = UserHaveInspectorSerializer(read_only = True)
+    class Meta:
         model = CustomUser
-        fields = ['first_name','last_name','id','email','department_name','department_address','position'] 
+        fields = ['first_name','last_name','id','email','department_name','department_address','position','inspector'] 
 
 class CustomUserSerializer_DetailSampleFormHasParameterAnalystSerializer(serializers.ModelSerializer):
     class Meta:
@@ -264,7 +271,7 @@ class SampleFormHaveInspectorSerializer(serializers.ModelSerializer):
 class FinalReportNepaliAnalystSerializer(serializers.ModelSerializer):
     commodity = CommoditySerializer(read_only = True)
     parameters = TestResultLimitedSerializer(read_only = True, many = True)
-    owner_user_obj = CustomUserSerializer_FinalReportNepaliAnalystSerializer
+    owner_user_obj = CustomUserSerializer_FinalReportNepaliAnalystSerializer()
     supervisor_user = CustomUserSerializer(read_only = True)
     verified_by = CustomUserSerializer(read_only = True)
     approved_by = CustomUserSerializer(read_only = True)
