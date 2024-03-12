@@ -83,16 +83,18 @@ def sampleFormNotificationHandler(instance,notification_type):
     
     if notification_type == "recheck_sample":
         print(" recheck sample inside")
+        instance = instance.first()
+        print(instance.id)
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']
         path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.id)
         
         notification_message =  notification_message.format(sample_name = instance.name)
-        refrence_number = encode_decode.generateEncodeIdforSampleForm(instance.id, "user")
-        particular_message =  particular_message.format(refrence_number = refrence_number)
+        # refrence_number = encode_decode.generateEncodeIdforSampleForm(instance.id, "user")
+        particular_message =  '.'
 
         to_notification = [instance.owner_user_obj_id]
-        from_notification = CustomUser.objects.filter(roles.SMU).first().id
+        from_notification = CustomUser.objects.filter(role = roles.SMU).first().id
    
     elif notification_type == "assigned_supervisor":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']

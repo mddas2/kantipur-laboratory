@@ -177,8 +177,6 @@ class ParameterHasResultRecheckPermission(BasePermission):
 
 class SampleFormRecheckPermission(BasePermission):
     def has_permission(self, request, view):
-       
-        print(" checked permission for recheck")
         return SmuSuperAdmin(request)
         
         

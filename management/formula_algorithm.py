@@ -422,8 +422,8 @@ class SampleFormResultRecheck(APIView):
         
         sample_form_recheck_obj = SampleForm.objects.filter(id = sample_form_id)
         if sample_form_recheck_obj.exists():
-           sample_form_recheck_obj.update(status  = "recheck",remarks=remarks)
            sampleFormNotificationHandler(sample_form_recheck_obj,"recheck_sample")
+           sample_form_recheck_obj.update(status  = "recheck",remarks=remarks)
         else:
             message = {
                 "message":"some things went wrong"

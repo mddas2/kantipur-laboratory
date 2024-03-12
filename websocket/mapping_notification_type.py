@@ -13,8 +13,8 @@ mapping = {
         "model_name":"SampleForm",
         "from_user":['admin','user'],
         "to_users":['admin','user'],
-        "admin_message":"A sample <strong>{sample_name})</strong> has been assigned for recheck.",
-        "path":frontend_setting.smu_sample_request_details, #sagar put full path here
+        "admin_message":"A sample <strong>{sample_name}</strong> has been assigned for recheck.",
+        "path":frontend_setting.user_my_sample, #sagar put full path here
         "user_path":frontend_setting.smu_sample_request_details,  #sagar put full path here
         "user_message":"Your sample ({refrence_number}) has been submitted successfully",
     },
