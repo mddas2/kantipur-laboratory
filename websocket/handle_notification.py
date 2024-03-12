@@ -117,7 +117,7 @@ def sampleFormNotificationHandler(instance,notification_type):
     elif notification_type == "parameter_recheck":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']
-        path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.id)
+        path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.sample_form_has_parameter_id)
 
         notification_message = notification_message.format(sample_name = instance.sample_form.name,namuna_code = instance.sample_form.namuna_code,supervisor_first_name=instance.sample_form_has_parameter.super_visor_sample_form.supervisor_user.first_name,supervisor_last_name=instance.sample_form_has_parameter.super_visor_sample_form.supervisor_user.last_name)
         to_notification = [instance.sample_form_has_parameter.analyst_user_id] # here instance is sampleformhasparameter

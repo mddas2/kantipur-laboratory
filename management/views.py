@@ -265,7 +265,8 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         else:
             raise PermissionDenied("You do not have permission to access this resource.")
         
-        if self.action in ['get_formal_form','retrieve_formal_form']:
+        print(self.action)
+        if self.action in ['get_formal_form','retrieve_formal_form','formal_form','patch_formal_form']:
             query = query.filter(client_category_detail__client_category=12)
         else:
             query = query.filter(~Q(client_category_detail__client_category=12))
@@ -385,6 +386,20 @@ class SampleFormViewSet(viewsets.ModelViewSet):
             inspector_data = CreateInspectorSampleForm(serializer.data.get('id',None),request,"update")
             response_data['inspector_sample_form_detail']=inspector_data
     
+        return Response({"message": "update formal form successful"}, status=status.HTTP_200_OK)
+    
+    @action(detail=True, methods=['patch'],name="patch_formal_form", url_path="patch-formal-form")
+    def patch_formal_form(self, request,pk=None):
+        instance = self.get_object()
+        # Create a custom response
+        response_data = {
+            "message": "Sample updated successfully",
+        }
+        print(" going to patch")
+        if request.user.role == roles.INSPECTOR or  instance.client_category_detail.client_category_id == 12:   
+            print("this is formal patch")        
+            inspector_data = PatchInspectorSampleForm(instance.id,request,"update")
+            response_data['inspector_sample_form_detail']=inspector_data
         return Response({"message": "update formal form successful"}, status=status.HTTP_200_OK)
 
 
@@ -1018,6 +1033,7 @@ class VerifiedListViewSet(viewsets.ModelViewSet):
         return super().get_serializer_class()
 
 def CreateInspectorSampleForm(sample_form_id,request_data,create_update):
+ 
     data = {
         'sample_form': sample_form_id,
         'type':request_data.data.get('type'),
@@ -1041,4 +1057,12 @@ def CreateInspectorSampleForm(sample_form_id,request_data,create_update):
         inspector_serializer = SampleFormHaveInspectorSerializer(instance=inspector_instance,data=data)
         inspector_serializer.is_valid(raise_exception=True)
         inspector_serializer.save()
+    return inspector_serializer.data
+
+def PatchInspectorSampleForm(sample_form_id,request_data,create_update):
+    inspector_obj = SampleForm.objects.get(id = sample_form_id).inspector
+    inspector_instance = SampleFormHaveInspector.objects.get(id=inspector_obj.id)
+    inspector_serializer = SampleFormHaveInspectorSerializer(instance=inspector_instance,data=request_data.data,partial=True)
+    inspector_serializer.is_valid(raise_exception=True)
+    inspector_serializer.save()
     return inspector_serializer.data

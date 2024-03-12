@@ -13,6 +13,9 @@ def SMU_USER_SUPERADMIN_INSPECTOR_Permission(request):
 def SMU_SUPERADMIN_INSPECTOR_Permission(request):
     return IsAuthenticated(request) and request.user.role in [roles.SMU , roles.SUPERADMIN,roles.INSPECTOR]
 
+def SMU_SUPERADMIN_INSPECTOR_SUPERVISOR_Permission(request):
+    return IsAuthenticated(request) and request.user.role in [roles.SMU , roles.SUPERADMIN,roles.INSPECTOR,roles.SUPERVISOR]
+
 def SmuSuperAdmin(request):
     return IsAuthenticated(request) and request.user.role in [roles.SMU ,roles.SUPERADMIN]
 
@@ -68,6 +71,8 @@ class SampleFormViewSetPermission(BasePermission):
             return True
         elif method_name == 'formal_form':
             return SMU_SUPERADMIN_INSPECTOR_Permission(request)
+        elif method_name == 'patch_formal_form':
+            return SMU_SUPERADMIN_INSPECTOR_SUPERVISOR_Permission(request)
         elif method_name == 'update':    
             if view.get_object().status == "pending" or view.get_object().status == "not_assigned":   
                 pass
