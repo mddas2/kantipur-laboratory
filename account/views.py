@@ -194,7 +194,8 @@ class RoleViewSet(APIView):
     permission_classes = [IsAuthenticated]  
     
     def get(self,request,format=None):
-        my_tuple = CustomUser.ROLE_CHOICES
+        from .role_choices import ROLE_CHOICES
+        my_tuple = ROLE_CHOICES
         serializer = RoleSerializer(data=my_tuple,many=True)
         serializer.is_valid()
         serialized_data = serializer.data

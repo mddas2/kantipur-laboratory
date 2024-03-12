@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django_filters',
     'emailmanagement',
     'offices',
+    'backtrack',
     'smu',
     'simple_history',
 ]

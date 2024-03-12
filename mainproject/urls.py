@@ -44,7 +44,8 @@ urlpatterns = [
     path('api/websocket/', include('websocket.urls')),
     path('api/', include('management.urls')), 
     path('api/email-management/', include('emailmanagement.urls')),
-    path('api/offices/', include('offices.urls')), 
+    path('api/offices/', include('offices.urls')),
+    path('api/back-track/', include('backtrack.urls')), 
     
     
     # path('swagger(?P<format>\.json|\.yaml)', schema_view.without_ui(cache_timeout=0), name='schema-json'),
