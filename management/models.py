@@ -7,6 +7,7 @@ from offices.models import InspectorType
 from simple_history.models import HistoricalRecords
 from django.core.exceptions import ValidationError
 from websocket.handle_notification import sampleFormNotificationHandler
+from .status import sample_form_status_choices,sample_form_form_available,supervisor_sampleform_status,sample_formhas_parameter_status
 
 class ClientCategory(models.Model):
     name = models.CharField(max_length=255,unique=True)
@@ -142,38 +143,9 @@ class SampleForm(models.Model):#ClientRequest
 
     is_analyst_test = models.BooleanField(default=False) #if in paramater_has_analyst send to supervisor then this.from all param then True
 
-    status_choices = (
-        ('pending', 'pending'),#initial
-        ('processing', 'processing'), #smu-assign-supervisor (smu:pending-not_assign,display:processing)
-        ('not_assigned', 'not_assigned'),#supervisor-assign-analyst (supervisor:not_assign-processing,display:processing)
-        ('not_verified', 'not_verified'),#analyst-to-supervisor(supervisor:processing-not_verified,display:not_verified)
-        ('not_approved','not_approved'),
-        ('verified', 'verified'),
-        ('completed', 'completed'),#supervisor-assign-verifier (supervisor:not_verified-verified,display:processing) action:recheck,reject
-        ('recheck', 'recheck'),
-        ('rejected', 'rejected'),
-    )
-    status = models.CharField(choices=status_choices, blank=True, null=True, max_length=155)
+    status = models.CharField(choices=sample_form_status_choices, blank=True, null=True, max_length=155)
 
-    SUPERADMIN = "superadmin"
-    SMU = "smu"
-    SUPERVISOR = "supervisor"
-    ANALYST = "analyst"
-    USER = "user"
-    VERIFIER = "verifier"
-    ADMIN = 'admin'
-
-    ROLE_CHOICES = (
-        (SUPERADMIN, 'superadmin'),
-        (SMU,'smu'),
-        (SUPERVISOR, 'supervisor'),
-        (ANALYST, 'analyst'),
-        (USER, 'user'),
-        (VERIFIER,'verifier'),
-        (ADMIN, 'ADMIN'),
-    )
-
-    form_available = models.CharField(max_length=100,choices=ROLE_CHOICES, blank=True, null=True)
+    form_available = models.CharField(max_length=100,choices=sample_form_form_available, blank=True, null=True)
     created_date = models.DateTimeField(auto_now_add=True)  
     updated_date = models.DateTimeField(auto_now=True)
 
@@ -216,19 +188,7 @@ class SuperVisorSampleForm(models.Model):#sample form has parameter and paramete
     is_supervisor_sent = models.BooleanField(default=False) #if supervisor sent to verifier then it  1
     is_analyst_test = models.BooleanField(default=False)
     
-    status_choices = (       
-        ('pending', 'pending'), 
-        ('not_assigned', 'not_assigned'), 
-        ('processing', 'processing'),
-        ('completed', 'completed'),
-        ('recheck', 'recheck'),
-        ('rejected', 'rejected'),
-        ('not_verified','not_verified'),
-        ('not_approved','not_approved'),
-        ('Test Completed','Test Completed'),
-        ('verified','verified'),
-    )
-    status = models.CharField(choices=status_choices,default="not_assigned" , blank=True, null=True, max_length=155)
+    status = models.CharField(choices=supervisor_sampleform_status,default="not_assigned" , blank=True, null=True, max_length=155)
     performance_remarks = models.CharField(max_length = 20,choices=(('green','Green'),('yellow','Yellow'),('red','Red')),null = True)
     created_date = models.DateTimeField(auto_now_add=True)  
     updated_date = models.DateTimeField(auto_now=True)
@@ -246,33 +206,7 @@ class SampleFormHasParameter(models.Model):#sample form has parameter and parame
 
     is_supervisor_sent = models.BooleanField(default=False)
     
-    status_choices = (       
-        ('pending', 'pending'), 
-        ('processing', 'processing'),
-        ('completed', 'completed'),
-        ('recheck', 'recheck'),
-        ('rejected', 'rejected'),
-        ('not_verified','not_verified'),
-        ('tested','tested'),
-        ('verified','verified'),
-    )
-    status = models.CharField(choices=status_choices,default="pending" , blank=True, null=True, max_length=155)
-
-    SUPERADMIN = "superadmin"
-    SMU = "smu"
-    SUPERVISOR = "supervisor"
-    ANALYST = "analyst"
-    USER = "user"
-
-    ROLE_CHOICES = (
-        (SUPERADMIN, 'superadmin'),
-        (SMU,'smu'),
-        (SUPERVISOR, 'supervisor'),
-        (ANALYST, 'analyst'),
-        (USER, 'user'),
-    )
-
-    form_available = models.CharField(max_length=100,choices=ROLE_CHOICES, blank=True, null=True)
+    status = models.CharField(choices=sample_formhas_parameter_status,default="pending" , blank=True, null=True, max_length=155)
 
     created_date = models.DateTimeField(auto_now_add=True) #reported date
     started_date = models.CharField(max_length=30,null=True) #started date

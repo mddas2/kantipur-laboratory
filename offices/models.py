@@ -7,7 +7,7 @@ class Branches(models.Model):
     nepali_name = models.CharField(max_length=255,null = True)
 
 class InspectorType(models.Model):
-    name = models.CharField(choices=(('food','Food'),('feed','Feed')), default=None, max_length=155,null=True)
+    name = models.CharField(choices=(('food','Food'),('feed','Feed')), max_length=155)
 
 
     

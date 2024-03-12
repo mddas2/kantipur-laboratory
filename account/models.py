@@ -5,6 +5,7 @@ from django.db import models
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from offices.models import Branches,InspectorType
+from .role_choices import ROLE_CHOICES
 
 class TestType(models.Model):
     name = models.CharField(choices=(('Chemical','Chemical'),('Microbiological','Microbiological'),('Instrumental','Instrumental')), default=None, max_length=155,null=True)
@@ -51,26 +52,6 @@ class CustomUser(AbstractUser):
 
     created_date = models.DateTimeField(auto_now_add=True)  
     updated_date = models.DateTimeField(auto_now=True)
-
-    SUPERADMIN = 1
-    SMU = 2
-    SUPERVISOR = 3
-    ANALYST = 4
-    USER = 5
-    VERIFIER = 6
-    ADMIN = 7
-    INSPECTOR = 8
-
-    ROLE_CHOICES = (
-        (SUPERADMIN, 'SUPERADMIN'),
-        (SMU,'SMU'),
-        (SUPERVISOR, 'SUPERVISOR'),
-        (ANALYST, 'ANALYST'),
-        (USER, 'USER'),
-        (VERIFIER, 'VERIFIER'),
-        (ADMIN, 'ADMIN'),
-        (INSPECTOR,'INSPECTOR')
-    )
     
     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, blank=True, null=True)
     is_public_analyst = models.BooleanField(default = False)
@@ -119,7 +100,7 @@ class CustomUserImages(models.Model):
 
 class UserHaveInspector(models.Model):
     user = models.OneToOneField(CustomUser,related_name = "inspector", on_delete = models.CASCADE)
-    branch = models.OneToOneField(Branches,on_delete = models.SET_NULL , null = True,blank = True)
+    branch = models.ForeignKey(Branches,on_delete = models.SET_NULL , null = True,blank = True)
     inspector_type = models.ManyToManyField(InspectorType)
     nepali_name = models.CharField(max_length = 200)
     government_id = models.CharField(max_length = 300)

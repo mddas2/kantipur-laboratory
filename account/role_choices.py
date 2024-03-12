@@ -1,0 +1,19 @@
+SUPERADMIN = 1
+SMU = 2
+SUPERVISOR = 3
+ANALYST = 4
+USER = 5
+VERIFIER = 6
+ADMIN = 7
+INSPECTOR = 8
+
+ROLE_CHOICES = (
+        (SUPERADMIN, 'SUPERADMIN'),
+        (SMU,'SMU'),
+        (SUPERVISOR, 'SUPERVISOR'),
+        (ANALYST, 'ANALYST'),
+        (USER, 'USER'),
+        (VERIFIER, 'VERIFIER'),
+        (ADMIN, 'ADMIN'),
+        (INSPECTOR,'INSPECTOR')
+    )
