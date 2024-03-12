@@ -275,8 +275,8 @@ def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
         sample_form_obj.status = "completed"
         sample_form_obj.verified_date = timezone.now()
         sample_form_obj.remarks = instance.remarks
-        sample_form_obj.verified_by = instance.sample_form.supervisor_sample_form.first().supervisor_user_id
-        sample_form_obj.approved_by = instance.sample_form.supervisor_sample_form.first().supervisor_user_id
+        sample_form_obj.verified_by = instance.sample_form.supervisor_sample_form.all().first().supervisor_user_id
+        sample_form_obj.approved_by = instance.sample_form.supervisor_sample_form.all().first().supervisor_user_id
         sample_form_obj.admin_remarks = instance.remarks
 
         sample_form_obj.save()
