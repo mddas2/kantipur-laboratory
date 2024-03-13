@@ -37,5 +37,5 @@ class CompletedSampleFormHasVerifierSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = SampleForm
-        fields = ['id','name','sample_has_parameter_analyst','commodity','status','created_date','sample_lab_id','namuna_code','verifier_requested_date','verified_date']
+        fields = ['id','name','sample_has_parameter_analyst','commodity','status','created_date','sample_lab_id','namuna_code','verifier_requested_date','verified_date','is_back','submit_back_remarks','back_remarks']
         ref_name = "verifier_CompletedSampleFormHasVerifierSerialize"

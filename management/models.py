@@ -156,6 +156,10 @@ class SampleForm(models.Model):#ClientRequest
 
     is_print = models.BooleanField(default = False)
 
+    is_back = models.CharField(max_length = 30, choices =(('smu_back','Smu Back'),('supervisor_back','Supervisor Back'),('verifier_back','Verifier Back'),('','')),null = True)
+    back_remarks = models.CharField(max_length=355, null=True)
+    submit_back_remarks = models.CharField(max_length=355, null=True)
+
     history = HistoricalRecords()
 
     def save(self, *args, **kwargs):
@@ -193,6 +197,7 @@ class SuperVisorSampleForm(models.Model):#sample form has parameter and paramete
     created_date = models.DateTimeField(auto_now_add=True)  
     updated_date = models.DateTimeField(auto_now=True)
     remarks = models.CharField(max_length=1000,null=True)
+
     history = HistoricalRecords()
     
 class SampleFormHasParameter(models.Model):#sample form has parameter and parameter for each parameter each analyst
@@ -284,6 +289,7 @@ class SampleFormVerifier(models.Model):
     is_verified = models.BooleanField(default=False)
     is_sent = models.BooleanField(default=False)
     remarks = models.CharField(max_length=1000,null=True)
+
     status_choices = (
         ('pending', 'pending'),
         ('recheck', 'recheck'),

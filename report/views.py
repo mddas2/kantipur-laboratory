@@ -196,6 +196,7 @@ class DetailParameterHasAssignedAnalyst(views.APIView): #it is used by sample re
 
 class FinalReportNepali(views.APIView):
     def get(self, request, sample_form_id,role_id, format=None):
+        print(role_id)
         id = generateDecodeIdByRoleforSampleForm(sample_form_id,role_id)
         print(id, " id")
         queryset = SampleForm.objects.filter(id=id).first()
