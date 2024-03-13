@@ -18,7 +18,7 @@ class AssignedSampleForSmuSuperAdmin(generics.ListAPIView):
     pagination_class = MyPageNumberPaginatiton
   
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['id','namuna_code','code','name','owner_user_obj__name','status','form_available','commodity__name']
+    search_fields = ['id','namuna_code','code','name','owner_user_obj__first_name','status','form_available','commodity__name']
     ordering_fields = ['name','id']
     
     filterset_fields = {
@@ -32,7 +32,7 @@ class AssignedSampleForSmuSuperAdmin(generics.ListAPIView):
 
     def get_queryset(self):
         query = SampleForm.objects.filter(Q(status="processing") | Q(status="not_verified"))
-        return query.order_by("-supervisor_sample_form__created_date")
+        return query.order_by("-supervisor_sample_form__created_date")#.order_by("is_back")
     
     def get_serializer_class(self):
         if self.request.user.role == roles.SMU or self.request.user.role == roles.SUPERADMIN:

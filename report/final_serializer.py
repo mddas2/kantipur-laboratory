@@ -152,7 +152,7 @@ class AssignedSampleForSmuSuperAdminSerializer(serializers.ModelSerializer):
     class Meta:
         name = "AssignedSampleForSmuSuperAdminSerializer"
         model = SampleForm
-        fields = ['id','supervisor_sample_form','name','commodity','status','created_date','refrence_number','namuna_code','client_category_detail']
+        fields = ['id','supervisor_sample_form','name','commodity','status','created_date','refrence_number','namuna_code','client_category_detail','is_back','back_remarks','submit_back_remarks']
 
     def get_client_category_detail(self,obj):
         return obj.client_category_detail.client_category_id
