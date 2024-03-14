@@ -65,7 +65,14 @@ def NotificationHandler(instance, request,method,model_name):
 def sampleFormNotificationHandler(instance,notification_type):
 
     # from_notification = mapping_notification_type.mapping[notification_type]['from_user']
-    if notification_type == "new_sample_form":
+    if notification_type == 'is_back':
+        pass
+        #store in back track model SampleTrack
+    elif notification_type == 'submit_back':
+        pass
+        #store in back track model
+    elif notification_type == "new_sample_form":
+        #SampleTrack
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']
         path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.id)
@@ -81,6 +88,7 @@ def sampleFormNotificationHandler(instance,notification_type):
         from_notification = instance.owner_user_obj_id
     
     if notification_type == "recheck_sample":
+        #SampleTrack
         print(" recheck sample inside")
         instance = instance.first()
         print(instance.id)
@@ -199,7 +207,6 @@ def sampleFormNotificationHandler(instance,notification_type):
 
     # Save the new notification object
     notification = serializer.save()
-    print("\n\n assigned notification \n\n")
     # Create a custom response
     response_data = {
         "message": "sample form Notification created successfully ",

@@ -10,6 +10,8 @@ from .serializers import (
     SuperVisorSampleFormListSerializer,SuperVisorSampleFormWriteSerializer,NoticeImagesSerializer,ApprovedListSerializer,VerifiedListSerializer,VerifiedWriteSerializer,
     ApprovedWriteSerializer,SampleFormHaveInspectorSerializer)
 
+from .inspector.is_back_sample_form_serializer import IsBackSampleFormSerializer
+
 from .models import FiscalYear,ClientCategory,Units,MandatoryStandard,TestMethod, SampleForm, Commodity, CommodityCategory,TestResult, Payment,SuperVisorSampleForm,MicroParameter,MicroObservationTable,ClientCategoryDetail , NoticeImages , ApprovedList , VerifiedList , SampleFormHaveInspector
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -251,6 +253,8 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if self.action == 'get_formal_form' and user.role == roles.SMU:
             query = SampleForm.objects.filter(client_category_detail__client_category_id=12).filter(Q(form_available = 'smu') or Q(status = "not_assigned")).filter(~Q(status = "rejected")).filter(~Q(status = "recheck"))
+        elif self.action == 'is_back_sample':
+            query = SampleForm.objects.filter(is_back = 'smu_back')
         elif self.action == 'patch_formal_form' and user.role == roles.SUPERVISOR and user.is_public_analyst:
             query =  SampleForm.objects.all().filter(~Q(status="completed")).filter(~Q(status="rejected") )
         elif user.role == roles.USER:         
@@ -280,6 +284,10 @@ class SampleFormViewSet(viewsets.ModelViewSet):
             return SampleFormWriteSerializer
         elif self.action == 'formal_form':
             return SampleFormWriteSerializer_Inspector    
+        
+        elif self.action == 'is_back_sample':
+            return IsBackSampleFormSerializer
+        
         elif self.action == 'get_formal_form':
             return SampleFormInspectorListSerializer
         elif self.action == 'retrieve_formal_form':
@@ -371,6 +379,27 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     
     @action(detail=True, methods=['patch'],name="formal_form", url_path="update-formal-form")
     def formal_form(self, request,pk=None):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # Save the updated object to the database
+        self.perform_update(serializer)
+
+        # Create a custom response
+        response_data = {
+            "message": "Sample updated successfully",
+            "data": serializer.data
+        }
+
+        if request.user.role == roles.INSPECTOR:           
+            inspector_data = CreateInspectorSampleForm(serializer.data.get('id',None),request,"update")
+            response_data['inspector_sample_form_detail']=inspector_data
+    
+        return Response({"message": "update formal form successful"}, status=status.HTTP_200_OK)
+    
+    @action(detail=True, methods=['put'],name="is_back_sample", url_path="back-sample-smu")
+    def is_back_sample(self, request,pk=None):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data)
         serializer.is_valid(raise_exception=True)
