@@ -242,6 +242,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         id = generateDecodeIdforSampleForm(self.kwargs['pk'],user) 
         queryset = self.get_queryset()
         obj = queryset.filter(id=id).first()
+        print(obj)
         if not obj:
             raise Http404("Object not found")
         return obj
