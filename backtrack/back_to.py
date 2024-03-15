@@ -10,10 +10,25 @@ from management.encode_decode import generateDecodeIdByRoleforSampleForm
 from rest_framework import status
 from .back_track_status import role_track_mapping,back_to_status
 from account import roles
-from management.models import SuperVisorSampleForm
+from management.models import SuperVisorSampleForm,SampleFormVerifier
+from .models import SampleTrack
+from account.models import CustomUser
 
 def BackToRole(sample_form,request,role,remarks):
     is_update = SampleForm.objects.filter(id = sample_form).update(is_back = back_to_status[role][-1],back_remarks = remarks)
+    from_back  = request.user
+    if role == roles.SMU:
+        to_back = CustomUser.objects.filter(role = roles.SMU).first()
+        form_available = "SMU"
+    elif role == roles.SUPERVISOR:
+        to_back = SuperVisorSampleForm.objects.get(sample_form_id = sample_form).first().supervisor_user_id
+        form_available = "SUPERVISOR"
+    elif role == roles.VERIFIER:
+        to_back = SampleForm.objects.get(id = sample_form).verified_by_id
+        form_available = "VERIFIER"
+    
+    #create_obj = SampleTrack.objects.create(user = from_back,to_back = to_back, remarks = remarks,status = 'back',form_available = form_available)
+    
     return is_update
 # Create your views here.
 class Backto(views.APIView):
