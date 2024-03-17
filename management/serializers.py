@@ -886,7 +886,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
     
     def validate(self, attrs):
         
-        if SuperVisorSampleForm.objects.get(sample_form_id = attrs.get('sample_form')).is_supervisor_sent == True:
+        if SuperVisorSampleForm.objects.filter(sample_form_id = attrs.get('sample_form')).exists() and  SuperVisorSampleForm.objects.filter(sample_form_id = attrs.get('sample_form')).first().is_supervisor_sent == True:
             raise serializers.ValidationError('Sample Form already reached to Verifier so you can not modified')
         
         sample_form = attrs.get('sample_form')
@@ -967,6 +967,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
             obj = SampleFormHasParameter.objects.filter(sample_form=sample_form, parameter=parameter[0]).first()
             
             if len(obj.parameter.all())>1: #if supervisor have multiple parameter
+                print("1")
                 obj.parameter.remove(*parameter) #revoke parameter from existence obj
                 obj.is_supervisor_sent = False
                 AlterRawDataStatus(obj)
@@ -976,6 +977,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
 
                 instance = SampleFormHasParameter.objects.filter(sample_form=sample_form, analyst_user=analyst_user)
                 if instance.exists():
+                    print("2")
                     instance = instance.first()
                     AlterRawDataStatus(instance)
                     instance.parameter.add(*parameter) #if particular analysts already exist then add parameter to that analysts re-asign
@@ -983,6 +985,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                   
                     return instance
                 else:
+                    print("3")
                     samp = SampleFormHasParameter.objects.create(analyst_user=analyst_user,status="processing",commodity_id = obj.commodity_id,sample_form_id=obj.sample_form_id,super_visor_sample_form = obj.super_visor_sample_form)
                     samp.parameter.set(parameter)
                     samp.save()
@@ -1013,6 +1016,8 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                         obj.analyst_user = analyst_user #simply update analysis
                         flushFormulaCalculate(obj,parameter)
                         AlterRawDataStatus(obj)
+                        obj.is_supervisor_sent = False
+                        obj.status = "processing"
                         obj.save()
                         #print("this sample form has parameter have single parameter and this is changable analyst and this parameter and changeble analyst is not exist, so this need to create new and then delete,or simply change analyst name")
                     

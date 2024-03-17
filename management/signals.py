@@ -250,13 +250,14 @@ def SupervisorHaveParameterAfterSave(sender, instance , created , **kwargs):
 @transaction.atomic
 @receiver(pre_save, sender=SampleFormHasParameter)
 def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
-    print("status processing hello",instance.is_supervisor_sent)
+    print("status processing hello md",instance.is_supervisor_sent) #blunder manoj
     if not instance.pk:
         instance.status = "pending"
     else:
         if instance.is_supervisor_sent == True:
             SampleFormParameterFormulaCalculate.objects.filter(sample_form_has_parameter_id = instance.pk,is_locked = False).update(is_locked = True)
         else:
+            SampleFormParameterFormulaCalculate.objects.filter(sample_form_has_parameter_id = instance.pk,is_locked = True).update(is_locked = False)
             SuperVisorSampleForm.objects.filter(id = instance.super_visor_sample_form_id).update(status = "processing")
         # sampleFormNotificationHandler(instance,"assigned_analyst")
         
