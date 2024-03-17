@@ -413,7 +413,7 @@ class SampleFormSuperVisorRetrieveSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = SampleForm
-        fields = ['namuna_code','name','commodity','status','id','owner_user_obj']
+        fields = ['namuna_code','name','commodity','status','id','owner_user_obj','is_back','back_remarks']
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -885,9 +885,8 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
         return super().to_internal_value(data)
     
     def validate(self, attrs):
-  
-        check_verifier = SampleFormVerifier.objects.filter(sample_form_id = attrs.get('sample_form')).exists()
-        if check_verifier:
+        
+        if SuperVisorSampleForm.objects.get(sample_form_id = attrs.get('sample_form')).is_supervisor_sent == True:
             raise serializers.ValidationError('Sample Form already reached to Verifier so you can not modified')
         
         sample_form = attrs.get('sample_form')

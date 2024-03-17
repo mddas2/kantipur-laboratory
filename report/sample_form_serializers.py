@@ -48,7 +48,7 @@ class SampleFormHasSupervisorParameter_SampleFormSerializer(serializers.ModelSer
     class Meta:
         ref_name = "SampleFormHasSupervisorParameter_SampleFormSerializer"
         model = SampleForm
-        fields = ['name','namuna_code','commodity','client_category']
+        fields = ['name','namuna_code','commodity','client_category','is_back','back_remarks']
     
     def get_client_category(self,obj):
         return obj.client_category_detail.client_category_id

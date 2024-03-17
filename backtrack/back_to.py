@@ -21,7 +21,9 @@ def BackToRole(sample_form,request,role,remarks):
         to_back = CustomUser.objects.filter(role = roles.SMU).first()
         form_available = "SMU"
     elif role == roles.SUPERVISOR:
-        to_back = SuperVisorSampleForm.objects.get(sample_form_id = sample_form).first().supervisor_user_id
+        supervisor_obj = SuperVisorSampleForm.objects.filter(sample_form_id = sample_form)
+        supervisor_obj.update(is_supervisor_sent = False)
+        to_back = supervisor_obj.first().supervisor_user_id
         form_available = "SUPERVISOR"
     elif role == roles.VERIFIER:
         to_back = SampleForm.objects.get(id = sample_form).verified_by_id
