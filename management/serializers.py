@@ -377,7 +377,8 @@ class SampleFormWriteSerializer(serializers.ModelSerializer):
         
     class Meta:
         model = SampleForm
-        fields = '__all__'
+        # fields = '__all__'
+        exclude = ['is_back','back_remarks','is_back_submit','submit_back_remarks']
 
     def get_fields(self):
         fields = super(SampleFormWriteSerializer, self).get_fields()

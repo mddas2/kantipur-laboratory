@@ -33,6 +33,7 @@ class TestMethodReadSerializer(serializers.ModelSerializer):
 class TestResultLimitedSerializer(serializers.ModelSerializer):
     class Meta:
         model = TestResult
+        ref_name = "TestResultLimitedSerializer_Inspector"
         exclude = ['units', 'mandatory_standard', 'test_method','formula','price','commodity']
 
 class CustomUserInspectorSerializer(serializers.ModelSerializer):
@@ -231,7 +232,7 @@ class SampleFormWriteSerializer_Inspector(serializers.ModelSerializer):
         
     class Meta:
         model = SampleForm
-        fields = '__all__'
+        exclude = ['is_back','back_remarks','is_back_submit','submit_back_remarks']
 
     def get_fields(self):
         fields = super(SampleFormWriteSerializer_Inspector, self).get_fields()
