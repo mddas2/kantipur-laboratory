@@ -257,7 +257,7 @@ def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
         if instance.is_supervisor_sent == True:
             SampleFormParameterFormulaCalculate.objects.filter(sample_form_has_parameter_id = instance.pk,is_locked = False).update(is_locked = True)
         else:
-            SampleFormParameterFormulaCalculate.objects.filter(sample_form_has_parameter_id = instance.pk,is_locked = True).update(is_locked = False)
+            SampleFormParameterFormulaCalculate.objects.filter(sample_form_has_parameter_id = instance.pk,is_locked = True).update(is_locked = False) #additional line...
             SuperVisorSampleForm.objects.filter(id = instance.super_visor_sample_form_id).update(status = "processing")
         # sampleFormNotificationHandler(instance,"assigned_analyst")
         
