@@ -61,7 +61,7 @@ class SampleFormViewSetPermission(BasePermission):
         method_name = view.action
         if method_name == 'list':
             return True
-        elif method_name == 'is_back_sample':
+        elif method_name in ['is_back_sample','is_back_submit_sample']:
             return True
         elif method_name == 'retrieve_formal_form':
             return True

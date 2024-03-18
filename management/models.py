@@ -158,6 +158,7 @@ class SampleForm(models.Model):#ClientRequest
 
     is_back = models.CharField(max_length = 30, choices =(('smu_back','Smu Back'),('supervisor_back','Supervisor Back'),('verifier_back','Verifier Back'),('','')),null = True)
     back_remarks = models.CharField(max_length=355, null=True)
+    is_back_submit = models.BooleanField(default = False)
     submit_back_remarks = models.CharField(max_length=355, null=True)
 
     history = HistoricalRecords()

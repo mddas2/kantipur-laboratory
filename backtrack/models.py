@@ -10,16 +10,14 @@ from .back_track_status import sample_form_back_track_status_choices
 class SampleTrack(models.Model):
     sample_form = models.ForeignKey(SampleForm,on_delete = models.CASCADE,related_name = "track_sample")
     form_available = models.PositiveSmallIntegerField(choices=ROLE_CHOICES)
-    user = models.ForeignKey(CustomUser,related_name = "track_sample",on_delete = models.SET_NULL,null = True)
-    track_types = models.CharField(max_length = 33, choices = notification_type.notification_type )
+    user = models.ForeignKey(CustomUser,related_name = "track_sample",on_delete = models.SET_NULL,null = True)#from_back
     remarks = models.CharField(max_length = 100)
     
     status = models.CharField(max_length = 30,choices = sample_form_back_track_status_choices)
     form_available_string = models.CharField(choices = sample_form_form_available , max_length = 20)   
 
-    from_back = models.ForeignKey(CustomUser,related_name = "give_back",on_delete = models.CASCADE,null = True,)
     to_back = models.ForeignKey(CustomUser,related_name = "take_backs",on_delete = models.CASCADE,null = True)
-    to_back = models.CharField(max_length = 20,choices = (('smu','SMU'),('supervisor','SUPERVISOR'),('verifier','VERIFIER'),('','')), default='')
+    to_back_str = models.CharField(max_length = 20,choices = (('smu','SMU'),('supervisor','SUPERVISOR'),('verifier','VERIFIER'),('','')), default='')
 
     created_date = models.DateTimeField(auto_now_add=True)  
     updated_date = models.DateTimeField(auto_now=True)

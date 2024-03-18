@@ -10,7 +10,7 @@ from .serializers import (
     SuperVisorSampleFormListSerializer,SuperVisorSampleFormWriteSerializer,NoticeImagesSerializer,ApprovedListSerializer,VerifiedListSerializer,VerifiedWriteSerializer,
     ApprovedWriteSerializer,SampleFormHaveInspectorSerializer)
 
-from .inspector.is_back_sample_form_serializer import IsBackSampleFormSerializer
+from .inspector.is_back_sample_form_serializer import IsBackSampleFormSerializer,IsBackSubmitSampleFormSerializer
 
 from .models import FiscalYear,ClientCategory,Units,MandatoryStandard,TestMethod, SampleForm, Commodity, CommodityCategory,TestResult, Payment,SuperVisorSampleForm,MicroParameter,MicroObservationTable,ClientCategoryDetail , NoticeImages , ApprovedList , VerifiedList , SampleFormHaveInspector
 from rest_framework import viewsets
@@ -252,7 +252,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if self.action == 'get_formal_form' and user.role == roles.SMU:
             query = SampleForm.objects.filter(client_category_detail__client_category_id=12).filter(Q(form_available = 'smu') or Q(status = "not_assigned")).filter(~Q(status = "rejected")).filter(~Q(status = "recheck"))
-        elif self.action == 'is_back_sample':
+        elif self.action in ['is_back_sample','is_back_submit_sample']:
             query = SampleForm.objects.filter(is_back = 'smu_back')
         elif self.action == 'back_sample_forward':
             query = SampleForm.objects.filter(is_back = 'smu_back')
@@ -288,6 +288,9 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         
         elif self.action == 'is_back_sample':
             return IsBackSampleFormSerializer
+        
+        elif self.action == 'is_back_submit_sample':
+            return IsBackSubmitSampleFormSerializer
         
         elif self.action == 'get_formal_form':
             return SampleFormInspectorListSerializer
@@ -365,10 +368,6 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         # Save the updated object to the database
         self.perform_update(serializer)
 
-        # if request.user.role == roles.INSPECTOR:           
-        #     inspector_data = CreateInspectorSampleForm(serializer.data.get('id',None),request,"update")
-        #     response_data['inspector_sample_form_detail']=inspector_data
-
         # Create a custom response
         response_data = {
             "message": "Sample updated successfully",
@@ -419,22 +418,14 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     
         return Response({"message": "update formal form successful"}, status=status.HTTP_200_OK)
     
-
-
-    @action(detail=True, methods=['put'],name="back_sample_forward", url_path="back-sample-forward")
-    def back_sample_forward(self, request,pk=None):
+    @action(detail=True, methods=['patch'],name="is_back_submit_sample", url_path="back-sample-submit-smu")
+    def is_back_submit_sample(self, request,pk=None):
         instance = self.get_object()
-        instance.is_back = None
-        instance.submit_back_remarks = request.data.get('forward_remarks')
-        # Save the updated object to the database
-        instance.save()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        # Create a custom response
-        response_data = {
-            "message": "Sample updated successfully",
-        }
-
-        return Response({"message": "update formal form successful"}, status=status.HTTP_200_OK)
+        self.perform_update(serializer)
+        return Response({"message": "back submit successful","data": serializer.data}, status=status.HTTP_200_OK)
     
     @action(detail=True, methods=['patch'],name="patch_formal_form", url_path="patch-formal-form")
     def patch_formal_form(self, request,pk=None):
@@ -443,9 +434,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         response_data = {
             "message": "Sample updated successfully",
         }
-        print(" going to patch")
-        if request.user.role == roles.INSPECTOR or  instance.client_category_detail.client_category_id == 12:   
-            print("this is formal patch")        
+        if request.user.role == roles.INSPECTOR or  instance.client_category_detail.client_category_id == 12:        
             inspector_data = PatchInspectorSampleForm(instance.id,request,"update")
             response_data['inspector_sample_form_detail']=inspector_data
         return Response({"message": "update formal form successful"}, status=status.HTTP_200_OK)
