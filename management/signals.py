@@ -236,7 +236,8 @@ def SupervisorHaveParameterAfterSave(sender, instance , created , **kwargs):
                 sample_form_obj = SampleForm.objects.filter(id=instance.sample_form.id)
                 if sample_form_obj.first().client_category_detail.client_category_id == 12:
                     sup_status = "completed"
-                if sample_form_obj.is_back == "supervisor_back":
+                if sample_form_obj.first().is_back == "supervisor_back":
+                    print("\n supervisor_back")
                     sample_form_obj.update(is_analyst_test = sup_is_analyst_test,status=sup_status,is_back = '',submit_back_remarks = instance.remarks)
                 else:
                     sample_form_obj.update(is_analyst_test = sup_is_analyst_test,status=sup_status)
