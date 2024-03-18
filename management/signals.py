@@ -308,8 +308,11 @@ def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
                 sample_form_obj.form_available = "verifier"
                 sample_form_obj.verified_date = timezone.now()
                 sample_form_obj.remarks = instance.remarks
-                sample_form_obj.save()
+                if sample_form_obj.is_back == 'verifier_back':
+                    sample_form_obj.is_back = ''
+                    sample_form_obj.submit_back_remarks = instance.remarks
 
+                sample_form_obj.save()
                 sampleFormNotificationHandler(instance,"assigned_admin")
 
 

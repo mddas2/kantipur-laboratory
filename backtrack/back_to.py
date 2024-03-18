@@ -31,6 +31,7 @@ def BackToRole(sample_form,request,role,remarks):
         to_back = SampleForm.objects.get(id = sample_form).verified_by_id
         form_available = "verifier"
         SampleForm.objects.filter(id = sample_form).update(status='not_verified')
+        SampleFormVerifier.objects.filter(sample_form_id = sample_form).update(is_verified = False)
         print("not verified ")
     
     data = {
