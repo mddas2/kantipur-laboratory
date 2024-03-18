@@ -236,7 +236,10 @@ def SupervisorHaveParameterAfterSave(sender, instance , created , **kwargs):
                 sample_form_obj = SampleForm.objects.filter(id=instance.sample_form.id)
                 if sample_form_obj.first().client_category_detail.client_category_id == 12:
                     sup_status = "completed"
-                sample_form_obj.update(is_analyst_test = sup_is_analyst_test,status=sup_status)
+                if sample_form_obj.is_back == "supervisor_back":
+                    sample_form_obj.update(is_analyst_test = sup_is_analyst_test,status=sup_status,is_back = '',submit_back_remarks = instance.remarks)
+                else:
+                    sample_form_obj.update(is_analyst_test = sup_is_analyst_test,status=sup_status)
                 
         elif instance.is_supervisor_sent == False:
             if sample_obj_param == supervisor_param:
@@ -257,7 +260,6 @@ def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
         if instance.is_supervisor_sent == True:
             SampleFormParameterFormulaCalculate.objects.filter(sample_form_has_parameter_id = instance.pk,is_locked = False).update(is_locked = True)
         else:
-            SampleFormParameterFormulaCalculate.objects.filter(sample_form_has_parameter_id = instance.pk,is_locked = True).update(is_locked = False) #additional line...
             SuperVisorSampleForm.objects.filter(id = instance.super_visor_sample_form_id).update(status = "processing")
         # sampleFormNotificationHandler(instance,"assigned_analyst")
         

@@ -1018,6 +1018,7 @@ class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
                         AlterRawDataStatus(obj)
                         obj.is_supervisor_sent = False
                         obj.status = "processing"
+                        SampleFormParameterFormulaCalculate.objects.filter(sample_form_has_parameter_id = obj.id).delete() #other analyst result left, so delete.
                         obj.save()
                         #print("this sample form has parameter have single parameter and this is changable analyst and this parameter and changeble analyst is not exist, so this need to create new and then delete,or simply change analyst name")
                     
