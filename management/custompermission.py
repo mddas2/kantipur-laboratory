@@ -75,7 +75,7 @@ class SampleFormViewSetPermission(BasePermission):
             return SMU_SUPERADMIN_INSPECTOR_Permission(request)
         elif method_name == 'patch_formal_form':
             return SMU_SUPERADMIN_INSPECTOR_SUPERVISOR_Permission(request)
-        elif method_name == 'update':    
+        elif method_name == 'update':  
             if view.get_object().status == "pending" or view.get_object().status == "not_assigned":   
                 pass
             else:

@@ -73,6 +73,7 @@ class CustomUserListSerializer(serializers.ModelSerializer):
 
 
 class CustomUserRetrieveSerializer(serializers.ModelSerializer):
+    client_category_name = serializers.CharField(source='client_category.name', read_only=True)
     custom_user_image = CustomUserImageSerializer(many = True,read_only = True)
     approved_by = ApprovedBySerializer(read_only = True)
     inspector = UserHaveReadInspectorSerializer(many = False,read_only = False)
@@ -80,7 +81,18 @@ class CustomUserRetrieveSerializer(serializers.ModelSerializer):
         ref_name =  "account serializers"
         model = CustomUser
         exclude = ['password']
-     
+   
+class CustomUserProfileSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model=CustomUser
+        fields =  ['first_name','last_name','phone','email','username','role','test_type','date_joined']   
+
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['role'] = instance.get_role_display()
+        return representation
 class CustomUserReadAssignedSerializer(serializers.ModelSerializer):
      class Meta:
         ref_name =  "CustomUserReadAssignedSerializer"

@@ -74,7 +74,7 @@ def handle_sampleform_presave(sender, instance, **kwargs):
 @receiver(post_save, sender=SampleForm)
 def handle_sampleform_presave(sender, instance ,created , **kwargs):
     if instance.status == "completed":
-        print(" finaal completed md")
+        print(instance)
         sampleFormNotificationHandler(instance,"approved_sample_form")
         sendFinalreport(instance)
     # if created:

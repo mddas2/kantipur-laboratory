@@ -4,6 +4,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from account import roles
 from account.models import CustomUser
+from account.serializers import CustomUserProfileSerializer
 from management.models import SampleForm,SampleFormHasParameter,SampleFormVerifier,SuperVisorSampleForm,SampleFormParameterFormulaCalculate
 from django.db.models import Q
 from rest_framework.response import Response
@@ -201,6 +202,8 @@ class ProfileReportStatus(views.APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request, user_id):        
         user_role = CustomUser.objects.get(id=user_id).role
+        users_data = CustomUserProfileSerializer(CustomUser.objects.get(id=user_id)).data
+        print(users_data)
         if user_role in [roles.SUPERADMIN,roles.SMU,roles.ADMIN]:
             total_users = CustomUser.objects.all().count()
             total_sample_forms_obj = SampleForm.objects.all()
@@ -268,6 +271,7 @@ class ProfileReportStatus(views.APIView):
                 'task_by_supervisor':task_by_supervisor,
                 'report_generated_week':report_generated_week,
                 'test_type_data':test_type_data,
+                'users_data' :users_data,
             }
             
 
@@ -561,8 +565,6 @@ def reportGeneratedWeek(query):
             "count":count,
         }
         report_generated_week.append(data)
-        # print(entry)
-        # print(f"{entry['day'].strftime('%A')}: {entry['count']}")
     return report_generated_week
 
 def testTypeData(query):

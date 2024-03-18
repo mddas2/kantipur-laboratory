@@ -251,7 +251,7 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
         if client_category_detail == 11:
             #representation['name'] = instance.commodity.name #"error md fix" #sample_name
             if instance.new_name != None:
-                representation['name'] = instance.new_name#instance.new_namess
+                representation['name'] = instance.name #instance.new_names to instance.name Sagar Neupane
         representation['client_category'] = client_category_detail
         
 

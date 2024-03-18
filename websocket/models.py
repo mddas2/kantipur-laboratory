@@ -11,7 +11,6 @@ class Notification(models.Model):
     content_type = models.ForeignKey(ContentType,on_delete=models.CASCADE,null=True)
     object_id = models.PositiveIntegerField(null=True)
     content_object = GenericForeignKey('content_type','object_id')
-
     method_type =models.CharField(max_length = 350,null = True)
     
     notification_message = models.CharField(max_length=200,null=True)

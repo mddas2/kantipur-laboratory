@@ -54,4 +54,6 @@ urlpatterns = [
     path('get-commodity-category-only/', views.commodityCategoryLimitedData.as_view(), name='commodityCategoryLimitedData'),
     
     path('is-print-save-sample-form/<int:sample_form>/', is_print.SampleFormIsPrint.as_view(), name='SampleFormIsPrint'),
+
+    path('all-samples-profile-view/',views.SamplesProfileViewset.as_view(),name="SampleProfileViewset")
 ]

@@ -244,7 +244,6 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         id = generateDecodeIdforSampleForm(self.kwargs['pk'],user) 
         queryset = self.get_queryset()
         obj = queryset.filter(id=id).first()
-        print(obj)
         if not obj:
             raise Http404("Object not found")
         return obj
@@ -255,9 +254,11 @@ class SampleFormViewSet(viewsets.ModelViewSet):
             query = SampleForm.objects.filter(client_category_detail__client_category_id=12).filter(Q(form_available = 'smu') or Q(status = "not_assigned")).filter(~Q(status = "rejected")).filter(~Q(status = "recheck"))
         elif self.action == 'is_back_sample':
             query = SampleForm.objects.filter(is_back = 'smu_back')
+        elif self.action == 'back_sample_forward':
+            query = SampleForm.objects.filter(is_back = 'smu_back')
         elif self.action == 'patch_formal_form' and user.role == roles.SUPERVISOR and user.is_public_analyst:
             query =  SampleForm.objects.all().filter(~Q(status="completed")).filter(~Q(status="rejected") )
-        elif user.role == roles.USER:         
+        elif user.role == roles.USER:        
             query =  SampleForm.objects.filter(Q(owner_user_obj_id = user.id)).filter(~Q(status="completed")).filter(~Q(status="rejected") )
         elif user.role == roles.INSPECTOR:
             query =  SampleForm.objects.filter(Q(owner_user_obj_id = user.id)).filter(~Q(status="completed")).filter(~Q(status="rejected") )
@@ -276,7 +277,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
             query = query.filter(client_category_detail__client_category=12)
         else:
             query = query.filter(~Q(client_category_detail__client_category=12))
-        
+
         return query.order_by("-created_date")
         
     def get_serializer_class(self):
@@ -403,7 +404,6 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data)
         serializer.is_valid(raise_exception=True)
-
         # Save the updated object to the database
         self.perform_update(serializer)
 
@@ -417,6 +417,23 @@ class SampleFormViewSet(viewsets.ModelViewSet):
             inspector_data = CreateInspectorSampleForm(serializer.data.get('id',None),request,"update")
             response_data['inspector_sample_form_detail']=inspector_data
     
+        return Response({"message": "update formal form successful"}, status=status.HTTP_200_OK)
+    
+
+
+    @action(detail=True, methods=['put'],name="back_sample_forward", url_path="back-sample-forward")
+    def back_sample_forward(self, request,pk=None):
+        instance = self.get_object()
+        instance.is_back = None
+        instance.submit_back_remarks = request.data.get('forward_remarks')
+        # Save the updated object to the database
+        instance.save()
+
+        # Create a custom response
+        response_data = {
+            "message": "Sample updated successfully",
+        }
+
         return Response({"message": "update formal form successful"}, status=status.HTTP_200_OK)
     
     @action(detail=True, methods=['patch'],name="patch_formal_form", url_path="patch-formal-form")
@@ -443,6 +460,8 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     def retrieve_formal_form(self, request,*args,**kwargs):
         response = super().retrieve(request, *args, **kwargs)
         return response
+    
+        
     
     def partial_update(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -1097,3 +1116,31 @@ def PatchInspectorSampleForm(sample_form_id,request_data,create_update):
     inspector_serializer.is_valid(raise_exception=True)
     inspector_serializer.save()
     return inspector_serializer.data
+
+
+
+
+
+
+
+#Sagar Neupane
+class SamplesProfileViewset(generics.ListAPIView):
+    queryset = SampleForm.objects.all()
+    serializer_class = SampleFormRetrieveSerializer
+    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    search_fields = ['id','name','owner_user_obj__email','status','form_available','commodity__name','refrence_number','sample_lab_id']
+    ordering_fields = ['name','id']
+    filterset_fields = {
+        'name': ['exact', 'icontains'],
+        'status': ['exact'],
+        'form_available': ['exact'],
+        'commodity_id': ['exact'],
+        'created_date': ['date__gte', 'date__lte'],  # Date filtering
+        'client_category_detail__client_category':['exact'],
+    }
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    pagination_class = MyPageNumberPagination
+
+
+
