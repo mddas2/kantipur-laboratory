@@ -54,5 +54,4 @@ urlpatterns = [
     path('get-commodity-category-only/', views.commodityCategoryLimitedData.as_view(), name='commodityCategoryLimitedData'),
     
     path('is-print-save-sample-form/<int:sample_form>/', is_print.SampleFormIsPrint.as_view(), name='SampleFormIsPrint'),
-    path('is-back-supervisor-change/',SupervisorChange.as_view,name = "SupervisorChange"),
 ]
