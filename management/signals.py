@@ -201,6 +201,7 @@ def supervisor_sample_form_has_parameter_m2m_changed(sender, instance, action, r
 @receiver(post_save, sender=SuperVisorSampleForm)
 def SupervisorHaveParameterAfterSave(sender, instance , created , **kwargs):
     if created:
+        SampleForm.objects.filter(id = instance.sample_form.id).update(status = "processing",form_available = "supervisor")
         sampleFormNotificationHandler(instance,"assigned_supervisor")
 
     if instance.is_supervisor_sent == True:      
