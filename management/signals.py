@@ -200,47 +200,30 @@ def supervisor_sample_form_has_parameter_m2m_changed(sender, instance, action, r
 @transaction.atomic
 @receiver(post_save, sender=SuperVisorSampleForm)
 def SupervisorHaveParameterAfterSave(sender, instance , created , **kwargs):
-    print(instance.status, " supervisor instance status")
     if created:
         sampleFormNotificationHandler(instance,"assigned_supervisor")
 
     if instance.is_supervisor_sent == True:      
-     
-        supervisor_objs = SuperVisorSampleForm.objects.filter(sample_form = instance.sample_form.id)
-        sup_is_analyst_test = False
         sup_status = "processing"
-        
-        supervisor_param = 0
-        for supervisor_obj in supervisor_objs: # if all supervisor analyst_test is True then update in sample form is_analyst_test = True
-            param = supervisor_obj.parameters.all().count()
-            supervisor_param = supervisor_param + param            
-            check = supervisor_obj.is_supervisor_sent
-            if check == True:
-                sup_is_analyst_test = True
-                sup_status = "not_verified"
-            else:
-                sup_is_analyst_test = False
-                sup_status = "processing"
-                break
-  
+
         sample_obj_param = instance.sample_form.parameters.all().count()
+        supervisor_param = instance.parameters.all().count()
        
-        if sup_is_analyst_test == True and sample_obj_param == supervisor_param:
+        if instance.is_analyst_test == True and sample_obj_param == supervisor_param:
             data = {
                 'is_verified':False,
                 'is_sent':True,
             }
+            sup_status = "not_verified"
             verifier_obj,created = SampleFormVerifier.objects.update_or_create(sample_form_id = instance.sample_form_id,defaults=data)
             if created or verifier_obj != None:
-                # print("reached to verifier")
                 sample_form_obj = SampleForm.objects.filter(id=instance.sample_form.id)
                 if sample_form_obj.first().client_category_detail.client_category_id == 12:
                     sup_status = "completed"
                 if sample_form_obj.first().is_back == "supervisor_back":
-                    print("\n supervisor_back")
-                    sample_form_obj.update(is_analyst_test = sup_is_analyst_test,status=sup_status,is_back = '',submit_back_remarks = instance.remarks)
+                    sample_form_obj.update(is_analyst_test = True,status=sup_status,is_back = '',submit_back_remarks = instance.remarks)
                 else:
-                    sample_form_obj.update(is_analyst_test = sup_is_analyst_test,status=sup_status)
+                    sample_form_obj.update(is_analyst_test = True,status=sup_status)
                 
         elif instance.is_supervisor_sent == False:
             if sample_obj_param == supervisor_param:
