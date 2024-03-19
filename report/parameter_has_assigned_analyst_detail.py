@@ -48,7 +48,7 @@ class SupervisorSampleFormSerializer(serializers.ModelSerializer):
     class Meta:
         ref_name = "SupervisorSampleFormSerializer"
         model = SuperVisorSampleForm
-        fields = ['supervisor_user','remarks','created_date']
+        fields = ['id','supervisor_user','remarks','created_date']
 
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:

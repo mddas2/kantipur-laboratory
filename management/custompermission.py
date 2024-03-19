@@ -94,6 +94,7 @@ class SampleFormViewSetPermission(BasePermission):
 class SuperVisorSampleFormViewsetPermission(BasePermission):
     def has_permission(self, request, view):
         method_name = view.action
+        print(method_name, " in per")
         if method_name == 'list':
             return True
         elif method_name == 'create':
@@ -103,7 +104,7 @@ class SuperVisorSampleFormViewsetPermission(BasePermission):
         elif method_name == 'update':
             return SmuSuperAdmin(request)
         elif method_name == 'partial_update':
-            return SupervisorPermission(request)
+            return SmuSuperVisorLevelPermission(request)
         elif method_name == 'destroy':
             return False
         else:
