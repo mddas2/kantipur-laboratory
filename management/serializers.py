@@ -533,7 +533,8 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
                 remarks  = attrs.get('remarks')
                 attrs['status'] = 'not_verified'
                 UpdategenerateRawData(id,remarks) #  if sent to supervisor then generate logs
-                return attrs
+        return attrs
+        
 
 
 class SampleFormParameterFormulaCalculate_SampleFormHasParameter(serializers.ModelSerializer):
