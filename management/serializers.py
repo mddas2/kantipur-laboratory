@@ -400,7 +400,7 @@ class SampleFormSuperVisorListSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = SampleForm
-        fields = ['namuna_code','name','commodity','status','id','owner_user_obj']
+        fields = ['namuna_code','name','commodity','status','id','owner_user_obj','is_back']
 
 
 class SampleFormSuperVisorRetrieveSerializer(serializers.ModelSerializer):
@@ -509,22 +509,19 @@ class CommodityCategorySerializer(serializers.ModelSerializer):
         model = CommodityCategory
         fields = '__all__'
         
-class UniqueSampleFormValidator:
-    def __call__(self, value):
-        queryset = SuperVisorSampleForm.objects.filter(sample_form=value.get('sample_form'))
-        if queryset.exists():
-            raise serializers.ValidationError("This SampleForm is already associated with a SuperVisorSampleForm.")
-        print("validiting")
-      
         
 class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = SuperVisorSampleForm
         fields = '__all__'
-        validators = [UniqueSampleFormValidator()]
     
     def validate(self, attrs):
         action = self.context['view'].action
+
+        if action != 'partial_update':
+            queryset = SuperVisorSampleForm.objects.filter(sample_form=attrs.get('sample_form'))
+            if queryset.exists():
+                raise serializers.ValidationError("This SampleForm is already associated with a SuperVisorSampleForm.")
         
         if len(attrs) == 3 and action == 'partial_update' and 'is_supervisor_sent' in attrs and 'status' in attrs and 'remarks' in attrs:
             if attrs.get('is_supervisor_sent') == True:

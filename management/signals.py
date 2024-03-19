@@ -198,6 +198,15 @@ def supervisor_sample_form_has_parameter_m2m_changed(sender, instance, action, r
             break
 
 @transaction.atomic
+@receiver(pre_save, sender=SuperVisorSampleForm)
+def SupervisorHaveParameterPreSave(sender, instance , **kwargs):
+    if instance.pk:
+        if instance.supervisor_user != SuperVisorSampleForm.objects.filter(id = instance.pk).first().supervisor_user:
+            print(" sample form is_back set to null ")
+            SampleForm.objects.filter(id = instance.sample_form_id).update(is_back = '')
+        
+
+@transaction.atomic
 @receiver(post_save, sender=SuperVisorSampleForm)
 def SupervisorHaveParameterAfterSave(sender, instance , created , **kwargs):
     if created:

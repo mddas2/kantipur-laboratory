@@ -120,13 +120,13 @@ class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
             query = SuperVisorSampleForm.objects.filter(supervisor_user=user.id,status = "not_assigned")
         elif action == 'retrieve':
             query = SuperVisorSampleForm.objects.filter(supervisor_user=user.id)
-            if user.role == roles.SMU:
-                query = SuperVisorSampleForm.objects.all()
+        elif action == 'partial_update' and user.role == roles.SMU:
+            return SuperVisorSampleForm.objects.all()
         else:
             query = SuperVisorSampleForm.objects.filter(supervisor_user=user.id)
 
         if user.role != roles.SUPERVISOR:
-            raise PermissionDenied("You do not have permission to access thais resource.")
+            raise PermissionDenied("You do not have permission to access thais resource..")
 
         if 'sample_form__client_category_detail__client_category' in self.request.GET or self.action != 'list':
             pass
