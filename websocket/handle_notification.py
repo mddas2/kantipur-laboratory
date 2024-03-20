@@ -192,7 +192,7 @@ def sampleFormNotificationHandler(instance,notification_type):
         to_notification = CustomUser.objects.filter(role = roles.ADMIN)
         to_notification = to_notification.values_list('id', flat=True)
         from_notification =CustomUser.objects.filter(role = roles.VERIFIER).first().id
-        form_available = instance.form_available
+        form_available = "verifier"
 
     elif notification_type == "approved_sample_form":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
@@ -208,7 +208,7 @@ def sampleFormNotificationHandler(instance,notification_type):
         to_notification = to_notification.values_list('id', flat=True)
 
         from_notification =CustomUser.objects.filter(role = roles.ADMIN).first().id
-        form_available = instance.form_available
+        form_available = "admin"
 
     if create_track_obj == True:
         track_data = {
