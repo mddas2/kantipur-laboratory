@@ -16,6 +16,7 @@ from emailmanagement.sendmail_final_report import sendFinalreport
 
 from backtrack.models import SampleTrack
 from websocket.handle_notification import sampleFormNotificationHandler
+from websocket.models import Notification
 
 from account import roles
 
@@ -93,7 +94,6 @@ def handle_sampleform_presave(sender, instance, **kwargs):
 @receiver(post_save, sender=SampleForm)
 def handle_sampleform_presave(sender, instance ,created , **kwargs):
     if instance.status == "completed":
-        print(" finaal completed md")
         sampleFormNotificationHandler(instance,"approved_sample_form")
         sendFinalreport(instance)
     # if created:
@@ -221,8 +221,10 @@ def supervisor_sample_form_has_parameter_m2m_changed(sender, instance, action, r
 def SupervisorHaveParameterPreSave(sender, instance , **kwargs):
     if instance.pk:
         if instance.supervisor_user != SuperVisorSampleForm.objects.filter(id = instance.pk).first().supervisor_user:
+            Notification.objects.filter(method_type="assigned_supervisor",object_id = instance.sample_form_id).delete() 
             print(" sample form is_back set to null ")
-            SampleForm.objects.filter(id = instance.sample_form_id).update(is_back = '')
+            sampleFormNotificationHandler(instance,"assigned_supervisor")
+            SampleForm.objects.filter(id = instance.sample_form_id).update(is_back = '',status = "processing",form_available = "supervisor")
         
 
 @transaction.atomic
