@@ -64,27 +64,29 @@ def NotificationHandler(instance, request,method,model_name):
     return response_data, status.HTTP_201_CREATED
 
 def sampleFormNotificationHandler(instance,notification_type):
-
     # from_notification = mapping_notification_type.mapping[notification_type]['from_user']
+    create_track_obj = True
     if notification_type == 'back':
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']
         path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.sample_form.id)
 
-        notification_message = notification_message.format(sample_name = instance.sample_form.name,namuna_code = instance.sample_form.namuna_code,verified_by_first_name = instance.sample_form.verified_by.first_name,verified_by_last_name = instance.sample_form.verified_by.last_name)
+        notification_message = notification_message.format(sample_name = instance.sample_form.name,namuna_code = instance.sample_form.namuna_code)
 
         to_notification = [instance.to_back_id]
-        from_notification = [instance.user]
+        from_notification = instance.user_id
+        create_track_obj = False
         #store in back track model SampleTrack
     elif notification_type == 'submit_back':
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']
         path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.sample_form.id)
 
-        notification_message = notification_message.format(sample_name = instance.sample_form.name,namuna_code = instance.sample_form.namuna_code,verified_by_first_name = instance.sample_form.verified_by.first_name,verified_by_last_name = instance.sample_form.verified_by.last_name)
+        notification_message = notification_message.format(sample_name = instance.sample_form.name,namuna_code = instance.sample_form.namuna_code)
 
         to_notification = [instance.to_back_id]
-        from_notification = [instance.user]
+        from_notification = instance.user_id
+        create_track_obj = False
 
     elif notification_type == "new_sample_form":
         #SampleTrack
@@ -101,6 +103,7 @@ def sampleFormNotificationHandler(instance,notification_type):
         to_notification = to_notification.values_list('id', flat=True)
 
         from_notification = instance.owner_user_obj_id
+        form_available = "smu"
     
     if notification_type == "recheck_sample":
         #SampleTrack
@@ -117,6 +120,7 @@ def sampleFormNotificationHandler(instance,notification_type):
 
         to_notification = [instance.owner_user_obj_id]
         from_notification = CustomUser.objects.filter(role = roles.SMU).first().id
+        form_available = "smu"
    
     elif notification_type == "assigned_supervisor":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
@@ -127,6 +131,7 @@ def sampleFormNotificationHandler(instance,notification_type):
         to_notification = [instance.supervisor_user_id]  # here instance is supervisoruser
 
         from_notification = CustomUser.objects.filter(role = roles.SMU).first().id
+        form_available = "supervisor"
 
     elif notification_type == "assigned_analyst":
         print(" re- assigned analyst ")
@@ -138,6 +143,7 @@ def sampleFormNotificationHandler(instance,notification_type):
 
         to_notification = [instance.analyst_user_id] # here instance is sampleformhasparameter
         from_notification = instance.super_visor_sample_form.supervisor_user_id
+        form_available = "analayst"
 
     elif notification_type == "sent_to_supervisor":
 
@@ -151,6 +157,7 @@ def sampleFormNotificationHandler(instance,notification_type):
         notification_message = notification_message.format(sample_name = instance.sample_form.name,namuna_code = instance.sample_form.namuna_code,analyst_first_name = instance.analyst_user.first_name,analyst_last_name=instance.analyst_user.last_name)
         to_notification = [instance.super_visor_sample_form.supervisor_user_id]#[instance.analyst_user_id] # here instance is sampleformhasparameter
         from_notification = instance.analyst_user_id
+        form_available = "supervisor"
     
     elif notification_type == "parameter_recheck":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
@@ -160,6 +167,7 @@ def sampleFormNotificationHandler(instance,notification_type):
         notification_message = notification_message.format(sample_name = instance.sample_form.name,namuna_code = instance.sample_form.namuna_code,supervisor_first_name=instance.sample_form_has_parameter.super_visor_sample_form.supervisor_user.first_name,supervisor_last_name=instance.sample_form_has_parameter.super_visor_sample_form.supervisor_user.last_name)
         to_notification = [instance.sample_form_has_parameter.analyst_user_id] # here instance is sampleformhasparameter
         from_notification = instance.sample_form_has_parameter.super_visor_sample_form.supervisor_user_id
+        form_available = "analyst"
 
     elif notification_type == "assigned_verifier":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
@@ -172,6 +180,7 @@ def sampleFormNotificationHandler(instance,notification_type):
         to_notification = CustomUser.objects.filter(role = roles.VERIFIER)
         to_notification = to_notification.values_list('id', flat=True)
         from_notification = instance.sample_form.supervisor_sample_form.first().supervisor_user_id
+        form_available = "verifier"
 
     elif notification_type == "assigned_admin":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
@@ -183,6 +192,7 @@ def sampleFormNotificationHandler(instance,notification_type):
         to_notification = CustomUser.objects.filter(role = roles.ADMIN)
         to_notification = to_notification.values_list('id', flat=True)
         from_notification =CustomUser.objects.filter(role = roles.VERIFIER).first().id
+        form_available = instance.form_available
 
     elif notification_type == "approved_sample_form":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
@@ -198,17 +208,18 @@ def sampleFormNotificationHandler(instance,notification_type):
         to_notification = to_notification.values_list('id', flat=True)
 
         from_notification =CustomUser.objects.filter(role = roles.ADMIN).first().id
+        form_available = instance.form_available
 
-    
-    track_data = {
-        'sample_form_id':instance,
-        'user':from_notification,
-        'to_back':to_notification[0],
-        'remarks':notification_message,
-        'status':notification_type,
-        'form_available':instance.form_available,
-    }
-    create_obj = SampleTrack.objects.create(**track_data) #this data is for model sample track
+    if create_track_obj == True:
+        track_data = {
+            'sample_form_id':instance.id,
+            'user_id':from_notification,
+            'to_back_id':to_notification[0],
+            'remarks':notification_message,
+            'status':notification_type,
+            'form_available':form_available
+        }
+        create_obj = SampleTrack.objects.create(**track_data) #this data is for model sample track
 
     notification_data = {
         "notification_message": notification_message,

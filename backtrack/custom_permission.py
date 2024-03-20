@@ -15,9 +15,9 @@ def VerifyOwner(request,sample_form,role):
         print(request.user.role," to " , role, '\n', 'sample_form_status:' ,SampleForm.objects.get(id = sample_form).status," matpped_data",verify)
         sample_obj = SampleForm.objects.get(id = sample_form)
         if verify[1] == sample_obj.status:
-            track_sample = sample_obj.track_sample.all().exists()
+            track_sample = sample_obj.track_sample.all()
             print(track_sample, " track sample ")
-            if track_sample:
+            if track_sample.exists():
                 if track_sample.last().status != 'back':
                     return True
                 else:

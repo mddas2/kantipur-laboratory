@@ -55,8 +55,9 @@ def handle_sampleform_presave(sender, instance, **kwargs):
                 # print(instance.name,instance.new_name)
     
     else:
-        if instance.is_back_submit != SampleForm.objects.filter(id = instance.id).is_back_submit:
+        if instance.is_back_submit != SampleForm.objects.get(id = instance.id).is_back_submit:
             back_track_obj = SampleTrack.objects.filter(sample_form_id =  instance.id,status = "back").last()
+            print("smu submit back to:: ",instance.is_back_submit,SampleForm.objects.get(id = instance.id).is_back_submit)
             data = {
                 'sample_form_id':instance,
                 'user':back_track_obj.to_back,

@@ -26,19 +26,18 @@ def BackToRole(sample_form,request,role,remarks):
     elif role == roles.SUPERVISOR:
         supervisor_obj = SuperVisorSampleForm.objects.filter(sample_form_id = sample_form)
         supervisor_obj.update(is_supervisor_sent = False)
-        to_back = supervisor_obj.first().supervisor_user_id
+        to_back = supervisor_obj.first().supervisor_user
         form_available = "supervisor"
     elif role == roles.VERIFIER:
-        to_back = SampleForm.objects.get(id = sample_form).verified_by_id
+        to_back = CustomUser.objects.filter(role = roles.VERIFIER).first()
         form_available = "verifier"
         sample_form_obj.update(status='not_verified')
         SampleFormVerifier.objects.filter(sample_form_id = sample_form).update(is_verified = False)
-        print("not verified ")
     
     data = {
         'sample_form_id':sample_form,
-        'user':from_back,
-        'to_back':to_back,
+        'user_id':from_back.id,
+        'to_back_id':to_back.id,
         'remarks':remarks,
         'status':"back",
         'form_available':form_available,

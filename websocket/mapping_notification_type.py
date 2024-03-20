@@ -75,7 +75,7 @@ mapping = {
         "user_path":frontend_setting.final_report_path,  #sagar put full path here
         "user_message":"A sample report of {sample_name} ({namuna_code}) has been approved by admin",
     },
-       "is_back":{
+       "back":{
         "model_name":"SampleTrack",
         "from_user":['verifier'],
         "to_users":['user','smu','admin','supervisor','analyst'],#user, smu,supervisor,superadmin,verifier
