@@ -559,8 +559,8 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
         
         elif action == 'update' or action == 'partial_update':            
             instance_id = self.instance.id 
-        
-            sample_form_has_parameter_obj = SuperVisorSampleForm.objects.get(id=instance_id)  
+            sample_form_has_parameter_obj = SuperVisorSampleForm.objects.get(id=instance_id) 
+           
 
             if SuperVisorSampleForm.objects.filter(sample_form=sample_form, supervisor_user=supervisor_user).exists() and sample_form_has_parameter_obj.sample_form == sample_form:
                 pass

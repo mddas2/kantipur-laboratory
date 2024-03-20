@@ -169,6 +169,9 @@ class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
+        sample_form_instance = instance.sample_form
+        sample_form_instance.is_back = None
+        sample_form_instance.save()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
 
@@ -187,6 +190,9 @@ class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
     def partial_update(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=True)
+        sample_form_instance = instance.sample_form
+        sample_form_instance.is_back = None
+        sample_form_instance.save()
         serializer.is_valid(raise_exception=True)
 
         # Save the updated object to the database
@@ -254,8 +260,9 @@ class SampleFormViewSet(viewsets.ModelViewSet):
             query = SampleForm.objects.filter(client_category_detail__client_category_id=12).filter(Q(form_available = 'smu') or Q(status = "not_assigned")).filter(~Q(status = "rejected")).filter(~Q(status = "recheck"))
         elif self.action in ['is_back_sample','is_back_submit_sample']:
             query = SampleForm.objects.filter(is_back = 'smu_back')
-        elif self.action == 'back_sample_forward':
-            query = SampleForm.objects.filter(is_back = 'smu_back')
+           
+        # elif self.action == 'back_sample_forward':
+        #     query = SampleForm.objects.filter(is_back = 'smu_back')
         elif self.action == 'patch_formal_form' and user.role == roles.SUPERVISOR and user.is_public_analyst:
             query =  SampleForm.objects.all().filter(~Q(status="completed")).filter(~Q(status="rejected") )
         elif user.role == roles.USER:        
@@ -420,7 +427,10 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     
     @action(detail=True, methods=['patch'],name="is_back_submit_sample", url_path="back-sample-submit-smu")
     def is_back_submit_sample(self, request,pk=None):
+        print(pk)
         instance = self.get_object()
+        print('hhhh',instance)
+        print('------helloooo------------',pk,instance)
         serializer = self.get_serializer(instance, data=request.data)
         serializer.is_valid(raise_exception=True)
 
