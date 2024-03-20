@@ -13,6 +13,10 @@ from websocket.handle_notification import sampleFormNotificationHandler
 from django.db.models import Q
 from . import additional_data
 from emailmanagement.sendmail_final_report import sendFinalreport
+
+from backtrack.models import SampleTrack
+from websocket.handle_notification import sampleFormNotificationHandler
+
 from account import roles
 
 @transaction.atomic
@@ -51,6 +55,19 @@ def handle_sampleform_presave(sender, instance, **kwargs):
                 # print(instance.name,instance.new_name)
     
     else:
+        if instance.is_back_submit != SampleForm.objects.filter(id = instance.id).is_back_submit:
+            back_track_obj = SampleTrack.objects.filter(sample_form_id =  instance.id,status = "back").last()
+            data = {
+                'sample_form_id':instance,
+                'user':back_track_obj.to_back,
+                'to_back':back_track_obj.user,
+                'remarks':instance.submit_back_remarks,
+                'status':'submit_back',
+                'form_available':instance.form_available,
+            }
+            create_obj = SampleTrack.objects.create(**data)
+            sampleFormNotificationHandler(create_obj,'submit_back')
+
         if instance.status == "completed":
 
             sample_form_has_parameter_obj = instance.sample_has_parameter_analyst
@@ -62,6 +79,7 @@ def handle_sampleform_presave(sender, instance, **kwargs):
             instance.completed_date = timezone.now()
             instance.approved_date = timezone.now()
             instance.form_available = 'admin'
+        
         
     # if instance.id:
     #     original_sample_form_status = SampleForm.objects.get(pk=instance.id).supervisor_user

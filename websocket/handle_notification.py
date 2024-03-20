@@ -65,13 +65,26 @@ def NotificationHandler(instance, request,method,model_name):
 def sampleFormNotificationHandler(instance,notification_type):
 
     # from_notification = mapping_notification_type.mapping[notification_type]['from_user']
-    if notification_type == 'is_back':
-        print("creating is_back notification")
-        pass
+    if notification_type == 'back':
+        notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
+        particular_message = mapping_notification_type.mapping[notification_type]['user_message']
+        path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.sample_form.id)
+
+        notification_message = notification_message.format(sample_name = instance.sample_form.name,namuna_code = instance.sample_form.namuna_code,verified_by_first_name = instance.sample_form.verified_by.first_name,verified_by_last_name = instance.sample_form.verified_by.last_name)
+
+        to_notification = [instance.to_back_id]
+        from_notification = [instance.user]
         #store in back track model SampleTrack
     elif notification_type == 'submit_back':
-        pass
-        #store in back track model
+        notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
+        particular_message = mapping_notification_type.mapping[notification_type]['user_message']
+        path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.sample_form.id)
+
+        notification_message = notification_message.format(sample_name = instance.sample_form.name,namuna_code = instance.sample_form.namuna_code,verified_by_first_name = instance.sample_form.verified_by.first_name,verified_by_last_name = instance.sample_form.verified_by.last_name)
+
+        to_notification = [instance.to_back_id]
+        from_notification = [instance.user]
+
     elif notification_type == "new_sample_form":
         #SampleTrack
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
