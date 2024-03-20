@@ -89,7 +89,7 @@ mapping = {
         "from_user":['verifier'],
         "to_users":['user','smu','admin','supervisor','analyst'],#user, smu,supervisor,superadmin,verifier
         "path":"#",
-        "admin_message":"A sample <strong>{sample_name} ({namuna_code})</strong> has sent submit back to you.",
+        "admin_message":"A sample <strong>{sample_name} ({namuna_code})</strong> has been submitted back to you by SMU",
         "user_path":"#", 
         "user_message":"..",
     }
