@@ -59,7 +59,7 @@ def handle_sampleform_presave(sender, instance, **kwargs):
             back_track_obj = SampleTrack.objects.filter(sample_form_id =  instance.id,status = "back").last()
             print("smu submit back to:: ",instance.is_back_submit,SampleForm.objects.get(id = instance.id).is_back_submit)
             data = {
-                'sample_form_id':instance,
+                'sample_form_id':instance.id,
                 'user':back_track_obj.to_back,
                 'to_back':back_track_obj.user,
                 'remarks':instance.submit_back_remarks,
