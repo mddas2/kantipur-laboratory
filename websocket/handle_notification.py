@@ -7,6 +7,7 @@ from account import roles
 from django.db.models import Q
 from management import encode_decode
 from django.contrib.contenttypes.models import ContentType
+from backtrack.models import SampleTrack
 
 def NotificationHandler(instance, request,method,model_name):
     # return True
@@ -197,6 +198,17 @@ def sampleFormNotificationHandler(instance,notification_type):
         to_notification = to_notification.values_list('id', flat=True)
 
         from_notification =CustomUser.objects.filter(role = roles.ADMIN).first().id
+
+    
+    track_data = {
+        'sample_form_id':instance,
+        'user':from_notification,
+        'to_back':to_notification[0],
+        'remarks':notification_message,
+        'status':notification_type,
+        'form_available':instance.form_available,
+    }
+    create_obj = SampleTrack.objects.create(**track_data) #this data is for model sample track
 
     notification_data = {
         "notification_message": notification_message,
