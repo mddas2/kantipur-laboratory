@@ -75,16 +75,13 @@ def sampleFormNotificationHandler(instance,notification_type):
 
         print("notification handling path::",to_back_role)
         if to_back_role == roles.SMU:
-            role = "Smu"
             path = '/dashboard/sample-assigned-details/'+str(instance.sample_form.id)
         elif to_back_role == roles.SUPERVISOR:
-            role = "Supervisor"
             path = "/dashboard/sample-report/" + str(SuperVisorSampleForm.objects.filter(sample_form_id = instance.sample_form_id).first().id)
         elif to_back_role == roles.VERIFIER:
-            role = "Verifier"
             path =  "/dashboard/verify-sample-report/" + str(instance.sample_form.sample_lab_id)
 
-        notification_message = notification_message.format(sample_name = instance.sample_form.name,namuna_code = instance.sample_form.namuna_code,role=role)
+        notification_message = notification_message.format(sample_name = instance.sample_form.name,namuna_code = instance.sample_form.namuna_code,role=instance.user.getRoleName)
 
         to_notification = [instance.to_back_id]
         from_notification = instance.user_id
