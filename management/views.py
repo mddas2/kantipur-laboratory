@@ -196,7 +196,7 @@ class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
 
         # Create a custom response
         response_data = {
-            "message": "partially updated successfully",
+            "message": "data updated successully.",
             "data": serializer.data
         }
 
@@ -461,7 +461,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         # print(serializer.data)
         # Create a custom response
         response_data = {
-            "message": "Sample partially updated successfully",
+            "message": "Sample updated successfully.",
             "data": serializer.data
         }
 
