@@ -8,6 +8,7 @@ from django.db.models import Q
 from management import encode_decode
 from django.contrib.contenttypes.models import ContentType
 from backtrack.models import SampleTrack
+from management.models import SuperVisorSampleForm
 
 def NotificationHandler(instance, request,method,model_name):
     # return True
@@ -69,7 +70,15 @@ def sampleFormNotificationHandler(instance,notification_type):
     if notification_type == 'back':
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']
-        path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.sample_form.id)
+        to_back_role = instance.to_back.role
+
+        print("notification handling path::",to_back_role)
+        if to_back_role == roles.SMU:
+            path = '/dashboard/sample-assigned-details/'+str(instance.sample_form.id)
+        elif to_back_role == roles.SUPERVISOR:
+            path = "/dashboard/sample-report/" + str(SuperVisorSampleForm.objects.filter(sample_form_id = instance.sample_form_id).first().id)
+        elif to_back_role == roles.VERIFIER:
+            path =  "/dashboard/verify-sample-report/" + str(instance.sample_form.sample_lab_id)
 
         notification_message = notification_message.format(sample_name = instance.sample_form.name,namuna_code = instance.sample_form.namuna_code)
 
