@@ -13,6 +13,11 @@ from websocket.handle_notification import sampleFormNotificationHandler
 from django.db.models import Q
 from . import additional_data
 from emailmanagement.sendmail_final_report import sendFinalreport
+
+from backtrack.models import SampleTrack
+from websocket.handle_notification import sampleFormNotificationHandler
+from websocket.models import Notification
+
 from account import roles
 
 @transaction.atomic
@@ -51,6 +56,20 @@ def handle_sampleform_presave(sender, instance, **kwargs):
                 # print(instance.name,instance.new_name)
     
     else:
+        if instance.is_back_submit != SampleForm.objects.get(id = instance.id).is_back_submit:
+            back_track_obj = SampleTrack.objects.filter(sample_form_id =  instance.id,status = "back").last()
+            print("smu submit back to:: ",instance.is_back_submit,SampleForm.objects.get(id = instance.id).is_back_submit)
+            data = {
+                'sample_form_id':instance.id,
+                'user':back_track_obj.to_back,
+                'to_back':back_track_obj.user,
+                'remarks':instance.submit_back_remarks,
+                'status':'submit_back',
+                'form_available':instance.form_available,
+            }
+            create_obj = SampleTrack.objects.create(**data)
+            sampleFormNotificationHandler(create_obj,'submit_back')
+
         if instance.status == "completed":
 
             sample_form_has_parameter_obj = instance.sample_has_parameter_analyst
@@ -63,6 +82,7 @@ def handle_sampleform_presave(sender, instance, **kwargs):
             instance.approved_date = timezone.now()
             instance.form_available = 'admin'
         
+        
     # if instance.id:
     #     original_sample_form_status = SampleForm.objects.get(pk=instance.id).supervisor_user
 
@@ -74,7 +94,6 @@ def handle_sampleform_presave(sender, instance, **kwargs):
 @receiver(post_save, sender=SampleForm)
 def handle_sampleform_presave(sender, instance ,created , **kwargs):
     if instance.status == "completed":
-        print(instance)
         sampleFormNotificationHandler(instance,"approved_sample_form")
         sendFinalreport(instance)
     # if created:
@@ -200,8 +219,10 @@ def supervisor_sample_form_has_parameter_m2m_changed(sender, instance, action, r
 def SupervisorHaveParameterPreSave(sender, instance , **kwargs):
     if instance.pk:
         if instance.supervisor_user != SuperVisorSampleForm.objects.filter(id = instance.pk).first().supervisor_user:
+            Notification.objects.filter(method_type="assigned_supervisor",object_id = instance.sample_form_id).delete() 
             print(" sample form is_back set to null ")
-            SampleForm.objects.filter(id = instance.sample_form_id).update(is_back = '')
+            sampleFormNotificationHandler(instance,"assigned_supervisor")
+            SampleForm.objects.filter(id = instance.sample_form_id).update(is_back = '',status = "processing",form_available = "supervisor")
         
 
 @transaction.atomic

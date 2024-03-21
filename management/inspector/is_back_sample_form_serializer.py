@@ -21,7 +21,8 @@ class IsBackSubmitSampleFormSerializer(serializers.ModelSerializer):
     def validate_is_back_submit(self,value):
         request = self.context.get('request')
         if request.user.role in [roles.SMU,roles.SUPERVISOR,roles.VERIFIER]:
-            return True    
+           
+            return value    
         raise serializers.ValidationError('You have not permission to set is_back_submit.')
     
     def validate_submit_back_remarks(self,value):
