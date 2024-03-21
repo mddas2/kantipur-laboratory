@@ -221,8 +221,6 @@ def supervisor_sample_form_has_parameter_m2m_changed(sender, instance, action, r
 def SupervisorHaveParameterPreSave(sender, instance , **kwargs):
     if instance.pk:
         if instance.supervisor_user != SuperVisorSampleForm.objects.filter(id = instance.pk).first().supervisor_user:
-            Notification.objects.filter(method_type="assigned_supervisor",object_id = instance.sample_form_id).delete() 
-            print(" sample form is_back set to null ")
             sampleFormNotificationHandler(instance,"assigned_supervisor")
             SampleForm.objects.filter(id = instance.sample_form_id).update(is_back = '',status = "processing",form_available = "supervisor")
         
