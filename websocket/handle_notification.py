@@ -66,6 +66,7 @@ def NotificationHandler(instance, request,method,model_name):
 
 def sampleFormNotificationHandler(instance,notification_type):
     # from_notification = mapping_notification_type.mapping[notification_type]['from_user']
+    print("notification create::",notification_type)
     create_track_obj = True
     if notification_type == 'back':
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']

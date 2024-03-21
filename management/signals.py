@@ -251,6 +251,7 @@ def SupervisorHaveParameterAfterSave(sender, instance , created , **kwargs):
                     sup_status = "completed"
                 if sample_form_obj.first().is_back == "supervisor_back":
                     sample_form_obj.update(is_analyst_test = True,status=sup_status,is_back = '',submit_back_remarks = instance.remarks)
+                    sampleFormNotificationHandler(verifier_obj,"assigned_verifier")
                 else:
                     sample_form_obj.update(is_analyst_test = True,status=sup_status)
                 
@@ -284,6 +285,7 @@ def SampleFormHasVerifierPostSave(sender, instance ,created , **kwargs):
         client_category_detail = sample_form_obj.client_category_detail.client_category.id
         if client_category_detail != 12:
             sampleFormNotificationHandler(instance,"assigned_verifier")
+   
 
 @transaction.atomic
 @receiver(pre_save, sender=SampleFormVerifier)
