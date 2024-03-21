@@ -48,7 +48,7 @@ class SupervisorSampleFormSerializer(serializers.ModelSerializer):
     class Meta:
         ref_name = "SupervisorSampleFormSerializer"
         model = SuperVisorSampleForm
-        fields = ['supervisor_user','remarks','created_date']
+        fields = ['id','supervisor_user','remarks','created_date']
 
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -178,7 +178,7 @@ class DetailSampleFormHasParameterRoleAsAnalystSerializer_Temp(serializers.Model
     
     class Meta:
         model = SampleForm
-        fields = fields = ['id','name','new_name','commodity','refrence_number','sample_lab_id','client_category_detail','status','namuna_code','created_date','owner_user_obj','payment','parameters','mfd','dfb','days_dfb','dfb_duration','dfb_type','batch','brand','purpose','condition','note','amendments','sample_type','sample_units','sample_quantity','number_of_sample','analysis_fee','voucher_number','voucher_date','price','supervisor_sample_form','is_back','submit_back_remarks','back_remarks']
+        fields = fields = ['id','name','new_name','commodity','refrence_number','sample_lab_id','client_category_detail','status','namuna_code','created_date','owner_user_obj','payment','parameters','mfd','dfb','days_dfb','dfb_duration','dfb_type','batch','brand','purpose','condition','note','amendments','sample_type','sample_units','sample_quantity','number_of_sample','analysis_fee','voucher_number','voucher_date','price','supervisor_sample_form','is_back','submit_back_remarks','back_remarks','is_analyst_test']
 
 
     def to_representation(self, instance):

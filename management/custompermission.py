@@ -19,6 +19,9 @@ def SMU_SUPERADMIN_INSPECTOR_SUPERVISOR_Permission(request):
 def SmuSuperAdmin(request):
     return IsAuthenticated(request) and request.user.role in [roles.SMU ,roles.SUPERADMIN]
 
+def SupervisorPermission(request):
+    return IsAuthenticated(request) and request.user.role in [roles.SUPERVISOR]
+
 def fullAdminPermission(request):
     return IsAuthenticated(request) and request.user.role in [roles.ADMIN, roles.SMU , roles.SUPERADMIN, roles.VERIFIER,roles.SUPERVISOR,roles.ANALYST]
 
@@ -91,14 +94,15 @@ class SampleFormViewSetPermission(BasePermission):
 class SuperVisorSampleFormViewsetPermission(BasePermission):
     def has_permission(self, request, view):
         method_name = view.action
+        print(method_name, " in per")
         if method_name == 'list':
             return True
         elif method_name == 'create':
-            return SmuSuperVisorLevelPermission(request)
+            return SmuSuperAdmin(request)
         elif method_name == 'retrieve':
             return True
         elif method_name == 'update':
-            return SmuSuperVisorLevelPermission(request)
+            return SmuSuperAdmin(request)
         elif method_name == 'partial_update':
             return SmuSuperVisorLevelPermission(request)
         elif method_name == 'destroy':

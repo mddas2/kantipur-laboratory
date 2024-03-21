@@ -66,6 +66,7 @@ def sampleFormNotificationHandler(instance,notification_type):
 
     # from_notification = mapping_notification_type.mapping[notification_type]['from_user']
     if notification_type == 'is_back':
+        print("creating is_back notification")
         pass
         #store in back track model SampleTrack
     elif notification_type == 'submit_back':

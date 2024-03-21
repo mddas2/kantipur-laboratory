@@ -196,45 +196,42 @@ def supervisor_sample_form_has_parameter_m2m_changed(sender, instance, action, r
             break
 
 @transaction.atomic
+@receiver(pre_save, sender=SuperVisorSampleForm)
+def SupervisorHaveParameterPreSave(sender, instance , **kwargs):
+    if instance.pk:
+        if instance.supervisor_user != SuperVisorSampleForm.objects.filter(id = instance.pk).first().supervisor_user:
+            print(" sample form is_back set to null ")
+            SampleForm.objects.filter(id = instance.sample_form_id).update(is_back = '')
+        
+
+@transaction.atomic
 @receiver(post_save, sender=SuperVisorSampleForm)
 def SupervisorHaveParameterAfterSave(sender, instance , created , **kwargs):
-    print(instance.status, " supervisor instance status")
     if created:
+        SampleForm.objects.filter(id = instance.sample_form.id).update(status = "processing",form_available = "supervisor")
         sampleFormNotificationHandler(instance,"assigned_supervisor")
 
     if instance.is_supervisor_sent == True:      
-     
-        supervisor_objs = SuperVisorSampleForm.objects.filter(sample_form = instance.sample_form.id)
-        sup_is_analyst_test = False
         sup_status = "processing"
-        
-        supervisor_param = 0
-        for supervisor_obj in supervisor_objs: # if all supervisor analyst_test is True then update in sample form is_analyst_test = True
-            param = supervisor_obj.parameters.all().count()
-            supervisor_param = supervisor_param + param            
-            check = supervisor_obj.is_supervisor_sent
-            if check == True:
-                sup_is_analyst_test = True
-                sup_status = "not_verified"
-            else:
-                sup_is_analyst_test = False
-                sup_status = "processing"
-                break
-  
+
         sample_obj_param = instance.sample_form.parameters.all().count()
+        supervisor_param = instance.parameters.all().count()
        
-        if sup_is_analyst_test == True and sample_obj_param == supervisor_param:
+        if instance.is_analyst_test == True and sample_obj_param == supervisor_param:
             data = {
                 'is_verified':False,
                 'is_sent':True,
             }
+            sup_status = "not_verified"
             verifier_obj,created = SampleFormVerifier.objects.update_or_create(sample_form_id = instance.sample_form_id,defaults=data)
             if created or verifier_obj != None:
-                # print("reached to verifier")
                 sample_form_obj = SampleForm.objects.filter(id=instance.sample_form.id)
                 if sample_form_obj.first().client_category_detail.client_category_id == 12:
                     sup_status = "completed"
-                sample_form_obj.update(is_analyst_test = sup_is_analyst_test,status=sup_status)
+                if sample_form_obj.first().is_back == "supervisor_back":
+                    sample_form_obj.update(is_analyst_test = True,status=sup_status,is_back = '',submit_back_remarks = instance.remarks)
+                else:
+                    sample_form_obj.update(is_analyst_test = True,status=sup_status)
                 
         elif instance.is_supervisor_sent == False:
             if sample_obj_param == supervisor_param:
@@ -255,7 +252,6 @@ def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
         if instance.is_supervisor_sent == True:
             SampleFormParameterFormulaCalculate.objects.filter(sample_form_has_parameter_id = instance.pk,is_locked = False).update(is_locked = True)
         else:
-            SampleFormParameterFormulaCalculate.objects.filter(sample_form_has_parameter_id = instance.pk,is_locked = True).update(is_locked = False) #additional line...
             SuperVisorSampleForm.objects.filter(id = instance.super_visor_sample_form_id).update(status = "processing")
         # sampleFormNotificationHandler(instance,"assigned_analyst")
         
@@ -303,8 +299,11 @@ def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
                 sample_form_obj.form_available = "verifier"
                 sample_form_obj.verified_date = timezone.now()
                 sample_form_obj.remarks = instance.remarks
-                sample_form_obj.save()
+                if sample_form_obj.is_back == 'verifier_back':
+                    sample_form_obj.is_back = ''
+                    sample_form_obj.submit_back_remarks = instance.remarks
 
+                sample_form_obj.save()
                 sampleFormNotificationHandler(instance,"assigned_admin")
 
 

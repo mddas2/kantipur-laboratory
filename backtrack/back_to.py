@@ -13,29 +13,46 @@ from account import roles
 from management.models import SuperVisorSampleForm,SampleFormVerifier
 from .models import SampleTrack
 from account.models import CustomUser
+from websocket.handle_notification import sampleFormNotificationHandler
+from django.db import transaction
 
 def BackToRole(sample_form,request,role,remarks):
     is_update = SampleForm.objects.filter(id = sample_form).update(is_back = back_to_status[role][-1],back_remarks = remarks)
     from_back  = request.user
     if role == roles.SMU:
         to_back = CustomUser.objects.filter(role = roles.SMU).first()
-        form_available = "SMU"
+        form_available = "smu"
     elif role == roles.SUPERVISOR:
         supervisor_obj = SuperVisorSampleForm.objects.filter(sample_form_id = sample_form)
         supervisor_obj.update(is_supervisor_sent = False)
         to_back = supervisor_obj.first().supervisor_user_id
-        form_available = "SUPERVISOR"
+        form_available = "supervisor"
     elif role == roles.VERIFIER:
         to_back = SampleForm.objects.get(id = sample_form).verified_by_id
-        form_available = "VERIFIER"
+        form_available = "verifier"
+        SampleForm.objects.filter(id = sample_form).update(status='not_verified')
+        SampleFormVerifier.objects.filter(sample_form_id = sample_form).update(is_verified = False)
+        print("not verified ")
     
-    #create_obj = SampleTrack.objects.create(user = from_back,to_back = to_back, remarks = remarks,status = 'back',form_available = form_available)
+    data = {
+        'sample_form_id':sample_form,
+        'user':from_back,
+        'to_back':to_back,
+        'remarks':remarks,
+        'status':status,
+        'form_available_string':form_available,
+
+    }
+    # create_obj = SampleTrack.objects.create(**data)
+    # sampleFormNotificationHandler(create_obj,'is_back')
     
     return is_update
 # Create your views here.
 class Backto(views.APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated,BackToPermission]
+
+    @transaction.atomic
     def post(self, request, role, sample_form, format=None):
         sample_form = generateDecodeIdByRoleforSampleForm(sample_form,request.user.role)
         remarks = request.data.get('back_remarks')
