@@ -196,7 +196,7 @@ class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
 
         # Create a custom response
         response_data = {
-            "message": "data updated successully.",
+            "message": "Updated successully.",
             "data": serializer.data
         }
 
