@@ -75,13 +75,16 @@ def sampleFormNotificationHandler(instance,notification_type):
 
         print("notification handling path::",to_back_role)
         if to_back_role == roles.SMU:
+            role = "Smu"
             path = '/dashboard/sample-assigned-details/'+str(instance.sample_form.id)
         elif to_back_role == roles.SUPERVISOR:
+            role = "Supervisor"
             path = "/dashboard/sample-report/" + str(SuperVisorSampleForm.objects.filter(sample_form_id = instance.sample_form_id).first().id)
         elif to_back_role == roles.VERIFIER:
+            role = "Verifier"
             path =  "/dashboard/verify-sample-report/" + str(instance.sample_form.sample_lab_id)
 
-        notification_message = notification_message.format(sample_name = instance.sample_form.name,namuna_code = instance.sample_form.namuna_code)
+        notification_message = notification_message.format(sample_name = instance.sample_form.name,namuna_code = instance.sample_form.namuna_code,role=role)
 
         to_notification = [instance.to_back_id]
         from_notification = instance.user_id
@@ -91,7 +94,7 @@ def sampleFormNotificationHandler(instance,notification_type):
     elif notification_type == 'submit_back':
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']
-        path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.sample_form.id)
+        path = "/dashboard/verify-sample-report/" + str(instance.sample_form.sample_lab_id)
 
         notification_message = notification_message.format(sample_name = instance.sample_form.name,namuna_code = instance.sample_form.namuna_code)
 
@@ -218,7 +221,6 @@ def sampleFormNotificationHandler(instance,notification_type):
         particular_message = "/dashboard/sample-test-report/"+str(instance.refrence_number)
         path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.id)
         # dashboard/sample-test-report/J1AkLj #user path
-
         notification_message = notification_message.format(sample_name = instance.name,namuna_code = instance.namuna_code)
         if instance.client_category_detail.client_category_id == 12:
             to_notification = CustomUser.objects.filter(Q(role = roles.SMU) | Q(role = roles.SUPERADMIN) | Q(id = instance.owner_user_obj_id))
