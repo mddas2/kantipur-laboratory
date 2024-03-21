@@ -299,9 +299,7 @@ def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
         sample_form_obj.approved_by = instance.sample_form.supervisor_sample_form.all().first().supervisor_user
         sample_form_obj.admin_remarks = instance.remarks
 
-        sample_form_obj.save()
-        print('\n\n ',sample_form_obj.remarks," remarks")
-        
+        sample_form_obj.save()        
         instance.is_verified = True
     else:
         if not instance.pk:  

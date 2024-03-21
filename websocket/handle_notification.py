@@ -214,7 +214,7 @@ def sampleFormNotificationHandler(instance,notification_type):
 
     elif notification_type == "approved_sample_form":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
-        particular_message = mapping_notification_type.mapping[notification_type]['user_message']
+        particular_message = "/dashboard/sample-test-report/"+str(instance.refrence_number)
         path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.id)
         # dashboard/sample-test-report/J1AkLj #user path
 
