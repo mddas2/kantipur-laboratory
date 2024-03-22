@@ -1,52 +1,72 @@
 from rest_framework import serializers
 from management.models import SampleForm
+from ..models import SampleTrack
+from management.models import RawDataSheet
 
-def get_user_sample_track(self,sample_form):
-    a= self.common_data
-    user_data = {
-        'user_full_name':sample_form.user.get_full_name,
-        'remarks':sample_form.remarks,
-    }
-    return user_data
-def get_analyst_sample_track(sample_form):
-    return {}
-
-def get_supervisor_sample_track(sample_form):
-    data = {
-        'some':"some",
-    }
-    data['analyst'] = get_analyst_sample_track(sample_form)
+def get_user_sample_track(common_data,sample_form):
+    data = {}
+    data.update(common_data)
+    data['user_full_name'] = "lims users"#sample_form.user.get_full_name,
+    data['remarks'] = sample_form.remarks,
     return data
 
-def get_admin_sample_track(sample_form):
-    return {}
+def get_smu_sample_track(common_data,sample_form):
+    data = {}
+    data.update(common_data)
 
-def get_verifier_sample_track(sample_form):
-    return {}
+    data['user_full_name'] = "lims smu"#sample_form.user.get_full_name,
+    data['remarks'] = sample_form.remarks,
+    return data
+
+def get_analyst_sample_track(common_data,sample_form):
+    return common_data
+
+def get_supervisor_sample_track(common_data,sample_form):
+   
+    data = []
+    supervisor_objs = RawDataSheet.objects.filter(sample_form = sample_form)
+    supervisor_data = {}
+
+    for sup in supervisor_objs:
+        supervisor_data.update(common_data)
+        supervisor_data['user_full_name'] = "lims smu"#sample_form.user.get_full_name,
+        supervisor_data['remarks'] = sample_form.remarks,
+
+        analyst_data_list = []
+        for i in range(2):
+            analyst_data_list.append(get_analyst_sample_track(common_data,sample_form))
+        supervisor_data['analyst'] = analyst_data_list
+        data.append(supervisor_data)
+    return data
+
+def get_admin_sample_track(common_data,sample_form):
+    return common_data
+
+def get_verifier_sample_track(common_data,sample_form):
+    return common_data
 
 
 class TrackSampleSerializer(serializers.ModelSerializer):
-    def __init__(self, instance=None, data=..., **kwargs):
-        super().__init__(instance, data, **kwargs)
-        self.common_data = {
+  
+    class Meta:
+        model = SampleForm
+        fields = ['id','name','namuna_code']
+
+    def to_representation(self, instance):
+        common_data = {
             'sample_id':instance.namuna_code,
             'sample_name':instance.name,
             'registered_Date':instance.created_date,
             'refrence_number':instance.refrence_number,
             'status':"pending",
         }
-
-    class Meta:
-        model = SampleForm
-        fields = ['id','name','namuna_code']
-
-    def to_representation(self, instance):
-        representation = super().to_representation(self,instance)
-        representation['user'] = get_user_sample_track(self,instance)
-        representation['smu'] = get_user_sample_track(self,instance)
-        representation['supervisor'] = get_supervisor_sample_track(self,instance)
-        representation['verifier'] = get_verifier_sample_track(self,instance)
-        representation['admin'] = get_admin_sample_track(self,instance)
+        print("kjhskjahd asakh kajshkj")
+        representation = super().to_representation(instance)
+        representation['user'] = get_user_sample_track(common_data,instance)
+        representation['smu'] = get_smu_sample_track(common_data,instance)
+        representation['supervisor'] = get_supervisor_sample_track(common_data,instance)
+        representation['verifier'] = get_verifier_sample_track(common_data,instance)
+        representation['admin'] = get_admin_sample_track(common_data,instance)
         return representation
         
 
