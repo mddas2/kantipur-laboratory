@@ -75,6 +75,10 @@ class CustomUser(AbstractUser):
             return 'Admin'
         else:
             return 'None'
+    
+    @property
+    def get_full_name(self):
+        return str(self.first_name) + " " + str(self.last_name)
 
     def save(self, *args, **kwargs):
         if self.pk is None:
