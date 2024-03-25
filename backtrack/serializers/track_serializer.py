@@ -19,6 +19,7 @@ def get_smu_sample_track(common_data,sample_form):
         'remarks':sample_form.remarks
     }
     data.update(common_data)
+    data['status'] = "pending"
     return data
 
 def get_analyst_sample_track(common_data,sample_form):
@@ -61,6 +62,7 @@ def get_supervisor_sample_track(common_data,sample_form):
             'analyst':analyst_data_list
         }
         supervisor_data.update(common_data)
+        supervisor_data['status'] = "processing"
         data.append(supervisor_data)
      
     return data
