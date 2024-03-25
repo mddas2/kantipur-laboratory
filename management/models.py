@@ -111,7 +111,7 @@ class SampleForm(models.Model):#ClientRequest
     # supervisor_user = models.ForeignKey(CustomUser, related_name="sample_has_parameters",default=None,on_delete=models.SET_NULL,null=True)
     parameters = models.ManyToManyField(TestResult, related_name="sample_form",blank=True)
 
-    approved_by = models.ForeignKey(CustomUser, related_name="sample_form_approve",on_delete=models.SET_NULL,null=True) #smu
+    approved_by = models.ForeignKey(CustomUser, related_name="sample_form_approve",on_delete=models.SET_NULL,null=True)
     approved_date = models.DateTimeField(null=True)
     completed_date = models.DateTimeField(null=True)
 
@@ -160,6 +160,8 @@ class SampleForm(models.Model):#ClientRequest
     back_remarks = models.CharField(max_length=355, null=True)
     is_back_submit = models.BooleanField(default = False)
     submit_back_remarks = models.CharField(max_length=355, null=True)
+
+    smu = models.ForeignKey(CustomUser, related_name="smu_sample_form",on_delete=models.PROTECT,null = True) #smu
 
     history = HistoricalRecords()
 
@@ -385,7 +387,6 @@ class RawDataSheetDetail(models.Model):
     mandatory_standard = models.CharField(max_length=200,null=True)
     test_method = models.CharField(max_length=200,null=True)
     additional_info = models.CharField(max_length=2000, blank=True, null=True)
-
 
 class MicroObservationTable(models.Model):
     micro_parameter_table = models.ForeignKey(MicroParameter,related_name="micro_observation_table",on_delete=models.CASCADE,null=True,default=None)

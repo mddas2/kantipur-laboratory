@@ -78,7 +78,10 @@ class CustomUser(AbstractUser):
     
     @property
     def get_full_name(self):
-        return str(self.first_name) + " " + str(self.last_name)
+        try:
+            return str(self.first_name) + " " + str(self.last_name)
+        except:
+            return str(self.username)
 
     def save(self, *args, **kwargs):
         if self.pk is None:
