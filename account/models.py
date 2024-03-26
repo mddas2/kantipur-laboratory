@@ -59,17 +59,29 @@ class CustomUser(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
+    @property
     def getRoleName(self):
         if self.role==1:
-            return 'SUPERADMIN'
+            return 'Superadmin'
         elif self.role==2:
-            return 'SMU'
+            return 'Smu'
         elif self.role==3:
-            return 'SUPERVISOR'
-        elif self.role==3:
-            return 'ANALYST'
+            return 'Supervisor'
+        elif self.role==4:
+            return 'Analyst'
+        elif self.role==6:
+            return 'Verifier'
+        elif self.role==7:
+            return 'Admin'
         else:
             return 'None'
+    
+    @property
+    def get_full_name(self):
+        try:
+            return str(self.first_name) + " " + str(self.last_name)
+        except:
+            return str(self.username)
 
     def save(self, *args, **kwargs):
         if self.pk is None:

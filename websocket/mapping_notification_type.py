@@ -79,8 +79,8 @@ mapping = {
         "model_name":"SampleTrack",
         "from_user":['verifier'],
         "to_users":['user','smu','admin','supervisor','analyst'],#user, smu,supervisor,superadmin,verifier
-        "path":"#",
-        "admin_message":"A sample <strong>{sample_name} ({namuna_code})</strong> has sent back to you.",
+        "path":"/dashboard/sample-assigned-details/622",
+        "admin_message":"A sample <strong>{sample_name} ({namuna_code})</strong> is sent back to you by <strong>{role}</strong>.",
         "user_path":"#", 
         "user_message":"..",
     },

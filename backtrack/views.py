@@ -4,51 +4,15 @@ from rest_framework.response import Response
 from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from .serializers.track_serializer import TrackSampleSerializer
-from .serializers.samplebackserializer import IsBackSampleFormSerializer
-from rest_framework import viewsets
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.permissions import IsAuthenticated
-from management.models import SampleForm
-from management.serializers import SampleFormRetrieveSerializer
-from management.pagination import MyLimitOffsetPagination,MyPageNumberPagination
-from django.http import Http404
-from management.encode_decode import generateDecodeIdforSampleForm
-from rest_framework.decorators import action
-from rest_framework import status
+from rest_framework.response import Response
 
 # Create your views here.
 class TrackSample(generics.RetrieveAPIView):
     queryset = SampleForm.objects.all()
     serializer_class = TrackSampleSerializer
 
+    
 
-class BackSampleFormViewset(viewsets.ModelViewSet):
-
-    queryset = SampleForm.objects.all()
-    serializer_class = SampleFormRetrieveSerializer
-    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['id','name','owner_user_obj__email','status','form_available','commodity__name','refrence_number','sample_lab_id']
-    ordering_fields = ['name','id']
-    filterset_fields = {
-        'name': ['exact', 'icontains'],
-        'status': ['exact'],
-        'form_available': ['exact'],
-        'commodity_id': ['exact'],
-        'created_date': ['date__gte', 'date__lte'],  # Date filtering
-        'client_category_detail__client_category':['exact'],
-    }
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-    pagination_class = MyPageNumberPagination
-
-    def get_object(self):
-        user = self.request.user
-        id = generateDecodeIdforSampleForm(self.kwargs['pk'],user) 
-        queryset = self.get_queryset()
-        obj = queryset.filter(id=id).first()
-        if not obj:
-            raise Http404("Object not found")
-        return obj
     
     def get_queryset(self):
         user = self.request.user

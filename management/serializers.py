@@ -517,6 +517,9 @@ class SuperVisorSampleFormWriteSerializer(serializers.ModelSerializer):
     
     def validate(self, attrs):
         action = self.context['view'].action
+        
+        if action == "create":
+            SampleForm.objects.filter(id=attrs.get('sample_form')).update(smu = self.context['request'].user)
 
         if action != 'partial_update':
             queryset = SuperVisorSampleForm.objects.filter(sample_form=attrs.get('sample_form'))

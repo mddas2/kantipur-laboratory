@@ -219,8 +219,6 @@ def supervisor_sample_form_has_parameter_m2m_changed(sender, instance, action, r
 def SupervisorHaveParameterPreSave(sender, instance , **kwargs):
     if instance.pk:
         if instance.supervisor_user != SuperVisorSampleForm.objects.filter(id = instance.pk).first().supervisor_user:
-            Notification.objects.filter(method_type="assigned_supervisor",object_id = instance.sample_form_id).delete() 
-            print(" sample form is_back set to null ")
             sampleFormNotificationHandler(instance,"assigned_supervisor")
             SampleForm.objects.filter(id = instance.sample_form_id).update(is_back = '',status = "processing",form_available = "supervisor")
         
@@ -251,6 +249,7 @@ def SupervisorHaveParameterAfterSave(sender, instance , created , **kwargs):
                     sup_status = "completed"
                 if sample_form_obj.first().is_back == "supervisor_back":
                     sample_form_obj.update(is_analyst_test = True,status=sup_status,is_back = '',submit_back_remarks = instance.remarks)
+                    sampleFormNotificationHandler(verifier_obj,"assigned_verifier")
                 else:
                     sample_form_obj.update(is_analyst_test = True,status=sup_status)
                 
@@ -284,6 +283,7 @@ def SampleFormHasVerifierPostSave(sender, instance ,created , **kwargs):
         client_category_detail = sample_form_obj.client_category_detail.client_category.id
         if client_category_detail != 12:
             sampleFormNotificationHandler(instance,"assigned_verifier")
+   
 
 @transaction.atomic
 @receiver(pre_save, sender=SampleFormVerifier)
@@ -299,9 +299,7 @@ def SampleFormHasVerifierPreSave(sender, instance, **kwargs):
         sample_form_obj.approved_by = instance.sample_form.supervisor_sample_form.all().first().supervisor_user
         sample_form_obj.admin_remarks = instance.remarks
 
-        sample_form_obj.save()
-        print('\n\n ',sample_form_obj.remarks," remarks")
-        
+        sample_form_obj.save()        
         instance.is_verified = True
     else:
         if not instance.pk:  
