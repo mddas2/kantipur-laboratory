@@ -21,8 +21,7 @@ def ClientCategoryPreSave(sender, instance, **kwargs):
 
 
     
-    #end
-    # Send the notification message to the user's channel
+    
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
         'admin',

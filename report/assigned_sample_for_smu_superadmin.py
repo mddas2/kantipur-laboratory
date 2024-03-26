@@ -28,6 +28,7 @@ class AssignedSampleForSmuSuperAdmin(generics.ListAPIView):
         'commodity_id': ['exact'],
         'created_date': ['date__gte', 'date__lte'],  # Date filtering
         'client_category_detail__client_category':['exact'],
+        'is_back':['exact','icontains']
     }
 
     def get_queryset(self):

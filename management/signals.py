@@ -115,7 +115,6 @@ def sample_form_has_parameter_m2m_changed(sender, instance, action, reverse, mod
 
     for param in parameters:    
         sample_form_has_parameter_object = SampleFormHasParameter.objects.filter(sample_form = instance.sample_form,parameter = param.id)
-        
         if sample_form_has_parameter_object.exists():
             status = "processing"
             if sample_form_has_parameter_object.first().is_supervisor_sent == True:
@@ -127,7 +126,6 @@ def sample_form_has_parameter_m2m_changed(sender, instance, action, reverse, mod
             status = "not_assigned"
             is_analyst_test = False
             break
-
     super_visor_sample_form_obj.status = status   
     super_visor_sample_form_obj.is_analyst_test = is_analyst_test
     super_visor_sample_form_obj.save()

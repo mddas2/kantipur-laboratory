@@ -106,7 +106,7 @@ class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
         'supervisor_user': ['exact'],
         'status': ['exact'],       
         'created_date': ['date__gte', 'date__lte'],  # Date filtering
-        'sample_form__client_category_detail__client_category':['exact']
+        'sample_form__client_category_detail__client_category':['exact'],
     }
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated,SuperVisorSampleFormViewsetPermission]
@@ -160,6 +160,7 @@ class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
     
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
+        print(request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         response_data = {
@@ -171,6 +172,9 @@ class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
+        sample_form_instance = instance.sample_form
+        sample_form_instance.is_back = None
+        sample_form_instance.save()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
 
@@ -189,6 +193,9 @@ class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
     def partial_update(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=True)
+        sample_form_instance = instance.sample_form
+        sample_form_instance.is_back = None
+        sample_form_instance.save()
         serializer.is_valid(raise_exception=True)
 
         # Save the updated object to the database
@@ -256,9 +263,12 @@ class SampleFormViewSet(viewsets.ModelViewSet):
             query = SampleForm.objects.filter(client_category_detail__client_category_id=12).filter(Q(form_available = 'smu') or Q(status = "not_assigned")).filter(~Q(status = "rejected")).filter(~Q(status = "recheck"))
         elif self.action in ['is_back_sample','is_back_submit_sample']:
             query = SampleForm.objects.filter(is_back = 'smu_back')
+           
+        # elif self.action == 'back_sample_forward':
+        #     query = SampleForm.objects.filter(is_back = 'smu_back')
         elif self.action == 'patch_formal_form' and user.role == roles.SUPERVISOR and user.is_public_analyst:
             query =  SampleForm.objects.all().filter(~Q(status="completed")).filter(~Q(status="rejected") )
-        elif user.role == roles.USER:         
+        elif user.role == roles.USER:        
             query =  SampleForm.objects.filter(Q(owner_user_obj_id = user.id)).filter(~Q(status="completed")).filter(~Q(status="rejected") )
         elif user.role == roles.INSPECTOR:
             query =  SampleForm.objects.filter(Q(owner_user_obj_id = user.id)).filter(~Q(status="completed")).filter(~Q(status="rejected") )
@@ -277,7 +287,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
             query = query.filter(client_category_detail__client_category=12)
         else:
             query = query.filter(~Q(client_category_detail__client_category=12))
-        
+
         return query.order_by("-created_date")
         
     def get_serializer_class(self):
@@ -403,7 +413,6 @@ class SampleFormViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data)
         serializer.is_valid(raise_exception=True)
-
         # Save the updated object to the database
         self.perform_update(serializer)
 
@@ -421,7 +430,10 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     
     @action(detail=True, methods=['patch'],name="is_back_submit_sample", url_path="back-sample-submit-smu")
     def is_back_submit_sample(self, request,pk=None):
+        print(pk)
         instance = self.get_object()
+        print('hhhh',instance)
+        print('------helloooo------------',pk,instance)
         serializer = self.get_serializer(instance, data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -450,6 +462,8 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     def retrieve_formal_form(self, request,*args,**kwargs):
         response = super().retrieve(request, *args, **kwargs)
         return response
+    
+        
     
     def partial_update(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -1104,3 +1118,31 @@ def PatchInspectorSampleForm(sample_form_id,request_data,create_update):
     inspector_serializer.is_valid(raise_exception=True)
     inspector_serializer.save()
     return inspector_serializer.data
+
+
+
+
+
+
+
+#Sagar Neupane
+class SamplesProfileViewset(generics.ListAPIView):
+    queryset = SampleForm.objects.all()
+    serializer_class = SampleFormRetrieveSerializer
+    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    search_fields = ['id','name','owner_user_obj__email','status','form_available','commodity__name','refrence_number','sample_lab_id']
+    ordering_fields = ['name','id']
+    filterset_fields = {
+        'name': ['exact', 'icontains'],
+        'status': ['exact'],
+        'form_available': ['exact'],
+        'commodity_id': ['exact'],
+        'created_date': ['date__gte', 'date__lte'],  # Date filtering
+        'client_category_detail__client_category':['exact'],
+    }
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    pagination_class = MyPageNumberPagination
+
+
+

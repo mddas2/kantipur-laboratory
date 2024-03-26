@@ -51,7 +51,7 @@ class NotificationViewSet(viewsets.ModelViewSet):
             "data": serializer.data
         }
 
-        # Return the custom response
+        # Return to custom response
         return Response(response_data, status=status.HTTP_201_CREATED)
     
     def update(self, request, *args, **kwargs):
