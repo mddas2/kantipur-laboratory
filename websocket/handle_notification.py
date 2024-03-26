@@ -212,7 +212,7 @@ def sampleFormNotificationHandler(instance,notification_type):
 
     if create_track_obj == True:
         track_data = {
-            'sample_form_id':instance.id,
+            'sample_form':instance,
             'user_id':from_notification,
             'to_back_id':to_notification[0],
             'remarks':notification_message,
