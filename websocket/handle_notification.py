@@ -123,6 +123,8 @@ def sampleFormNotificationHandler(instance,notification_type):
         is_notification = False
         notification_type = "sample_initialized"
 
+        remarks =  instance.note
+
     elif notification_type == "new_sample_form":
         #SampleTrack
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
@@ -140,6 +142,7 @@ def sampleFormNotificationHandler(instance,notification_type):
         from_notification = instance.owner_user_obj_id
         form_available = "smu"
         sample_form_id_for_track = instance
+        remarks =  ''
     
     if notification_type == "recheck_sample":
         #SampleTrack
@@ -158,6 +161,8 @@ def sampleFormNotificationHandler(instance,notification_type):
         from_notification = CustomUser.objects.filter(role = roles.SMU).first().id
         form_available = "smu"
         sample_form_id_for_track = instance
+
+        remarks =  instance.remarks
    
     elif notification_type == "assigned_supervisor":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
@@ -170,6 +175,7 @@ def sampleFormNotificationHandler(instance,notification_type):
         from_notification = CustomUser.objects.filter(role = roles.SMU).first().id
         form_available = "supervisor"
         sample_form_id_for_track = instance.sample_form
+        remarks =  ''
 
     elif notification_type == "assigned_analyst":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
@@ -182,6 +188,7 @@ def sampleFormNotificationHandler(instance,notification_type):
         from_notification = instance.super_visor_sample_form.supervisor_user_id
         form_available = "analayst"
         sample_form_id_for_track = instance.sample_form
+        remarks =  ''
 
     elif notification_type == "sent_to_supervisor":
 
@@ -197,6 +204,7 @@ def sampleFormNotificationHandler(instance,notification_type):
         from_notification = instance.analyst_user_id
         form_available = "supervisor"
         sample_form_id_for_track = instance.sample_form
+        remarks =  instance.remarks
     
     elif notification_type == "parameter_recheck":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
@@ -208,6 +216,7 @@ def sampleFormNotificationHandler(instance,notification_type):
         from_notification = instance.sample_form_has_parameter.super_visor_sample_form.supervisor_user_id
         form_available = "analyst"
         sample_form_id_for_track = instance.sample_form
+        remarks =  instance.remarks
 
     elif notification_type == "assigned_verifier":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
@@ -222,6 +231,7 @@ def sampleFormNotificationHandler(instance,notification_type):
         from_notification = instance.sample_form.supervisor_sample_form.first().supervisor_user_id
         form_available = "verifier"
         sample_form_id_for_track = instance.sample_form
+        remarks =  instance.remarks
 
     elif notification_type == "assigned_admin":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
@@ -235,6 +245,7 @@ def sampleFormNotificationHandler(instance,notification_type):
         from_notification =CustomUser.objects.filter(role = roles.VERIFIER).first().id
         form_available = "admin"
         sample_form_id_for_track = instance
+        remarks =  instance.remarks
 
     elif notification_type == "approved_sample_form":
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
@@ -251,13 +262,15 @@ def sampleFormNotificationHandler(instance,notification_type):
         from_notification =CustomUser.objects.filter(role = roles.ADMIN).first().id
         form_available = "admin"
         sample_form_id_for_track = instance
+        remarks =  instance.remarks
 
     if create_track_obj == True:
         track_data = {
             'sample_form_id':sample_form_id_for_track.id,
             'user_id':from_notification,
             'to_back_id':to_notification[0],
-            'remarks':notification_message,
+            'remarks':remarks,
+            'description':notification_message,
             'status':notification_type,
             'form_available':form_available
         }

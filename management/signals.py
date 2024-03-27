@@ -265,7 +265,6 @@ def SupervisorHaveParameterAfterSave(sender, instance , created , **kwargs):
 @transaction.atomic
 @receiver(pre_save, sender=SampleFormHasParameter)
 def SampleFormHasParameterAfterSave(sender, instance , **kwargs):
-    print("status processing hello md",instance.is_supervisor_sent) #blunder manoj
     if not instance.pk:
         instance.status = "pending"
     else:
