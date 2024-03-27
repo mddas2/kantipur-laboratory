@@ -275,6 +275,7 @@ def sampleFormNotificationHandler(instance,notification_type):
             'form_available':form_available
         }
         create_obj = SampleTrack.objects.create(**track_data) #this data is for model sample track
+        print(create_obj," reassigned sample")
 
     notification_data = {
         "notification_message": notification_message,

@@ -89,7 +89,7 @@ class SampleFormHasAnalystFinalReportAPIView(generics.ListAPIView): #supervisor 
     
     def get_queryset(self):
         request = self.request
-        action = self.action
+        action = self.request.method
 
         if action == 'formal_report':
               queryset = SuperVisorSampleForm.objects.filter(supervisor_user = request.user).filter(sample_form__status="completed").filter(sample_form__client_category_detail__client_category_id = 12).order_by("-created_date")
