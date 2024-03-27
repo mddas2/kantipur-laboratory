@@ -100,7 +100,7 @@ class SuperVisorSampleFormViewset(viewsets.ModelViewSet):
     queryset = SuperVisorSampleForm.objects.all()
     serializer_class = SuperVisorSampleFormRetrieveSerializer
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['id']
+    search_fields = ['id','sample_form__namuna_code','sample_form__name','sample_form__commodity__name']
     ordering_fields = ['id']
     filterset_fields = {
         'supervisor_user': ['exact'],
@@ -234,7 +234,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     queryset = SampleForm.objects.all()
     serializer_class = SampleFormRetrieveSerializer
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['id','name','owner_user_obj__email','status','form_available','commodity__name','refrence_number','sample_lab_id']
+    search_fields = ['id','name','owner_user_obj__email','status','form_available','commodity__name','refrence_number','sample_lab_id','namuna_code']
     ordering_fields = ['name','id']
     filterset_fields = {
         'name': ['exact', 'icontains'],
@@ -430,10 +430,7 @@ class SampleFormViewSet(viewsets.ModelViewSet):
     
     @action(detail=True, methods=['patch'],name="is_back_submit_sample", url_path="back-sample-submit-smu")
     def is_back_submit_sample(self, request,pk=None):
-        print(pk)
         instance = self.get_object()
-        print('hhhh',instance)
-        print('------helloooo------------',pk,instance)
         serializer = self.get_serializer(instance, data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -592,7 +589,7 @@ class commodityCategoryLimitedData(generics.ListAPIView):
     # permission_classes = [IsAuthenticated]
 
     filter_backends  = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['id']
+    search_fields = ['id','name']
     ordering_fields = ['id']
 
     pagination_class = MyLimitOffsetPagination
@@ -669,8 +666,9 @@ class CommodityCategoryViewSet(viewsets.ModelViewSet):
 class TestResultViewSet(viewsets.ModelViewSet):
     queryset = TestResult.objects.all()
     serializer_class = TestResultSerializer
-    filter_backends = [SearchFilter]
-    search_fields = ['id','name','formula','commodity__name']
+    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    search_fields = ['id','name','formula','commodity__name','test_type']
+    filterset_fields = ['test_type']
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated,TestResultViewSetPermission]
     pagination_class = MyPageNumberPagination
