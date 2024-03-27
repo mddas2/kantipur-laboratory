@@ -10,28 +10,32 @@ from django.contrib.contenttypes.models import ContentType
 from backtrack.models import SampleTrack
 from management.models import SuperVisorSampleForm
 
-def NotificationHandler(instance, request,method,model_name):
-    # return True
-    to_notification = CustomUser.objects.filter(Q(role = roles.SMU) | Q(id = instance.id))
-    
-    to_notification = to_notification.values_list('id',flat=True)
-    notification_type = ""
-    if method == "update":
-        notification_type = "customuser_update"
-        notification_message = "User "+str(instance.username) + " has been modified"
-        particular_message = "Your aaccount has been modified"
-    elif method == "create":
-        notification_type = "customuser_create"
-        notification_message= f"New user ({str(instance.username)}) has registered an account."
-        particular_message = "Your account has been created successfully"
-    path = frontend_setting.particular_user + str(instance.id)
-    try:
-        from_notification = request.user.id
-    except:
+def NotificationHandler(instance,notification_type):
+        
+    if notification_type == "create_user":
+        notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
+
+        notification_message =  "A new user <strong>user full name</strong> has submitted a verification request"
+        particular_message =  particular_message.format(refrence_number = refrence_number)
+
+        to_notification = CustomUser.objects.filter(role = roles.SMU)
+        to_notification = to_notification.values_list('id', flat=True)
+
         from_notification = instance.id
+        path = frontend_setting.particular_user + str(instance.id)
 
-    model_name = "CustomUser"    
+    if notification_type == "recheck_user":
+        notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
+          
+        notification_message =  "A new user <strong>user full name</strong> has submitted a verification request"
+        refrence_number = encode_decode.generateEncodeIdforSampleForm(instance.id, "user")
+        particular_message =  ""
 
+        from_notification = CustomUser.objects.filter(role = roles.SMU).first().id
+    
+        path = frontend_setting.particular_user + str(instance.id)
+        to_notification = [instance.id]
+    
     # Create notification data
     notification_data = {
         "notification_message": notification_message,
@@ -40,9 +44,10 @@ def NotificationHandler(instance, request,method,model_name):
         "from_notification": from_notification,
         "is_read": False,
         "to_notification": to_notification,
-        'method_type':model_name,
+        'method_type':notification_type,
 
         'object_id':instance.id,
+        'model_type':notification_type,
         'content_object':instance,
         'content_type':ContentType.objects.get_for_model(instance).id,
     }
