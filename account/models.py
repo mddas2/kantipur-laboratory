@@ -69,10 +69,14 @@ class CustomUser(AbstractUser):
             return 'Supervisor'
         elif self.role==4:
             return 'Analyst'
+        elif self.role==5:
+            return 'USER'
         elif self.role==6:
             return 'Verifier'
         elif self.role==7:
             return 'Admin'
+        elif self.role ==8:
+            return "Inspector"
         else:
             return 'None'
     
