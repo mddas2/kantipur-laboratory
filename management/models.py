@@ -182,6 +182,7 @@ class SampleForm(models.Model):#ClientRequest
             self.namuna_code = self.fiscal_year +  "/NFFRL/" + str(total_fiscal_year_data)
             
             self.save()
+            websocket.handle_notification.sampleFormNotificationHandler(self,"sample_initialized")
             websocket.handle_notification.sampleFormNotificationHandler(self,"new_sample_form")
         # super().save(*args, **kwargs)
 

@@ -67,7 +67,9 @@ def NotificationHandler(instance, request,method,model_name):
 def sampleFormNotificationHandler(instance,notification_type):
     # from_notification = mapping_notification_type.mapping[notification_type]['from_user']
     print("notification create::",notification_type)
+
     create_track_obj = True
+    is_notification = True
     if notification_type == 'back':
         notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
         particular_message = mapping_notification_type.mapping[notification_type]['user_message']
@@ -99,6 +101,27 @@ def sampleFormNotificationHandler(instance,notification_type):
         from_notification = instance.user_id
         create_track_obj = False
         sample_form_id_for_track = instance.sample_form
+
+    elif notification_type == "sample_initialized":
+        #SampleTrack
+        notification_type = "new_sample_form"
+        notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
+        particular_message = mapping_notification_type.mapping[notification_type]['user_message']
+        path = mapping_notification_type.mapping[notification_type]['path'] + str(instance.id)
+        if instance.client_category_detail.client_category_id == 12:
+            path = path + '?type=formal'     
+        notification_message =  notification_message.format(sample_name = instance.name,namuna_code = instance.namuna_code,first_name = instance.owner_user_obj.first_name ,last_name = instance.owner_user_obj.last_name)
+        refrence_number = encode_decode.generateEncodeIdforSampleForm(instance.id, "user")
+        particular_message =  particular_message.format(refrence_number = refrence_number)
+
+        to_notification = CustomUser.objects.filter(role = roles.SMU)
+        to_notification = to_notification.values_list('id', flat=True)
+
+        from_notification = instance.owner_user_obj_id
+        form_available = "smu"
+        sample_form_id_for_track = instance
+        is_notification = False
+        notification_type = "sample_initialized"
 
     elif notification_type == "new_sample_form":
         #SampleTrack
@@ -261,15 +284,23 @@ def sampleFormNotificationHandler(instance,notification_type):
     serializer = NotificationWriteSerializer(data=notification_data)
     serializer.is_valid(raise_exception=True)
 
-    # Save the new notification object
-    notification = serializer.save()
-    # Create a custom response
-    response_data = {
-        "message": "sample form Notification created successfully ",
-        "data": serializer.data,
-    }
+    if is_notification:
+        # Save the new notification object
+        notification = serializer.save()
+        # Create a custom response
+        response_data = {
+            "message": "sample form Notification created successfully ",
+            "data": serializer.data,
+        }
+        return response_data, status.HTTP_201_CREATED
+    
+    else:
+        response_data = {
+            "message": "sample form Notification created successfully ",
+            "data": "",
+        }
+        return response_data, status.HTTP_201_CREATED
 
-    return response_data, status.HTTP_201_CREATED
 
 
 
