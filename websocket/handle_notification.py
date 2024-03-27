@@ -13,28 +13,23 @@ from management.models import SuperVisorSampleForm
 def NotificationHandler(instance,notification_type):
         
     if notification_type == "create_user":
-        notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
-
-        notification_message =  "A new user <strong>user full name</strong> has submitted a verification request"
-        particular_message =  particular_message.format(refrence_number = refrence_number)
+        notification_message =  f"A new user <strong>{instance.get_full_name}</strong> has submitted an account verification request."
+        particular_message =  '.'
 
         to_notification = CustomUser.objects.filter(role = roles.SMU)
         to_notification = to_notification.values_list('id', flat=True)
 
         from_notification = instance.id
-        path = frontend_setting.particular_user + str(instance.id)
+        path = "dashboard/user-details/" + str(instance.id)
 
-    if notification_type == "recheck_user":
-        notification_message = mapping_notification_type.mapping[notification_type]['admin_message']
-          
-        notification_message =  "A new user <strong>user full name</strong> has submitted a verification request"
-        refrence_number = encode_decode.generateEncodeIdforSampleForm(instance.id, "user")
-        particular_message =  ""
+    elif notification_type == "recheck":
+        notification_message =  f"your accoun verification request is sent back to you for recheck."
+        particular_message =  '.'
 
         from_notification = CustomUser.objects.filter(role = roles.SMU).first().id
-    
-        path = frontend_setting.particular_user + str(instance.id)
+
         to_notification = [instance.id]
+        path = "dashboard/user-details/" + str(instance.id)
     
     # Create notification data
     notification_data = {

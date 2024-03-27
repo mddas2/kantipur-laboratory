@@ -15,10 +15,19 @@ from . import additional_data
 from emailmanagement.sendmail_final_report import sendFinalreport
 
 from backtrack.models import SampleTrack
-from websocket.handle_notification import sampleFormNotificationHandler
+from websocket.handle_notification import sampleFormNotificationHandler,NotificationHandler
 from websocket.models import Notification
 
 from account import roles
+
+@transaction.atomic    
+@receiver(pre_save, sender=CustomUser)
+def CustomUserpresave(sender, instance , **kwargs):
+    if not instance.pk:
+        NotificationHandler(instance,"create_user")
+    else:
+        if instance.is_recheck:
+            NotificationHandler(instance,"recheck")
 
 @transaction.atomic
 @receiver(post_save, sender=SampleFormParameterFormulaCalculate)
