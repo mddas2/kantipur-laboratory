@@ -24,7 +24,7 @@ from rest_framework.decorators import action
 class SampleFormHasAnalystAPIView(generics.ListAPIView):
     
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['id','sample_form__code','sample_form__id','sample_form__namuna_code','sample_form__sample_lab_id','sample_form__namuna_code']
+    search_fields = ['id','sample_form__code','sample_form__id','sample_form__namuna_code','sample_form__sample_lab_id','sample_form__namuna_code','sample_form__name']
     ordering_fields = ['id']
     filterset_fields = {
         'created_date': ['date__gte', 'date__lte'],  # Date filtering
@@ -89,12 +89,24 @@ class SampleFormHasAnalystFinalReportAPIView(generics.ListAPIView): #supervisor 
     
     def get_queryset(self):
         request = self.request
+        action = self.action
+
+        if action == 'formal_report':
+              queryset = SuperVisorSampleForm.objects.filter(supervisor_user = request.user).filter(sample_form__status="completed").filter(sample_form__client_category_detail__client_category_id = 12).order_by("-created_date")
         queryset = SuperVisorSampleForm.objects.filter(supervisor_user = request.user).filter(sample_form__status="completed").order_by("-created_date")
         return queryset
+    
+    @action(detail=True, methods=['get'],name="formal_report", url_path="formal-report")
+    def formal_report(self,request,*args,**kwargs):
+        return self.list(request, *args, **kwargs)
+    
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
     
+
+    
+
 
 class DetailSampleFormHasAnalystFinalReportAPIView(views.APIView):
     authentication_classes = [JWTAuthentication]

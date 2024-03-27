@@ -758,6 +758,7 @@ class SampleFormHasParameterRetrieveSerializer(serializers.ModelSerializer):
         # representation['assigned_by'] = self.assigned_by
         return representation
 
+
 class SampleFormHasParameterWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = SampleFormHasParameter

@@ -54,7 +54,7 @@ class CompletedSampleFormHasAnalystSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = SampleForm
-        fields = ['id','name','client_category_detail','sample_has_parameter_analyst','commodity','status','created_date','namuna_code']
+        fields = ['id','name','client_category_detail','sample_has_parameter_analyst','commodity','status','created_date','namuna_code','approved_date']
     
     def to_representation(self,instance):
         representation = super().to_representation(instance)
