@@ -49,7 +49,13 @@ class SampleFormHasAnalystAPIView(generics.ListAPIView):
 class FormalSampleForm_SampleFormHasAnalystAPIView(generics.ListAPIView):
     
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['id','sample_form__code','sample_form__id','sample_form__namuna_code','sample_form__sample_lab_id','sample_form__namuna_code']
+    search_fields = ['id','sample_form__code','sample_form__id','sample_form__namuna_code','sample_form__sample_lab_id','sample_form__namuna_code','sample_form__name']
+    ordering_fields = ['id']
+    filterset_fields = {
+        'created_date': ['date__gte', 'date__lte'],  # Date filtering
+        'status':['exact'],
+        'sample_form__client_category_detail__client_category':['exact']
+    }
     ordering_fields = ['id']
     filterset_fields = {
         'created_date': ['date__gte', 'date__lte'],  # Date filtering
@@ -70,16 +76,22 @@ class FormalSampleForm_SampleFormHasAnalystAPIView(generics.ListAPIView):
     
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
+    
+
+
 
     
 class SampleFormHasAnalystFinalReportAPIView(generics.ListAPIView): #supervisor final report
     
     filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
-    search_fields = ['id']
+    search_fields = ['id','sample_form__code','sample_form__id','sample_form__namuna_code','sample_form__sample_lab_id','sample_form__namuna_code','sample_form__name']
     ordering_fields = ['id']
     filterset_fields = {
-        'created_date': ['date__gte', 'date__lte']  # Date filtering
+        'created_date': ['date__gte', 'date__lte'],  # Date filtering
+        'status':['exact'],
+        'sample_form__client_category_detail__client_category':['exact']
     }
+ 
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     pagination_class = MyPageNumberPagination
@@ -90,15 +102,37 @@ class SampleFormHasAnalystFinalReportAPIView(generics.ListAPIView): #supervisor 
     def get_queryset(self):
         request = self.request
         action = self.request.method
-
-        if action == 'formal_report':
-              queryset = SuperVisorSampleForm.objects.filter(supervisor_user = request.user).filter(sample_form__status="completed").filter(sample_form__client_category_detail__client_category_id = 12).order_by("-created_date")
-        queryset = SuperVisorSampleForm.objects.filter(supervisor_user = request.user).filter(sample_form__status="completed").order_by("-created_date")
+        queryset = SuperVisorSampleForm.objects.filter(supervisor_user = request.user).filter(sample_form__status="completed").exclude(sample_form__client_category_detail__client_category_id = 12).order_by("-created_date")
         return queryset
     
-    @action(detail=True, methods=['get'],name="formal_report", url_path="formal-report")
-    def formal_report(self,request,*args,**kwargs):
+
+    def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
+    
+
+
+class FormalSampleFormHasAnalystFinalReportAPIView(generics.ListAPIView): #supervisor final report
+    
+    filter_backends = [SearchFilter,DjangoFilterBackend,OrderingFilter]
+    search_fields = ['id','sample_form__code','sample_form__id','sample_form__namuna_code','sample_form__sample_lab_id','sample_form__namuna_code','sample_form__name']
+    ordering_fields = ['id']
+    filterset_fields = {
+        'created_date': ['date__gte', 'date__lte'],  # Date filtering
+        'status':['exact'],
+        'sample_form__client_category_detail__client_category':['exact']
+    }
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    pagination_class = MyPageNumberPagination
+
+    def get_serializer_class(self): 
+        return SampleFormHasSupervisorParameterSerializer
+    
+    def get_queryset(self):
+        request = self.request
+        queryset = SuperVisorSampleForm.objects.filter(supervisor_user = request.user).filter(sample_form__status="completed").filter(sample_form__client_category_detail__client_category_id = 12).order_by("-created_date")
+        return queryset
+    
     
 
     def get(self, request, *args, **kwargs):

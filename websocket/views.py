@@ -27,7 +27,7 @@ class NotificationViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         query = Notification.objects.filter(to_notification = user)      
-        return query.order_by("-created_date")
+        return query
     
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:

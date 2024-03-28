@@ -12,6 +12,7 @@ urlpatterns = [
     path('sample-form-has-assigned-analyst/get-formal-form/', views.FormalSampleForm_SampleFormHasAnalystAPIView.as_view(),name='sample_form_list_formal_form'),
 
     path('sample-form-has-assigned-analyst-final-report/', views.SampleFormHasAnalystFinalReportAPIView.as_view()),
+    path('formal-sample-form-has-assigned-analyst-final-report/', views.FormalSampleFormHasAnalystFinalReportAPIView.as_view()),
     path('detail-sample-form-has-assigned-analyst-final-report/<int:supervisor_table_id>/', views.DetailSampleFormHasAnalystFinalReportAPIView.as_view()),
 
     path('sample-form-has-parameter-has-assigned-analyst/<int:sample_form_id>/', views.ParameterHasAssignedAnalyst.as_view()), #both are same

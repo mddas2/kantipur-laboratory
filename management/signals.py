@@ -23,11 +23,15 @@ from account import roles
 @transaction.atomic    
 @receiver(pre_save, sender=CustomUser)
 def CustomUserpresave(sender, instance , **kwargs):
-    if not instance.pk:
+    if instance.is_recheck:
+        NotificationHandler(instance,"recheck")
+
+
+@transaction.atomic    
+@receiver(post_save, sender=CustomUser)
+def CustomUserPostSave(sender, instance , created , **kwargs):
+    if created:
         NotificationHandler(instance,"create_user")
-    else:
-        if instance.is_recheck:
-            NotificationHandler(instance,"recheck")
 
 @transaction.atomic
 @receiver(post_save, sender=SampleFormParameterFormulaCalculate)

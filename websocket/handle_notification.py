@@ -13,17 +13,18 @@ from management.models import SuperVisorSampleForm
 def NotificationHandler(instance,notification_type):
         
     if notification_type == "create_user":
-        notification_message =  f"A new user <strong>{instance.get_full_name}</strong> has submitted an account verification request."
+        notification_message =  f"A new user <strong>{instance.get_full_name}</strong> has submitted an account for verification."
         particular_message =  '.'
 
         to_notification = CustomUser.objects.filter(role = roles.SMU)
         to_notification = to_notification.values_list('id', flat=True)
 
         from_notification = instance.id
+        print(instance.id)
         path = "dashboard/user-details/" + str(instance.id)
 
     elif notification_type == "recheck":
-        notification_message =  f"your accoun verification request is sent back to you for recheck."
+        notification_message =  f"Your account is sent back to you for recheck."
         particular_message =  '.'
 
         from_notification = CustomUser.objects.filter(role = roles.SMU).first().id
@@ -47,6 +48,7 @@ def NotificationHandler(instance,notification_type):
         'content_type':ContentType.objects.get_for_model(instance).id,
     }
 
+    print('----------------hello---------------')
     # Serialize the notification data
     serializer = NotificationWriteSerializer(data=notification_data)
     serializer.is_valid(raise_exception=True)
