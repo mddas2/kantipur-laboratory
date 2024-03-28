@@ -1,8 +1,7 @@
 virtualenv/
 db.sqlite3
-mainproject
+mainproject/
 __pycache__/
-**/migrations/
 # management/migrations
 # account/migrations
 # emailmanagement/migrations
